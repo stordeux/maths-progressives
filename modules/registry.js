@@ -11,7 +11,7 @@ export const MODULES = [
   // ---
   { id: 'priorites', titre: 'Priorités opératoires', emoji: '🪜', classes: '5e – 4e', groupe: 'Calcul', couleur: '#9c36b5', couleur2: '#f8f0fc', resume: 'Calculer pas à pas, avec des parenthèses de plus en plus imbriquées.', etat: 'bientot' },
   // ---
-  { id: 'puissances', titre: 'Puissances', emoji: '🚀', classes: '4e – 3e', groupe: 'Calcul', couleur: '#6741d9', couleur2: '#f3f0ff', resume: 'aⁿ, puissances de 10, écriture scientifique, règles de calcul et pièges.', etat: 'bientot' },
+  { id: 'puissances', titre: 'Puissances', emoji: '🚀', classes: '4e – 3e', groupe: 'Calcul', couleur: '#6741d9', couleur2: '#f3f0ff', resume: 'aⁿ, puissances de 10, écriture scientifique, règles de calcul et pièges.' },
   // ---
   { id: 'litteral', titre: 'Calcul littéral', emoji: '🔤', classes: '4e – 3e', groupe: 'Calcul', couleur: '#1864ab', couleur2: '#e7f5ff', resume: 'Réduire, développer, double distributivité, factoriser, identités remarquables.', etat: 'bientot' },
   // ---
