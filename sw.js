@@ -1,6 +1,6 @@
 // Service worker : met tout le site en cache pour qu'il marche hors ligne.
 // La liste ASSETS et VERSION sont régénérées par « node tools/sw-assets.mjs » (vérifié par les tests).
-const VERSION = '79a2d81953c0';
+const VERSION = '347cd5605cae';
 const ASSETS = [
   './',
   './assets/css/base.css',
@@ -25,6 +25,9 @@ const ASSETS = [
   './engine/util/rand.js',
   './index.html',
   './manifest.webmanifest',
+  './modules/aires-volumes/draw.js',
+  './modules/aires-volumes/index.html',
+  './modules/aires-volumes/levels.js',
   './modules/angles/draw.js',
   './modules/angles/index.html',
   './modules/angles/levels.js',
@@ -67,6 +70,7 @@ const ASSETS = [
   './modules/thales-trigo/draw.js',
   './modules/thales-trigo/index.html',
   './modules/thales-trigo/levels.js',
+  './modules/aires-volumes/',
   './modules/angles/',
   './modules/calcul/',
   './modules/equations/',
