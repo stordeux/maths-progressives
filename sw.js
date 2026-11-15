@@ -1,6 +1,6 @@
 // Service worker : met tout le site en cache pour qu'il marche hors ligne.
 // La liste ASSETS et VERSION sont régénérées par « node tools/sw-assets.mjs » (vérifié par les tests).
-const VERSION = '90352d66197d';
+const VERSION = '2613c1ee6323';
 const ASSETS = [
   './',
   './assets/css/base.css',
@@ -43,6 +43,9 @@ const ASSETS = [
   './modules/puissances/draw.js',
   './modules/puissances/index.html',
   './modules/puissances/levels.js',
+  './modules/pythagore/draw.js',
+  './modules/pythagore/index.html',
+  './modules/pythagore/levels.js',
   './modules/registry.js',
   './modules/relatifs/draw.js',
   './modules/relatifs/index.html',
@@ -56,6 +59,7 @@ const ASSETS = [
   './modules/poly2/',
   './modules/priorites/',
   './modules/puissances/',
+  './modules/pythagore/',
   './modules/relatifs/',
   './modules/revision/',
 ];

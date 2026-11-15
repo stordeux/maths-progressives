@@ -21,7 +21,7 @@ export const MODULES = [
   // ---
   { id: 'stats-probas', titre: 'Statistiques et probabilités', emoji: '🎲', classes: '5e – 3e', groupe: 'Proportionnalité et données', couleur: '#087f5b', couleur2: '#e6fcf5', resume: 'Moyenne, médiane, étendue ; dés, urnes et arbres.', etat: 'bientot' },
   // --- géométrie
-  { id: 'pythagore', titre: 'Théorème de Pythagore', emoji: '📐', classes: '4e', groupe: 'Géométrie', couleur: '#c2255c', couleur2: '#fff0f6', resume: 'Repérer l\'hypoténuse, calculer une longueur, la réciproque.', etat: 'bientot' },
+  { id: 'pythagore', titre: 'Théorème de Pythagore', emoji: '📐', classes: '4e', groupe: 'Géométrie', couleur: '#c2255c', couleur2: '#fff0f6', resume: 'Repérer l\'hypoténuse, calculer une longueur, la réciproque.' },
   // ---
   { id: 'thales-trigo', titre: 'Thalès et trigonométrie', emoji: '🔺', classes: '3e', groupe: 'Géométrie', couleur: '#364fc7', couleur2: '#edf2ff', resume: 'Configurations de Thalès, puis cosinus, sinus et tangente.', etat: 'bientot' },
   // ---
