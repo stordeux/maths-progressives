@@ -13,7 +13,7 @@ export const MODULES = [
   // ---
   { id: 'puissances', titre: 'Puissances', emoji: '🚀', classes: '4e – 3e', groupe: 'Calcul', couleur: '#6741d9', couleur2: '#f3f0ff', resume: 'aⁿ, puissances de 10, écriture scientifique, règles de calcul et pièges.', etat: 'bientot' },
   // ---
-  { id: 'litteral', titre: 'Calcul littéral', emoji: '🔤', classes: '4e – 3e', groupe: 'Calcul', couleur: '#1864ab', couleur2: '#e7f5ff', resume: 'Réduire, développer, double distributivité, factoriser, identités remarquables.', etat: 'bientot' },
+  { id: 'litteral', titre: 'Calcul littéral', emoji: '🔤', classes: '4e – 3e', groupe: 'Calcul', couleur: '#1864ab', couleur2: '#e7f5ff', resume: 'Réduire, développer, double distributivité, factoriser, identités remarquables.' },
   // ---
   { id: 'equations', titre: 'Équations', emoji: '⚖️', classes: '4e – 3e', groupe: 'Calcul', couleur: '#2b8a3e', couleur2: '#ebfbee', resume: 'De x + 3 = 7 à l\'équation produit nul, avec une balance qui reste en équilibre.', etat: 'bientot' },
   // --- proportionnalité et données

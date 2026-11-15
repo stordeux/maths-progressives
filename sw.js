@@ -1,6 +1,6 @@
 // Service worker : met tout le site en cache pour qu'il marche hors ligne.
 // La liste ASSETS et VERSION sont régénérées par « node tools/sw-assets.mjs » (vérifié par les tests).
-const VERSION = '6aaa06746f86';
+const VERSION = '487a7c087c90';
 const ASSETS = [
   './',
   './assets/css/base.css',
@@ -32,12 +32,16 @@ const ASSETS = [
   './modules/fractions/levels.js',
   './modules/inegalites/index.html',
   './modules/inegalites/levels.js',
+  './modules/litteral/draw.js',
+  './modules/litteral/index.html',
+  './modules/litteral/levels.js',
   './modules/poly2/index.html',
   './modules/poly2/levels.js',
   './modules/registry.js',
   './modules/calcul/',
   './modules/fractions/',
   './modules/inegalites/',
+  './modules/litteral/',
   './modules/poly2/',
 ];
 const CACHE = 'maths-progressives-' + VERSION;
