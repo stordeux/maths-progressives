@@ -31,16 +31,25 @@ accueil → **Ma progression** → **Exporter** (code à recopier ou fichier `.j
 
 ## Modules
 
-| Module | Classes | État |
+| Module | Classes | Domaine |
 |---|---|---|
-| ⚡ Calcul mental (entraînement et défi 60 s) | 6e – 3e | en ligne |
-| 🍕 Fractions | 6e – 4e | en ligne |
-| 📈 Second degré | 2de – 1re | en ligne |
-| ⚖️ Inégalités | 3e – 2de | en ligne |
-
-D'autres modules arrivent (voir les pull requests) : nombres relatifs, calcul littéral, Pythagore, priorités, puissances,
-équations, proportionnalité, statistiques et probabilités, Thalès et trigonométrie, aires et volumes, angles, fonctions,
-révision brevet.
+| ⚡ Calcul mental | 6e – 3e | Calcul |
+| 🍕 Fractions | 6e – 4e | Calcul |
+| 🌡️ Nombres relatifs | 5e – 4e | Calcul |
+| 🪜 Priorités opératoires | 5e – 4e | Calcul |
+| 🚀 Puissances | 4e – 3e | Calcul |
+| 🔤 Calcul littéral | 4e – 3e | Calcul |
+| ⚖️ Équations | 4e – 3e | Calcul |
+| 📊 Proportionnalité et pourcentages | 6e – 3e | Proportionnalité et données |
+| 🎲 Statistiques et probabilités | 5e – 3e | Proportionnalité et données |
+| 📐 Théorème de Pythagore | 4e | Géométrie |
+| 🔺 Thalès et trigonométrie | 3e | Géométrie |
+| 🧊 Aires, périmètres, volumes | 6e – 3e | Géométrie |
+| 📏 Angles | 6e – 5e | Géométrie |
+| 〰️ Fonctions | 3e – 2de | Vers le lycée |
+| ↔️ Inégalités | 3e – 2de | Vers le lycée |
+| 📈 Second degré | 2de – 1re | Vers le lycée |
+| 🎓 Révision brevet | 3e | Transversal |
 
 ## Pour les développeurs
 

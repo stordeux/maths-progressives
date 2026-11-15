@@ -39,7 +39,9 @@ async function loadPool() {
   const ids = COLLEGE.filter(id => READY.some(m => m.id === id));
   const mods = await Promise.all(ids.map(async id => {
     const mod = await import(`../${id}/levels.js`);
-    return { id, meta: MODULES.find(m => m.id === id), LEVELS: mod.LEVELS, OPT: mod.OPTIONS || {} };
+    const meta = MODULES.find(m => m.id === id);
+    if (meta.css) { const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = `../${id}/style.css`; document.head.appendChild(l); }
+    return { id, meta, LEVELS: mod.LEVELS, OPT: mod.OPTIONS || {} };
   }));
   return mods;
 }

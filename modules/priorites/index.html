@@ -8,26 +8,7 @@
 <link rel="manifest" href="../../manifest.webmanifest">
 <link rel="icon" href="../../assets/icons/icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../../assets/css/base.css">
-<style>
-/* propre au module : lignes du calcul pas à pas, partie en couleur, lettres des étapes, arbre */
-mark { background: #f3d9fa; color: #862e9c; border-radius: 6px; padding: 0 4px; font-weight: 700; }
-.ref { display: inline-flex; align-items: center; justify-content: center; min-width: 1.45em; padding: 0 5px; border-radius: 8px; background: #9c36b5; color: #fff; font-weight: 700; line-height: 1.5; font-size: .92em; }
-.tpl.steps { width: 100%; gap: 4px; }
-.tpl.steps .stepline { justify-content: space-between; border-bottom: 1px dashed var(--line); padding: 2px 0; gap: 6px 10px; line-height: 1.6; }
-.tpl.steps .stepline:last-child { border-bottom: none; }
-.stepline .pn { flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--key); color: var(--muted); font-size: 15px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
-.stepline .pexp { flex: 1 1 auto; min-width: 0; }
-.stepline .pres { flex: none; display: inline-flex; align-items: center; gap: 6px; margin-left: auto; white-space: nowrap; }
-.frac mark, .frac .ref { display: inline-block; line-height: 1.25; padding: 0 3px; margin: 1px 0; }
-.frac > span { padding-block: 2px; }
-.chain { line-height: 2; }
-.chain > div { margin: 3px 0; }
-.cours .chain { font-size: 1.05em; }
-#vis svg.tree, .cours svg.tree { width: auto; max-width: 100%; height: auto; display: block; margin: 8px auto; }
-.treecap { text-align: center; margin: 10px 0 0; }
-ol.prog { margin: 6px 0 10px; padding-left: 1.6em; line-height: 1.6; }
-.choices button mark { background: none; color: inherit; }
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <noscript>Ce site a besoin de JavaScript.</noscript>

@@ -10,7 +10,7 @@ Lire d'abord le [README](README.md) (contrat d'un niveau) et regarder un module 
    et la couleur `theme-color`.
 2. `modules/<id>/levels.js` : exporte `LEVELS` (exactement 12 niveaux `{ titre, generate(d), cours(), classe }`)
    et `OPTIONS` (`{ need: 4, keys: { neg, comma } }`).
-3. Dessins propres au module : `modules/<id>/draw.js` (chaînes SVG). Ne modifier `engine/` que si c'est vraiment
+3. Dessins propres au module : `modules/<id>/draw.js` (chaînes SVG). Styles propres : `modules/<id>/style.css`, relié dans la page et signalé par `css: true` au registre (la révision brevet le charge aussi). Ne modifier `engine/` que si c'est vraiment
    générique, et le signaler dans la PR.
 4. Une entrée dans `modules/registry.js` : `{ id, titre, emoji, classes, groupe, couleur, couleur2, resume }`
    (`groupe` ∈ `GROUPES`, `couleur` assez foncée pour un texte blanc dessus : contraste AA).

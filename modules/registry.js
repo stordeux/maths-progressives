@@ -9,7 +9,7 @@ export const MODULES = [
   // ---
   { id: 'relatifs', titre: 'Nombres relatifs', emoji: '🌡️', classes: '5e – 4e', groupe: 'Calcul', couleur: '#c92a2a', couleur2: '#fff5f5', resume: 'Droite graduée, additions et soustractions, règle des signes, calculs enchaînés.' },
   // ---
-  { id: 'priorites', titre: 'Priorités opératoires', emoji: '🪜', classes: '5e – 4e', groupe: 'Calcul', couleur: '#9c36b5', couleur2: '#f8f0fc', resume: 'Calculer pas à pas, avec des parenthèses de plus en plus imbriquées.' },
+  { id: 'priorites', titre: 'Priorités opératoires', emoji: '🪜', classes: '5e – 4e', groupe: 'Calcul', couleur: '#9c36b5', couleur2: '#f8f0fc', resume: 'Calculer pas à pas, avec des parenthèses de plus en plus imbriquées.', css: true },
   // ---
   { id: 'puissances', titre: 'Puissances', emoji: '🚀', classes: '4e – 3e', groupe: 'Calcul', couleur: '#6741d9', couleur2: '#f3f0ff', resume: 'aⁿ, puissances de 10, écriture scientifique, règles de calcul et pièges.' },
   // ---
@@ -27,7 +27,7 @@ export const MODULES = [
   // ---
   { id: 'aires-volumes', titre: 'Aires, périmètres, volumes', emoji: '🧊', classes: '6e – 3e', groupe: 'Géométrie', couleur: '#1971c2', couleur2: '#e7f5ff', resume: 'Des carreaux aux cônes et aux sphères, avec les conversions d\'unités.' },
   // ---
-  { id: 'angles', titre: 'Angles', emoji: '📏', classes: '6e – 5e', groupe: 'Géométrie', couleur: '#9a3412', couleur2: '#fff7ed', resume: 'Rapporteur virtuel, somme des angles d\'un triangle, angles alternes-internes.' },
+  { id: 'angles', titre: 'Angles', emoji: '📏', classes: '6e – 5e', groupe: 'Géométrie', couleur: '#9a3412', couleur2: '#fff7ed', resume: 'Rapporteur virtuel, somme des angles d\'un triangle, angles alternes-internes.', css: true },
   // --- vers le lycée
   { id: 'fonctions', titre: 'Fonctions', emoji: '〰️', classes: '3e – 2de', groupe: 'Vers le lycée', couleur: '#343a40', couleur2: '#f1f3f5', resume: 'Image et antécédent sur un graphique, fonctions linéaires et affines.' },
   // ---
