@@ -29,7 +29,7 @@ export const MODULES = [
   // ---
   { id: 'angles', titre: 'Angles', emoji: '📏', classes: '6e – 5e', groupe: 'Géométrie', couleur: '#9a3412', couleur2: '#fff7ed', resume: 'Rapporteur virtuel, somme des angles d\'un triangle, angles alternes-internes.', etat: 'bientot' },
   // --- vers le lycée
-  { id: 'fonctions', titre: 'Fonctions', emoji: '〰️', classes: '3e – 2de', groupe: 'Vers le lycée', couleur: '#343a40', couleur2: '#f1f3f5', resume: 'Image et antécédent sur un graphique, fonctions linéaires et affines.', etat: 'bientot' },
+  { id: 'fonctions', titre: 'Fonctions', emoji: '〰️', classes: '3e – 2de', groupe: 'Vers le lycée', couleur: '#343a40', couleur2: '#f1f3f5', resume: 'Image et antécédent sur un graphique, fonctions linéaires et affines.' },
   // ---
   { id: 'inegalites', titre: 'Inégalités', emoji: '↔️', classes: '3e – 2de', groupe: 'Vers le lycée', couleur: '#0b7285', couleur2: '#e3fafc', resume: 'Intervalles, inéquations, valeur absolue, carrés, produits.' },
   // ---
