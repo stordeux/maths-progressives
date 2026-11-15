@@ -6,7 +6,9 @@
 // ⚠️ html2canvas REDESSINE la page (ce n'est pas une photo de l'écran) : de petits écarts de rendu
 // sont possibles. Le brouillon (canvas) est bien repris : l'élève peut y entourer l'erreur avant.
 
-export const DESTINATAIRE = 'sebastien.tordeux@univ-pau.fr';
+// Service Desk du projet privé gitlab.inria.fr/tordeux/signalements-exercices :
+// chaque e-mail reçu devient un ticket confidentiel (capture jointe comprise).
+export const DESTINATAIRE = 'gitlab-reply+tordeux-signalements-exercices-73682-issue-@inria.fr';
 let contexte = () => ({});
 let prefixe = '../../';
 
@@ -112,8 +114,8 @@ export function installerSignalement(opts = {}) {
     <textarea id="sigTexte" rows="4" placeholder="Par exemple : la correction dit 12 mais je trouve 14…"></textarea>
     <div class="sig-cap"><img id="sigApercu" alt="Aperçu de la capture d'écran"><label class="opt-line"><input type="checkbox" id="sigJoindre" checked> Joindre la capture</label></div>
     <p class="note" id="sigEtat" role="status"></p>
-    <p class="note">Le message part depuis ta messagerie, vers <b>${DESTINATAIRE}</b> <button type="button" class="opt" id="sigCopier">Copier l'adresse</button></p>
-    <div class="actions"><button type="button" class="btn ghost" id="sigAnnuler">Annuler</button><button type="button" class="btn" id="sigEnvoyer">📤 Envoyer</button></div>
+    <p class="note"><b>📤 Envoyer avec la capture</b> : choisis ta messagerie, puis colle l'adresse dans « À » (bouton <button type="button" class="opt" id="sigCopier">Copier l'adresse</button>).<br><b>✉️ Envoyer sans capture</b> : un e-mail s'ouvre, déjà adressé ; il n'y a plus qu'à l'envoyer.</p>
+    <div class="actions"><button type="button" class="btn ghost" id="sigAnnuler">Annuler</button><button type="button" class="btn ghost" id="sigSansCapture">✉️ Envoyer sans capture</button><button type="button" class="btn" id="sigEnvoyer">📤 Envoyer avec la capture</button></div>
   </div>`;
   document.body.appendChild(dlg);
   const $ = s => dlg.querySelector(s);
@@ -137,18 +139,30 @@ export function installerSignalement(opts = {}) {
     dlg.classList.add('open');
     $('#sigTexte').focus();
   }
-  async function envoyer() {
+  function message() {
     let ctx = {};
     try { ctx = contexte() || {}; } catch (e) { /* contexte indisponible */ }
     const texte = texteSignalement($('#sigTexte').value.trim(), ctx);
     const sujet = `Maths progressives : erreur${ctx.Module ? ' — ' + ctx.Module : ''}${ctx.Niveau ? ', niveau ' + String(ctx.Niveau).split(' ')[0] : ''}`;
+    return { texte, sujet };
+  }
+  const mailto = (sujet, corps) => `mailto:${DESTINATAIRE}?subject=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps.slice(0, 1800))}`;
+  // ouverture du lien mailto (remplaçable par les tests via window.__sigOuvrir)
+  const allerA = u => (window.__sigOuvrir || (x => { location.href = x; }))(u);
+  function sansCapture() {
+    const { texte, sujet } = message();
+    allerA(mailto(sujet, texte));
+    $('#sigEtat').innerHTML = '✅ Un e-mail s\'ouvre, déjà adressé : il n\'y a plus qu\'à l\'envoyer. Merci !';
+  }
+  async function envoyer() {
+    const { texte, sujet } = message();
     const avecImage = fichier && $('#sigJoindre').checked;
     const data = { title: sujet, text: `À : ${DESTINATAIRE}\n\n${texte}` };
     if (avecImage) data.files = [fichier];
     try {
       if (navigator.share && (!avecImage || (navigator.canShare && navigator.canShare({ files: [fichier] })))) {
         await navigator.share(data);
-        $('#sigEtat').innerHTML = `✅ Choisis ta messagerie et mets l'adresse <b>${DESTINATAIRE}</b> si elle n'y est pas. Merci !`;
+        $('#sigEtat').innerHTML = '✅ Choisis ta messagerie et colle l\'adresse dans « À » (bouton « Copier l\'adresse »). Merci !';
         setTimeout(fermer, 2500);
         return;
       }
@@ -158,12 +172,13 @@ export function installerSignalement(opts = {}) {
     // pas de partage d'image possible (ordinateur) : enregistrer la capture + e-mail pré-rempli
     if (avecImage) telecharger(fichier);
     const corps = (avecImage ? `(Pense à joindre la capture « ${fichier.name} », enregistrée dans tes téléchargements.)\n\n` : '') + texte;
-    location.href = `mailto:${DESTINATAIRE}?subject=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps.slice(0, 1800))}`;
+    allerA(mailto(sujet, corps));
     $('#sigEtat').innerHTML = avecImage ? `✅ La capture est enregistrée (<b>${fichier.name}</b>) et un e-mail s'ouvre : joins-y la capture. Merci !` : '✅ Un e-mail s\'ouvre avec ton message. Merci !';
   }
   fab.onclick = ouvrir;
   $('#sigAnnuler').onclick = fermer;
   $('#sigEnvoyer').onclick = envoyer;
+  $('#sigSansCapture').onclick = sansCapture;
   $('#sigCopier').onclick = async () => { try { await navigator.clipboard.writeText(DESTINATAIRE); $('#sigCopier').textContent = 'Copiée ✔'; } catch (e) { $('#sigCopier').textContent = DESTINATAIRE; } };
   dlg.addEventListener('click', e => { if (e.target === dlg) fermer(); });
   dlg.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); fermer(); } });

@@ -164,5 +164,11 @@ test('signaler une erreur : capture, texte, envoi', async ({ page }, info) => {
   const f = await dl;
   expect(f.suggestedFilename()).toMatch(/^capture-maths-.*\.png$/);
   await expect(page.locator('#sigEtat')).toContainText('enregistrée');
+  // « Envoyer sans capture » : e-mail déjà adressé au Service Desk GitLab Inria
+  await page.evaluate(() => { window.__sigOuvrir = u => { window.__lien = u; }; });
+  await page.locator('#sigSansCapture').click();
+  const href = await page.evaluate(() => window.__lien);
+  expect(href.startsWith('mailto:gitlab-reply+tordeux-signalements-exercices-73682-issue-@inria.fr?subject=')).toBe(true);
+  expect(decodeURIComponent(href)).toContain('La correction dit 12 mais je trouve 14');
   expect(errors).toEqual([]);
 });
