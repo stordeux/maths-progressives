@@ -2,7 +2,7 @@
 //  • Entraînement : adaptatif, barre de temps ; 5 réussites RAPIDES (⚡) d'affilée pour monter, 2 erreurs de suite pour redescendre.
 //  • Défi 60 s : score, record par niveau, liste des erreurs à la fin.
 // Pas de brouillon dans ce module.
-import { shell, registerSW, banner, modal, speak } from '../../engine/engine.js';
+import { shell, registerSW, banner, modal, speak, setContexte } from '../../engine/engine.js';
 import { createKeypad, physicalKey } from '../../engine/keypad.js';
 import { edit, show, parse } from '../../engine/answers/fields.js';
 import * as store from '../../engine/storage.js';
@@ -176,7 +176,9 @@ $('#resetBtn').onclick = () => { $('#resetConfirm').hidden = false; };
 $('#resetNo').onclick = () => { $('#resetConfirm').hidden = true; };
 $('#resetYes').onclick = () => { S = JSON.parse(JSON.stringify(def)); pending = 0; save(); $('#resetConfirm').hidden = true; menu.close(); setMode('train'); };
 
+setContexte(() => ({ Module: meta.titre, Mode: mode === 'train' ? 'Entraînement' : 'Défi 60 s', Niveau: `${S.level + 1} – ${LEVELS[S.level].titre}`, Calcul: Q ? Q.q.replace(/<[^>]+>/g, ' ') : '', 'Réponse attendue': Q ? Q.a : '', 'Réponse tapée': val }));
 document.addEventListener('keydown', e => {
+    if (e.target && e.target.closest && e.target.closest('#sigModal')) return; // fenêtre de signalement : on tape du texte
   if (e.key === 'Escape') { if (cours.isOpen) cours.close(); else if (menu.isOpen) menu.close(); return; }
   if (cours.isOpen || menu.isOpen) return;
   if ($('#play').hidden) return; // écrans de début / fin du défi : les boutons gèrent Entrée

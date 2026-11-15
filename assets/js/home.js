@@ -2,6 +2,7 @@
 import { MODULES, GROUPES } from '../../modules/registry.js';
 import * as store from '../../engine/storage.js';
 import { applySettings } from '../../engine/engine.js';
+import { installerSignalement, setContexte } from '../../engine/signaler.js';
 
 const $ = s => document.querySelector(s);
 
@@ -76,5 +77,7 @@ $('#optLisible').checked = !!s.lisible; $('#optGrand').checked = !!s.grand;
 $('#optLisible').onchange = e => { store.settings.set({ lisible: e.target.checked }); applySettings(); };
 $('#optGrand').onchange = e => { store.settings.set({ grand: e.target.checked }); applySettings(); };
 
+installerSignalement({ prefixe: '' });
+setContexte(() => ({ Page: 'Accueil' }));
 render();
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});

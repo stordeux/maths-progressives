@@ -6,6 +6,8 @@ import { createKeypad, physicalKey } from './keypad.js';
 import { createScratchpad } from './scratchpad.js';
 import * as store from './storage.js';
 import { MODULES } from '../modules/registry.js';
+import { installerSignalement, setContexte } from './signaler.js';
+export { setContexte };
 
 const PRAISE = ['Bravo !', 'Excellent !', 'Parfait !', 'Bien joué !', 'Super !', 'Exactement !', 'Très bien !'];
 const $ = (s, r = document) => r.querySelector(s);
@@ -114,6 +116,8 @@ export function shell(meta, { scratchpad = true, headerExtra = '' } = {}) {
   $('#optLisible').onchange = e => { store.settings.set({ lisible: e.target.checked }); applySettings(); };
   $('#optGrand').onchange = e => { store.settings.set({ grand: e.target.checked }); applySettings(); };
   if (!('speechSynthesis' in window)) $('#speakBtn').hidden = true;
+  installerSignalement();
+  setContexte(() => ({ Module: meta.titre }));
 }
 
 /** enregistre le service worker (hors ligne) */
@@ -249,7 +253,13 @@ export function startModule(id, LEVELS, opts = {}) {
   $('#resetNo').onclick = () => { $('#resetConfirm').hidden = true; };
   $('#resetYes').onclick = () => { S = JSON.parse(JSON.stringify(def)); pending = 0; save(); $('#resetConfirm').hidden = true; menu.close(); newQ(); };
 
+  setContexte(() => ({
+    Module: meta.titre, Niveau: `${S.level + 1} – ${LEVELS[S.level].titre}`, 'Exercice n°': S.n, 'Série en cours (d)': S.streak,
+    'Énoncé': Q ? strip(Q.html) : '', 'Réponse attendue': Q ? JSON.stringify(Q.expected) : '', 'Essai': attempt,
+  }));
+
   document.addEventListener('keydown', e => {
+    if (e.target && e.target.closest && e.target.closest('#sigModal')) return; // fenêtre de signalement : on tape du texte
     if (e.key === 'Escape') { if (cours.isOpen) cours.close(); else if (menu.isOpen) menu.close(); return; }
     if (cours.isOpen || menu.isOpen) return;
     if (e.target && e.target.closest && e.target.closest('#scratch')) return;

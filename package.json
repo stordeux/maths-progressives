@@ -12,6 +12,7 @@
     "serve": "node tools/serve.mjs"
   },
   "devDependencies": {
-    "@playwright/test": "1.65.1"
+    "@playwright/test": "1.65.1",
+    "html2canvas": "^1.4.1"
   }
 }

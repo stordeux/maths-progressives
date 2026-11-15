@@ -144,3 +144,25 @@ test('révision brevet : séance de 5 exercices et bilan', async ({ page }, info
   await page.screenshot({ path: `tests/e2e/captures/revision-${info.project.name}-bilan.png`, fullPage: true });
   expect(errors).toEqual([]);
 });
+
+test('signaler une erreur : capture, texte, envoi', async ({ page }, info) => {
+  const errors = [];
+  page.on('pageerror', e => errors.push(e.message));
+  await page.goto('modules/fractions/');
+  await page.locator('#coursModal [data-close]').click();
+  await page.locator('#sigBtn').click();
+  await expect(page.locator('#sigModal')).toHaveClass(/open/);
+  await expect(page.locator('#sigApercu')).toHaveAttribute('src', /blob:/);
+  const taille = await page.evaluate(() => { const i = document.querySelector('#sigApercu'); return i.naturalWidth; });
+  expect(taille).toBeGreaterThan(300);
+  await page.locator('#sigTexte').fill('La correction dit 12 mais je trouve 14');
+  // les chiffres tapés dans le texte ne doivent pas aller dans les cases de réponse
+  expect(await page.locator('#answer .box').first().textContent()).toBe('');
+  await page.screenshot({ path: `tests/e2e/captures/signaler-${info.project.name}.png` });
+  const dl = page.waitForEvent('download');
+  await page.locator('#sigEnvoyer').click();
+  const f = await dl;
+  expect(f.suggestedFilename()).toMatch(/^capture-maths-.*\.png$/);
+  await expect(page.locator('#sigEtat')).toContainText('enregistrée');
+  expect(errors).toEqual([]);
+});

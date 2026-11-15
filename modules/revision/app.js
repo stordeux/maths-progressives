@@ -1,6 +1,7 @@
 // Révision brevet : exercices tirés de tous les modules du collège déjà en ligne, chronométrés,
 // une seule tentative par exercice, puis un bilan des points forts et des points faibles.
-import { shell, registerSW, banner, modal, speak, normalize } from '../../engine/engine.js';
+import { shell, registerSW, banner, modal, speak, normalize, setContexte } from '../../engine/engine.js';
+import { strip } from '../../engine/util/fmt.js';
 import { ANSWERS } from '../../engine/answers/index.js';
 import { numsCheck } from '../../engine/answers/checks.js';
 import { createKeypad, physicalKey } from '../../engine/keypad.js';
@@ -165,7 +166,12 @@ $('#resetBtn').onclick = () => { $('#resetConfirm').hidden = false; };
 $('#resetNo').onclick = () => { $('#resetConfirm').hidden = true; };
 $('#resetYes').onclick = () => { S = JSON.parse(JSON.stringify(def)); save(); $('#resetConfirm').hidden = true; menu.close(); startScreen(); };
 
+setContexte(() => {
+  const it = session && session.cur;
+  return { Module: 'Révision brevet', 'Exercice tiré de': it ? `${it.mod.meta.titre}, niveau ${it.lv + 1} – ${it.mod.LEVELS[it.lv].titre}` : '', 'Énoncé': Q ? strip(Q.html) : '', 'Réponse attendue': Q ? JSON.stringify(Q.expected) : '' };
+});
 document.addEventListener('keydown', e => {
+    if (e.target && e.target.closest && e.target.closest('#sigModal')) return; // fenêtre de signalement : on tape du texte
   if (e.key === 'Escape') { if (cours.isOpen) cours.close(); else if (menu.isOpen) menu.close(); return; }
   if (cours.isOpen || menu.isOpen || !session) return;
   if (e.target && e.target.closest && e.target.closest('#scratch')) return;
