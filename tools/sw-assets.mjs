@@ -6,14 +6,15 @@ import { join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
-const SKIP = new Set(['node_modules', 'tests', 'tools', '.git', '.github', 'test-results', 'playwright-report', 'docs']);
+// seuls ces éléments de la racine sont servis (comme dans le site déployé par la CI)
+const SERVED = new Set(['index.html', 'manifest.webmanifest', 'assets', 'engine', 'modules']);
 const EXT = /\.(html|js|css|svg|png|webmanifest)$/;
 export function listAssets() {
   const out = [];
   const walk = d => {
     for (const f of readdirSync(d).sort()) {
       const p = join(d, f), r = relative(root, p).split(sep).join('/');
-      if (SKIP.has(r.split('/')[0]) || f.startsWith('.')) continue;
+      if (!SERVED.has(r.split('/')[0]) || f.startsWith('.')) continue;
       if (statSync(p).isDirectory()) walk(p);
       else if (EXT.test(f) && r !== 'sw.js') out.push(r);
     }
