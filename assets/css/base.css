@@ -181,3 +181,4 @@ table.data th { background: var(--acc2); }
 .bigscore { font-size: 4em; font-weight: 800; color: var(--acc); }
 .big-btn { font-size: 1.15em; padding: 16px 34px; }
 .errs { text-align: left; line-height: 1.9; margin-top: 10px; }
+.tpl > sup { margin-left: -8px; align-self: flex-start; } /* exposant collé à ce qui précède (le gabarit est un conteneur flex) */
