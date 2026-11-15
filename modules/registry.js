@@ -19,7 +19,7 @@ export const MODULES = [
   // --- proportionnalité et données
   { id: 'proportionnalite', titre: 'Proportionnalité et pourcentages', emoji: '📊', classes: '6e – 3e', groupe: 'Proportionnalité et données', couleur: '#a14d00', couleur2: '#fff4e6', resume: 'Tableaux, produit en croix, échelles, vitesses, hausses et baisses en %.', etat: 'bientot' },
   // ---
-  { id: 'stats-probas', titre: 'Statistiques et probabilités', emoji: '🎲', classes: '5e – 3e', groupe: 'Proportionnalité et données', couleur: '#087f5b', couleur2: '#e6fcf5', resume: 'Moyenne, médiane, étendue ; dés, urnes et arbres.', etat: 'bientot' },
+  { id: 'stats-probas', titre: 'Statistiques et probabilités', emoji: '🎲', classes: '5e – 3e', groupe: 'Proportionnalité et données', couleur: '#087f5b', couleur2: '#e6fcf5', resume: 'Moyenne, médiane, étendue ; dés, urnes et arbres.' },
   // --- géométrie
   { id: 'pythagore', titre: 'Théorème de Pythagore', emoji: '📐', classes: '4e', groupe: 'Géométrie', couleur: '#c2255c', couleur2: '#fff0f6', resume: 'Repérer l\'hypoténuse, calculer une longueur, la réciproque.', etat: 'bientot' },
   // ---
