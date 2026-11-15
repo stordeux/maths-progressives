@@ -1,6 +1,6 @@
 // Service worker : met tout le site en cache pour qu'il marche hors ligne.
 // La liste ASSETS et VERSION sont régénérées par « node tools/sw-assets.mjs » (vérifié par les tests).
-const VERSION = '52a0931c18d3';
+const VERSION = 'e35c0a044b2a';
 const ASSETS = [
   './',
   './assets/css/base.css',
@@ -55,6 +55,9 @@ const ASSETS = [
   './modules/relatifs/levels.js',
   './modules/revision/app.js',
   './modules/revision/index.html',
+  './modules/stats-probas/draw.js',
+  './modules/stats-probas/index.html',
+  './modules/stats-probas/levels.js',
   './modules/angles/',
   './modules/calcul/',
   './modules/fractions/',
@@ -66,6 +69,7 @@ const ASSETS = [
   './modules/pythagore/',
   './modules/relatifs/',
   './modules/revision/',
+  './modules/stats-probas/',
 ];
 const CACHE = 'maths-progressives-' + VERSION;
 
