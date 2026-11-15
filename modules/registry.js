@@ -7,7 +7,7 @@ export const MODULES = [
   // ---
   { id: 'fractions', titre: 'Fractions', emoji: '🍕', classes: '6e – 4e', groupe: 'Calcul', couleur: '#3b5bdb', couleur2: '#e7ecff', resume: 'Lire, simplifier, comparer, additionner, multiplier… jusqu\'aux racines carrées.' },
   // ---
-  { id: 'relatifs', titre: 'Nombres relatifs', emoji: '🌡️', classes: '5e – 4e', groupe: 'Calcul', couleur: '#c92a2a', couleur2: '#fff5f5', resume: 'Droite graduée, additions et soustractions, règle des signes, calculs enchaînés.', etat: 'bientot' },
+  { id: 'relatifs', titre: 'Nombres relatifs', emoji: '🌡️', classes: '5e – 4e', groupe: 'Calcul', couleur: '#c92a2a', couleur2: '#fff5f5', resume: 'Droite graduée, additions et soustractions, règle des signes, calculs enchaînés.' },
   // ---
   { id: 'priorites', titre: 'Priorités opératoires', emoji: '🪜', classes: '5e – 4e', groupe: 'Calcul', couleur: '#9c36b5', couleur2: '#f8f0fc', resume: 'Calculer pas à pas, avec des parenthèses de plus en plus imbriquées.', etat: 'bientot' },
   // ---
