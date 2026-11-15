@@ -1,0 +1,17 @@
+{
+  "name": "maths-progressives",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Exercices de maths progressifs et adaptatifs (collège – début de lycée), site statique hors ligne.",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test tests/unit/*.test.mjs",
+    "test:rapide": "N_EX=60 node --test tests/unit/*.test.mjs",
+    "test:e2e": "playwright test",
+    "serve": "node tools/serve.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.1"
+  }
+}

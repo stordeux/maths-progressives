@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2b4acb">
+<meta name="description" content="Exercices de maths progressifs qui s'adaptent au niveau de l'élève, du collège au début du lycée. Gratuit, sans compte, fonctionne hors ligne.">
+<title>Maths progressives</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/home.css">
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <h1>🧮 Maths progressives</h1>
+    <p>Des exercices qui s'adaptent à toi : le niveau monte quand tu réussis, redescend quand c'est trop dur. Un cours à chaque niveau, des indices, un brouillon.</p>
+    <p class="global" id="global" aria-live="polite"></p>
+  </div>
+</header>
+<main class="wrap" id="modules" aria-label="Modules"></main>
+<section class="wrap tools" aria-labelledby="hTools">
+  <h2 id="hTools">Ma progression</h2>
+  <p class="note">Ta progression reste sur cet appareil (rien n'est envoyé sur Internet). Pour la passer sur un autre appareil, exporte-la puis importe-la là-bas.</p>
+  <div class="actions left">
+    <button type="button" class="btn" id="expBtn">📤 Exporter</button>
+    <button type="button" class="btn ghost" id="impBtn">📥 Importer</button>
+    <button type="button" class="btn ghost" id="setBtn">⚙️ Réglages</button>
+  </div>
+  <div id="expBox" class="panel" hidden>
+    <p>Recopie ce code sur l'autre appareil (bouton « Importer »), ou enregistre le fichier.</p>
+    <textarea id="expCode" readonly rows="4" aria-label="code de progression"></textarea>
+    <div class="actions left"><button type="button" class="btn ghost" id="copyBtn">Copier le code</button><button type="button" class="btn ghost" id="dlBtn">Enregistrer le fichier .json</button></div>
+  </div>
+  <div id="impBox" class="panel" hidden>
+    <p>Colle un code de progression, ou choisis un fichier .json exporté.</p>
+    <textarea id="impCode" rows="4" aria-label="code à importer"></textarea>
+    <div class="actions left"><button type="button" class="btn" id="impGo">Importer le code</button><label class="btn ghost file">Choisir un fichier<input type="file" id="impFile" accept="application/json,.json"></label></div>
+    <p id="impMsg" role="status"></p>
+  </div>
+  <div id="setBox" class="panel" hidden>
+    <label class="opt-line"><input type="checkbox" id="optLisible"> Police plus lisible (lettres espacées)</label>
+    <label class="opt-line"><input type="checkbox" id="optGrand"> Caractères plus grands</label>
+  </div>
+</section>
+<footer class="wrap foot">
+  <p>Fonctionne sans connexion après la première visite. Sur tablette : menu du navigateur → « Ajouter à l'écran d'accueil ».</p>
+  <p>Code libre (MIT) · contenus pédagogiques CC BY-SA 4.0 · aucun compte, aucune publicité, aucun traceur. <a href="https://github.com/stordeux/maths-progressives">Sources</a></p>
+</footer>
+<script type="module" src="assets/js/home.js"></script>
+</body>
+</html>
