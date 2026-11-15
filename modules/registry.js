@@ -9,7 +9,7 @@ export const MODULES = [
   // ---
   { id: 'relatifs', titre: 'Nombres relatifs', emoji: '🌡️', classes: '5e – 4e', groupe: 'Calcul', couleur: '#c92a2a', couleur2: '#fff5f5', resume: 'Droite graduée, additions et soustractions, règle des signes, calculs enchaînés.', etat: 'bientot' },
   // ---
-  { id: 'priorites', titre: 'Priorités opératoires', emoji: '🪜', classes: '5e – 4e', groupe: 'Calcul', couleur: '#9c36b5', couleur2: '#f8f0fc', resume: 'Calculer pas à pas, avec des parenthèses de plus en plus imbriquées.', etat: 'bientot' },
+  { id: 'priorites', titre: 'Priorités opératoires', emoji: '🪜', classes: '5e – 4e', groupe: 'Calcul', couleur: '#9c36b5', couleur2: '#f8f0fc', resume: 'Calculer pas à pas, avec des parenthèses de plus en plus imbriquées.' },
   // ---
   { id: 'puissances', titre: 'Puissances', emoji: '🚀', classes: '4e – 3e', groupe: 'Calcul', couleur: '#6741d9', couleur2: '#f3f0ff', resume: 'aⁿ, puissances de 10, écriture scientifique, règles de calcul et pièges.', etat: 'bientot' },
   // ---
