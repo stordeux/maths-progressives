@@ -202,6 +202,38 @@ function build(make, o) {
   throw new Error('aucun exercice valide trouvé');
 }
 
+/**
+ * Ordre libre. Dans l'arbre du calcul, toute opération dont les opérandes sont déjà des nombres est
+ * un calcul permis à cet instant (deux parenthèses, deux produits… se font dans n'importe quel ordre).
+ * On cherche (en profondeur, avec retour arrière si deux calculs donnent le même résultat) une suite
+ * de calculs permis qui donne exactement les valeurs v de l'élève.
+ * Renvoie {ok, other} ou {ok: false, i, ready} : i = première case impossible, ready = calculs permis alors.
+ */
+function freeOrder(steps, v) {
+  const n = steps.length;
+  let best = { i: -1, ready: [] };
+  const readyAt = done => steps.filter(t => !done.has(t) && kids(t).every(c => c.k === 'n' || done.has(c)));
+  (function dfs(done, i, other) {
+    if (i === n) { best = { ok: true, other }; return true; }
+    const ready = readyAt(done);
+    if (i > best.i && !best.ok) best = { i, ready };
+    for (const t of ready) {
+      if (!approx(t.val, v[i])) continue;
+      const d2 = new Set(done); d2.add(t);
+      if (dfs(d2, i + 1, other || t !== steps[i])) return true;
+    }
+    return false;
+  })(new Set(), 0, false);
+  return best;
+}
+/** texte d'un calcul prêt (ses opérandes sont des nombres) */
+function readyTxt(t) {
+  const x = c => numTxt(val(c), false);
+  if (t.k === 'sq') return `${x(t.a)}<sup>2</sup>`;
+  if (t.k === 'fr') return `${numTxt(val(t.a), true)} ÷ ${x(t.b)}`;
+  return `${numTxt(val(t.a), true)} ${SYM[t.o]} ${x(t.b)}`;
+}
+
 /** pièges : autres calculs « tentants » à l'étape k (autre opération prête, ou mauvais regroupement) */
 function traps(root, k, target) {
   const out = [];
@@ -242,26 +274,38 @@ function stepsExo(make, o) {
   const expr = R(root, 0, {});
   const marked = steps.map((_, k) => R(root, k, { mode: 'ref', hl: true }));
   const shown = o.hl ? marked : marked.map(unmark);
-  const tpl = shown.map((s, k) => `<div class="stepline"><span class="pn">${k + 1}</span><span class="pexp">${s}</span><span class="pres">${k < last ? ref(k) + ' =' : '='}&nbsp;{${k}}</span></div>`).join('');
+  // mode guidé (o.hl) : une ligne par étape, la partie à calculer en couleur ;
+  // mode libre : l'élève choisit l'ordre, une case par calcul (tout ordre permis par les priorités est accepté)
+  const tpl = o.hl
+    ? shown.map((s, k) => `<div class="stepline"><span class="pn">${k + 1}</span><span class="pexp">${s}</span><span class="pres">${k < last ? ref(k) + ' =' : '='}&nbsp;{${k}}</span></div>`).join('')
+    : steps.map((_, k) => `<div class="stepline"><span class="pn">${k + 1}</span><span class="pexp">${k < last ? `Résultat du calcul n° ${k + 1}` : '<b>Résultat final</b>'}</span><span class="pres">=&nbsp;{${k}}</span></div>`).join('');
   const opTxt = steps.map((t, k) => unmark(R(t, k, { mode: 'ref' }, true)));
   const trapList = steps.map((t, k) => traps(root, k, t).filter(a => !approx(a.v, E[k])));
   const base = stepsCheck(E, opTxt.map(s => `le calcul ${s}`));
-  const check = v => {
+  const guided = v => {
     const r = base(v);
     if (r.ok) return r;
     const i = r.bad[0], tr = trapList[i].find(a => approx(a.v, v[i]));
     let msg = `Erreur à l'étape ${i + 1}. ${i ? "Les étapes d'avant sont justes. " : ''}`;
     if (tr) msg += `Tu as calculé ${tr.txt} = ${M(v[i])} : ce n'est pas le calcul prioritaire ici. ${RULE}`;
-    else if (o.hl) msg += `Refais le calcul en couleur : ${opTxt[i]}.`;
-    else msg += `Le calcul prioritaire était ${opTxt[i]}.`;
+    else msg += `Refais le calcul en couleur : ${opTxt[i]}.`;
     return { ok: false, bad: [i], msg };
+  };
+  const check = o.hl ? guided : v => {
+    const r = freeOrder(steps, v);
+    if (r.ok) return { ok: true, msg: r.other ? 'Tu as calculé dans un autre ordre que la correction : c\'est juste aussi, les deux calculs étaient permis.' : '' };
+    const i = r.i;
+    const can = r.ready.map(t => `${readyTxt(t)} = ${M(t.val)}`);
+    let msg = `Erreur au calcul n° ${i + 1}. ${i ? 'Les calculs d\'avant sont justes. ' : ''}`;
+    msg += can.length > 1 ? `À ce moment, les calculs permis étaient : ${can.join(' ou ')}.` : `À ce moment, le seul calcul permis était ${can[0]}.`;
+    return { ok: false, bad: [i], msg: msg + ` ${RULE}` };
   };
   check.expected = E;
   const chain = steps.map((_, k) => R(root, k, { mode: 'val', hl: true }));
   const solution = `<div class="chain">${chain.map((s, k) => `<div>${k ? '= ' : ''}${s}</div>`).join('')}<div>= <b>${M(E[last])}</b></div></div>`;
   const howTo = o.hl
     ? `À chaque ligne, calcule la partie <mark>en couleur</mark> et écris son résultat. La lettre ${ref(0)} le remplace à la ligne suivante.`
-    : `À chaque ligne, <b>trouve toi-même</b> le calcul prioritaire, fais-le et écris son résultat. La lettre le remplace à la ligne suivante.`;
+    : `<b>Trouve toi-même</b> les calculs à faire, dans un ordre permis par les priorités, et écris le résultat de chaque calcul, un par case. Quand deux calculs sont possibles en même temps (deux parenthèses, deux produits…), commence par celui que tu veux.`;
   const q = {
     type: 'steps',
     html: `${o.intro || 'Calcule pas à pas :'}<div class="big">${expr}</div><p class="note">${howTo}</p>`,
@@ -270,6 +314,16 @@ function stepsExo(make, o) {
     check, expected: E,
     value: safeCalc(expr),
     lines: marked,
+    free: !o.hl,
+    /** pour les tests : valeurs d'un ordre de calcul permis tiré au hasard (rnd : fonction aléatoire dans [0 ; 1[) */
+    randomOrder(rnd) {
+      const done = new Set(), out = [];
+      while (out.length < steps.length) {
+        const ready = steps.filter(t => !done.has(t) && kids(t).every(c => c.k === 'n' || done.has(c)));
+        const t = ready[Math.floor(rnd() * ready.length)]; done.add(t); out.push(t.val);
+      }
+      return out;
+    },
     hint: o.hint + (o.hl ? '' : `<br>${RULE}`),
     solution,
     afterVisual: `<p class="note treecap">L'arbre de calcul : on part des nombres (en bas) et on remonte, dans l'ordre des lettres.</p>${treeSVG(root)}`,
