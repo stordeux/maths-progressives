@@ -35,7 +35,7 @@ export const MODULES = [
   // ---
   { id: 'poly2', titre: 'Second degré', emoji: '📈', classes: '2de – 1re', groupe: 'Vers le lycée', couleur: '#5f3dc4', couleur2: '#efe9ff', resume: 'Développer, forme canonique, sommet, racines, signe, discriminant.' },
   // --- transversal
-  { id: 'revision', titre: 'Révision brevet', emoji: '🎓', classes: '3e', groupe: 'Transversal', couleur: '#a61e4d', couleur2: '#fff0f6', resume: 'Des exercices de tous les modules du collège, chronométrés, avec un bilan.', etat: 'bientot' },
+  { id: 'revision', titre: 'Révision brevet', emoji: '🎓', classes: '3e', groupe: 'Transversal', couleur: '#a61e4d', couleur2: '#fff0f6', resume: 'Des exercices de tous les modules du collège, chronométrés, avec un bilan.' },
   // ---
 ];
 
