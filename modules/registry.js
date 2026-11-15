@@ -17,7 +17,7 @@ export const MODULES = [
   // ---
   { id: 'equations', titre: 'Équations', emoji: '⚖️', classes: '4e – 3e', groupe: 'Calcul', couleur: '#2b8a3e', couleur2: '#ebfbee', resume: 'De x + 3 = 7 à l\'équation produit nul, avec une balance qui reste en équilibre.', etat: 'bientot' },
   // --- proportionnalité et données
-  { id: 'proportionnalite', titre: 'Proportionnalité et pourcentages', emoji: '📊', classes: '6e – 3e', groupe: 'Proportionnalité et données', couleur: '#a14d00', couleur2: '#fff4e6', resume: 'Tableaux, produit en croix, échelles, vitesses, hausses et baisses en %.', etat: 'bientot' },
+  { id: 'proportionnalite', titre: 'Proportionnalité et pourcentages', emoji: '📊', classes: '6e – 3e', groupe: 'Proportionnalité et données', couleur: '#a14d00', couleur2: '#fff4e6', resume: 'Tableaux, produit en croix, échelles, vitesses, hausses et baisses en %.' },
   // ---
   { id: 'stats-probas', titre: 'Statistiques et probabilités', emoji: '🎲', classes: '5e – 3e', groupe: 'Proportionnalité et données', couleur: '#087f5b', couleur2: '#e6fcf5', resume: 'Moyenne, médiane, étendue ; dés, urnes et arbres.', etat: 'bientot' },
   // --- géométrie
