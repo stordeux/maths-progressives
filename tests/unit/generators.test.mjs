@@ -8,7 +8,7 @@ import assert from 'node:assert/strict';
 import { readdirSync, existsSync } from 'node:fs';
 import { setSeed } from '../../engine/util/rand.js';
 import { toAnswer } from '../../engine/answers/checks.js';
-import { MODULES } from '../../modules/registry.js';
+import { READY as MODULES } from '../../modules/registry.js';
 import { inSet } from '../../engine/draw/realLine.js';
 
 const N = +(process.env.N_EX || 500);

@@ -1,7 +1,7 @@
 // Pour chaque module : chargement sans erreur, bonne réponse acceptée, réponse fausse → indice → correction,
 // aucun appel réseau externe, captures d'écran (dans tests/e2e/captures/, à regarder).
 import { test, expect } from '@playwright/test';
-import { MODULES } from '../../modules/registry.js';
+import { READY as MODULES } from '../../modules/registry.js';
 
 const fmt = x => (x === Infinity ? 'i' : x === -Infinity ? 'i-' : (Math.abs(x) + '').replace('.', ',') + (x < 0 ? '-' : ''));
 

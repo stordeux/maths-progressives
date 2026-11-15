@@ -20,6 +20,7 @@ function render() {
     const mods = MODULES.filter(m => m.groupe === g);
     if (!mods.length) return '';
     return `<section class="group" aria-labelledby="g-${g.replace(/\W/g, '')}"><h2 id="g-${g.replace(/\W/g, '')}">${g}</h2><div class="grid">${mods.map(m => {
+      if (m.etat === 'bientot') return `<div class="mcard soon" style="--c:${m.couleur}" aria-disabled="true"><span class="t">${m.emoji} ${m.titre}</span><span class="cl">${m.classes}</span><span class="r">${m.resume}</span><span class="st"><span class="pill">Bientôt</span></span></div>`;
       const S = store.load(m.id, { level: 0, max: 0, total: 0, best: {}, last: 0 });
       const started = (S.total || 0) > 0 || S.last;
       const lv = Math.max(S.level || 0, S.max || 0);

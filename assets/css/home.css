@@ -24,3 +24,4 @@
 .file { position: relative; overflow: hidden; display: inline-flex; align-items: center; }
 .file input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
 .foot { color: var(--muted); font-size: .78em; padding-block: 24px; line-height: 1.5; }
+.mcard.soon { opacity: .6; border-top-style: dashed; min-height: 0; }
