@@ -46,7 +46,7 @@ async function answer(page, good) {
   await page.locator('#okBtn').click();
 }
 
-for (const m of MODULES) {
+for (const m of MODULES.filter(m => m.id !== 'revision')) {
   test(`${m.id} : parcours complet`, async ({ page }, info) => {
     const errors = [], external = [];
     page.on('console', msg => { if (msg.type() === 'error') errors.push(msg.text()); });
@@ -124,5 +124,23 @@ test('accueil, export / import, hors ligne', async ({ page, context }, info) => 
   await page.goto('./');
   await expect(page.locator('.mcard').first()).toBeVisible();
   await context.setOffline(false);
+  expect(errors).toEqual([]);
+});
+
+test('révision brevet : séance de 5 exercices et bilan', async ({ page }, info) => {
+  const errors = [];
+  page.on('pageerror', e => errors.push(e.message));
+  page.on('console', msg => { if (msg.type() === 'error') errors.push(msg.text()); });
+  await page.goto('modules/revision/');
+  await page.locator('#q [data-n="5"]').click();
+  for (let i = 0; i < 5; i++) {
+    await expect(page.locator('#okBtn')).toBeVisible();
+    await answer(page, i % 2 === 0);
+    await expect(page.locator('#fb')).toHaveClass(i % 2 === 0 ? /good/ : /bad/);
+    if (i === 1) await page.screenshot({ path: `tests/e2e/captures/revision-${info.project.name}.png` });
+    await page.locator('#nextBtn').click();
+  }
+  await expect(page.locator('#q')).toContainText('Bilan : 3 / 5');
+  await page.screenshot({ path: `tests/e2e/captures/revision-${info.project.name}-bilan.png`, fullPage: true });
   expect(errors).toEqual([]);
 });
