@@ -58,14 +58,15 @@ for (const m of MODULES) {
     await page.locator('#coursModal [data-close]').click();
     if (m.id === 'calcul') {
       for (let k = 0; k < 3; k++) {
+        await expect(page.locator('#disp')).not.toHaveClass(/ok|ko/);
         const a = await page.evaluate(() => window.__mp.question.a);
-        await typeNumber(page, a); await page.keyboard.press('Enter');
+        await typeNumber(page, a); await page.locator('#pad [data-k="ok"]').click();
         await expect(page.locator('#disp')).toHaveClass(/ok/);
-        await page.waitForTimeout(900);
       }
       await page.screenshot({ path: `tests/e2e/captures/${m.id}-${info.project.name}.png` });
+      await expect(page.locator('#disp')).not.toHaveClass(/ok|ko/);
       const a = await page.evaluate(() => window.__mp.question.a);
-      await typeNumber(page, a + 1); await page.keyboard.press('Enter');
+      await typeNumber(page, a + 1); await page.locator('#pad [data-k="ok"]').click();
       await expect(page.locator('#fb')).toHaveClass(/bad/);
       await page.screenshot({ path: `tests/e2e/captures/${m.id}-${info.project.name}-erreur.png` });
       await page.locator('#mChrono').click(); await page.locator('#goBtn').click();
