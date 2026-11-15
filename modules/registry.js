@@ -23,7 +23,7 @@ export const MODULES = [
   // --- géométrie
   { id: 'pythagore', titre: 'Théorème de Pythagore', emoji: '📐', classes: '4e', groupe: 'Géométrie', couleur: '#c2255c', couleur2: '#fff0f6', resume: 'Repérer l\'hypoténuse, calculer une longueur, la réciproque.' },
   // ---
-  { id: 'thales-trigo', titre: 'Thalès et trigonométrie', emoji: '🔺', classes: '3e', groupe: 'Géométrie', couleur: '#364fc7', couleur2: '#edf2ff', resume: 'Configurations de Thalès, puis cosinus, sinus et tangente.', etat: 'bientot' },
+  { id: 'thales-trigo', titre: 'Thalès et trigonométrie', emoji: '🔺', classes: '3e', groupe: 'Géométrie', couleur: '#364fc7', couleur2: '#edf2ff', resume: 'Configurations de Thalès, puis cosinus, sinus et tangente.' },
   // ---
   { id: 'aires-volumes', titre: 'Aires, périmètres, volumes', emoji: '🧊', classes: '6e – 3e', groupe: 'Géométrie', couleur: '#1971c2', couleur2: '#e7f5ff', resume: 'Des carreaux aux cônes et aux sphères, avec les conversions d\'unités.', etat: 'bientot' },
   // ---
