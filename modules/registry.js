@@ -25,7 +25,7 @@ export const MODULES = [
   // ---
   { id: 'thales-trigo', titre: 'Thalès et trigonométrie', emoji: '🔺', classes: '3e', groupe: 'Géométrie', couleur: '#364fc7', couleur2: '#edf2ff', resume: 'Configurations de Thalès, puis cosinus, sinus et tangente.', etat: 'bientot' },
   // ---
-  { id: 'aires-volumes', titre: 'Aires, périmètres, volumes', emoji: '🧊', classes: '6e – 3e', groupe: 'Géométrie', couleur: '#1971c2', couleur2: '#e7f5ff', resume: 'Des carreaux aux cônes et aux sphères, avec les conversions d\'unités.', etat: 'bientot' },
+  { id: 'aires-volumes', titre: 'Aires, périmètres, volumes', emoji: '🧊', classes: '6e – 3e', groupe: 'Géométrie', couleur: '#1971c2', couleur2: '#e7f5ff', resume: 'Des carreaux aux cônes et aux sphères, avec les conversions d\'unités.' },
   // ---
   { id: 'angles', titre: 'Angles', emoji: '📏', classes: '6e – 5e', groupe: 'Géométrie', couleur: '#9a3412', couleur2: '#fff7ed', resume: 'Rapporteur virtuel, somme des angles d\'un triangle, angles alternes-internes.', etat: 'bientot' },
   // --- vers le lycée
