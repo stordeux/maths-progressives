@@ -328,7 +328,7 @@ function C7() {
 ${figure({ P, segs: [['O', 'A'], ['O', 'B'], ['O', 'C'], ['E', 'D'], ['E', 'F'], ['E', 'G']], arcs: [{ v: 'O', a: 'A', b: 'B', r: 36, label: '35°' }, { v: 'O', a: 'B', b: 'C', r: 36, kind: 'ask', label: '55°' }, { v: 'E', a: 'D', b: 'F', r: 36, label: '50°' }, { v: 'E', a: 'F', b: 'G', r: 36, kind: 'ask', label: '130°' }], rights: [{ v: 'O', a: 'A', b: 'C', size: 14 }], lab: { O: 225, E: -90 }, width: 520, aria: 'angles complémentaires et supplémentaires' })}
 <div class="methode"><b>Méthode</b><ol><li>Trouve le total : angle <b>droit</b> partagé ou mot « complémentaires » → <b>90°</b> ; points <b>alignés</b> ou mot « supplémentaires » → <b>180°</b>.</li><li>Angle cherché = total − angle connu.</li><li>Vérifie : la somme des deux angles redonne bien le total.</li></ol></div>
 <div class="ex"><span class="q">Exemple 1 : sur la figure</span><br>${H('AOC')} est droit, donc ${H('AOB')} et ${H('BOC')} sont complémentaires : ${H('BOC')} = 90° − 35° = <b>55°</b>.<br>D, E et G sont alignés : ${H('FEG')} = 180° − 50° = <b>130°</b>.</div>
-<div class="ex"><span class="q">Exemple 2 : deux angles séparés</span><br>${H('ABC')} et ${H('DEF')} sont supplémentaires, avec ${H('ABC')} = 47°. Ils n'ont pas le même sommet, mais leur somme vaut 180° : ${H('DEF')} = 180° − 47° = <b>133°</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : deux angles séparés</span><br>${H('KLM')} et ${H('RST')} sont supplémentaires, avec ${H('KLM')} = 47°. Ils n'ont pas le même sommet, mais leur somme vaut 180° : ${H('RST')} = 180° − 47° = <b>133°</b>.</div>
 <div class="warn">⚠️ Ne confonds pas : <b>complémentaire → 90°</b>, <b>supplémentaire → 180°</b>. Astuce : « <b>s</b>upplémentaire » comme « <b>s</b>omme plus grande ».<br>⚠️ Un angle obtus n'a pas de complémentaire (il dépasse déjà 90°).</div>
 <div class="retenir">À retenir : complémentaires → somme 90° ; supplémentaires → somme 180°.</div>`;
 }
@@ -462,7 +462,7 @@ function L10(d) {
   });
 }
 function C10() {
-  const P = { A: [70, 120], B: [0, 0], C: [140, 0], D: [220, 0], E: [360, 0], F: [220, 140], G: [430, 0], H: [570, 0], K: [500, 121.24] };
+  const P = { A: [70, 120], B: [0, 0], C: [140, 0], D: [220, 0], E: [360, 0], F: [220, 98] /* angle en E ≈ 35°, comme dans l'exemple 1 */, G: [430, 0], H: [570, 0], K: [500, 121.24] };
   return `<h2>10. Triangles particuliers</h2>
 <p class="intro">Dans un triangle particulier, les <b>codages</b> donnent des angles « gratuits » : il en faut alors moins pour tout calculer.</p>
 <div class="def">• <b>Isocèle</b> en A (AB = AC) : les deux angles <b>à la base</b> ${H('ABC')} et ${H('ACB')} sont égaux.<br>• <b>Équilatéral</b> (trois côtés égaux) : trois angles de <b>60°</b>.<br>• <b>Rectangle</b> en D : un angle de 90°, les deux autres sont <b>complémentaires</b> (somme 90°).</div>
