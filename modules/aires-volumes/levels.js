@@ -253,7 +253,7 @@ function C3() {
 <div class="cols">${D.triangle(6, 4, 2, { b: '6 cm', h: '4 cm' })}${D.triangle(5, 4, -3, { b: '5 cm', h: '4 cm', side: '5 cm' })}</div>
 <div class="methode"><b>Méthode</b><ol><li>Choisis la base (souvent le côté du bas).</li><li>Repère la hauteur : le segment en pointillés, avec l'angle droit sur la base.</li><li>Calcule base × hauteur, puis divise par 2.</li><li>Écris l'unité d'aire (cm², m²…).</li></ol></div>
 <div class="ex"><span class="q">Exemple 1 : base AB = 6 cm, hauteur CH = 4 cm.</span><br>A = 6 × 4 ÷ 2 = 24 ÷ 2 = <b>12 cm²</b>.<br>Pourquoi ÷ 2 ? Le triangle est la moitié du rectangle de 6 cm sur 4 cm.</div>
-<div class="ex"><span class="q">Exemple 2 (piège) : base AB = 5 cm, hauteur 4 cm qui tombe en dehors, côté [AC] = 5 cm.</span><br>On prolonge la base. On utilise la hauteur, pas le côté penché : A = 5 × 4 ÷ 2 = <b>10 cm²</b> (et non 5 × 5 ÷ 2).</div>
+<div class="ex"><span class="q">Exemple 2 (piège) : base AB = 5 cm, hauteur CH = 4 cm, côté [AC] = 5&nbsp;cm.</span><br>La hauteur tombe en dehors du triangle : on prolonge la base jusqu'à H. On utilise la hauteur, pas le côté penché : A = 5 × 4 ÷ 2 = <b>10 cm²</b> (et non 5 × 5 ÷ 2).</div>
 <div class="ex"><span class="q">Exemple 3 : triangle rectangle de côtés de l'angle droit 3 cm et 8 cm.</span><br>Un côté de l'angle droit sert de hauteur pour l'autre : A = 3 × 8 ÷ 2 = <b>12 cm²</b>.</div>
 <div class="warn">⚠️ Ne prends pas un côté penché pour la hauteur : la hauteur fait un angle droit avec la base.<br>⚠️ N'oublie pas le « ÷ 2 ».<br>⚠️ On multiplie base et hauteur : on ne les additionne pas.</div>
 <div class="retenir">À retenir : aire du triangle = base × hauteur ÷ 2, avec la hauteur perpendiculaire à la base.</div>`;
@@ -288,15 +288,15 @@ function L4(d) {
 function C4() {
   return `<h2>4. Le disque</h2>
 <p class="intro">Pour un cercle, tout dépend du rayon et du nombre π (« pi »), environ 3,14. Ses formules servent ensuite pour les cylindres, cônes et boules.</p>
-<div class="def">Cercle de <b>rayon</b> r et de <b>diamètre</b> d = 2 × r :<br>
-<b>périmètre</b> P = 2 × π × r = π × d &nbsp;&nbsp;&nbsp; <b>aire</b> A = π × r × r = π × r²<br>π ≈ 3,14 (touche π de la calculatrice).</div>
+<div class="def">Disque de <b>rayon</b> r et de <b>diamètre</b> d = 2 × r :<br>
+<b>périmètre</b> (longueur du cercle) P = 2 × π × r = π × d &nbsp;&nbsp;&nbsp; <b>aire</b> A = π × r × r = π × r²<br>π ≈ 3,14 (touche π de la calculatrice).</div>
 <div class="cols">${D.disque('r', '3 cm', { size: 130 })}${D.disque('d', '10 cm', { size: 130 })}</div>
-<div class="methode"><b>Méthode</b><ol><li>Repère si on te donne le rayon ou le diamètre ; si c'est le diamètre, r = d ÷ 2.</li><li>Périmètre : 2 × π × r. Aire : π × r × r.</li><li>Avec π ≈ 3,14, calcule à la main ; sinon utilise la touche π et arrondis comme demandé.</li><li>Valeur exacte : garde π dans le résultat (6π, 9π…).</li></ol></div>
+<div class="methode"><b>Méthode</b><ol><li>Repère si on te donne le rayon ou le diamètre ; si c'est le diamètre, r = d ÷ 2.</li><li>Périmètre : 2 × π × r. Aire : π × r × r.</li><li>Avec π ≈ 3,14, calcule à la main ; sinon utilise la touche π et arrondis comme demandé.</li><li>Valeur exacte : garde π dans le résultat (6π, 9π…) ; dans la case, tape seulement le nombre devant π.</li></ol></div>
 <div class="ex"><span class="q">Exemple 1 : r = 3 cm, avec π ≈ 3,14.</span><br>P ≈ 2 × 3,14 × 3 = <b>18,84 cm</b> ; A ≈ 3,14 × 3 × 3 = 3,14 × 9 = <b>28,26 cm²</b>.</div>
 <div class="ex"><span class="q">Exemple 2 : diamètre 10 cm, touche π, arrondi au dixième.</span><br>r = 10 ÷ 2 = 5 cm. P = π × 10 ≈ 31,41… ≈ <b>31,4 cm</b>.<br>A = π × 5 × 5 = 25π ≈ 78,53… ≈ <b>78,5 cm²</b>.</div>
 <div class="ex"><span class="q">Exemple 3 : valeur exacte, r = 4 cm.</span><br>P = 2 × π × 4 = <b>8π cm</b> ; A = π × 4 × 4 = <b>16π cm²</b>.</div>
 <div class="warn">⚠️ <b>Rayon</b> ou <b>diamètre</b> ? Si on te donne le diamètre, divise par 2 pour avoir le rayon de l'aire.<br>⚠️ r² = r × r, et non r × 2.<br>⚠️ Arrondir n'est pas couper : 78,53… au dixième donne 78,5, mais 28,27… donne 28,3.</div>
-<div class="retenir">À retenir : P = 2 × π × r et A = π × r × r, toujours avec le rayon.</div>`;
+<div class="retenir">À retenir : P = 2 × π × r = π × d et A = π × r × r : l'aire se calcule toujours avec le rayon.</div>`;
 }
 
 /* ================= 5. figures composées ================= */
@@ -451,7 +451,7 @@ function C7() {
   const g = [...Array(10)].map(() => [...Array(10)].map(() => true));
   return `<h2>7. Conversions d'aires</h2>
 <p class="intro">Une unité d'aire est un carré : quand le côté est multiplié par 10, l'aire est multipliée par 100. D'où deux colonnes par unité dans le tableau.</p>
-<div class="def">1 m² est l'aire d'un carré de 1 m de côté, soit 10 dm × 10 dm = <b>100 dm²</b>.<br>Chaque unité d'aire vaut <b>100 fois</b> l'unité à sa droite : dans le tableau, <b>deux colonnes</b> par unité.<br>Unités agraires : 1 a = 1 dam² = 100 m² et 1 ha = 1 hm² = 10 000 m².</div>
+<div class="def">1 m² est l'aire d'un carré de 1 m de côté, soit 10 dm × 10 dm = <b>100 dm²</b>.<br>Chaque unité d'aire vaut <b>100 fois</b> l'unité à sa droite : dans le tableau, <b>deux colonnes</b> par unité.<br>Unités agraires : 1 a = 1 dam² = 100 m² et 1 ha = 1 hm² = 10 000 m² ; 1 km² = 100 ha.</div>
 <div class="cols">${petit(D.quadrillage(g, '1 dm² = 100 cm²'), 200)}<div class="ex">Un carré de 1 dm de côté contient 10 × 10 = <b>100</b> carrés de 1 cm de côté :<br>1 dm² = 100 cm².</div></div>
 ${D.tableau('A', [{ s: '3.5', e: 6 }, { s: '35000', e: 2, color: '#2b8a3e' }])}
 <div class="methode"><b>Méthode</b><ol><li>Écris le nombre : le chiffre des unités va dans la colonne de <b>droite</b> de l'unité de départ.</li><li>Place la virgule juste après la colonne de droite de l'unité d'arrivée.</li><li>Complète par des zéros.</li><li>Contrôle : × 100 (ou ÷ 100) à chaque unité.</li></ol></div>
@@ -522,10 +522,10 @@ function C9() {
   return `<h2>9. Volumes et contenances</h2>
 <p class="intro">Le litre sert à mesurer ce que contient un récipient. Il se relie directement aux unités de volume : 1 L, c'est un cube de 10 cm d'arête.</p>
 <div class="def">1 dm³ = 10 cm × 10 cm × 10 cm = <b>1 000 cm³</b> : chaque unité de volume vaut 1 000 fois la suivante (<b>trois colonnes</b> par unité).<br>
-Contenances : <b>1 L = 1 dm³</b> et <b>1 mL = 1 cm³</b> ; 1 hL = 100 L ; 1 L = 10 dL = 100 cL = 1 000 mL.</div>
+Contenances : <b>1 L = 1 dm³</b> et <b>1 mL = 1 cm³</b> ; 1 hL = 10 daL = 100 L ; 1 L = 10 dL = 100 cL = 1 000 mL.</div>
 <div class="cols">${petit(D.pave(1, 1, 1, { L: '10 cm', h: '10 cm', l: '10 cm' }), 230)}<div class="ex">Ce cube de 10 cm d'arête a un volume de 1 dm³ = 1 000 cm³ : il contient exactement <b>1 litre</b>.</div></div>
 ${D.tableau('V', [{ s: '2.5', e: 6 }, { s: '2500', e: 3, color: '#2b8a3e' }], { extra: true })}
-<div class="methode"><b>Méthode</b><ol><li>Volumes entre eux (m³, dm³, cm³) : × 1 000 ou ÷ 1 000 à chaque unité.</li><li>Contenances entre elles (hL, L, dL, cL, mL) : × 10 ou ÷ 10 à chaque unité.</li><li>Pour passer de l'un à l'autre, utilise les ponts : 1 dm³ = 1 L et 1 cm³ = 1 mL.</li></ol></div>
+<div class="methode"><b>Méthode</b><ol><li>Volumes entre eux (m³, dm³, cm³, mm³) : × 1 000 ou ÷ 1 000 à chaque unité.</li><li>Contenances entre elles (hL, daL, L, dL, cL, mL) : × 10 ou ÷ 10 à chaque unité.</li><li>Pour passer de l'un à l'autre, utilise les ponts : 1 dm³ = 1 L et 1 cm³ = 1 mL.</li></ol></div>
 <div class="ex"><span class="q">Exemple 1 : 2,5 dm³ en cm³ et en mL.</span><br>2,5 dm³ = 2,5 L = <b>2 500 cm³</b> = <b>2 500 mL</b>.</div>
 <div class="ex"><span class="q">Exemple 2 : 75 cL en L.</span><br>1 L = 100 cL, donc 75 cL = <b>0,75 L</b>.</div>
 <div class="ex"><span class="q">Exemple 3 : 3 500 cm³ en L.</span><br>3 500 cm³ = 3,5 dm³ = <b>3,5 L</b>. Et 1 m³ = 1 000 dm³ = 1 000 L.</div>
@@ -670,7 +670,7 @@ function C12() {
 <b>Agrandissement ou réduction de rapport k</b> : les longueurs sont multipliées par k, les <b>aires par k²</b>, les <b>volumes par k³</b>.</div>
 <div class="cols">${petit(D.boule('r', '3 cm'), 240)}${D.agrandi('v', 2, 2, 2, 2, { L: '1 cm', h: '1 cm' }, { L: '2 cm', h: '2 cm' }, '× 2')}</div>
 <div class="methode"><b>Méthode</b><ol><li>Boule ou sphère : prends le <b>rayon</b> (moitié du diamètre). Volume : 4 × π × r × r × r ÷ 3. Aire : 4 × π × r × r.</li><li>Agrandissement : repère k, puis multiplie les longueurs par k, les aires par k × k, les volumes par k × k × k.</li><li>Arrondis à la fin.</li></ol></div>
-<div class="ex"><span class="q">Exemple 1 : boule de rayon 3 cm.</span><br>V = 4 × π × 27 ÷ 3 = 36π ≈ 113,1 cm³ ; A = 4 × π × 9 = 36π ≈ 113,1 cm².</div>
+<div class="ex"><span class="q">Exemple 1 : boule de rayon 3 cm.</span><br>r³ = 3 × 3 × 3 = 27, donc V = 4 × π × 27 ÷ 3 = 36π ≈ <b>113,1 cm³</b>.<br>r² = 3 × 3 = 9, donc A = 4 × π × 9 = 36π ≈ <b>113,1 cm²</b> (même nombre ici, par hasard : l'un est un volume, l'autre une aire).</div>
 <div class="ex"><span class="q">Exemple 2 : boule de diamètre 10 cm.</span><br>r = 5 cm. V = 4 × π × 125 ÷ 3 ≈ 523,59… ≈ <b>523,6 cm³</b> ; A = 4 × π × 25 = 100π ≈ <b>314,2 cm²</b>.</div>
 <div class="ex"><span class="q">Exemple 3 : un rectangle de 3 cm sur 2 cm (aire 6 cm²) est agrandi à l'échelle 3.</span><br>Aire × 3² = × 9 : 6 × 9 = <b>54 cm²</b> (vérification : 9 cm × 6 cm = 54 cm²).</div>
 <div class="ex"><span class="q">Exemple 4 : un pavé de 24 cm³ est réduit à l'échelle 0,5.</span><br>Volume × 0,5³ = × 0,125 : 24 × 0,125 = <b>3 cm³</b>.</div>
