@@ -174,7 +174,40 @@ const safeCalc = (h, E) => { try { return calc(h, E); } catch (e) { return NaN; 
    ===================================================================== */
 const RULE = "Rappel : d'abord les <b>parenthèses</b> (les plus intérieures), puis les <b>carrés</b>, puis <b>× et ÷</b> de gauche à droite, enfin <b>+ et −</b> de gauche à droite.";
 
-/** l'arbre est-il acceptable ? (résultats entiers, divisions exactes, pas de 0, pas de × 1…) */
+/**
+ * Nombres écrits de part et d'autre d'un opérateur (ou du trait de fraction) : le dernier nombre écrit à gauche
+ * et le premier écrit à droite ; null quand une parenthèse ou un carré les sépare dans le texte.
+ */
+const lastLeaf = t => (t.par || t.k === 'sq' ? null : t.k === 'n' ? t : lastLeaf(t.b));
+const firstLeaf = t => (t.par ? null : t.k === 'n' ? t : firstLeaf(t.a));
+/** le texte affiché lit-il un faux calcul trivial (« 7/7 », « 12/1 + 3 », « 5 × 1 + 3/2 », « 14 − 14 », « 7 ÷ 7 ») ? */
+function trivialText(root) {
+  let bad = false;
+  (function f(t) {
+    if (bad || t.k === 'n') return;
+    if (t.k === 'op' || t.k === 'fr') {
+      const L = lastLeaf(t.a), Rt = firstLeaf(t.b);
+      if (L && Rt) {
+        const x = Math.abs(L.v), y = Math.abs(Rt.v), div = t.k === 'fr' || t.o === '/';
+        if ((div || t.o === '*') && (x === 1 || y === 1)) bad = true;
+        if ((div || t.o === '-') && x === y) bad = true;
+      }
+    }
+    kids(t).forEach(f);
+  })(root);
+  return bad;
+}
+/** deux opérations qui s'annulent : (a × b) ÷ b, (a ÷ b) × b, (a + b) − b, (a − b) + b */
+function cancels(t) {
+  if (t.k !== 'op' && t.k !== 'fr') return false;
+  const A = t.a, b = val(t.b);
+  if (A.k !== 'op') return false;
+  if ((t.k === 'fr' || t.o === '/') && A.o === '*') return val(A.a) === b || val(A.b) === b;
+  if (t.o === '*' && A.o === '/') return val(A.b) === b;
+  if ((t.o === '-' && A.o === '+') || (t.o === '+' && A.o === '-')) return val(A.b) === b;
+  return false;
+}
+/** l'arbre est-il acceptable ? (résultats entiers, divisions exactes, pas de 0, pas de × 1, pas de 7/7…) */
 function valid(root, steps, o) {
   if (steps.length < (o.minSteps || 2) || steps.length > (o.maxSteps || 8)) return false;
   for (const t of steps) {
@@ -182,7 +215,11 @@ function valid(root, steps, o) {
     if (!Number.isInteger(v) || v === 0 || Math.abs(v) > (o.lim || 999)) return false;
     if (!o.neg && v < 0) return false;
     if (isMul(t)) { const a = val(t.a), b = val(t.b); if (Math.abs(a) === 1 || Math.abs(b) === 1 || a === 0 || b === 0) return false; }
+    if (cancels(t)) return false;
+    // une division dont le quotient vaut ±1 (7 ÷ 7, (3 + 4) ÷ 7) n'apprend rien
+    if ((t.k === 'fr' || t.o === '/') && Math.abs(val(t.a)) === Math.abs(val(t.b))) return false;
   }
+  if (trivialText(root)) return false;
   const leaves = []; (function f(t) { if (t.k === 'n') leaves.push(t.v); kids(t).forEach(f); })(root);
   if (!o.neg && leaves.some(v => v < 0)) return false;
   if (leaves.some(v => v === 0)) return false;
