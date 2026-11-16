@@ -113,7 +113,7 @@ function C1() {
   return `<h2>1. Coordonnées d'un vecteur</h2>
 <p class="intro">Un vecteur, c'est un déplacement. Ses coordonnées disent « de combien » on bouge : c'est la base de tout le chapitre.</p>
 <div class="def">Un <b>vecteur</b> représente un <b>déplacement</b> : une direction, un sens et une longueur.<br>Ses <b>coordonnées</b> (x ; y) disent de combien on se déplace :<br>• <b>x</b> : horizontalement (positif vers la droite, négatif vers la gauche) ;<br>• <b>y</b> : verticalement (positif vers le haut, négatif vers le bas).</div>
-${meth(['Repère le <b>départ</b> de la flèche (le bout sans pointe) et sa <b>pointe</b>.', 'Compte les carreaux <b>horizontalement</b> du départ jusqu\'à la hauteur de la pointe : → positif, ← négatif. C\'est <b>x</b>.', 'Compte ensuite <b>verticalement</b> : ↑ positif, ↓ négatif. C\'est <b>y</b>.', 'Écris (x ; y) dans cet ordre. Pas de déplacement dans un sens ? La coordonnée vaut <b>0</b>.'])}
+${meth(['Repère le <b>départ</b> de la flèche (le bout sans pointe) et sa <b>pointe</b>.', 'Compte les carreaux <b>horizontalement</b>, du départ jusqu\'à être juste au-dessus (ou au-dessous) de la pointe : → positif, ← négatif. C\'est <b>x</b>.', 'Compte ensuite <b>verticalement</b>, jusqu\'à la pointe : ↑ positif, ↓ négatif. C\'est <b>y</b>.', 'Écris (x ; y) dans cet ordre. Pas de déplacement dans un sens ? La coordonnée vaut <b>0</b>.'])}
 ${exq(1, 'une flèche qui monte', `${V('u')} avance de 4 carreaux vers la droite et monte de 3 : <b>${V('u')}(4 ; 3)</b>.`)}
 ${exq(2, 'des signes moins', `${V('v')} avance de 3 vers la droite et <b>descend</b> de 4 : <b>${V('v')}(3 ; −4)</b>.<br>${V('w')} recule de 5 vers la gauche et ne monte pas : <b>${V('w')}(−5 ; 0)</b>.`)}
 ${cols(grille({ xr: [-4, 6], yr: [-3, 4], vecs: [vec, v2], steps: [{ x: -3, y: -1, dx: 4, dy: 3 }, { x: 2, y: 3, dx: 3, dy: -4, c: C.v }], aria: 'vecteurs u et v avec leurs déplacements' }),
@@ -669,14 +669,14 @@ function C10() {
   return `<h2>10. Équation cartésienne d'une droite</h2>
 <p class="intro">Une équation de droite est un « test » : un point est sur la droite exactement quand ses coordonnées vérifient l'équation.</p>
 <div class="def">Un <b>vecteur directeur</b> d'une droite d est un vecteur ${V('u')} non nul qui a sa direction (par exemple ${V('AB')} si A et B sont sur d).<br>Toute droite a une équation <b>ax + by + c = 0</b> (a et b non tous deux nuls), et <b>${V('u')}(−b ; a)</b> est un vecteur directeur.</div>
-${meth([`Trouve un point A de d et un vecteur directeur ${V('u')} (avec deux points : ${V('u')} = ${V('AB')}).`, `Pour un point M(x ; y) : M ∈ d ⇔ ${V('AM')}(x − ${xs('A')} ; y − ${ys('A')}) et ${V('u')} colinéaires ⇔ det(${V('AM')}, ${V('u')}) = 0.`, 'Développe et range sous la forme ax + by + c = 0. Si un terme manque, son coefficient vaut 0.', 'Dans l\'autre sens : de ax + by + c = 0, on lit le vecteur directeur <b>(−b ; a)</b>.'])}
+${meth([`Trouve un point A de d et un vecteur directeur ${V('u')} (avec deux points : ${V('u')} = ${V('AB')}).`, `Pour un point M(x ; y) : M ∈ d ⇔ ${V('AM')}(x − ${xs('A')} ; y − ${ys('A')}) et ${V('u')} colinéaires ⇔ det(${V('AM')}, ${V('u')}) = 0.`, 'Développe et range sous la forme ax + by + c = 0. Dans les cases, tape a, b et c avec leur signe : x − 3y + 5 = 0 se saisit 1, −3 et 5. Si un terme manque, son coefficient vaut 0.', 'Dans l\'autre sens : de ax + by + c = 0, on lit le vecteur directeur <b>(−b ; a)</b>.'])}
 ${exq(1, 'un point et un vecteur directeur', `d passe par A(1 ; 2), de vecteur directeur ${V('u')}(3 ; 1) :<br>(x − 1) × 1 − (y − 2) × 3 = 0 ⇔ x − 1 − 3y + 6 = 0 ⇔ <b>x − 3y + 5 = 0</b>.`)}
 ${exq(2, 'deux points', `A(−1 ; 0) et B(1 ; 4) : ${V('AB')}(2 ; 4).<br>(x + 1) × 4 − (y − 0) × 2 = 0 ⇔ <b>4x − 2y + 4 = 0</b> (ou, en divisant par 2, 2x − y + 2 = 0).`)}
 ${exq(3, 'lire un vecteur directeur', `Pour 2x + 5y − 1 = 0 : a = 2, b = 5, donc ${V('u')}(−5 ; 2).<br>Pour 3y − 6 = 0 : a = 0, b = 3, donc ${V('u')}(−3 ; 0) : la droite est horizontale.`)}
 ${cols(grille({ xr: [-5, 5], yr: [-1, 4], pts: [{ x: 1, y: 2, l: 'A', pos: 'nw' }], vecs: [{ x: 1, y: 2, dx: 3, dy: 1, l: '{u}', c: C.u }], lines: [{ a: 1, b: -3, c: 5, l: 'd : x − 3y + 5 = 0', at: 0.3, side: -1 }], aria: 'droite passant par A de vecteur directeur u' }),
     grille({ xr: [-3, 3], yr: [-1, 5], pts: [{ x: -1, y: 0, l: 'A', pos: 'se' }, { x: 1, y: 4, l: 'B', pos: 'se' }], vecs: [{ x: -1, y: 0, dx: 2, dy: 4, l: '{AB}', c: C.u, at: 0.3 }], lines: [{ a: 2, b: -1, c: 2, l: 'd : 2x − y + 2 = 0' }], aria: 'droite (AB)' }))}
 ${warn(['Une droite a <b>plusieurs</b> équations cartésiennes : 2x − 6y + 10 = 0 décrit la même droite que x − 3y + 5 = 0.', '(a ; b) n\'est pas un vecteur directeur : c\'est <b>(−b ; a)</b>.', 'Pour c, vérifie en remplaçant x et y par les coordonnées de A : on doit trouver 0.'])}
-${retenir(`ax + by + c = 0 a pour vecteur directeur (−b ; a) ; on l'obtient avec det(${V('AM')}, ${V('u')}) = 0.`)}`;
+${retenir(`ax + by + c = 0 a pour vecteur directeur (−b ; a) ; on l'obtient avec <span style="white-space:nowrap">det(${V('AM')}, ${V('u')}) = 0</span>.`)}`;
 }
 
 /* =====================================================================
