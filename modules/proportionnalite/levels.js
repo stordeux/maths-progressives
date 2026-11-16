@@ -68,10 +68,18 @@ function L1(d) {
 }
 function C1() {
   return `<h2>1. Reconnaître un tableau de proportionnalité</h2>
+<p class="intro">Deux quantités sont proportionnelles quand l'une s'obtient en multipliant l'autre toujours par le même nombre : le prix et la masse de pommes, la distance et la durée à vitesse constante…</p>
 <div class="def">Un tableau est un <b>tableau de proportionnalité</b> quand on passe de la 1<sup>re</sup> ligne à la 2<sup>e</sup> en <b>multipliant toujours par le même nombre</b>. Ce nombre s'appelle le <b>coefficient de proportionnalité</b>.</div>
-<div class="ex">Des croissants à 1,50 € pièce :${tab(['Nombre de croissants', 'Prix (€)'], [2, 4, 10], [3, 6, 15], { coef: '× 1,5' })}3 ÷ 2 = 1,5 ; 6 ÷ 4 = 1,5 ; 15 ÷ 10 = 1,5 : toujours 1,5, c'est proportionnel.</div>
-<div class="warn">⚠️ <b>Ajouter n'est pas multiplier.</b> Dans ${tab(['Âge de Léa', 'Âge de son frère'], [1, 2, 3], [4, 5, 6])} on ajoute toujours 3, mais 4 ÷ 1 = 4 et 5 ÷ 2 = 2,5 : ce n'est <b>pas</b> proportionnel.</div>
-<div class="warn">⚠️ Il faut vérifier <b>toutes</b> les colonnes : une seule qui ne suit pas, et ce n'est plus proportionnel.</div>`;
+${graph({ xr: [0, 10], xs: 1, yr: [0, 16], ys: 2, xt: 'nombre de croissants', yt: 'prix (€)', fs: [{ f: x => 1.5 * x }], pts: [{ x: 2, y: 3 }, { x: 4, y: 6 }, { x: 10, y: 15 }] })}
+<p class="note">Les colonnes d'un tableau de proportionnalité donnent des points alignés avec l'origine (voir le niveau 5).</p>
+<div class="methode"><b>Méthode</b><ol>
+<li>Pour chaque colonne, divise le nombre du bas par celui du haut.</li>
+<li>Si tu trouves <b>toujours le même quotient</b>, c'est proportionnel : ce quotient est le coefficient.</li>
+<li>Si un seul quotient est différent, ce n'est <b>pas</b> proportionnel.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : des croissants à 1,50 € pièce.</span>${tab(['Nombre de croissants', 'Prix (€)'], [2, 4, 10], [3, 6, 15], { coef: '× 1,5' })}3 ÷ 2 = 1,5 ; 6 ÷ 4 = 1,5 ; 15 ÷ 10 = 1,5 : toujours 1,5, c'est proportionnel.</div>
+<div class="ex"><span class="q">Exemple 2 : trois tableaux qui ne sont pas proportionnels.</span>${tab(['Âge de Léa', 'Âge de son frère'], [1, 2, 3], [4, 5, 6])}• On ajoute toujours 3, mais 4 ÷ 1 = 4 et 5 ÷ 2 = 2,5.<br>• 2 → 6, 5 → 15, 8 → 25 : 6 ÷ 2 = 3 et 15 ÷ 5 = 3, mais 25 ÷ 8 = 3,125. Une seule colonne suffit à tout casser.<br>• 1 → 5, 2 → 8, 3 → 11 (on multiplie par 3 puis on ajoute 2) : 5 ÷ 1 = 5 et 8 ÷ 2 = 4.</div>
+<div class="warn">⚠️ <b>Ajouter n'est pas multiplier</b> : ajouter toujours le même nombre ne donne pas un tableau de proportionnalité.<br>⚠️ Il faut vérifier <b>toutes</b> les colonnes, pas seulement la première.</div>
+<div class="retenir">À retenir : proportionnel ⇔ le quotient bas ÷ haut est le même dans toutes les colonnes.</div>`;
 }
 
 /* ---------- 2. compléter un tableau (coefficient) ---------- */
@@ -109,10 +117,17 @@ function L2(d) {
 }
 function C2() {
   return `<h2>2. Compléter un tableau</h2>
+<p class="intro">Quand on sait qu'un tableau est proportionnel, une seule colonne complète suffit pour trouver toutes les autres valeurs.</p>
 <div class="def">On calcule le <b>coefficient</b> avec une colonne complète : coefficient = (nombre du bas) ÷ (nombre du haut).<br>• Pour <b>descendre</b> : on <b>multiplie</b> par le coefficient.<br>• Pour <b>remonter</b> : on <b>divise</b> par le coefficient.</div>
-<div class="ex">${tab(['Masse (kg)', 'Prix (€)'], [2, 5, '?'], [7, '?', 28], { coef: '× 3,5' })}Coefficient : 7 ÷ 2 = 3,5. Puis 5 × 3,5 = 17,5 et 28 ÷ 3,5 = 8.</div>
-<div class="warn">⚠️ On ne complète pas en <b>ajoutant</b> : 2 → 7 c'est « × 3,5 », pas « + 5 ».</div>
-<div class="warn">⚠️ Ne pas inverser : pour remonter on divise, on ne multiplie pas.</div>`;
+${graph({ xr: [0, 10], xs: 1, yr: [0, 35], ys: 5, xt: 'masse (kg)', yt: 'prix (€)', fs: [{ f: x => 3.5 * x }], guides: [{ x: 5, y: 17.5 }, { x: 8, y: 28 }], pts: [{ x: 2, y: 7 }, { x: 5, y: 17.5 }, { x: 8, y: 28 }] })}
+<div class="methode"><b>Méthode</b><ol>
+<li>Choisis une colonne complète et calcule le coefficient : bas ÷ haut.</li>
+<li>Case vide en bas : multiplie le nombre du haut par le coefficient.</li>
+<li>Case vide en haut : divise le nombre du bas par le coefficient.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : un tableau masse – prix.</span>${tab(['Masse (kg)', 'Prix (€)'], [2, 5, '?'], [7, '?', 28], { coef: '× 3,5' })}Coefficient : 7 ÷ 2 = 3,5. Puis 5 × 3,5 = <b>17,5</b> et 28 ÷ 3,5 = <b>8</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : un coefficient plus petit que 1.</span>${tab(['Volume (L)', 'Surface (m²)'], [5, 12, '?'], [2, '?', '3,2'], { coef: '× 0,4' })}Coefficient : 2 ÷ 5 = 0,4. Puis 12 × 0,4 = <b>4,8</b> et 3,2 ÷ 0,4 = <b>8</b>.</div>
+<div class="warn">⚠️ On ne complète pas en <b>ajoutant</b> : 2 → 7 c'est « × 3,5 », pas « + 5 ».<br>⚠️ Ne pas inverser : pour remonter on divise, on ne multiplie pas.</div>
+<div class="retenir">À retenir : on descend en multipliant par le coefficient, on remonte en divisant.</div>`;
 }
 
 /* ---------- 3. passage à l'unité ---------- */
@@ -147,10 +162,18 @@ function L3(d) {
 }
 function C3() {
   return `<h2>3. Passage à l'unité</h2>
+<p class="intro">Si on connaît le prix de 5 stylos, combien en coûtent 3 ? L'idée la plus simple : chercher d'abord le prix d'<b>un seul</b> stylo.</p>
 <div class="def">Pour passer d'une quantité à une autre, on calcule d'abord la valeur pour <b>1</b> (on divise), puis pour la quantité demandée (on multiplie).</div>
-<div class="ex">5 stylos coûtent 6 €. Combien coûtent 3 stylos ?${tab(['Nombre de stylos', 'Prix (€)'], [5, 1, 3], [6, '1,2', '3,6'])}1 stylo : 6 ÷ 5 = 1,20 €. &nbsp; 3 stylos : 1,20 × 3 = 3,60 €.</div>
-<div class="warn">⚠️ Pour 1 stylo, on divise le <b>prix</b> par le <b>nombre</b> de stylos : 6 ÷ 5, et pas 5 ÷ 6.</div>
-<div class="warn">⚠️ Garde l'unité : la réponse est un prix, en €.</div>`;
+${graph({ xr: [0, 6], xs: 1, yr: [0, 8], ys: 1, xt: 'nombre de stylos', yt: 'prix (€)', fs: [{ f: x => 1.2 * x }], guides: [{ x: 1, y: 1.2 }, { x: 3, y: 3.6 }, { x: 5, y: 6 }], pts: [{ x: 1, y: 1.2 }, { x: 3, y: 3.6 }, { x: 5, y: 6 }] })}
+<p class="note">5 stylos → 6 € ; on redescend à 1 stylo → 1,20 € ; puis on remonte à 3 stylos → 3,60 €.</p>
+<div class="methode"><b>Méthode</b><ol>
+<li>Valeur pour 1 : divise la quantité connue (prix, masse…) par le nombre d'objets.</li>
+<li>Valeur demandée : multiplie la valeur pour 1 par le nouveau nombre.</li>
+<li>Écris l'unité dans la réponse (€, g…).</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : 5 stylos coûtent 6 €. Combien coûtent 3 stylos ?</span>${tab(['Nombre de stylos', 'Prix (€)'], [5, 1, 3], [6, '1,2', '3,6'])}1 stylo : 6 ÷ 5 = 1,20 €. 3 stylos : 1,20 × 3 = <b>3,60 €</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : pour 4 personnes, il faut 300 g de farine. Et pour 7 personnes ?</span><br>Pour 1 personne : 300 ÷ 4 = 75 g. Pour 7 personnes : 75 × 7 = <b>525 g</b>.</div>
+<div class="warn">⚠️ Pour 1 stylo, on divise le <b>prix</b> par le <b>nombre</b> de stylos : 6 ÷ 5, et pas 5 ÷ 6.<br>⚠️ Pour la 2<sup>e</sup> étape, pars du prix d'<b>un</b> stylo, pas du prix des 5.<br>⚠️ Garde l'unité : la réponse est un prix, en €.</div>
+<div class="retenir">À retenir : on divise pour revenir à 1, puis on multiplie.</div>`;
 }
 
 /* ---------- 4. quatrième proportionnelle, produit en croix ---------- */
@@ -187,12 +210,19 @@ function L4(d) {
 }
 function C4() {
   return `<h2>4. Quatrième proportionnelle et produit en croix</h2>
+<p class="intro">Le produit en croix est une méthode rapide qui marche dans tous les cas, même quand le coefficient n'est pas simple.</p>
+<div class="cols">
 <div class="def">Dans un tableau de proportionnalité, les <b>produits en croix</b> sont égaux :<br>si ${tab(null, ['a', 'c'], ['b', 'd'])} alors <b>a × d = b × c</b>.</div>
-${cross(4, 10, 6, X_)}
-<div class="ex">4 kg coûtent 10 €, combien coûtent 6 kg ? &nbsp; ${X_} × 4 = 10 × 6, donc ${X_} = 10 × 6 ÷ 4 = 60 ÷ 4 = 15 €.</div>
-<div class="def">Méthode : on multiplie les deux nombres de la diagonale <b>sans ${X_}</b>, puis on divise par le nombre <b>en face de ${X_}</b>.</div>
-<div class="warn">⚠️ On ne calcule pas ${X_} en ajoutant : 4 → 6 c'est « × 1,5 », pas « + 2 ».</div>
-<div class="warn">⚠️ Attention à la diagonale : on ne multiplie jamais un nombre avec celui qui est sur la même ligne.</div>`;
+<div>${cross(4, 10, 6, X_)}</div>
+</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Écris les quatre nombres dans un tableau, ${X_} à la place de l'inconnue.</li>
+<li>Multiplie les deux nombres de la diagonale <b>sans ${X_}</b>.</li>
+<li>Divise par le nombre <b>en face de ${X_}</b> (sur l'autre diagonale).</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : 4 kg coûtent 10 €, combien coûtent 6 kg ?</span><br>${X_} × 4 = 10 × 6, donc ${X_} = 10 × 6 ÷ 4 = 60 ÷ 4 = <b>15 €</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : ${X_} peut être n'importe où.</span>${tab(['Nombre de tours', 'Distance (km)'], [X_, 12], [15, 20])}${X_} × 20 = 12 × 15, donc ${X_} = 12 × 15 ÷ 20 = 180 ÷ 20 = <b>9</b>.<br>Problème : 250 g de farine pour 100 g de sucre ; avec 400 g de farine, il faut 100 × 400 ÷ 250 = <b>160 g</b> de sucre.</div>
+<div class="warn">⚠️ On ne calcule pas ${X_} en ajoutant : 4 → 6 c'est « × 1,5 », pas « + 2 ».<br>⚠️ Attention à la diagonale : on ne multiplie jamais deux nombres de la même ligne.<br>⚠️ On divise par le nombre <b>en face</b> de ${X_}, pas par un autre.</div>
+<div class="retenir">À retenir : ${X_} = (produit de la diagonale sans ${X_}) ÷ (nombre en face de ${X_}).</div>`;
 }
 
 /* ---------- 5. graphique de proportionnalité ---------- */
@@ -250,13 +280,19 @@ function L5(d) {
   };
 }
 function C5() {
-  const vis = graph({ xr: [0, 10], xs: 1, yr: [0, 30], ys: 5, xt: 'masse (kg)', yt: 'prix (€)', fs: [{ f: x => 2.5 * x }, { f: x => 1.5 * x + 10, c: '#868e96' }], guides: [{ x: 4, y: 10 }], pts: [{ x: 4, y: 10, l: 'A' }] });
+  const vis = graph({ xr: [0, 10], xs: 1, yr: [0, 30], ys: 5, xt: 'masse (kg)', yt: 'prix (€)', fs: [{ f: x => 2.5 * x }, { f: x => 1.5 * x + 10, c: '#868e96' }], guides: [{ x: 4, y: 10 }, { x: 8, y: 20 }], pts: [{ x: 4, y: 10, l: 'A' }, { x: 8, y: 20 }] });
   return `<h2>5. Graphique de proportionnalité</h2>
+<p class="intro">Un graphique permet de voir d'un coup d'œil si une situation est proportionnelle, et de lire des valeurs sans calculer.</p>
 <div class="def">Une situation de proportionnalité est représentée par des points <b>alignés sur une droite qui passe par l'origine</b> (0 ; 0). Et réciproquement.</div>
 ${vis}
-<div class="ex">Droite orange : pommes à 2,50 € le kg. Pour 4 kg, on monte jusqu'à la droite et on lit 10 € (point A). Coefficient : 10 ÷ 4 = 2,5 € par kg.</div>
-<div class="warn">⚠️ La droite grise ne passe pas par l'origine (abonnement de 10 € + 1,50 € par kg) : ce n'est <b>pas</b> proportionnel.</div>
-<div class="warn">⚠️ Une courbe qui passe par l'origine n'est pas proportionnelle non plus : il faut une <b>droite</b>.</div>`;
+<div class="methode"><b>Méthode</b><ol>
+<li>Pour reconnaître : est-ce une <b>droite</b> ? passe-t-elle par l'<b>origine</b> ? Il faut les deux.</li>
+<li>Pour lire une valeur : pars de l'axe connu, va jusqu'à la droite, puis lis sur l'autre axe.</li>
+<li>Pour le coefficient : prends un point de la droite et divise sa valeur verticale par sa valeur horizontale.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : droite orange, des pommes à 2,50 € le kg.</span><br>Pour 4 kg, on monte jusqu'à la droite et on lit <b>10 €</b> (point A). Coefficient : 10 ÷ 4 = <b>2,5 €</b> par kg.</div>
+<div class="ex"><span class="q">Exemple 2 : dans l'autre sens, et un piège.</span><br>• Avec 20 €, on part de 20 sur l'axe vertical, on rejoint la droite et on descend : <b>8 kg</b>.<br>• La droite grise (abonnement de 10 € + 1,50 € par kg) ne passe pas par l'origine : ce n'est <b>pas</b> proportionnel.</div>
+<div class="warn">⚠️ Une droite qui ne passe pas par l'origine n'est pas proportionnelle.<br>⚠️ Une courbe qui passe par l'origine n'est pas proportionnelle non plus : il faut une <b>droite</b>.<br>⚠️ Ne confonds pas les axes : la quantité connue se cherche sur son propre axe.</div>
+<div class="retenir">À retenir : proportionnalité ⇔ droite passant par l'origine.</div>`;
 }
 
 /* ---------- 6. échelles ---------- */
@@ -294,13 +330,17 @@ function L6(d) {
 }
 function C6() {
   return `<h2>6. Échelles</h2>
-<div class="def">Sur un plan à l'échelle <b>1/200</b>, 1 cm sur le plan représente <b>200 cm</b> en réalité. Les longueurs du plan et les longueurs réelles sont proportionnelles :<br>longueur réelle = longueur sur le plan × 200 &nbsp; ; &nbsp; longueur sur le plan = longueur réelle ÷ 200 (<b>dans la même unité</b>).</div>
+<p class="intro">Un plan ou une carte est une réduction de la réalité. L'échelle dit combien de fois tout a été réduit.</p>
+<div class="def">Sur un plan à l'échelle <b>1/200</b>, 1 cm sur le plan représente <b>200 cm</b> en réalité. Les longueurs sont proportionnelles (dans la <b>même unité</b>) :<br>longueur réelle = longueur sur le plan × 200 ; longueur sur le plan = longueur réelle ÷ 200.<br>Conversions : 1 m = 100 cm ; 1 km = 1 000 m = 100 000 cm.</div>
 ${plan({ kind: 'maison', lab: '3 cm', scale: '1/200', real: '6 m' })}
-<div class="ex">3 cm × 200 = 600 cm = 6 m.</div>
-<div class="ex">Carte au 1/25 000 : 4 cm → 4 × 25 000 = 100 000 cm = 1 km.</div>
-<div class="def">Conversions : 1 m = 100 cm &nbsp; ; &nbsp; 1 km = 1 000 m = 100 000 cm.</div>
-<div class="warn">⚠️ Le calcul donne des <b>cm</b> : pense à convertir dans l'unité demandée (m, km).</div>
-<div class="warn">⚠️ Pour trouver l'échelle, les deux longueurs doivent être dans la <b>même unité</b> : 2 cm pour 1 km → 100 000 ÷ 2 = 50 000, échelle 1/50 000.</div>`;
+<div class="methode"><b>Méthode</b><ol>
+<li>Du plan vers la réalité : <b>multiplie</b> par le nombre de l'échelle, puis convertis les cm en m ou en km.</li>
+<li>De la réalité vers le plan : convertis d'abord en cm, puis <b>divise</b>.</li>
+<li>Pour trouver l'échelle : mets les deux longueurs en cm, puis divise la réelle par celle du plan.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : du plan vers la réalité.</span><br>• Plan au 1/200 : 3 cm × 200 = 600 cm = <b>6 m</b>.<br>• Carte au 1/25 000 : 4 cm × 25 000 = 100 000 cm = <b>1 km</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : de la réalité vers la carte, et trouver l'échelle.</span><br>• Carte au 1/50 000, distance réelle 3 km = 300 000 cm : 300 000 ÷ 50 000 = <b>6 cm</b>.<br>• 2 cm sur la carte pour 1 km = 100 000 cm : 100 000 ÷ 2 = 50 000, échelle <b>1/50 000</b>.</div>
+<div class="warn">⚠️ Le calcul donne des <b>cm</b> : pense à convertir dans l'unité demandée (m, km).<br>⚠️ Pour trouver l'échelle, les deux longueurs doivent être dans la <b>même unité</b>.</div>
+<div class="retenir">À retenir : échelle 1/n : réel = plan × n, dans la même unité.</div>`;
 }
 
 /* ---------- 7. vitesses ---------- */
@@ -338,12 +378,18 @@ function L7(d) {
 }
 function C7() {
   return `<h2>7. Vitesses</h2>
-<div class="def">À vitesse constante, la distance est proportionnelle à la durée :<br><b>d = v × t</b> &nbsp; ; &nbsp; <b>v = d ÷ t</b> &nbsp; ; &nbsp; <b>t = d ÷ v</b> (v en km/h, t en heures).</div>
+<p class="intro">À vitesse constante, plus on roule longtemps, plus on va loin, proportionnellement : la vitesse est le coefficient de proportionnalité.</p>
+<div class="def">À vitesse constante, la distance est proportionnelle à la durée :<br><b>d = v × t</b> ; <b>v = d ÷ t</b> ; <b>t = d ÷ v</b> (v en km/h, t en heures).</div>
 ${road({ d: '120 km', t: '1 h 30 min', v: '80 km/h' })}
-<div class="ex">80 km/h pendant 1 h 30 min : 1 h 30 min = 1,5 h, donc d = 80 × 1,5 = 120 km.</div>
 ${tab(['Minutes', 'Heures'], [15, 20, 30, 45, 90], ['0,25', `${F(1, 3)}`, '0,5', '0,75', '1,5'], { coef: '÷ 60' })}
-<div class="warn">⚠️ <b>1 h 30 min ≠ 1,30 h</b> : 30 min = une demi-heure, donc 1 h 30 min = 1,5 h.</div>
-<div class="warn">⚠️ Les unités doivent aller ensemble : avec des km/h, la durée est en <b>heures</b>.</div>`;
+<div class="methode"><b>Méthode</b><ol>
+<li>Convertis la durée en <b>heures</b> : minutes ÷ 60 (30 min = 0,5 h).</li>
+<li>Choisis la formule : distance → ×, vitesse ou durée → ÷.</li>
+<li>Si on demande des minutes, multiplie la durée en heures par 60.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : 80 km/h pendant 1 h 30 min.</span><br>1 h 30 min = 1,5 h, donc d = 80 × 1,5 = <b>120 km</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : une vitesse et une durée.</span><br>• 45 km en 45 min : 45 min = 0,75 h, donc v = 45 ÷ 0,75 = <b>60 km/h</b> (1 km par minute).<br>• 18 km à 12 km/h : t = 18 ÷ 12 = 1,5 h = 1,5 × 60 = <b>90 min</b>.</div>
+<div class="warn">⚠️ <b>1 h 30 min ≠ 1,30 h</b> : 30 min = une demi-heure, donc 1 h 30 min = 1,5 h.<br>⚠️ Les unités doivent aller ensemble : avec des km/h, la durée est en <b>heures</b>.<br>⚠️ v = d ÷ t, pas t ÷ d.</div>
+<div class="retenir">À retenir : d = v × t, avec t en heures.</div>`;
 }
 
 /* ---------- 8. appliquer un pourcentage ---------- */
@@ -369,12 +415,17 @@ function L8(d) {
 }
 function C8() {
   return `<h2>8. Appliquer un pourcentage</h2>
-<div class="def">Prendre <b>t %</b> d'une quantité, c'est la multiplier par ${F('t', 100)} :<br>t % de N = N × t ÷ 100.</div>
+<p class="intro">Soldes, élèves qui viennent à vélo, part d'un budget… Un pourcentage est une proportion « sur 100 ».</p>
+<div class="def">Prendre <b>t %</b> d'une quantité, c'est la multiplier par ${F('t', 100)} :<br>t % de N = N ÷ 100 × t.</div>
 ${pctBar(30, { total: '100 % = 80 €', part: '24 €' })}
-<div class="ex">30 % de 80 € = 80 ÷ 100 × 30 = 0,8 × 30 = 24 €.</div>
-<div class="ex">Astuces : 50 % = la moitié ; 25 % = le quart ; 10 % = ÷ 10 ; 5 % = la moitié de 10 %.</div>
-<div class="warn">⚠️ Ne pas oublier de diviser par 100 : 30 % de 80, ce n'est pas 30 × 80.</div>
-<div class="warn">⚠️ Le pourcentage se calcule sur le <b>total</b> (ici 80 €).</div>`;
+<div class="methode"><b>Méthode</b><ol>
+<li>Divise la quantité par 100 : c'est 1 %.</li>
+<li>Multiplie par t.</li>
+<li>Astuces : 50 % = la moitié ; 25 % = le quart ; 10 % = ÷ 10 ; 5 % = la moitié de 10 %.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : 30 % de 80 €.</span><br>80 ÷ 100 × 30 = 0,8 × 30 = <b>24 €</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : des pourcentages dans des problèmes.</span><br>• Un collège de 240 élèves, dont 15 % viennent à vélo : 240 ÷ 100 × 15 = 2,4 × 15 = <b>36 élèves</b>.<br>• Un article à 45 € soldé à −20 % : la réduction est 45 ÷ 100 × 20 = <b>9 €</b>.<br>• 5 % de 60 : 10 % de 60 = 6, donc 5 % = <b>3</b>.</div>
+<div class="warn">⚠️ Ne pas oublier de diviser par 100 : 30 % de 80, ce n'est pas 30 × 80.<br>⚠️ On ne divise pas par 30 : on prend 30 centièmes.<br>⚠️ Lis bien la question : la réduction (20 %) ou ce qui reste à payer (80 %) ?</div>
+<div class="retenir">À retenir : t % de N = N × t ÷ 100.</div>`;
 }
 
 /* ---------- 9. calculer un pourcentage ---------- */
@@ -399,12 +450,19 @@ function L9(d) {
 }
 function C9() {
   return `<h2>9. Calculer un pourcentage</h2>
+<p class="intro">Pour comparer des parts de totaux différents, on les ramène toutes à un total de 100 : c'est le pourcentage.</p>
+<div class="cols">
 <div class="def">Pour savoir quel pourcentage représente une partie d'un total :<br><b>pourcentage = partie ÷ total × 100</b>.</div>
-${cells(6, 25)}
-<div class="ex">6 cases coloriées sur 25 : 6 ÷ 25 = 0,24 et 0,24 × 100 = 24 %.</div>
-<div class="ex">Avec un tableau de proportionnalité :${tab(['Effectif', 'Pourcentage'], [25, 6], [100, 24], { coef: '× 4' })}</div>
-<div class="warn">⚠️ On divise la <b>partie</b> par le <b>total</b>, pas l'inverse.</div>
-<div class="warn">⚠️ 6 sur 25, ce n'est pas 6 % : le nombre n'est égal au pourcentage que si le total vaut 100.</div>`;
+<div>${cells(6, 25)}</div>
+</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Repère la <b>partie</b> et le <b>total</b>.</li>
+<li>Divise la partie par le total.</li>
+<li>Multiplie par 100 et écris le signe %. Ou fais un tableau total → 100, partie → ?</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : 6 cases coloriées sur 25.</span><br>6 ÷ 25 = 0,24 et 0,24 × 100 = <b>24 %</b>. Avec un tableau de proportionnalité :${tab(['Effectif', 'Pourcentage'], [25, 6], [100, 24], { coef: '× 4' })}</div>
+<div class="ex"><span class="q">Exemple 2 : 18 graines sur 40 ont germé ; 7 questions réussies sur 8.</span><br>• 18 ÷ 40 = 0,45, soit <b>45 %</b>.<br>• 7 ÷ 8 = 0,875, soit <b>87,5 %</b> : un pourcentage peut être décimal.</div>
+<div class="warn">⚠️ On divise la <b>partie</b> par le <b>total</b>, pas l'inverse.<br>⚠️ 6 sur 25, ce n'est pas 6 % : le nombre n'est égal au pourcentage que si le total vaut 100.<br>⚠️ 0,24 n'est pas la réponse : il faut multiplier par 100.</div>
+<div class="retenir">À retenir : pourcentage = partie ÷ total × 100.</div>`;
 }
 
 /* ---------- 10. hausses et baisses en % ---------- */
@@ -437,12 +495,17 @@ function L10(d) {
 }
 function C10() {
   return `<h2>10. Hausses et baisses en %</h2>
+<p class="intro">Les prix montent ou baissent souvent d'un certain pourcentage. Le calcul se fait toujours à partir du prix de départ.</p>
 <div class="def">Une hausse (ou une baisse) de t % se calcule <b>sur la valeur de départ</b> :<br>nouvelle valeur = valeur de départ + (ou −) t % de la valeur de départ.</div>
 ${evoBars(20, false, { before: '45 €', after: '36 €' })}
-<div class="ex">Un jeu à 45 € baisse de 20 % : 20 % de 45 = 9 €, nouveau prix 45 − 9 = 36 €.</div>
-<div class="ex">Pour retrouver le pourcentage : de 50 € à 56 €, la hausse est de 6 €, et 6 ÷ 50 × 100 = 12 %.</div>
-<div class="warn">⚠️ Baisser de 20 %, ce n'est pas enlever 20 € !</div>
-<div class="warn">⚠️ Le pourcentage se calcule par rapport à la valeur de <b>départ</b>.</div>`;
+<div class="methode"><b>Méthode</b><ol>
+<li>Calcule le montant de la variation : t % du prix de départ.</li>
+<li>Ajoute-le (hausse) ou enlève-le (baisse).</li>
+<li>Pour retrouver le pourcentage : variation ÷ prix de départ × 100.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : un jeu à 45 € baisse de 20 %.</span><br>20 % de 45 = 45 ÷ 100 × 20 = 9 €. Nouveau prix : 45 − 9 = <b>36 €</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : une hausse, puis retrouver le pourcentage.</span><br>• Un pull à 60 € augmente de 15 % : 15 % de 60 = 9 €, nouveau prix 60 + 9 = <b>69 €</b>.<br>• Un prix passe de 50 € à 56 € : la hausse est de 6 €, et 6 ÷ 50 × 100 = <b>12 %</b>.</div>
+<div class="warn">⚠️ Baisser de 20 %, ce n'est pas enlever 20 € !<br>⚠️ Le pourcentage se calcule par rapport à la valeur de <b>départ</b> : 6 ÷ 50, pas 6 ÷ 56.<br>⚠️ Le montant de la hausse n'est pas le nouveau prix : il faut encore l'ajouter.</div>
+<div class="retenir">À retenir : nouvelle valeur = départ ± t % du départ.</div>`;
 }
 
 /* ---------- 11. coefficient multiplicateur ---------- */
@@ -493,13 +556,19 @@ function L11(d) {
 }
 function C11() {
   return `<h2>11. Coefficient multiplicateur</h2>
-<div class="def">• Augmenter de t %, c'est <b>multiplier par 1 + ${F('t', 100)}</b>.<br>• Diminuer de t %, c'est <b>multiplier par 1 − ${F('t', 100)}</b>.</div>
+<p class="intro">On peut faire une hausse ou une baisse en <b>une seule multiplication</b>. C'est plus rapide et cela permet de remonter au prix de départ.</p>
+<div class="def">• Augmenter de t %, c'est <b>multiplier par 1 + ${F('t', 100)}</b>.<br>• Diminuer de t %, c'est <b>multiplier par 1 − ${F('t', 100)}</b>.<br>Coefficient &gt; 1 : hausse ; coefficient &lt; 1 : baisse.</div>
 ${evoBars(15, true, { before: '100 %', after: '× 1,15' })}
 ${tab(['Évolution', 'Coefficient'], ['+ 15 %', '− 20 %', '+ 5 %', '− 3 %'], ['1,15', '0,8', '1,05', '0,97'])}
-<div class="ex">Un vélo à 300 € augmente de 15 % : 300 × 1,15 = 345 €.</div>
-<div class="ex">Retrouver le prix de départ : après −20 %, un jeu coûte 32 €. Avant : 32 ÷ 0,8 = 40 €.</div>
-<div class="warn">⚠️ + 5 % donne le coefficient 1,05 et non 1,5 !</div>
-<div class="warn">⚠️ Pour revenir au prix de départ, on <b>divise</b> par le coefficient : enlever 20 % au nouveau prix ne marche pas.</div>`;
+<div class="methode"><b>Méthode</b><ol>
+<li>Écris 100 % ± t %, puis divise par 100 : c'est le coefficient.</li>
+<li>Nouveau prix = prix de départ × coefficient.</li>
+<li>Prix de départ = nouveau prix ÷ coefficient.</li>
+<li>Pour lire un coefficient : compare-le à 1, l'écart donne le pourcentage (0,97 = 1 − 0,03 : baisse de 3 %).</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : un vélo à 300 € augmente de 15 %.</span><br>Coefficient 1 + 0,15 = 1,15, donc 300 × 1,15 = <b>345 €</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : retrouver le prix de départ, lire un coefficient.</span><br>• Après −20 %, un jeu coûte 32 €. Coefficient 0,8, donc avant : 32 ÷ 0,8 = <b>40 €</b>.<br>• Multiplier par 1,4, c'est une <b>hausse de 40 %</b> ; multiplier par 0,6, une <b>baisse de 40 %</b>.</div>
+<div class="warn">⚠️ + 5 % donne le coefficient 1,05 et non 1,5 !<br>⚠️ Le coefficient n'est pas le pourcentage : 0,15 seul ne suffit pas, il faut partir de 1.<br>⚠️ Pour revenir au prix de départ, on <b>divise</b> par le coefficient : enlever 20 % au nouveau prix ne marche pas.</div>
+<div class="retenir">À retenir : ± t % ⇔ × (1 ± t ÷ 100).</div>`;
 }
 
 /* ---------- 12. évolutions successives et défis ---------- */
@@ -563,13 +632,18 @@ function L12(d) {
 }
 function C12() {
   return `<h2>12. Évolutions successives et défis</h2>
+<p class="intro">Quand plusieurs évolutions s'enchaînent, chaque pourcentage s'applique au prix <b>du moment</b>. Les coefficients sont alors indispensables.</p>
 <div class="def">Pour des évolutions successives, on <b>multiplie les coefficients</b> :<br>+ 20 % puis − 20 % → × 1,2 × 0,8 = × 0,96, soit une <b>baisse de 4 %</b>.</div>
 ${evoBars(20, true, { before: '100 €', after: '120 €' })}${evoBars(20, false, { before: '120 €', after: '96 €' })}
-<div class="ex">+ 10 % puis + 20 % : 1,1 × 1,2 = 1,32, soit une hausse de 32 % (et pas 30 %).</div>
-<div class="ex">Défi : sur une carte au 1/25 000, 12 cm → 300 000 cm = 3 km. À 15 km/h : 3 ÷ 15 = 0,2 h = 12 min.</div>
-<div class="warn">⚠️ <b>+ 20 % puis − 20 % ≠ 0 %</b> : la baisse s'applique à un prix plus grand.</div>
-<div class="warn">⚠️ Les pourcentages successifs ne s'additionnent pas.</div>
-<div class="warn">⚠️ Dans un défi, vérifie les <b>unités</b> à chaque étape (cm → km, h → min).</div>`;
+<div class="methode"><b>Méthode</b><ol>
+<li>Écris le coefficient de chaque évolution.</li>
+<li>Multiplie-les : c'est le coefficient global.</li>
+<li>Compare-le à 1 pour lire l'évolution globale. Astuce : essaie avec un prix de 100 €.</li>
+<li>Pour un pourcentage d'un pourcentage : multiplie, par exemple 25 % de 40 % = 0,25 × 40 %.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : + 10 % puis + 20 %.</span><br>1,1 × 1,2 = 1,32, soit une hausse de <b>32 %</b> (et pas 30 %). Sur 100 € : 110 €, puis 132 €.</div>
+<div class="ex"><span class="q">Exemple 2 : deux défis.</span><br>• Sur une carte au 1/25 000, un trajet mesure 12 cm : 12 × 25 000 = 300 000 cm = 3 km. À 15 km/h : 3 ÷ 15 = 0,2 h = <b>12 min</b>.<br>• 40 % des élèves sont demi-pensionnaires, et 25 % d'entre eux sont en 6<sup>e</sup> : 0,25 × 40 = <b>10 %</b> de tous les élèves.</div>
+<div class="warn">⚠️ <b>+ 20 % puis − 20 % ≠ 0 %</b> : la baisse s'applique à un prix plus grand.<br>⚠️ Les pourcentages successifs ne s'additionnent pas.<br>⚠️ Dans un défi, vérifie les <b>unités</b> à chaque étape (cm → km, h → min).</div>
+<div class="retenir">À retenir : évolutions successives → on multiplie les coefficients.</div>`;
 }
 
 export const LEVELS = [
