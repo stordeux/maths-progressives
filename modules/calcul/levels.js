@@ -249,7 +249,7 @@ ${tenFrames(8, 5)}</div>
 
  /* 2 */ `<h2>2. Compléments</h2>
 <p class="intro">Le complément, c'est ce qu'il manque pour arriver à 10, 100 ou 1000. C'est très utile pour rendre la monnaie !</p>
-<div class="def">Le <b>complément à 100</b> de 37 est le nombre ? tel que 37 + ? = 100. Ici, c'est 63.<br>Paires qui font 10 : 1 + 9, 2 + 8, 3 + 7, 4 + 6, 5 + 5.</div>
+<div class="def">Le <b>complément à 100</b> de 37 est le nombre ? tel que 37 + ? = 100. Ici, c'est 63.<br>Paires qui font 10 : 1 + 9, 2 + 8, 3 + 7, 4 + 6, 5 + 5.<br>Complément à 20 : 8 + ? = 20 → 8 + 2 = 10, puis 10 + 10 = 20 : il manque <b>12</b>.</div>
 <div class="cols"><div class="methode"><b>Méthode</b><ol><li>Complète d'abord jusqu'à la <b>dizaine</b> suivante.</li><li>Puis complète de dizaine en dizaine jusqu'à 100.</li><li>Raccourci pour 100 : les dizaines vont à <b>9</b>, les unités à <b>10</b>.</li><li>Pour 1000 avec un nombre comme 380 : pense 38 + ? = 100.</li></ol></div>
 ${jumps(37, [{ to: 40, l: '+ 3' }, { to: 100, l: '+ 60' }], '37 + 63 = 100')}</div>
 <div class="ex"><span class="q">Exemple 1 : 37 + ? = 100</span><br>Dizaines : 3 → <b>6</b> (3 + 6 = 9). Unités : 7 → <b>3</b> (7 + 3 = 10). Réponse : <b>63</b>.</div>
@@ -288,7 +288,7 @@ ${decomp({ n: '37', parts: ['30', '7'], op: '× 2', res: ['60', '14'], total: '7
 <div class="ex"><span class="q">Exemple 1 : double de 37</span><br>Double de 30 = 60 ; double de 7 = 14 ; 60 + 14 = <b>74</b>.</div>
 <div class="ex"><span class="q">Exemple 2 : moitié de 74</span><br>74 = 60 + 14 ; moitié de 60 = 30 ; moitié de 14 = 7 ; donc <b>37</b>.</div>
 <div class="ex"><span class="q">Exemple 3 : moitié de 35 et double de 4,7</span><br>Moitié de 34 = 17, plus la moitié de 1 = 0,5 : <b>17,5</b>.<br>Double de 4 = 8 ; double de 0,7 = 1,4 ; 8 + 1,4 = <b>9,4</b>.</div>
-<div class="warn">⚠️ La moitié de 74 n'est pas 32 : 7 dizaines ne se partagent pas en deux exactement. Coupe plutôt 74 en 60 + 14.<br>⚠️ Le double de 4,7 n'est pas 8,14 : 0,7 + 0,7 = 1,4.</div>
+<div class="warn">⚠️ La moitié de 74 n'est pas 32 : on ne prend pas la moitié de chaque chiffre (7 est impair). Coupe 74 en 60 + 14 (30 + 7), ou en 70 + 4 (35 + 2).<br>⚠️ Le double de 4,7 n'est pas 8,14 : 0,7 + 0,7 = 1,4.</div>
 <div class="retenir">À retenir : je découpe, je double (ou je partage) chaque morceau, j'additionne.</div>`,
 
  /* 6 */ `<h2>6. × et ÷ par 10, 100, 1000</h2>
@@ -365,7 +365,7 @@ ${partBar({ parts: Array.from({ length: 10 }, (_, i) => ({ w: 44, l: '8 €', c:
 
  /* 12 */ `<h2>12. Carrés, racines, fractions</h2>
 <p class="intro">Connaître les carrés et quelques fractions par cœur fait gagner beaucoup de temps, en calcul comme en géométrie.</p>
-<div class="def">Le <b>carré</b> de n : n<sup>2</sup> = n × n.<br>La <b>racine carrée</b> de 144 : √144 = 12, car 12 × 12 = 144.<br>Carrés à connaître : 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144.<br>${F(1, 2)} = 0,5 &nbsp; ${F(1, 4)} = 0,25 &nbsp; ${F(3, 4)} = 0,75 &nbsp; ${F(1, 5)} = 0,2 &nbsp; ${F(1, 10)} = 0,1 &nbsp; ${F(1, 8)} = 0,125</div>
+<div class="def">Le <b>carré</b> de n : n<sup>2</sup> = n × n.<br>La <b>racine carrée</b> de 144 : √144 = 12, car 12 × 12 = 144.<br>Carrés à connaître : 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144 (puis 169, 196, 225).<br>${F(1, 2)} = 0,5 &nbsp; ${F(1, 4)} = 0,25 &nbsp; ${F(3, 4)} = 0,75 &nbsp; ${F(1, 5)} = 0,2 &nbsp; ${F(1, 10)} = 0,1 &nbsp; ${F(1, 8)} = 0,125</div>
 <div class="cols"><div class="methode"><b>Méthode</b><ol><li>Carré : multiplie le nombre par lui-même (au-delà de 12, découpe : 14 = 10 + 4).</li><li>Racine : cherche le nombre qui, multiplié par lui-même, redonne le nombre.</li><li>${F('a', 'b')} de N : divise N par b, puis multiplie par a.</li></ol></div>
 ${areaRect({ cols: [{ w: 170, l: '10' }, { w: 68, l: '4' }], rows: [{ h: 238, l: '14' }], cells: [['140', '56']], cap: '14² = 140 + 56 = 196' })}</div>
 <div class="ex"><span class="q">Exemple 1 : 7<sup>2</sup> et √81</span><br>7<sup>2</sup> = 7 × 7 = <b>49</b>. &nbsp; √81 = <b>9</b> car 9 × 9 = 81.</div>
