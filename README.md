@@ -49,7 +49,13 @@ accueil → **Ma progression** → **Exporter** (code à recopier ou fichier `.j
 | 〰️ Fonctions | 3e – 2de | Vers le lycée |
 | ↔️ Inégalités | 3e – 2de | Vers le lycée |
 | 📈 Second degré | 2de – 1re | Vers le lycée |
+| ➡️ Vecteurs et droites | 2de | Vers le lycée |
+| 🔢 Suites | 1re | Lycée (1re – Tle) |
+| ⭕ Trigonométrie | 1re | Lycée (1re – Tle) |
+| 🌳 Probabilités conditionnelles | 1re – Tle | Lycée (1re – Tle) |
+| 🌱 Exponentielle et logarithme | 1re – Tle | Lycée (1re – Tle) |
 | 📉 Dérivées | 1re | Lycée (1re – Tle) |
+| ∫ Intégrales | Terminale | Lycée (1re – Tle) |
 | 🎓 Révision brevet | 3e | Transversal |
 
 ## Pour les développeurs
