@@ -145,6 +145,14 @@ table.data th { background: var(--acc2); }
 .cours .warn { background: var(--badbg); border-radius: 12px; padding: 8px 14px; margin: 8px 0; }
 .cours svg { max-width: 460px; width: 100%; display: block; margin: 8px auto; }
 .cours svg.sq { width: 180px; }
+.cours .intro { font-size: 1.02em; margin: 4px 0 10px; }
+.cours .methode { border: 2px solid var(--acc2); border-radius: 12px; padding: 8px 14px 8px 14px; margin: 8px 0; }
+.cours .methode ol { margin: 4px 0; padding-left: 1.4em; }
+.cours .methode li { margin: 2px 0; }
+.cours .retenir { border-left: 5px solid var(--acc); background: var(--acc2); border-radius: 8px; padding: 8px 14px; margin: 12px 0 4px; font-weight: 600; }
+.cours .ex .q { font-weight: 600; }
+.cours .cols { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; }
+.cours .cols > * { flex: 1 1 240px; }
 .lvlist button { display: flex; width: 100%; text-align: left; gap: 10px; padding: 11px 14px; min-height: 52px; margin-bottom: 7px; background: #f7f6f2; font-size: .9em; align-items: center; }
 .lvlist button.cur { background: var(--acc2); outline: 2px solid var(--acc); }
 .lvlist small { margin-left: auto; color: var(--muted); }
