@@ -192,3 +192,4 @@ table.data th { background: var(--acc2); }
 .sig-cap { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 .sig-cap img { max-width: min(260px, 100%); max-height: 200px; border: 2px solid var(--line); border-radius: 8px; }
 main { padding-bottom: 80px; }
+@media (max-width: 900px) { .sig-fab { width: 52px; padding: 0; justify-content: center; opacity: .92; } .sig-fab span { display: none; } }
