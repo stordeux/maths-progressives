@@ -12,6 +12,65 @@ const simpl = (n, d) => { const [a, b] = red(n, d); if (b === 1 && d !== 1) retu
 const int = (X, extra = {}) => ({ type: 'nums', tpl: 'Réponse : {0}', check: numsCheck([X]), value: X, ...extra });
 const frac = (N, D, o = {}) => ({ type: 'frac', check: fracCheck(N, D, o), value: N / D });
 
+/* ---------- dessins fixes des cours (sans hasard : les parts coloriées sont les premières) ---------- */
+const C_BLUE = '#74c0fc', C_ORA = '#ffa94d', C_GRN = '#8ce99a', C_INK = '#343a40';
+const svg = (w, h, label, inner, maxw = w) => `<svg viewBox="0 0 ${w} ${h}" style="max-width:${maxw}px" role="img" aria-label="${label}" font-family="system-ui,sans-serif">${inner}</svg>`;
+const tx = (x, y, s, o = {}) => `<text x="${x}" y="${y}" font-size="${o.fs || 16}" text-anchor="${o.a || 'middle'}" fill="${o.c || C_INK}"${o.b ? ' font-weight="700"' : ''}>${s}</text>`;
+/** fraction empilée dans un SVG : trait de fraction en (x, y) */
+const sf = (x, y, n, d) => tx(x, y - 5, n, { b: 1, fs: 17 }) + `<line x1="${x - 13}" y1="${y}" x2="${x + 13}" y2="${y}" stroke="${C_INK}" stroke-width="2"/>` + tx(x, y + 18, d, { b: 1, fs: 17 });
+/** disque partagé en b parts égales, les a premières coloriées */
+function discD(a, b) {
+  const r = 70, c = 76;
+  let s = '';
+  for (let i = 0; i < b; i++) {
+    const t1 = i / b * 2 * Math.PI - Math.PI / 2, t2 = (i + 1) / b * 2 * Math.PI - Math.PI / 2;
+    s += `<path d="M${c},${c} L${(c + r * Math.cos(t1)).toFixed(2)},${(c + r * Math.sin(t1)).toFixed(2)} A${r},${r} 0 0 1 ${(c + r * Math.cos(t2)).toFixed(2)},${(c + r * Math.sin(t2)).toFixed(2)} Z" fill="${i < a ? C_BLUE : '#fff'}" stroke="#333" stroke-width="2"/>`;
+  }
+  return svg(152, 152, `disque partagé en ${b} parts égales dont ${a} coloriées`, s, 170);
+}
+/**
+ * barres de même longueur (l'unité), l'une sous l'autre :
+ * rows = [{ b, segs: [[nombre de parts, couleur]…], l: [num, dén] ou texte, txt: [texte de chaque part] }]
+ */
+function bars(rows, { W = 300, cap = '' } = {}) {
+  const lx = 58, bh = 40, gap = 18, H = 12 + rows.length * bh + (rows.length - 1) * gap + 12 + (cap ? 30 : 0);
+  let s = '';
+  rows.forEach((r, i) => {
+    const y = 12 + i * (bh + gap), w = W / r.b, cols = [];
+    (r.segs || []).forEach(([n, c]) => { for (let j = 0; j < n; j++) cols.push(c); });
+    for (let j = 0; j < r.b; j++) {
+      s += `<rect x="${(lx + j * w).toFixed(2)}" y="${y}" width="${w.toFixed(2)}" height="${bh}" fill="${cols[j] || '#fff'}" stroke="#333" stroke-width="2"/>`;
+      if (r.txt && r.txt[j]) s += tx((lx + j * w + w / 2).toFixed(1), y + bh / 2 + 5, r.txt[j], { b: 1, fs: r.fs || 15 });
+    }
+    s += Array.isArray(r.l) ? sf(lx / 2 - 4, y + bh / 2, r.l[0], r.l[1]) : tx(lx / 2 - 4, y + bh / 2 + 6, r.l || '', { b: 1 });
+  });
+  if (cap) s += tx(lx + W / 2, H - 9, cap, { b: 1, fs: 16 });
+  return svg(lx + W + 8, H, 'barres de même longueur partagées en parts égales', s);
+}
+/** carré unité : a/b des lignes en bleu, c/d des colonnes en orange ; la partie commune vaut (a × c)/(b × d) */
+function areaFrac(a, b, c, d, cap = '') {
+  const S = 210, x0 = 60, y0 = 66, H = y0 + S + (cap ? 42 : 12);
+  let s = '';
+  for (let i = 0; i < b; i++) for (let j = 0; j < d; j++) {
+    const inA = i < a, inC = j < c, fill = inA && inC ? '#b197fc' : inA ? '#d0ebff' : inC ? '#ffe8cc' : '#fff';
+    s += `<rect x="${(x0 + j * S / d).toFixed(2)}" y="${(y0 + i * S / b).toFixed(2)}" width="${(S / d).toFixed(2)}" height="${(S / b).toFixed(2)}" fill="${fill}" stroke="#495057" stroke-width="1.5"/>`;
+  }
+  s += `<rect x="${x0}" y="${y0}" width="${S}" height="${S}" fill="none" stroke="#212529" stroke-width="3"/>`;
+  s += `<line x1="${x0 - 10}" y1="${y0}" x2="${x0 - 10}" y2="${(y0 + a * S / b).toFixed(1)}" stroke="#1971c2" stroke-width="4"/>` + sf(x0 - 34, y0 + a * S / b / 2, a, b);
+  s += `<line x1="${x0}" y1="${y0 - 10}" x2="${(x0 + c * S / d).toFixed(1)}" y2="${y0 - 10}" stroke="#e8590c" stroke-width="4"/>` + sf(x0 + c * S / d / 2, y0 - 38, c, d);
+  if (cap) s += tx(x0 + S / 2, H - 12, cap, { b: 1, fs: 17 });
+  return svg(x0 + S + 12, H, `carré unité : la partie commune représente ${a * c} cases sur ${b * d}`, s, 280);
+}
+/** carré de n × n petits carreaux (aire n²) */
+function sqGrid(n, cap = '') {
+  const c = 22, x0 = 40, y0 = 30, S = n * c, H = y0 + S + (cap ? 42 : 12);
+  let s = '';
+  for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) s += `<rect x="${x0 + j * c}" y="${y0 + i * c}" width="${c}" height="${c}" fill="${(i + j) % 2 ? '#d0ebff' : '#e7f5ff'}" stroke="#74c0fc"/>`;
+  s += `<rect x="${x0}" y="${y0}" width="${S}" height="${S}" fill="none" stroke="#1864ab" stroke-width="3"/>` + tx(x0 + S / 2, y0 - 10, n, { b: 1, fs: 18 }) + tx(x0 - 12, y0 + S / 2 + 6, n, { b: 1, fs: 18, a: 'end' });
+  if (cap) s += tx(x0 + S / 2, H - 12, cap, { b: 1, fs: 16 });
+  return svg(x0 + S + 40, H, `carré de côté ${n} : son aire est ${n * n}`, s, 260);
+}
+
 /* ---------- 1. lire une fraction ---------- */
 function L1(d) {
   const v = d < 1 ? 0 : d < 2 ? ri(0, 1) : ri(0, 2);
@@ -28,11 +87,17 @@ function L1(d) {
 }
 function C1() {
   return `<h2>1. Lire une fraction</h2>
-<div class="def">Dans ${F('a', 'b')} : le <b>dénominateur</b> b (en bas) dit en combien de parts <b>égales</b> on a partagé l'unité ; le <b>numérateur</b> a (en haut) dit combien de parts on prend.</div>
-<div class="ex">${disc(3, 8)}3 parts coloriées sur 8 : ${F(3, 8)} (« trois huitièmes »).</div>
-<h3>Sur une droite graduée</h3>On regarde en combien de parts l'unité (de 0 à 1) est partagée, puis on compte les graduations depuis 0.
-${fracLine(5, 3)}<div class="ex">L'unité est partagée en 3, A est à 5 graduations : A = ${F(5, 3)}. Une fraction peut être plus grande que 1 !</div>
-<div class="warn">⚠️ Les parts doivent être <b>égales</b>. Et on compte <b>toutes</b> les parts pour le dénominateur, pas seulement les blanches.</div>`;
+<p class="intro">Une fraction décrit une partie d'un tout qu'on a partagé en parts <b>égales</b> : une part de pizza, un morceau de trajet, un point sur une droite.</p>
+<div class="def">Dans ${F('a', 'b')} : le <b>dénominateur</b> b (en bas) dit en combien de parts <b>égales</b> on a partagé l'unité ; le <b>numérateur</b> a (en haut) dit combien de parts on prend.<br>${F(3, 8)} se lit « trois huitièmes ».</div>
+<div class="cols"><div class="methode"><b>Méthode</b><ol><li>Vérifie que les parts sont égales.</li><li>Compte <b>toutes</b> les parts : c'est le dénominateur.</li><li>Compte les parts coloriées : c'est le numérateur.</li></ol></div>
+${discD(3, 8)}</div>
+<div class="ex"><span class="q">Exemple 1 : le disque</span><br>Il y a 8 parts égales et 3 sont coloriées : ${F(3, 8)}.</div>
+<h3>Sur une droite graduée</h3>
+<p>On regarde en combien de parts l'unité (de 0 à 1) est partagée : c'est le dénominateur. Puis on compte les petits intervalles de 0 jusqu'au point.</p>
+${fracLine(5, 3)}
+<div class="ex"><span class="q">Exemple 2 : le point A</span><br>L'unité est partagée en 3, et A est à 5 graduations de 0 : A = ${F(5, 3)}.<br>Le numérateur est plus grand que le dénominateur : ${F(5, 3)} est plus grand que 1.</div>
+<div class="warn">⚠️ Le dénominateur compte <b>toutes</b> les parts : 3 parts coloriées et 5 blanches, c'est ${F(3, 8)}, pas ${F(3, 5)}.<br>⚠️ Sur la droite, compte les <b>intervalles</b> entre deux graduations, pas les traits.</div>
+<div class="retenir">À retenir : en bas, le nombre de parts égales ; en haut, le nombre de parts prises.</div>`;
 }
 
 /* ---------- 2. fractions égales ---------- */
@@ -48,11 +113,15 @@ function L2(d) {
 }
 function C2() {
   return `<h2>2. Fractions égales</h2>
-<div class="def">On ne change pas une fraction en multipliant (ou en divisant) son numérateur <b>et</b> son dénominateur par le <b>même</b> nombre (non nul).</div>
-<div class="ex">${F(2, 3)} = ${F('2 × 4', '3 × 4')} = ${F(8, 12)}</div>
-<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">${bar(2, 3).replace('style="width:340px"', 'style="width:220px"')}${bar(8, 12).replace('style="width:340px"', 'style="width:220px"')}</div>
-<p>Même longueur coloriée : ${F(2, 3)} et ${F(8, 12)} sont égales.</p>
-<div class="warn">⚠️ Ajouter le même nombre en haut et en bas ne marche pas : ${F(1, 2)} ≠ ${F(2, 3)}.</div>`;
+<p class="intro">Une même quantité peut s'écrire avec plusieurs fractions : c'est comme couper un gâteau en parts plus petites, il reste le même gâteau.</p>
+<div class="def">On ne change pas une fraction en multipliant (ou en divisant) son numérateur <b>et</b> son dénominateur par le <b>même</b> nombre non nul :<br>${F('a', 'b')} = ${F('a × k', 'b × k')}</div>
+<div class="cols"><div class="methode"><b>Méthode</b><ol><li>Regarde l'étage où les deux nombres sont connus (en haut ou en bas).</li><li>Trouve par combien on a multiplié ou divisé : 3 × ? = 12.</li><li>Fais <b>la même</b> opération à l'autre étage.</li></ol></div>
+${bars([{ b: 3, segs: [[2, C_BLUE]], l: [2, 3] }, { b: 12, segs: [[8, C_BLUE]], l: [8, 12] }], { cap: 'même longueur coloriée' })}</div>
+<div class="ex"><span class="q">Exemple 1 : ${F(2, 3)} = ${F('?', 12)}</span><br>3 × 4 = 12, donc on multiplie aussi le haut par 4 : 2 × 4 = 8. ${F(2, 3)} = ${F(8, 12)}.</div>
+<div class="ex"><span class="q">Exemple 2 : ${F(5, 7)} = ${F(15, '?')}</span><br>5 × 3 = 15, donc 7 × 3 = 21 : ${F(5, 7)} = ${F(15, 21)}.</div>
+<div class="ex"><span class="q">Exemple 3 : ${F(18, 24)} = ${F('?', 4)}</span><br>24 ÷ 6 = 4, donc 18 ÷ 6 = 3 : ${F(18, 24)} = ${F(3, 4)}.</div>
+<div class="warn">⚠️ Ajouter le même nombre en haut et en bas ne marche pas : ${F(1, 2)} ≠ ${F(2, 3)}.<br>⚠️ Multiplie <b>les deux</b> étages, pas seulement celui où il y a le « ? ».</div>
+<div class="retenir">À retenir : même multiplication (ou même division) en haut et en bas.</div>`;
 }
 
 /* ---------- 3. simplifier ---------- */
@@ -65,11 +134,15 @@ function L3(d) {
 }
 function C3() {
   return `<h2>3. Simplifier une fraction</h2>
-<div class="def"><b>Simplifier</b>, c'est diviser le numérateur et le dénominateur par un même nombre. Une fraction est <b>irréductible</b> quand on ne peut plus simplifier.</div>
-<div class="ex">${F(18, 24)} : 18 et 24 sont dans la table de 6 → ${F('18 ÷ 6', '24 ÷ 6')} = ${F(3, 4)}</div>
-<div class="ex">On peut aussi y aller en plusieurs fois : ${F(18, 24)} = ${F(9, 12)} (÷ 2) = ${F(3, 4)} (÷ 3).</div>
-<h3>Critères utiles</h3>Divisible par <b>2</b> : se termine par 0, 2, 4, 6, 8. Par <b>5</b> : se termine par 0 ou 5. Par <b>3</b> : la somme des chiffres est dans la table de 3.
-<div class="warn">⚠️ ${F(6, 8)} = ${F(3, 4)} est juste, mais n'oublie pas de vérifier qu'on ne peut plus simplifier.</div>`;
+<p class="intro">Simplifier, c'est écrire la même fraction avec des nombres plus petits : elle devient plus facile à lire et à comparer.</p>
+<div class="def"><b>Simplifier</b>, c'est diviser le numérateur et le dénominateur par un même nombre. Une fraction est <b>irréductible</b> quand on ne peut plus la simplifier.<br>Divisible par <b>2</b> : se termine par 0, 2, 4, 6, 8. Par <b>5</b> : se termine par 0 ou 5. Par <b>3</b> : la somme des chiffres est dans la table de 3.</div>
+<div class="cols"><div class="methode"><b>Méthode</b><ol><li>Cherche un nombre qui divise le haut <b>et</b> le bas (critères, tables).</li><li>Divise les deux par ce nombre.</li><li>Recommence tant que c'est possible.</li><li>Plus rapide : divise tout de suite par le plus grand diviseur commun.</li></ol></div>
+${bars([{ b: 24, segs: [[18, C_BLUE]], l: [18, 24] }, { b: 4, segs: [[3, C_BLUE]], l: [3, 4] }], { cap: 'même valeur, nombres plus petits' })}</div>
+<div class="ex"><span class="q">Exemple 1 : ${F(18, 24)}</span><br>18 et 24 sont dans la table de 6 : ${F('18 ÷ 6', '24 ÷ 6')} = ${F(3, 4)}.</div>
+<div class="ex"><span class="q">Exemple 2 : ${F(45, 60)} en plusieurs fois</span><br>÷ 5 : ${F(9, 12)} ; puis ÷ 3 : ${F(3, 4)}. On s'arrête : 3 et 4 n'ont plus de diviseur commun.</div>
+<div class="ex"><span class="q">Exemple 3 : ${F(84, 98)}</span><br>÷ 2 : ${F(42, 49)} ; puis ÷ 7 : ${F(6, 7)}. (En une fois : ÷ 14.)</div>
+<div class="warn">⚠️ ${F(12, 16)} = ${F(6, 8)} est juste, mais pas fini : ${F(6, 8)} = ${F(3, 4)}. Vérifie toujours qu'on ne peut plus simplifier.<br>⚠️ On <b>divise</b>, on ne soustrait pas : enlever le même nombre en haut et en bas change la fraction.</div>
+<div class="retenir">À retenir : je divise le haut et le bas par le même nombre, jusqu'à la fraction irréductible.</div>`;
 }
 
 /* ---------- 4. comparer ---------- */
@@ -91,10 +164,15 @@ function L4(d) {
 }
 function C4() {
   return `<h2>4. Comparer des fractions</h2>
-<div class="def">• <b>Même dénominateur</b> : la plus grande est celle qui a le plus grand numérateur.<br>• <b>Dénominateurs différents</b> : on les met d'abord au même dénominateur.</div>
-<div class="ex">${F(5, 7)} &gt; ${F(3, 7)} car 5 &gt; 3.</div>
-<div class="ex">${F(2, 3)} et ${F(5, 6)} : ${F(2, 3)} = ${F(4, 6)}, et ${F(4, 6)} &lt; ${F(5, 6)}, donc ${F(2, 3)} &lt; ${F(5, 6)}.</div>
-<div class="warn">⚠️ Une fraction dont le numérateur est plus grand que le dénominateur est plus grande que 1 : ${F(7, 5)} &gt; 1.</div>`;
+<p class="intro">Comparer deux fractions, c'est savoir laquelle représente la plus grande part.</p>
+<div class="def">• <b>Même dénominateur</b> : la plus grande est celle qui a le plus grand numérateur.<br>• <b>Dénominateurs différents</b> : on les écrit d'abord avec le même dénominateur.<br>• Une fraction est plus grande que 1 quand son numérateur dépasse son dénominateur.</div>
+<div class="cols"><div class="methode"><b>Méthode</b><ol><li>Mêmes dénominateurs ? Compare directement les numérateurs.</li><li>Sinon, transforme la fraction qui a le plus petit dénominateur (2 × 3 = 6 : ${F(2, 3)} = ${F(4, 6)}).</li><li>Compare les numérateurs et choisis &lt;, &gt; ou =.</li></ol></div>
+${bars([{ b: 3, segs: [[2, C_BLUE]], l: [2, 3] }, { b: 6, segs: [[4, C_BLUE]], l: [4, 6] }, { b: 6, segs: [[5, C_ORA]], l: [5, 6] }])}</div>
+<div class="ex"><span class="q">Exemple 1 : ${F(5, 7)} et ${F(3, 7)}</span><br>Même dénominateur et 5 &gt; 3, donc ${F(5, 7)} &gt; ${F(3, 7)}.</div>
+<div class="ex"><span class="q">Exemple 2 : ${F(2, 3)} et ${F(5, 6)}</span><br>${F(2, 3)} = ${F(4, 6)} et 4 &lt; 5, donc ${F(2, 3)} &lt; ${F(5, 6)}.</div>
+<div class="ex"><span class="q">Exemple 3 : ${F(9, 12)} et ${F(3, 4)}</span><br>${F(3, 4)} = ${F(9, 12)} : les deux fractions sont <b>égales</b>, on écrit =.</div>
+<div class="warn">⚠️ Ne compare pas les dénominateurs seuls : ${F(1, 3)} &gt; ${F(1, 4)}, car plus il y a de parts, plus elles sont petites.<br>⚠️ Pense à la réponse = : deux fractions écrites différemment peuvent être égales.</div>
+<div class="retenir">À retenir : pour comparer, je mets les fractions au même dénominateur.</div>`;
 }
 
 /* ---------- 5. additionner, même dénominateur ---------- */
@@ -108,10 +186,15 @@ function L5(d) {
 }
 function C5() {
   return `<h2>5. Additionner (même dénominateur)</h2>
+<p class="intro">Quand les parts ont la même taille, on peut les compter ensemble : 2 septièmes et 3 septièmes, cela fait 5 septièmes.</p>
 <div class="def">${F('a', 'd')} + ${F('b', 'd')} = ${F('a + b', 'd')} &nbsp; et &nbsp; ${F('a', 'd')} − ${F('b', 'd')} = ${F('a − b', 'd')}</div>
-<div class="ex">${F(2, 7)} + ${F(3, 7)} = ${F(5, 7)} &nbsp; : 2 septièmes + 3 septièmes = 5 septièmes.</div>
-${bar(5, 7)}
-<div class="warn">⚠️ On n'additionne <b>pas</b> les dénominateurs : ${F(2, 7)} + ${F(3, 7)} n'est pas ${F(5, 14)} !</div>`;
+<div class="cols"><div class="methode"><b>Méthode</b><ol><li>Vérifie que les dénominateurs sont égaux.</li><li>Additionne (ou soustrais) les <b>numérateurs</b>.</li><li><b>Garde</b> le dénominateur.</li><li>Simplifie le résultat si c'est possible.</li></ol></div>
+${bars([{ b: 7, segs: [[2, C_BLUE]], l: [2, 7] }, { b: 7, segs: [[3, C_ORA]], l: [3, 7] }, { b: 7, segs: [[2, C_BLUE], [3, C_ORA]], l: [5, 7] }])}</div>
+<div class="ex"><span class="q">Exemple 1 : ${F(2, 7)} + ${F(3, 7)}</span><br>${F('2 + 3', 7)} = ${F(5, 7)}.</div>
+<div class="ex"><span class="q">Exemple 2 : ${F(11, 9)} − ${F(4, 9)}</span><br>${F('11 − 4', 9)} = ${F(7, 9)}.</div>
+<div class="ex"><span class="q">Exemple 3 : ${F(5, 12)} + ${F(3, 12)}</span><br>${F(8, 12)}, qui se simplifie par 4 : ${F(2, 3)}.</div>
+<div class="warn">⚠️ On n'additionne <b>pas</b> les dénominateurs : ${F(2, 7)} + ${F(3, 7)} n'est pas ${F(5, 14)} ! La taille des parts ne change pas.<br>⚠️ Dans une soustraction, garde bien l'ordre : le premier numérateur moins le deuxième.</div>
+<div class="retenir">À retenir : même dénominateur → j'additionne les numérateurs et je garde le dénominateur.</div>`;
 }
 
 /* ---------- 6. dénominateurs multiples ---------- */
@@ -127,10 +210,15 @@ function L6(d) {
 }
 function C6() {
   return `<h2>6. Dénominateurs multiples l'un de l'autre</h2>
-<div class="def">Si un dénominateur est un multiple de l'autre, on transforme la fraction qui a le plus petit dénominateur.</div>
-<div class="ex">${F(1, 3)} + ${F(4, 9)} : 9 = 3 × 3, donc ${F(1, 3)} = ${F(3, 9)}.<br>${F(3, 9)} + ${F(4, 9)} = ${F(7, 9)}</div>
-<div class="ex">${F(5, 4)} − ${F(3, 8)} = ${F(10, 8)} − ${F(3, 8)} = ${F(7, 8)}</div>
-<div class="warn">⚠️ Quand on multiplie le dénominateur, il faut multiplier aussi le numérateur !</div>`;
+<p class="intro">Pour additionner des tiers et des neuvièmes, il faut d'abord des parts de même taille : on découpe les tiers en neuvièmes.</p>
+<div class="def">Si un dénominateur est un <b>multiple</b> de l'autre, on transforme seulement la fraction qui a le <b>plus petit</b> dénominateur, en multipliant son numérateur et son dénominateur par le même nombre.</div>
+<div class="cols"><div class="methode"><b>Méthode</b><ol><li>Repère le plus grand dénominateur D.</li><li>Trouve k tel que petit dénominateur × k = D.</li><li>Multiplie le haut et le bas de la petite fraction par k.</li><li>Additionne (ou soustrais) les numérateurs, garde D, simplifie.</li></ol></div>
+${bars([{ b: 3, segs: [[1, C_BLUE]], l: [1, 3] }, { b: 9, segs: [[3, C_BLUE]], l: [3, 9] }, { b: 9, segs: [[3, C_BLUE], [4, C_ORA]], l: [7, 9] }])}</div>
+<div class="ex"><span class="q">Exemple 1 : ${F(1, 3)} + ${F(4, 9)}</span><br>3 × 3 = 9, donc ${F(1, 3)} = ${F(3, 9)}. Puis ${F(3, 9)} + ${F(4, 9)} = ${F(7, 9)}.</div>
+<div class="ex"><span class="q">Exemple 2 : ${F(5, 4)} − ${F(3, 8)}</span><br>4 × 2 = 8 : ${F(5, 4)} = ${F(10, 8)}. Puis ${F(10, 8)} − ${F(3, 8)} = ${F(7, 8)}.</div>
+<div class="ex"><span class="q">Exemple 3 : ${F(7, 10)} − ${F(1, 5)}</span><br>${F(1, 5)} = ${F(2, 10)}, donc ${F(7, 10)} − ${F(2, 10)} = ${F(5, 10)} = ${F(1, 2)}.</div>
+<div class="warn">⚠️ Quand on multiplie le dénominateur, on multiplie aussi le numérateur : ${F(1, 3)} = ${F(3, 9)}, pas ${F(1, 9)}.<br>⚠️ On ne touche pas à la fraction qui a déjà le grand dénominateur.</div>
+<div class="retenir">À retenir : je transforme la petite fraction pour avoir le même dénominateur, puis j'additionne.</div>`;
 }
 
 /* ---------- 7. fraction d'une quantité ---------- */
@@ -153,12 +241,15 @@ function L7(d) {
 }
 function C7() {
   return `<h2>7. Fraction d'une quantité</h2>
-<div class="def">Prendre les ${F('a', 'b')} d'une quantité : on la <b>divise par b</b>, puis on <b>multiplie par a</b>.</div>
-<div class="ex">Les ${F(3, 4)} de 20 : 20 ÷ 4 = 5, puis 5 × 3 = <b>15</b>.</div>
-${bar(3, 4)}
-<div class="def">Multiplier un entier par une fraction : n × ${F('a', 'b')} = ${F('n × a', 'b')}.</div>
-<div class="ex">5 × ${F(2, 3)} = ${F(10, 3)}</div>
-<div class="warn">⚠️ Les ${F(3, 4)} de 20, ce n'est pas 20 ÷ 3 × 4 : on divise par le <b>dénominateur</b>.</div>`;
+<p class="intro">« Les trois quarts des élèves », « les deux tiers du trajet » : on calcule une fraction d'un nombre très souvent dans la vie.</p>
+<div class="def">Prendre les ${F('a', 'b')} d'une quantité : on la <b>divise par b</b> (une part), puis on <b>multiplie par a</b>.<br>Multiplier un entier par une fraction : n × ${F('a', 'b')} = ${F('n × a', 'b')}.</div>
+<div class="cols"><div class="methode"><b>Méthode</b><ol><li>Repère la quantité et la fraction.</li><li>Calcule une part : quantité ÷ dénominateur.</li><li>Multiplie par le numérateur.</li><li>Dans un problème, réponds par une phrase avec l'unité.</li></ol></div>
+${bars([{ b: 4, segs: [[3, C_ORA]], l: '20', txt: ['5', '5', '5', '5'] }], { cap: '3 parts de 5 : 15' })}</div>
+<div class="ex"><span class="q">Exemple 1 : les ${F(3, 4)} de 20</span><br>Une part : 20 ÷ 4 = 5. Trois parts : 5 × 3 = <b>15</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : un livre de 240 pages, on en a lu les ${F(5, 8)}</span><br>240 ÷ 8 = 30, puis 30 × 5 = 150. On a lu <b>150 pages</b>.</div>
+<div class="ex"><span class="q">Exemple 3 : 5 × ${F(2, 3)}</span><br>On multiplie le numérateur : ${F('5 × 2', 3)} = ${F(10, 3)}.</div>
+<div class="warn">⚠️ On divise par le <b>dénominateur</b> : les ${F(3, 4)} de 20, ce n'est pas 20 ÷ 3 × 4.<br>⚠️ 5 × ${F(2, 3)} n'est pas ${F(10, 15)} : on ne multiplie pas le dénominateur.</div>
+<div class="retenir">À retenir : les ${F('a', 'b')} de N, c'est N ÷ b × a.</div>`;
 }
 
 /* ---------- 8. multiplier ---------- */
@@ -170,10 +261,15 @@ function L8(d) {
 }
 function C8() {
   return `<h2>8. Multiplier des fractions</h2>
-<div class="def">${F('a', 'b')} × ${F('c', 'd')} = ${F('a × c', 'b × d')}</div>
-<div class="ex">${F(2, 3)} × ${F(4, 5)} = ${F('2 × 4', '3 × 5')} = ${F(8, 15)}</div>
-<div class="ex">Astuce : on peut simplifier avant de multiplier. ${F(3, 4)} × ${F(2, 9)} = ${F('3 × 2', '4 × 9')} = ${F(6, 36)} = ${F(1, 6)}</div>
-<div class="warn">⚠️ Pour multiplier, <b>pas besoin</b> de même dénominateur (c'est seulement pour + et −).</div>`;
+<p class="intro">Multiplier deux fractions, c'est prendre une fraction d'une fraction : les ${F(2, 3)} des ${F(4, 5)}.</p>
+<div class="def">${F('a', 'b')} × ${F('c', 'd')} = ${F('a × c', 'b × d')} &nbsp; (numérateur × numérateur, dénominateur × dénominateur)</div>
+<div class="cols"><div class="methode"><b>Méthode</b><ol><li>Multiplie les numérateurs entre eux.</li><li>Multiplie les dénominateurs entre eux.</li><li>Simplifie le résultat.</li><li>Astuce : on peut simplifier <b>avant</b> de multiplier, un nombre du haut avec un nombre du bas.</li></ol></div>
+${areaFrac(2, 3, 4, 5, '8 cases sur 15')}</div>
+<div class="ex"><span class="q">Exemple 1 : ${F(2, 3)} × ${F(4, 5)}</span><br>${F('2 × 4', '3 × 5')} = ${F(8, 15)}. Sur le carré : 8 cases violettes sur 15.</div>
+<div class="ex"><span class="q">Exemple 2 : ${F(3, 4)} × ${F(2, 9)}</span><br>${F('3 × 2', '4 × 9')} = ${F(6, 36)} = ${F(1, 6)}.<br>Ou avant : 3 avec 9 (÷ 3) et 2 avec 4 (÷ 2) : ${F('1 × 1', '2 × 3')} = ${F(1, 6)}.</div>
+<div class="ex"><span class="q">Exemple 3 : ${F(6, 5)} × ${F(5, 3)}</span><br>${F('6 × 5', '5 × 3')} = ${F(30, 15)} = 2.</div>
+<div class="warn">⚠️ Pour multiplier, <b>pas besoin</b> de même dénominateur (c'est seulement pour + et −).<br>⚠️ N'additionne pas : ${F(2, 3)} × ${F(4, 5)} n'est pas ${F(6, 8)}.</div>
+<div class="retenir">À retenir : haut × haut, bas × bas, puis je simplifie.</div>`;
 }
 
 /* ---------- 9. dénominateurs quelconques ---------- */
@@ -189,10 +285,15 @@ function L9(d) {
 }
 function C9() {
   return `<h2>9. Dénominateurs quelconques</h2>
-<div class="def">On cherche un <b>dénominateur commun</b> : un multiple des deux dénominateurs (le plus petit possible).</div>
-<div class="ex">${F(2, 3)} + ${F(1, 4)} : 12 est dans la table de 3 et de 4.<br>${F(2, 3)} = ${F(8, 12)} et ${F(1, 4)} = ${F(3, 12)}, donc ${F(2, 3)} + ${F(1, 4)} = ${F(11, 12)}.</div>
-<div class="ex">${F(5, 6)} − ${F(3, 4)} = ${F(10, 12)} − ${F(9, 12)} = ${F(1, 12)}</div>
-<div class="warn">⚠️ Le produit des dénominateurs marche toujours (3 × 4 = 12), mais parfois il y a plus petit : pour 4 et 6, 12 suffit (pas besoin de 24).</div>`;
+<p class="intro">Des tiers et des quarts n'ont pas la même taille : on les redécoupe tous en douzièmes pour pouvoir les additionner.</p>
+<div class="def">On cherche un <b>dénominateur commun</b> : un nombre qui est un multiple des deux dénominateurs, le plus petit possible.</div>
+<div class="cols"><div class="methode"><b>Méthode</b><ol><li>Récite la table du plus grand dénominateur jusqu'à trouver un multiple de l'autre (4, 8, 12 → 12 est dans la table de 3).</li><li>Écris chaque fraction avec ce dénominateur.</li><li>Additionne (ou soustrais) les numérateurs.</li><li>Simplifie si possible.</li></ol></div>
+${bars([{ b: 3, segs: [[2, C_BLUE]], l: [2, 3] }, { b: 4, segs: [[1, C_ORA]], l: [1, 4] }, { b: 12, segs: [[8, C_BLUE], [3, C_ORA]], l: [11, 12] }])}</div>
+<div class="ex"><span class="q">Exemple 1 : ${F(2, 3)} + ${F(1, 4)}</span><br>12 est dans la table de 3 et de 4. ${F(2, 3)} = ${F(8, 12)} et ${F(1, 4)} = ${F(3, 12)}, donc la somme vaut ${F(11, 12)}.</div>
+<div class="ex"><span class="q">Exemple 2 : ${F(5, 6)} − ${F(3, 4)}</span><br>Table de 6 : 6, 12 → 12. ${F(10, 12)} − ${F(9, 12)} = ${F(1, 12)}.</div>
+<div class="ex"><span class="q">Exemple 3 : ${F(3, 4)} + ${F(1, 6)}</span><br>12 suffit (pas besoin de 24) : ${F(9, 12)} + ${F(2, 12)} = ${F(11, 12)}.</div>
+<div class="warn">⚠️ ${F(2, 3)} + ${F(1, 4)} n'est pas ${F(3, 7)} : on n'additionne jamais les dénominateurs.<br>⚠️ Le produit des dénominateurs marche toujours, mais donne de grands nombres : pense à simplifier à la fin.</div>
+<div class="retenir">À retenir : même dénominateur d'abord, puis j'additionne les numérateurs.</div>`;
 }
 
 /* ---------- 10. racines carrées ---------- */
@@ -211,11 +312,15 @@ function L10(d) {
 }
 function C10() {
   return `<h2>10. Racines carrées</h2>
-<div class="def">Pour un nombre a ≥ 0, ${R('a')} est le nombre <b>positif</b> dont le carré vaut a.</div>
-<div class="ex">${R(49)} = 7 car 7 × 7 = 49 &nbsp;&nbsp; ${R(1)} = 1 &nbsp;&nbsp; ${R(0)} = 0 &nbsp;&nbsp; ${R(3600)} = 60</div>
-<div class="def">Carrés à connaître : 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225.</div>
-<div class="ex">${R(16)} × ${R(9)} = 4 × 3 = 12</div>
-<div class="warn">⚠️ ${R(16)} n'est pas 8 (la moitié) : c'est 4, car 4 × 4 = 16.</div>`;
+<p class="intro">La racine carrée fait le chemin inverse du carré : si un carré a une aire de 49, son côté mesure √49 = 7.</p>
+<div class="def">Pour un nombre a ≥ 0, ${R('a')} est le nombre <b>positif</b> dont le carré vaut a.<br>Carrés à connaître : 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225.</div>
+<div class="cols"><div class="methode"><b>Méthode</b><ol><li>Cherche le nombre dans la liste des carrés.</li><li>Grand nombre terminé par 00 : ${R(3600)} = ${R(36)} × 10 = 60.</li><li>Produit de racines : calcule chaque racine, puis multiplie.</li><li>Vérifie : ton résultat × lui-même redonne le nombre.</li></ol></div>
+${sqGrid(7, '7 × 7 = 49, donc √49 = 7')}</div>
+<div class="ex"><span class="q">Exemple 1 : ${R(49)} et ${R(144)}</span><br>${R(49)} = 7 car 7 × 7 = 49 ; ${R(144)} = 12 car 12 × 12 = 144.</div>
+<div class="ex"><span class="q">Exemple 2 : ${R(3600)}</span><br>36 = 6 × 6, donc 3600 = 60 × 60 et ${R(3600)} = <b>60</b>.</div>
+<div class="ex"><span class="q">Exemple 3 : ${R(16)} × ${R(9)}</span><br>4 × 3 = <b>12</b>. Cas particuliers : ${R(1)} = 1 et ${R(0)} = 0.</div>
+<div class="warn">⚠️ ${R(16)} n'est pas 8 (la moitié) : c'est 4, car 4 × 4 = 16.<br>⚠️ ${R(3600)} n'est pas 600 : 600 × 600 = 360 000.</div>
+<div class="retenir">À retenir : ${R('a')}, c'est le nombre positif qui, multiplié par lui-même, donne a.</div>`;
 }
 
 /* ---------- 11. racines et carrés de fractions ---------- */
@@ -235,9 +340,15 @@ function L11(d) {
 }
 function C11() {
   return `<h2>11. Racines et carrés de fractions</h2>
-<div class="def">(${F('a', 'b')})<sup>2</sup> = ${F('a<sup>2</sup>', 'b<sup>2</sup>')} &nbsp;&nbsp;&nbsp; ${R(F('a', 'b'))} = ${F(R('a'), R('b'))}</div>
-<div class="ex">(${F(2, 3)})<sup>2</sup> = ${F(4, 9)} &nbsp;&nbsp; ${R(F(25, 36))} = ${F(5, 6)}</div>
-<div class="warn">⚠️ (${F(2, 3)})<sup>2</sup> n'est pas ${F(4, 6)} : on met au carré le haut <b>et</b> le bas.</div>`;
+<p class="intro">On met au carré, ou on prend la racine, d'une fraction en travaillant séparément en haut et en bas.</p>
+<div class="def">(${F('a', 'b')})<sup>2</sup> = ${F('a<sup>2</sup>', 'b<sup>2</sup>')} &nbsp;&nbsp;&nbsp; ${R(F('a', 'b'))} = ${F(R('a'), R('b'))} &nbsp; (a ≥ 0, b &gt; 0)</div>
+<div class="cols"><div class="methode"><b>Méthode</b><ol><li>Carré : mets au carré le numérateur <b>et</b> le dénominateur.</li><li>Racine : prends la racine du haut et celle du bas.</li><li>Avec un produit : calcule d'abord la racine, puis multiplie les fractions (haut × haut, bas × bas).</li></ol></div>
+${areaFrac(2, 3, 2, 3, '4 cases sur 9')}</div>
+<div class="ex"><span class="q">Exemple 1 : (${F(2, 3)})<sup>2</sup></span><br>${F('2 × 2', '3 × 3')} = ${F(4, 9)} : le carré montre 4 cases sur 9.</div>
+<div class="ex"><span class="q">Exemple 2 : ${R(F(25, 36))}</span><br>${R(25)} = 5 et ${R(36)} = 6, donc ${R(F(25, 36))} = ${F(5, 6)}.</div>
+<div class="ex"><span class="q">Exemple 3 : ${R(F(9, 16))} × ${F(2, 5)}</span><br>${F(3, 4)} × ${F(2, 5)} = ${F(6, 20)} = ${F(3, 10)}.</div>
+<div class="warn">⚠️ (${F(2, 3)})<sup>2</sup> n'est pas ${F(4, 6)} : on met au carré le haut <b>et</b> le bas.<br>⚠️ ${R(F(25, 36))} n'est pas ${F(5, 36)} : la racine porte aussi sur le dénominateur.</div>
+<div class="retenir">À retenir : carré ou racine, je l'applique en haut et en bas.</div>`;
 }
 
 /* ---------- 12. défis ---------- */
@@ -277,11 +388,15 @@ function L12(d) {
 }
 function C12() {
   return `<h2>12. Défis</h2>
-<p>On mélange tout ce qui précède. Prends le temps de lire l'énoncé et d'écrire les étapes au brouillon.</p>
-<div class="def">Ordre des opérations : <b>racines et carrés</b>, puis <b>× et ÷</b>, puis <b>+ et −</b>.</div>
-<div class="ex">${F(1, 2)} + ${F(1, 3)} × ${F(3, 4)} = ${F(1, 2)} + ${F(1, 4)} = ${F(2, 4)} + ${F(1, 4)} = ${F(3, 4)}</div>
-<div class="ex">« Le reste » : le tout vaut 1. Si ${F(1, 3)} et ${F(1, 6)} sont utilisés, il reste 1 − ${F(1, 3)} − ${F(1, 6)} = ${F(6, 6)} − ${F(2, 6)} − ${F(1, 6)} = ${F(3, 6)} = ${F(1, 2)}.</div>
-<div class="warn">⚠️ Une fraction « des filles » se calcule sur le total, pas sur les garçons.</div>`;
+<p class="intro">On mélange tout ce qui précède, souvent dans des problèmes. Prends le temps de lire l'énoncé et d'écrire les étapes au brouillon.</p>
+<div class="def">Ordre des opérations : <b>racines et carrés</b>, puis <b>× et ÷</b>, puis <b>+ et −</b>.<br>« Le reste » : le tout vaut 1, que l'on écrit ${F('d', 'd')} pour avoir le bon dénominateur.</div>
+<div class="cols"><div class="methode"><b>Méthode</b><ol><li>Repère le tout et les parts déjà connues.</li><li>Écris le calcul complet avant de calculer.</li><li>Respecte les priorités.</li><li>Vérifie que la réponse a du sens (le reste est plus petit que 1…).</li></ol></div>
+${bars([{ b: 6, segs: [[2, C_BLUE], [1, C_ORA], [3, C_GRN]], l: '1', txt: ['vélo', 'vélo', 'bus', 'pied', 'pied', 'pied'], fs: 13 }], { cap: 'à pied : 3 parts sur 6' })}</div>
+<div class="ex"><span class="q">Exemple 1 : ${F(1, 2)} + ${F(1, 3)} × ${F(3, 4)}</span><br>× d'abord : ${F(1, 3)} × ${F(3, 4)} = ${F(3, 12)} = ${F(1, 4)}. Puis ${F(1, 2)} + ${F(1, 4)} = ${F(2, 4)} + ${F(1, 4)} = ${F(3, 4)}.</div>
+<div class="ex"><span class="q">Exemple 2 : ${F(1, 3)} du trajet à vélo, ${F(1, 6)} en bus, le reste à pied</span><br>1 − ${F(1, 3)} − ${F(1, 6)} = ${F(6, 6)} − ${F(2, 6)} − ${F(1, 6)} = ${F(3, 6)} = ${F(1, 2)}.</div>
+<div class="ex"><span class="q">Exemple 3 : un club de 30 membres, les ${F(2, 5)} sont des filles</span><br>Filles : 30 ÷ 5 × 2 = 12. Garçons : 30 − 12 = <b>18</b>.</div>
+<div class="warn">⚠️ Une fraction « des filles » se calcule sur le <b>total</b>, pas sur les garçons.<br>⚠️ Dans ${F(1, 2)} + ${F(1, 3)} × ${F(3, 4)}, la multiplication passe avant l'addition.</div>
+<div class="retenir">À retenir : je lis, j'écris le calcul en entier, puis je respecte les priorités.</div>`;
 }
 
 export const LEVELS = [

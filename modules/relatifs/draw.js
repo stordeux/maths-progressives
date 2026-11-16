@@ -39,6 +39,31 @@ export function thermo({ t, to = null, label = '' } = {}) {
   return s + '</svg>';
 }
 
+/**
+ * Signe d'un produit, facteur après facteur : en haut les facteurs, en bas le signe du produit partiel.
+ * Chaque facteur négatif fait changer le signe (flèche rouge).
+ */
+export function signChain(fs) {
+  const step = 84, x0 = 124, W = x0 + fs.length * step + 4, yf = 36, ys = 100, H = 132;
+  const t = (x, y, s, c = '#343a40', fz = 17, b = 700) => `<text x="${x}" y="${y}" font-size="${fz}" font-weight="${b}" text-anchor="middle" fill="${c}">${s}</text>`;
+  const sgnC = v => (v > 0 ? '#2b8a3e' : '#e03131');
+  let s = `<svg viewBox="0 0 ${W} ${H}" style="max-width:${W}px" class="vis" role="img" aria-label="signe du produit, facteur après facteur" font-family="system-ui,sans-serif">`;
+  s += t(32, yf + 6, 'facteur', '#868e96', 14, 400) + t(32, ys + 6, 'signe', '#868e96', 14, 400);
+  let sg = 1, px = x0 - step / 2;
+  s += `<circle cx="${px}" cy="${ys}" r="17" fill="#ebfbee" stroke="#2b8a3e" stroke-width="2"/>` + t(px, ys + 7, '+', '#2b8a3e', 22);
+  fs.forEach((f, i) => {
+    const x = x0 + step / 2 + i * step, flip = f < 0;
+    sg = flip ? -sg : sg;
+    s += `<rect x="${x - 32}" y="${yf - 20}" width="64" height="38" rx="9" fill="${flip ? '#fff5f5' : '#fff'}" stroke="${flip ? '#e03131' : '#adb5bd'}" stroke-width="2"/>` + t(x, yf + 6, f < 0 ? `(${M(f)})` : M(f), flip ? '#e03131' : '#343a40');
+    const c = flip ? '#e03131' : '#adb5bd';
+    s += `<line x1="${px + 19}" y1="${ys}" x2="${x - 27}" y2="${ys}" stroke="${c}" stroke-width="${flip ? 3 : 2}"/><path d="M${x - 19},${ys} l-9,-5 v10z" fill="${c}"/>`;
+    s += `<circle cx="${x}" cy="${ys}" r="17" fill="${sg > 0 ? '#ebfbee' : '#fff5f5'}" stroke="${sgnC(sg)}" stroke-width="2"/>` + t(x, ys + 7, sg > 0 ? '+' : '−', sgnC(sg), 22);
+    if (flip) s += t((px + x) / 2, ys - 10, 'change', '#e03131', 11, 400);
+    px = x;
+  });
+  return s + '</svg>';
+}
+
 /** tableau de la règle des signes (HTML) */
 export function signRule() {
   const c = (a, b) => `<td style="padding:6px 14px;border:1px solid #adb5bd;text-align:center;font-weight:700;background:${a === b ? '#ebfbee' : '#fff5f5'}">${a === b ? '+' : '−'}</td>`;

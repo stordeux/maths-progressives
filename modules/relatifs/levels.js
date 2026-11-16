@@ -7,7 +7,7 @@ import { r6, approx } from '../../engine/util/arith.js';
 import { M, P, F } from '../../engine/util/fmt.js';
 import { numsCheck, choiceCheck } from '../../engine/answers/checks.js';
 import { intLine } from '../../engine/draw/numberLine.js';
-import { thermo, signRule } from './draw.js';
+import { thermo, signRule, signChain } from './draw.js';
 
 /* ================= outils ================= */
 const big = s => `<div class="big">${s}</div>`;
@@ -121,11 +121,14 @@ function L1(d) {
 }
 function C1() {
   return `<h2>1. Repérer sur une droite graduée</h2>
+<p class="intro">Les nombres relatifs permettent d'aller « en dessous de zéro » : températures négatives, étages de parking, altitudes sous la mer. On les place sur une droite graduée.</p>
 <div class="def">Sur une droite graduée, chaque point a une <b>abscisse</b>. À droite de 0, les nombres sont <b>positifs</b> ; à gauche de 0, ils sont <b>négatifs</b> et s'écrivent avec le signe −. Ce sont les <b>nombres relatifs</b>.</div>
+<div class="methode"><b>Méthode</b><ol><li>Repère le 0 (le trait plus épais).</li><li>Regarde de combien en combien la droite est graduée (de 1 en 1 ? les nombres écrits de 5 en 5 ?).</li><li>Compte les graduations entre 0 et le point.</li><li>À gauche de 0, mets le signe −.</li></ol></div>
 ${wide(intLine({ min: -6, max: 6, marks: [{ x: -4, l: 'A' }, { x: 3, l: 'B', c: '#1971c2' }] }))}
-<div class="ex">A est à 4 graduations à gauche de 0 : A a pour abscisse −4. B est à 3 graduations à droite : B a pour abscisse 3 (ou +3).</div>
-<div class="warn">⚠️ Quand on part de 0 vers la gauche, on écrit −1, −2, −3… : le nombre grandit en distance, mais il porte le signe −.</div>
-<div class="warn">⚠️ 0 n'est ni positif ni négatif.</div>`;
+<div class="ex"><span class="q">Exemple 1 : les points A et B</span><br>A est à 4 graduations à <b>gauche</b> de 0 : A a pour abscisse <b>−4</b>.<br>B est à 3 graduations à droite : B a pour abscisse <b>3</b> (on peut écrire +3).</div>
+<div class="ex"><span class="q">Exemple 2 : une droite de −20 à 20</span><br>Les nombres ne sont écrits que de 5 en 5. Un point situé 2 graduations à gauche de −10 a pour abscisse <b>−12</b> : on compte à partir du nombre écrit le plus proche.</div>
+<div class="warn">⚠️ À gauche de 0, on écrit −1, −2, −3… : on s'éloigne de 0, mais le nombre porte le signe −.<br>⚠️ 0 n'est ni positif ni négatif.</div>
+<div class="retenir">À retenir : à droite de 0, positif ; à gauche de 0, négatif.</div>`;
 }
 
 /* ================= 2. comparer ================= */
@@ -156,11 +159,14 @@ function L2(d) {
 }
 function C2() {
   return `<h2>2. Comparer des nombres relatifs</h2>
+<p class="intro">Comparer des relatifs, c'est savoir s'il fait plus froid à −6 °C ou à −2 °C, ou quel compte en banque est le moins à découvert.</p>
 <div class="def">Sur la droite graduée, le plus grand de deux nombres est celui qui est le plus à <b>droite</b>.<br>• Un nombre positif est plus grand qu'un nombre négatif.<br>• Entre deux nombres <b>négatifs</b>, le plus grand est celui qui est le plus <b>proche de zéro</b>.</div>
+<div class="methode"><b>Méthode</b><ol><li>Les signes sont différents ? Le positif est le plus grand.</li><li>Les deux sont positifs ? Le plus grand est le plus loin de 0.</li><li>Les deux sont négatifs ? Le plus grand est le plus <b>proche</b> de 0.</li><li>Écris &lt; ou &gt; : la pointe est tournée vers le plus petit.</li></ol></div>
 ${wide(intLine({ min: -8, max: 4, marks: [{ x: -6, l: '−6' }, { x: -2, l: '−2', c: '#1971c2' }, { x: 3, l: '3', c: '#2b8a3e' }] }))}
-<div class="ex">−6 &lt; −2 (−2 est plus à droite) &nbsp; et &nbsp; −2 &lt; 3.</div>
-<div class="ex">−3,5 &lt; −3,2 : −3,2 est plus proche de 0.</div>
-<div class="warn">⚠️ −6 n'est pas plus grand que −2 ! Pense au thermomètre : il fait plus froid à −6 °C qu'à −2 °C.</div>`;
+<div class="ex"><span class="q">Exemple 1 : −6 et −2, puis −2 et 3</span><br>−2 est plus à droite que −6 : −6 &lt; −2. Et un négatif est plus petit qu'un positif : −2 &lt; 3.</div>
+<div class="ex"><span class="q">Exemple 2 : −3,5 et −3,2</span><br>Les deux sont négatifs ; −3,2 est plus proche de 0, donc −3,5 &lt; −3,2.</div>
+<div class="warn">⚠️ −6 n'est pas plus grand que −2 ! Il fait plus froid à −6 °C qu'à −2 °C.<br>⚠️ Ne compare pas seulement les chiffres : 6 &gt; 2, mais −6 &lt; −2.</div>
+<div class="retenir">À retenir : le plus grand est le plus à droite sur la droite graduée.</div>`;
 }
 
 /* ================= 3. opposé et distance à zéro ================= */
@@ -202,11 +208,14 @@ function L3(d) {
 }
 function C3() {
   return `<h2>3. Opposé et distance à zéro</h2>
-<div class="def">La <b>distance à zéro</b> d'un nombre est sa distance au point 0 sur la droite graduée : c'est le nombre <b>sans son signe</b>.<br>Deux nombres sont <b>opposés</b> quand ils ont la même distance à zéro et des signes contraires.</div>
+<p class="intro">Deux nombres opposés sont comme le reflet l'un de l'autre dans un miroir placé en 0.</p>
+<div class="def">La <b>distance à zéro</b> d'un nombre est la distance entre son point et 0 sur la droite graduée : c'est le nombre <b>sans son signe</b>.<br>Deux nombres sont <b>opposés</b> quand ils ont la même distance à zéro et des signes contraires.</div>
+<div class="methode"><b>Méthode</b><ol><li>Distance à zéro : enlève le signe (elle est toujours positive).</li><li>Opposé : garde la distance à zéro et <b>change le signe</b>.</li><li>Les deux nombres à une distance k de 0 : k et −k.</li></ol></div>
 ${wide(intLine({ min: -6, max: 6, arrows: [{ from: 0, to: -4, l: '4', c: '#1971c2' }, { from: 0, to: 4, l: '4', c: '#e8590c' }], marks: [{ x: -4, c: '#1971c2' }, { x: 4, c: '#e8590c' }] }))}
-<div class="ex">−4 et 4 sont opposés : tous deux sont à 4 de 0. La distance à zéro de −4 est 4.</div>
-<div class="ex">L'opposé de 7 est −7 ; l'opposé de −2,5 est 2,5 ; l'opposé de 0 est 0.</div>
-<div class="warn">⚠️ Une distance n'est jamais négative : la distance à zéro de −9 est 9, pas −9.</div>`;
+<div class="ex"><span class="q">Exemple 1 : −4 et 4</span><br>Tous deux sont à 4 de 0 : ils sont opposés. La distance à zéro de −4 est <b>4</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : opposés et cas particuliers</span><br>L'opposé de 7 est −7 ; l'opposé de −2,5 est 2,5 ; l'opposé de 0 est 0.<br>Les deux nombres dont la distance à zéro est 9 : <b>−9 et 9</b>.</div>
+<div class="warn">⚠️ Une distance n'est jamais négative : la distance à zéro de −9 est 9, pas −9.<br>⚠️ L'opposé n'est pas le même nombre : l'opposé de −3 est 3.</div>
+<div class="retenir">À retenir : opposé = même distance à zéro, signe contraire.</div>`;
 }
 
 /* ================= 4. le thermomètre (ajouter ou enlever des degrés) ================= */
@@ -235,11 +244,14 @@ function L4(d) {
 }
 function C4() {
   return `<h2>4. Le thermomètre</h2>
-<div class="def">Sur un thermomètre, les températures sous 0 °C sont <b>négatives</b>. Quand la température <b>monte</b>, on avance vers le haut ; quand elle <b>baisse</b>, on descend.</div>
-${thermo({ t: -3, to: 2, label: '+ 5' })}
-<div class="ex">Il fait −3 °C et la température monte de 5 °C : de −3 à 0, on monte de 3, puis encore 2 au-dessus de 0. Il fait <b>2 °C</b>.</div>
-<div class="ex">Il fait 4 °C et la température baisse de 6 °C : on descend de 4 jusqu'à 0, puis encore 2 : il fait <b>−2 °C</b>.</div>
-<div class="warn">⚠️ Monter de 5 depuis −3 ne donne pas −8 ! Monter, c'est aller vers les nombres plus grands.</div>`;
+<p class="intro">Le thermomètre est une droite graduée verticale : on y voit très bien ce qui se passe quand on passe sous zéro.</p>
+<div class="def">Sur un thermomètre, les températures sous 0 °C sont <b>négatives</b>. Quand la température <b>monte</b>, on avance vers le haut (vers les nombres plus grands) ; quand elle <b>baisse</b>, on descend.</div>
+<div class="cols"><div class="methode"><b>Méthode</b><ol><li>Place-toi à la température de départ.</li><li>Monte ou descends d'autant de graduations que l'énoncé l'indique.</li><li>Si tu passes 0, fais-le en deux temps : d'abord jusqu'à 0, puis le reste.</li><li>Deux changements ? Fais-les l'un après l'autre.</li></ol></div>
+${thermo({ t: -3, to: 2, label: '+ 5' })}</div>
+<div class="ex"><span class="q">Exemple 1 : il fait −3 °C, la température monte de 5 °C</span><br>De −3 à 0 : on monte de 3 ; il reste 2 au-dessus de 0. Il fait <b>2 °C</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : il fait 4 °C, elle baisse de 6 °C, puis monte de 1 °C</span><br>De 4 à 0 : 4 degrés, puis encore 2 en dessous : −2 °C. Ensuite −2 + 1 = <b>−1 °C</b>.</div>
+<div class="warn">⚠️ Monter de 5 depuis −3 ne donne pas −8 ! Monter, c'est aller vers les nombres plus grands.<br>⚠️ Ne saute pas le 0 : compte bien les degrés de chaque côté.</div>
+<div class="retenir">À retenir : monter, c'est ajouter ; baisser, c'est enlever.</div>`;
 }
 
 /* ================= 5. additionner deux relatifs ================= */
@@ -280,13 +292,15 @@ function L5(d) {
 }
 function C5() {
   return `<h2>5. Additionner deux nombres relatifs</h2>
+<p class="intro">Additionner des relatifs, c'est faire le bilan de gains et de pertes, ou enchaîner deux déplacements sur la droite graduée.</p>
 <div class="def">• <b>Même signe</b> : on additionne les distances à zéro et on garde le signe.<br>• <b>Signes contraires</b> : on soustrait les distances à zéro (la plus grande moins la plus petite) et on prend le signe du nombre le plus éloigné de zéro.</div>
+<div class="methode"><b>Méthode</b><ol><li>Regarde les signes des deux nombres.</li><li>Même signe : additionne les distances à zéro.</li><li>Signes contraires : fais la différence des distances à zéro.</li><li>Mets le signe (le commun, ou celui du plus éloigné de 0).</li></ol></div>
 ${wide(chain([-3, 5]))}
-<div class="ex">(−3) + (+5) : signes contraires, 5 − 3 = 2, et 5 est le plus loin de 0 : (−3) + (+5) = <b>2</b>.</div>
-<div class="ex">(−4) + (−7) : même signe, 4 + 7 = 11 : (−4) + (−7) = <b>−11</b>.</div>
-<div class="ex">Gains et pertes : gagner 6 € puis perdre 10 €, c'est (+6) + (−10) = −4 : bilan, 4 € de perte.</div>
-<div class="warn">⚠️ (−4) + (−7) n'est pas 11 : deux pertes font une perte plus grande.</div>
-<div class="warn">⚠️ (−3) + (+5) n'est pas −8 : avec des signes contraires, on fait une <b>différence</b>.</div>`;
+<div class="ex"><span class="q">Exemple 1 : (−3) + (+5)</span><br>Signes contraires : 5 − 3 = 2, et 5 est le plus loin de 0 : (−3) + (+5) = <b>2</b>. Sur la droite : 3 pas à gauche, puis 5 pas à droite.</div>
+<div class="ex"><span class="q">Exemple 2 : (−4) + (−7) et (−2,5) + 1,5</span><br>Même signe : 4 + 7 = 11, on garde − : <b>−11</b>.<br>Signes contraires : 2,5 − 1,5 = 1, signe de −2,5 : <b>−1</b>.</div>
+<div class="ex"><span class="q">Exemple 3 : gagner 6 points puis perdre 10 points</span><br>(+6) + (−10) = <b>−4</b> : le bilan est une perte de 4 points.</div>
+<div class="warn">⚠️ (−4) + (−7) n'est pas 11 : deux pertes font une perte plus grande.<br>⚠️ (−3) + (+5) n'est pas −8 : avec des signes contraires, on fait une <b>différence</b>.</div>
+<div class="retenir">À retenir : même signe → j'additionne ; signes contraires → je soustrais.</div>`;
 }
 
 /* ================= 6. soustraire, c'est ajouter l'opposé ================= */
@@ -319,13 +333,15 @@ function L6(d) {
 }
 function C6() {
   return `<h2>6. Soustraire, c'est ajouter l'opposé</h2>
+<p class="intro">On ne retient pas une nouvelle règle pour la soustraction : on la transforme en addition, que l'on sait déjà faire.</p>
 <div class="def">Pour <b>soustraire</b> un nombre relatif, on <b>ajoute son opposé</b> : a − b = a + (opposé de b).</div>
-<div class="ex">(+2) − (+5) = (+2) + (−5) = <b>−3</b></div>
+<div class="methode"><b>Méthode</b><ol><li>Garde le premier nombre tel quel.</li><li>Change le − en + et remplace le deuxième nombre par son <b>opposé</b>.</li><li>Fais l'addition avec la règle du niveau 5.</li><li>Variation de température : arrivée − départ.</li></ol></div>
 ${wide(chain([2, -5]))}
-<div class="ex">(−4) − (−6) = (−4) + (+6) = <b>2</b> : enlever une dette de 6, c'est comme gagner 6.</div>
-<div class="ex">Écart de température : de −3 °C à 5 °C, la variation est 5 − (−3) = 5 + 3 = 8 °C.</div>
-<div class="warn">⚠️ On ne change que le signe du nombre <b>soustrait</b> (le deuxième), jamais celui du premier.</div>
-<div class="warn">⚠️ (−4) − (−6) n'est pas −10 : − (−6) devient + 6.</div>`;
+<div class="ex"><span class="q">Exemple 1 : (+2) − (+5)</span><br>(+2) + (−5) = <b>−3</b> : sur la droite, 2 pas à droite puis 5 pas à gauche.</div>
+<div class="ex"><span class="q">Exemple 2 : (−4) − (−6)</span><br>(−4) + (+6) = <b>2</b> : enlever une dette de 6, c'est comme gagner 6.</div>
+<div class="ex"><span class="q">Exemple 3 : à 8 h il fait −3 °C, à 14 h il fait 5 °C</span><br>Variation : 5 − (−3) = 5 + 3 = <b>8 °C</b> (la température a monté de 8 °C).</div>
+<div class="warn">⚠️ On ne change que le signe du nombre <b>soustrait</b> (le deuxième), jamais celui du premier.<br>⚠️ (−4) − (−6) n'est pas −10 : − (−6) devient + 6.</div>
+<div class="retenir">À retenir : soustraire un nombre, c'est ajouter son opposé.</div>`;
 }
 
 /* ================= 7. sommes algébriques ================= */
@@ -353,12 +369,14 @@ function L7(d) {
 }
 function C7() {
   return `<h2>7. Sommes de plusieurs relatifs</h2>
-<div class="def">Dans une <b>écriture simplifiée</b>, on supprime les parenthèses et les signes + inutiles :<br>+ (+3) → + 3 &nbsp; ; &nbsp; + (−3) → − 3 &nbsp; ; &nbsp; − (+3) → − 3 &nbsp; ; &nbsp; − (−3) → + 3.<br>Pour calculer, on <b>regroupe</b> les termes positifs et les termes négatifs.</div>
-<div class="ex">−3 + 7 − 5 + 2 : positifs 7 + 2 = 9 ; négatifs −3 − 5 = −8 ; total 9 − 8 = <b>1</b>.</div>
+<p class="intro">Avec beaucoup de termes, on s'organise : on regroupe tout ce qui est positif et tout ce qui est négatif.</p>
+<div class="def">Dans une <b>écriture simplifiée</b>, on supprime les parenthèses et les signes + inutiles :<br>+ (+3) → + 3 &nbsp; ; &nbsp; + (−3) → − 3 &nbsp; ; &nbsp; − (+3) → − 3 &nbsp; ; &nbsp; − (−3) → + 3.</div>
+<div class="methode"><b>Méthode</b><ol><li>S'il y a des parenthèses, simplifie l'écriture.</li><li>Chaque nombre garde le signe écrit <b>devant</b> lui.</li><li>Additionne les termes positifs, puis les termes négatifs.</li><li>Termine par une seule addition de deux relatifs.</li></ol></div>
 ${wide(chain([-3, 7, -5, 2]))}
-<div class="ex">(+4) − (−6) + (−9) = 4 + 6 − 9 = <b>1</b>.</div>
-<div class="warn">⚠️ Le signe devant un nombre lui appartient : dans 7 − 5, le 5 est compté comme −5.</div>
-<div class="warn">⚠️ − (−6) donne + 6 : deux « moins » qui se suivent font un « plus ».</div>`;
+<div class="ex"><span class="q">Exemple 1 : −3 + 7 − 5 + 2</span><br>Positifs : 7 + 2 = 9. Négatifs : −3 − 5 = −8. Total : 9 − 8 = <b>1</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : (+4) − (−6) + (−9) − (+2)</span><br>Écriture simplifiée : 4 + 6 − 9 − 2. Positifs : 10 ; négatifs : −11. Total : <b>−1</b>.</div>
+<div class="warn">⚠️ Le signe devant un nombre lui appartient : dans 7 − 5, le 5 est compté comme −5.<br>⚠️ − (−6) donne + 6 : deux « moins » qui se suivent font un « plus ».</div>
+<div class="retenir">À retenir : je regroupe les positifs, je regroupe les négatifs, puis je fais le bilan.</div>`;
 }
 
 /* ================= 8. multiplier deux relatifs ================= */
@@ -386,12 +404,15 @@ function L8(d) {
 }
 function C8() {
   return `<h2>8. Multiplier deux nombres relatifs</h2>
-<div class="def">Pour multiplier deux relatifs, on multiplie leurs distances à zéro, puis on met le signe :<br>• <b>même signe</b> → produit <b>positif</b> ; &nbsp; • <b>signes contraires</b> → produit <b>négatif</b>.</div>
-${signRule()}
-<div class="ex">3 × (−2) = (−2) + (−2) + (−2) = <b>−6</b> : trois pas de −2 sur la droite.</div>
+<p class="intro">Multiplier, c'est répéter une addition : 3 × (−2), c'est trois fois −2. Il suffit ensuite de trouver le bon signe.</p>
+<div class="def">Pour multiplier deux relatifs, on multiplie leurs distances à zéro, puis on met le signe :<br>• <b>même signe</b> → produit <b>positif</b> ; &nbsp; • <b>signes contraires</b> → produit <b>négatif</b>.<br>Si un facteur est 0, le produit est 0.</div>
+<div class="cols"><div class="methode"><b>Méthode</b><ol><li>Trouve le signe du produit avec le tableau.</li><li>Multiplie les nombres sans leur signe.</li><li>Écris le résultat avec son signe.</li></ol></div>
+${signRule()}</div>
 ${wide(chain([-2, -2, -2]))}
-<div class="ex">(−4) × (−5) = <b>20</b> (même signe) ; &nbsp; (−7) × 3 = <b>−21</b> (signes contraires).</div>
-<div class="warn">⚠️ (−4) × (−5) n'est pas −20 : « moins par moins donne plus » vaut pour la <b>multiplication</b>, pas pour l'addition : (−4) + (−5) = −9.</div>`;
+<div class="ex"><span class="q">Exemple 1 : 3 × (−2)</span><br>(−2) + (−2) + (−2) = <b>−6</b> : trois pas de −2 sur la droite. Signes contraires → négatif.</div>
+<div class="ex"><span class="q">Exemple 2 : (−4) × (−5), (−7) × 3 et (−0,5) × 8</span><br>Même signe : <b>20</b>. Signes contraires : <b>−21</b>. Signes contraires : 0,5 × 8 = 4, donc <b>−4</b>.</div>
+<div class="warn">⚠️ (−4) × (−5) n'est pas −20 : « moins par moins donne plus » pour la <b>multiplication</b>.<br>⚠️ Mais pas pour l'addition : (−4) + (−5) = −9.</div>
+<div class="retenir">À retenir : même signe → +, signes contraires → −.</div>`;
 }
 
 /* ================= 9. règle des signes : produits de plusieurs facteurs ================= */
@@ -421,12 +442,15 @@ function L9(d) {
 }
 function C9() {
   return `<h2>9. Règle des signes : plusieurs facteurs</h2>
-<div class="def">Le signe d'un produit de nombres relatifs (non nuls) dépend du <b>nombre de facteurs négatifs</b> :<br>• un nombre <b>pair</b> de facteurs négatifs → produit <b>positif</b> ;<br>• un nombre <b>impair</b> → produit <b>négatif</b>.<br>Si un des facteurs est 0, le produit est nul.</div>
-${signRule()}
-<div class="ex">(−2) × 3 × (−5) : 2 facteurs négatifs (pair) → positif. 2 × 3 × 5 = 30, donc le produit vaut <b>30</b>.</div>
-<div class="ex">(−1) × (−2) × (−3) : 3 facteurs négatifs (impair) → <b>−6</b>.</div>
-<div class="warn">⚠️ On compte les facteurs <b>négatifs</b>, pas tous les facteurs.</div>
-<div class="warn">⚠️ 12 × (−7) × 0 × (−3) = 0 : inutile de calculer le reste !</div>`;
+<p class="intro">Avec plusieurs facteurs, inutile de tout calculer pour connaître le signe : il suffit de compter les facteurs négatifs.</p>
+<div class="def">Le signe d'un produit de nombres relatifs non nuls dépend du <b>nombre de facteurs négatifs</b> :<br>• nombre <b>pair</b> de facteurs négatifs → produit <b>positif</b> ;<br>• nombre <b>impair</b> → produit <b>négatif</b>.<br>Si un des facteurs est 0, le produit est nul.</div>
+<div class="methode"><b>Méthode</b><ol><li>Y a-t-il un facteur égal à 0 ? Alors le produit est nul.</li><li>Sinon, compte les facteurs négatifs : pair → +, impair → −.</li><li>Pour la valeur, multiplie les distances à zéro.</li></ol></div>
+${signChain([-2, 3, -5])}
+<div class="ex"><span class="q">Exemple 1 : (−2) × 3 × (−5)</span><br>2 facteurs négatifs (pair) → positif. 2 × 3 × 5 = 30, donc le produit vaut <b>30</b>. Chaque facteur négatif fait changer le signe.</div>
+<div class="ex"><span class="q">Exemple 2 : (−1) × (−2) × (−3) × 4</span><br>3 facteurs négatifs (impair) → négatif. 1 × 2 × 3 × 4 = 24 : <b>−24</b>.</div>
+<div class="ex"><span class="q">Exemple 3 : 12 × (−7) × 0 × (−3)</span><br>Un facteur vaut 0 : le produit est <b>nul</b>, inutile de calculer le reste !</div>
+<div class="warn">⚠️ On compte les facteurs <b>négatifs</b>, pas tous les facteurs.<br>⚠️ Si un facteur est 0, la réponse est « nul », ni positif ni négatif.</div>
+<div class="retenir">À retenir : nombre pair de signes − → positif ; impair → négatif.</div>`;
 }
 
 /* ================= 10. diviser ================= */
@@ -456,14 +480,17 @@ function L10(d) {
 }
 function C10() {
   return `<h2>10. Diviser des nombres relatifs</h2>
-<div class="def">Pour diviser, on divise les distances à zéro, puis on applique la <b>même règle des signes</b> que pour la multiplication : même signe → quotient positif ; signes contraires → quotient négatif.</div>
-${signRule()}
-<div class="ex">(−24) ÷ 6 = <b>−4</b> ; &nbsp; (−35) ÷ (−7) = <b>5</b> ; &nbsp; ${F('−18', '−3')} = <b>6</b>.</div>
-<div class="ex">Nombre manquant : (−4) × ? = 28. On calcule 28 ÷ (−4) = −7. Vérification : (−4) × (−7) = 28 ✔.</div>
+<p class="intro">La division est l'opération inverse de la multiplication : elle suit donc exactement la même règle des signes.</p>
+<div class="def">Pour diviser, on divise les distances à zéro, puis on applique la <b>même règle des signes</b> que pour la multiplication : même signe → quotient positif ; signes contraires → quotient négatif.<br>Une fraction est une division : ${F('−18', '−3')} = (−18) ÷ (−3).</div>
+<div class="cols"><div class="methode"><b>Méthode</b><ol><li>Trouve le signe du quotient.</li><li>Divise les nombres sans leur signe.</li><li>Nombre manquant (−4) × ? = 28 : calcule 28 ÷ (−4).</li><li>Vérifie en multipliant.</li></ol></div>
+${signRule()}</div>
 ${wide(chain([-3, -3, -3, -3]))}
 <p style="text-align:center">(−12) ÷ 4 = −3 : on coupe −12 en 4 pas égaux de −3.</p>
-<div class="warn">⚠️ On ne divise jamais par 0.</div>
-<div class="warn">⚠️ (−7) ÷ 2 = −3,5 : le quotient peut être un nombre décimal.</div>`;
+<div class="ex"><span class="q">Exemple 1 : (−24) ÷ 6 ; (−35) ÷ (−7) ; ${F('−18', '−3')}</span><br><b>−4</b> (signes contraires) ; <b>5</b> (même signe) ; <b>6</b> (même signe).</div>
+<div class="ex"><span class="q">Exemple 2 : (−4) × ? = 28</span><br>28 ÷ (−4) = <b>−7</b>. Vérification : (−4) × (−7) = 28 ✔.</div>
+<div class="ex"><span class="q">Exemple 3 : (−7) ÷ 2</span><br>Signes contraires : 7 ÷ 2 = 3,5, donc <b>−3,5</b>. Le quotient peut être décimal.</div>
+<div class="warn">⚠️ On ne divise jamais par 0.<br>⚠️ (−35) ÷ (−7) n'est pas −5 : même signe → positif.</div>
+<div class="retenir">À retenir : pour ÷, la même règle des signes que pour ×.</div>`;
 }
 
 /* ================= 11. calculs enchaînés et priorités ================= */
@@ -511,11 +538,14 @@ function L11(d) {
 function C11() {
   const hl = s => `<span style="background:#ffe3e3;border-radius:6px;padding:0 4px">${s}</span>`;
   return `<h2>11. Calculs enchaînés : les priorités</h2>
-<div class="def">Dans un calcul, on effectue dans l'ordre :<br>1. les calculs <b>entre parenthèses</b> ;<br>2. les <b>multiplications et divisions</b> (de gauche à droite) ;<br>3. les <b>additions et soustractions</b> (de gauche à droite).<br>À chaque étape, on applique les règles des relatifs.</div>
-<div class="ex" style="line-height:2">−5 + ${hl('3 × (−4)')}<br>= ${hl('−5 + (−12)')}<br>= <b>−17</b></div>
-<div class="ex" style="line-height:2">2 − 3 × ${hl('(−1 − 4)')}<br>= 2 − ${hl('3 × (−5)')}<br>= ${hl('2 − (−15)')}<br>= <b>17</b></div>
-<div class="warn">⚠️ −5 + 3 × (−4) n'est pas (−2) × (−4) = 8 : la multiplication passe avant l'addition.</div>
-<div class="warn">⚠️ Recopie à chaque ligne tout ce qui n'a pas encore été calculé.</div>`;
+<p class="intro">Quand plusieurs opérations se suivent, l'ordre des calculs compte. On applique les priorités, et à chaque étape les règles des relatifs.</p>
+<div class="def">Dans un calcul, on effectue dans l'ordre :<br>1. les calculs <b>entre parenthèses</b> ;<br>2. les <b>multiplications et divisions</b> (de gauche à droite) ;<br>3. les <b>additions et soustractions</b> (de gauche à droite).</div>
+<div class="methode"><b>Méthode</b><ol><li>Repère les parenthèses, puis les × et ÷.</li><li>Calcule une seule étape à la fois (en couleur ci-dessous).</li><li>Recopie tout ce qui n'a pas encore été calculé.</li><li>Termine par les + et −, avec la règle d'addition.</li></ol></div>
+<div class="ex" style="line-height:2"><span class="q">Exemple 1 : −5 + 3 × (−4)</span><br>−5 + ${hl('3 × (−4)')}<br>= ${hl('−5 + (−12)')}<br>= <b>−17</b></div>
+${wide(intLine({ min: -20, max: 2, arrows: [{ from: 0, to: -5, l: '−5', c: '#1971c2' }, { from: -5, to: -17, l: '+ (−12)', c: '#e8590c' }], marks: [{ x: -17, l: '−17' }] }))}
+<div class="ex" style="line-height:2"><span class="q">Exemple 2 : 2 − 3 × (−1 − 4)</span><br>2 − 3 × ${hl('(−1 − 4)')}<br>= 2 − ${hl('3 × (−5)')}<br>= ${hl('2 − (−15)')}<br>= 2 + 15 = <b>17</b></div>
+<div class="warn">⚠️ −5 + 3 × (−4) n'est pas (−2) × (−4) = 8 : la multiplication passe avant l'addition.<br>⚠️ 2 − (−15) : soustraire −15, c'est ajouter 15.</div>
+<div class="retenir">À retenir : parenthèses, puis × et ÷, puis + et −.</div>`;
 }
 
 /* ================= 12. défis et problèmes ================= */
@@ -575,13 +605,15 @@ function L12(d) {
 }
 function C12() {
   return `<h2>12. Défis : problèmes et expressions</h2>
-<p>On mélange tout : additions, soustractions, produits, quotients et priorités, dans des situations concrètes.</p>
-<div class="def">Pour <b>remplacer une lettre</b> par un nombre négatif, on le met <b>entre parenthèses</b> et on rétablit le signe × :<br>si x = −3, alors 4x − 5 = 4 × (−3) − 5 = −12 − 5 = −17.</div>
-<div class="ex">Altitude : un plongeur à −12 m remonte de 5 m : −12 + 5 = −7 m.</div>
+<p class="intro">On mélange tout : additions, soustractions, produits, quotients et priorités, dans des situations concrètes (altitude, compte en banque, moyenne de températures).</p>
+<div class="def">Pour <b>remplacer une lettre</b> par un nombre négatif, on le met <b>entre parenthèses</b> et on rétablit le signe × :<br>si x = −3, alors 4x − 5 = 4 × (−3) − 5 = −12 − 5 = −17.<br><b>Moyenne</b> = somme des valeurs ÷ nombre de valeurs.</div>
+<div class="methode"><b>Méthode</b><ol><li>Traduis l'énoncé en calcul : monter, gagner → + ; descendre, perdre → −.</li><li>Remplace les lettres par leur valeur, entre parenthèses.</li><li>Respecte les priorités.</li><li>Relis la question : réponds avec l'unité (m, €, °C).</li></ol></div>
 ${wide(chain([-12, 5]))}
-<div class="ex">Moyenne de −4, 2, −1 et −5 : (−4 + 2 − 1 − 5) ÷ 4 = −8 ÷ 4 = −2.</div>
-<div class="warn">⚠️ 4x avec x = −3 n'est pas 4 − 3 : c'est 4 <b>×</b> (−3).</div>
-<div class="warn">⚠️ « − ( … ) » : on soustrait tout le résultat de la parenthèse.</div>`;
+<div class="ex"><span class="q">Exemple 1 : un plongeur à −12 m remonte de 5 m</span><br>−12 + 5 = <b>−7</b> : il est à 7 m sous la surface.</div>
+<div class="ex"><span class="q">Exemple 2 : moyenne de −4, 2, −1 et −5</span><br>Somme : −4 + 2 − 1 − 5 = −8. Moyenne : −8 ÷ 4 = <b>−2</b>.</div>
+<div class="ex"><span class="q">Exemple 3 : 3 − (−2 − 4 × (−1))</span><br>Dans la parenthèse : −2 − (−4) = 2. Puis 3 − 2 = <b>1</b>.</div>
+<div class="warn">⚠️ 4x avec x = −3 n'est pas 4 − 3 : c'est 4 <b>×</b> (−3).<br>⚠️ « − ( … ) » : on soustrait tout le résultat de la parenthèse.</div>
+<div class="retenir">À retenir : je traduis, je mets les négatifs entre parenthèses, je respecte les priorités.</div>`;
 }
 
 export const LEVELS = [
