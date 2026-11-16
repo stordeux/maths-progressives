@@ -43,7 +43,7 @@ export const MODULES = [
   // ---
   { id: 'probas-lycee', titre: 'Probabilités conditionnelles', emoji: '🌳', classes: '1re – Tle', groupe: 'Lycée (1re – Tle)', couleur: '#166534', couleur2: '#e9f7ee', resume: 'Arbres pondérés, probabilités totales, indépendance, loi binomiale.' },
   // ---
-  { id: 'exp-ln', titre: 'Exponentielle et logarithme', emoji: '🌱', classes: '1re – Tle', groupe: 'Lycée (1re – Tle)', couleur: '#9a3412', couleur2: '#fdf1e7', resume: 'Propriétés de eˣ et ln, équations, inéquations, croissance et décroissance exponentielles.', etat: 'bientot' },
+  { id: 'exp-ln', titre: 'Exponentielle et logarithme', emoji: '🌱', classes: '1re – Tle', groupe: 'Lycée (1re – Tle)', couleur: '#9a3412', couleur2: '#fdf1e7', resume: 'Propriétés de eˣ et ln, équations, inéquations, croissance et décroissance exponentielles.' },
   // ---
   { id: 'derivees', titre: 'Dérivées', emoji: '📉', classes: '1re', groupe: 'Lycée (1re – Tle)', couleur: '#0f5132', couleur2: '#e6f4ea', resume: 'Nombre dérivé, tangente, dérivées usuelles, produit et quotient, variations, extremums.' },
   // ---
