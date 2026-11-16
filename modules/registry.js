@@ -34,11 +34,15 @@ export const MODULES = [
   { id: 'inegalites', titre: 'Inégalités', emoji: '↔️', classes: '3e – 2de', groupe: 'Vers le lycée', couleur: '#0b7285', couleur2: '#e3fafc', resume: 'Intervalles, inéquations, valeur absolue, carrés, produits.' },
   // ---
   { id: 'poly2', titre: 'Second degré', emoji: '📈', classes: '2de – 1re', groupe: 'Vers le lycée', couleur: '#5f3dc4', couleur2: '#efe9ff', resume: 'Développer, forme canonique, sommet, racines, signe, discriminant.' },
+  // --- lycée (1re – Tle)
+  { id: 'derivees', titre: 'Dérivées', emoji: '📉', classes: '1re', groupe: 'Lycée (1re – Tle)', couleur: '#0f5132', couleur2: '#e6f4ea', resume: 'Nombre dérivé, tangente, dérivées usuelles, produit et quotient, variations, extremums.', etat: 'bientot' },
+  // ---
+  { id: 'integrales', titre: 'Intégrales', emoji: '∫', classes: 'Terminale', groupe: 'Lycée (1re – Tle)', couleur: '#7c2d12', couleur2: '#fdf0e6', resume: 'Primitives, aire sous une courbe, calcul d’intégrales, valeur moyenne.', etat: 'bientot' },
   // --- transversal
   { id: 'revision', titre: 'Révision brevet', emoji: '🎓', classes: '3e', groupe: 'Transversal', couleur: '#a61e4d', couleur2: '#fff0f6', resume: 'Des exercices de tous les modules du collège, chronométrés, avec un bilan.' },
   // ---
 ];
 
-export const GROUPES = ['Calcul', 'Proportionnalité et données', 'Géométrie', 'Vers le lycée', 'Transversal'];
+export const GROUPES = ['Calcul', 'Proportionnalité et données', 'Géométrie', 'Vers le lycée', 'Lycée (1re – Tle)', 'Transversal'];
 /** modules utilisables (écrits et testés) */
 export const READY = MODULES.filter(m => m.etat !== 'bientot');
