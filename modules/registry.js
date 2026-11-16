@@ -35,7 +35,7 @@ export const MODULES = [
   // ---
   { id: 'poly2', titre: 'Second degré', emoji: '📈', classes: '2de – 1re', groupe: 'Vers le lycée', couleur: '#5f3dc4', couleur2: '#efe9ff', resume: 'Développer, forme canonique, sommet, racines, signe, discriminant.' },
   // --- lycée (1re – Tle)
-  { id: 'derivees', titre: 'Dérivées', emoji: '📉', classes: '1re', groupe: 'Lycée (1re – Tle)', couleur: '#0f5132', couleur2: '#e6f4ea', resume: 'Nombre dérivé, tangente, dérivées usuelles, produit et quotient, variations, extremums.', etat: 'bientot' },
+  { id: 'derivees', titre: 'Dérivées', emoji: '📉', classes: '1re', groupe: 'Lycée (1re – Tle)', couleur: '#0f5132', couleur2: '#e6f4ea', resume: 'Nombre dérivé, tangente, dérivées usuelles, produit et quotient, variations, extremums.' },
   // ---
   { id: 'integrales', titre: 'Intégrales', emoji: '∫', classes: 'Terminale', groupe: 'Lycée (1re – Tle)', couleur: '#7c2d12', couleur2: '#fdf0e6', resume: 'Primitives, aire sous une courbe, calcul d’intégrales, valeur moyenne.', etat: 'bientot' },
   // --- transversal

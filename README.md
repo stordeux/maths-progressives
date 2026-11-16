@@ -49,6 +49,7 @@ accueil → **Ma progression** → **Exporter** (code à recopier ou fichier `.j
 | 〰️ Fonctions | 3e – 2de | Vers le lycée |
 | ↔️ Inégalités | 3e – 2de | Vers le lycée |
 | 📈 Second degré | 2de – 1re | Vers le lycée |
+| 📉 Dérivées | 1re | Lycée (1re – Tle) |
 | 🎓 Révision brevet | 3e | Transversal |
 
 ## Pour les développeurs
