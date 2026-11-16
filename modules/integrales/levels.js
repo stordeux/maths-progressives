@@ -311,7 +311,7 @@ function C3() {
 <div><p>F(x) = x<sup>2</sup> − 1 (en vert, pointillés) : en chaque point, sa pente vaut f(x) = 2x (en bleu). Là où f &lt; 0, F descend ; là où f &gt; 0, F monte.</p></div>
 ${repere({ xr: [-3, 3], yr: [-5, 6], fs: [{ f, l: 'y = f(x)' }, { f: G, c: C_G, l: 'y = F(x)', dash: true }], aria: 'une fonction et une de ses primitives' })}
 </div>
-<div class="warn">⚠️ Ne confonds pas : la <b>dérivée</b> de f n'est pas une primitive de f.<br>⚠️ Une fonction a une infinité de primitives : F(x) + 5, F(x) − 2… ont la même dérivée.<br>⚠️ Une proposition égale à f elle-même n'est jamais la bonne : sa dérivée n'est pas f.</div>
+<div class="warn">⚠️ Ne confonds pas : la <b>dérivée</b> de f n'est pas une primitive de f.<br>⚠️ Une fonction a une infinité de primitives : F(x) + 5, F(x) − 2… ont la même dérivée.<br>⚠️ Une proposition égale à f elle-même n'est en général pas la bonne : sa dérivée n'est pas f. Seule exception à connaître : e<sup>x</sup>, qui est sa propre dérivée.</div>
 <div class="retenir">À retenir : F est une primitive de f quand F′ = f ; pour le vérifier, on dérive F.</div>`;
 }
 
