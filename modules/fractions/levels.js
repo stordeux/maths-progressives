@@ -11,6 +11,8 @@ const slot = '<span class="slot">?</span>';
 const simpl = (n, d) => { const [a, b] = red(n, d); if (b === 1 && d !== 1) return ` = ${a}`; return a !== n ? ` = ${F(a, b)}` : ''; };
 const int = (X, extra = {}) => ({ type: 'nums', tpl: 'Réponse : {0}', check: numsCheck([X]), value: X, ...extra });
 const frac = (N, D, o = {}) => ({ type: 'frac', check: fracCheck(N, D, o), value: N / D });
+/** numérateur tiré dans [lo ; hi] qui n'est pas un multiple de b : pas d'énoncé trivial comme 7/7 ou 6/3 */
+const horsMult = (lo, hi, b) => { let a; do { a = ri(lo, hi); } while (a % b === 0); return a; };
 
 /* ---------- dessins fixes des cours (sans hasard : les parts coloriées sont les premières) ---------- */
 const C_BLUE = '#74c0fc', C_ORA = '#ffa94d', C_GRN = '#8ce99a', C_INK = '#343a40';
@@ -102,7 +104,7 @@ ${fracLine(5, 3)}
 
 /* ---------- 2. fractions égales ---------- */
 function L2(d) {
-  const b = ri(2, 9), a = ri(1, b + (d >= 2 ? 6 : 3)), k = ri(2, d < 2 ? 5 : 9), v = d < 1 ? ri(0, 1) : ri(0, 2);
+  const b = ri(2, 9), a = horsMult(1, b + (d >= 2 ? 6 : 3), b), k = ri(2, d < 2 ? 5 : 9), v = d < 1 ? ri(0, 1) : ri(0, 2);
   let html, X, sol;
   if (v === 0) { html = `${F(a, b)} = ${F(slot, k * b)}`; X = k * a; sol = `${b} × ${k} = ${k * b}, donc ${a} × ${k} = ${k * a} : ${F(a, b)} = ${F(k * a, k * b)}`; }
   else if (v === 1) { html = `${F(a, b)} = ${F(k * a, slot)}`; X = k * b; sol = `${a} × ${k} = ${k * a}, donc ${b} × ${k} = ${k * b} : ${F(a, b)} = ${F(k * a, k * b)}`; }
@@ -149,10 +151,10 @@ ${bars([{ b: 24, segs: [[18, C_BLUE]], l: [18, 24] }, { b: 4, segs: [[3, C_BLUE]
 function L4(d) {
   let n1, d1, n2, d2, c1, c2, sol;
   if (chance(d < 1 ? .6 : d < 3 ? .3 : .15)) {
-    const dd = ri(3, 12); n1 = ri(1, 2 * dd); do { n2 = ri(1, 2 * dd); } while (n2 === n1); d1 = d2 = dd; c1 = n1; c2 = n2;
+    const dd = ri(3, 12); n1 = horsMult(1, 2 * dd, dd); do { n2 = horsMult(1, 2 * dd, dd); } while (n2 === n1); d1 = d2 = dd; c1 = n1; c2 = n2;
     sol = `Même dénominateur : on compare les numérateurs ${n1} et ${n2}.`;
   } else {
-    const dd = ri(2, 6), k = ri(2, d >= 3 ? 5 : 4), D = dd * k; const a = ri(1, 2 * dd), b = chance(.15) ? a * k : ri(1, 2 * D);
+    const dd = ri(2, 6), k = ri(2, d >= 3 ? 5 : 4), D = dd * k; const a = horsMult(1, 2 * dd, dd), b = chance(.15) ? a * k : horsMult(1, 2 * D, D);
     if (chance(.5)) { n1 = a; d1 = dd; n2 = b; d2 = D; c1 = a * k; c2 = b; sol = `${F(a, dd)} = ${F(a * k, D)}, puis on compare ${a * k} et ${b}.`; }
     else { n1 = b; d1 = D; n2 = a; d2 = dd; c1 = b; c2 = a * k; sol = `${F(a, dd)} = ${F(a * k, D)}, puis on compare ${b} et ${a * k}.`; }
   }
@@ -177,8 +179,10 @@ ${bars([{ b: 3, segs: [[2, C_BLUE]], l: [2, 3] }, { b: 6, segs: [[4, C_BLUE]], l
 
 /* ---------- 5. additionner, même dénominateur ---------- */
 function L5(d) {
-  const dd = ri(3, d < 2 ? 9 : 12), sub = d >= 1 && chance(.4); let a = ri(1, dd + (d >= 3 ? 6 : 2)), b = ri(1, dd);
-  if (sub && b > a) [a, b] = [b, a]; if (sub && a === b) a++;
+  const dd = ri(3, d < 2 ? 9 : 12), sub = d >= 1 && chance(.4); let a, b;
+  // ni n/n dans l'énoncé, ni a − a ; une somme qui tombe juste sur 1 (ou 2…) reste possible mais rare
+  do { a = horsMult(1, dd + (d >= 3 ? 6 : 2), dd); b = horsMult(1, dd, dd); if (sub && b > a) [a, b] = [b, a]; }
+  while ((sub && a === b) || ((sub ? a - b : a + b) % dd === 0 && chance(.7)));
   const N = sub ? a - b : a + b, op = sub ? '−' : '+';
   return { ...frac(N, dd), html: `Calcule :${big(`${F(a, dd)} ${op} ${F(b, dd)}`)}`,
     hint: `Les dénominateurs sont égaux : on ${sub ? 'soustrait' : 'additionne'} les <b>numérateurs</b> et on <b>garde</b> le dénominateur ${dd}.`,
@@ -200,9 +204,13 @@ ${bars([{ b: 7, segs: [[2, C_BLUE]], l: [2, 7] }, { b: 7, segs: [[3, C_ORA]], l:
 /* ---------- 6. dénominateurs multiples ---------- */
 function L6(d) {
   const dd = ri(2, 6), k = ri(2, d < 2 ? 3 : 4), D = dd * k, sub = d >= 1 && chance(.4);
-  const a = ri(1, dd + 1), b = ri(1, D + 2); let t = [{ n: a, d: dd, c: a * k }, { n: b, d: D, c: b }];
-  if (chance(.5)) t.reverse();
-  if (sub && t[0].c <= t[1].c) { t.reverse(); if (t[0].c === t[1].c) t[0] = t[0].d === dd ? { n: t[0].n + 1, d: dd, c: (t[0].n + 1) * k } : { n: t[0].n + 1, d: D, c: t[0].n + 1 }; }
+  let t;
+  do {
+    const a = horsMult(1, dd + 1, dd), b = horsMult(1, D + 2, D);
+    t = [{ n: a, d: dd, c: a * k }, { n: b, d: D, c: b }];
+    if (chance(.5)) t.reverse();
+    if (sub && t[0].c < t[1].c) t.reverse();
+  } while (sub && t[0].c === t[1].c);
   const op = sub ? '−' : '+', N = sub ? t[0].c - t[1].c : t[0].c + t[1].c;
   return { ...frac(N, D), html: `Calcule :${big(`${F(t[0].n, t[0].d)} ${op} ${F(t[1].n, t[1].d)}`)}`,
     hint: `${D} est un multiple de ${dd} (${dd} × ${k} = ${D}). Transforme la fraction de dénominateur ${dd} en une fraction de dénominateur ${D}, puis ${sub ? 'soustrais' : 'additionne'} les numérateurs.`,
@@ -223,9 +231,11 @@ ${bars([{ b: 3, segs: [[1, C_BLUE]], l: [1, 3] }, { b: 9, segs: [[3, C_BLUE]], l
 
 /* ---------- 7. fraction d'une quantité ---------- */
 function L7(d) {
-  const b = ri(2, d < 2 ? 6 : 10), a = ri(1, b - 1), v = d < 1 ? ri(0, 1) : d < 3 ? ri(0, 3) : ri(0, 4);
+  // fraction irréductible : « les 2/4 de 8 » s'écrit « la moitié de 8 »
+  const b = ri(2, d < 2 ? 6 : 10), v = d < 1 ? ri(0, 1) : d < 3 ? ri(0, 3) : ri(0, 4); let a; do { a = ri(1, b - 1); } while (gcd(a, b) !== 1);
   if (v === 4) {
-    const n = ri(2, 9), A = ri(1, 8), B = ri(2, 9), N = n * A;
+    let n, A, B; do { n = ri(2, 9); B = ri(2, 9); A = horsMult(1, 8, B); } while (n * A === B); // 2 × 1/2 = 1
+    const N = n * A;
     return { ...frac(N, B), html: `Calcule :${big(`${n} × ${F(A, B)}`)}`,
       hint: `Pour multiplier un nombre entier par une fraction, on multiplie le <b>numérateur</b> par ce nombre et on garde le dénominateur.`,
       solution: `${n} × ${F(A, B)} = ${F(`${n} × ${A}`, B)} = ${F(N, B)}${simpl(N, B)}` };
@@ -254,7 +264,10 @@ ${bars([{ b: 4, segs: [[3, C_ORA]], l: '20', txt: ['5', '5', '5', '5'] }], { cap
 
 /* ---------- 8. multiplier ---------- */
 function L8(d) {
-  const m = d < 2 ? 6 : 9, a = ri(1, m), b = ri(2, m), c = ri(1, m), e = ri(2, m), N = a * c, D = b * e;
+  const m = d < 2 ? 6 : 9; let a, b, c, e;
+  // pas de facteur n/n (ou entier déguisé) et pas de produit qui vaut 1 (a/b × b/a)
+  do { b = ri(2, m); e = ri(2, m); a = horsMult(1, m, b); c = horsMult(1, m, e); } while (a * c === b * e);
+  const N = a * c, D = b * e;
   return { ...frac(N, D), html: `Calcule (donne si possible le résultat simplifié) :${big(`${F(a, b)} × ${F(c, e)}`)}`,
     hint: `Pour multiplier deux fractions : <b>numérateur × numérateur</b> et <b>dénominateur × dénominateur</b>. (Pas besoin de même dénominateur !)`,
     solution: `${F(a, b)} × ${F(c, e)} = ${F(`${a} × ${c}`, `${b} × ${e}`)} = ${F(N, D)}${simpl(N, D)}` };
@@ -275,9 +288,10 @@ ${areaFrac(2, 3, 4, 5, '8 cases sur 15')}</div>
 /* ---------- 9. dénominateurs quelconques ---------- */
 function L9(d) {
   let d1, d2; do { d1 = ri(2, d < 2 ? 5 : 7); d2 = ri(2, d < 2 ? 7 : 9); } while (d1 === d2 || d1 % d2 === 0 || d2 % d1 === 0);
-  const D = lcm(d1, d2), sub = d >= 1 && chance(.4); let a = ri(1, d1 + 1), b = ri(1, d2 + 1);
-  if (sub && a * (D / d1) <= b * (D / d2)) [a, b, d1, d2] = [b, a, d2, d1];
-  const K1 = D / d1, K2 = D / d2; if (sub && a * K1 === b * K2) a++;
+  const D = lcm(d1, d2), sub = d >= 1 && chance(.4); let a, b;
+  do { a = horsMult(1, d1 + 1, d1); b = horsMult(1, d2 + 1, d2); } while (sub && a * (D / d1) === b * (D / d2));
+  if (sub && a * (D / d1) < b * (D / d2)) [a, b, d1, d2] = [b, a, d2, d1];
+  const K1 = D / d1, K2 = D / d2;
   const op = sub ? '−' : '+', N = sub ? a * K1 - b * K2 : a * K1 + b * K2;
   return { ...frac(N, D), html: `Calcule :${big(`${F(a, d1)} ${op} ${F(b, d2)}`)}`,
     hint: `Cherche un dénominateur commun : un nombre qui est à la fois dans la table de ${d1} et dans celle de ${d2} (le plus petit est ${D}).`,
@@ -300,12 +314,12 @@ ${bars([{ b: 3, segs: [[2, C_BLUE]], l: [2, 3] }, { b: 4, segs: [[1, C_ORA]], l:
 function L10(d) {
   const v = d < 1 ? ri(0, 1) : d < 3 ? ri(0, 2) : ri(0, 3);
   if (v === 3) {
-    const n = ri(2, 9), m = ri(2, 9);
+    const n = ri(2, 9); let m; do { m = ri(2, 9); } while (m === n); // √49 × √49 = 49 : la réponse est dans l'énoncé
     return { ...int(n * m), html: `Calcule :${big(`${R(n * n)} × ${R(m * m)}`)}`,
       hint: `Calcule chaque racine séparément : quel nombre au carré donne ${n * n} ? et ${m * m} ?`,
       solution: `${R(n * n)} = ${n} et ${R(m * m)} = ${m}, donc le résultat est ${n} × ${m} = ${n * m}.` };
   }
-  const n = v === 2 ? 10 * ri(2, 9) : ri(1, d < 2 ? 10 : 15);
+  const n = v === 2 ? 10 * ri(2, 9) : ri(2, d < 2 ? 10 : 15); // √1 = 1 : trop immédiat
   return { ...int(n), html: v === 1 ? `Quel nombre positif a pour carré ${n * n} ?` : `Calcule :${big(R(n * n))}`,
     hint: `${R('x')} est le nombre positif qui, multiplié par lui-même, donne x. Exemple : ${R(25)} = 5 car 5 × 5 = 25.` + (v === 2 ? ` Ici, pense à ${R(n * n / 100)} puis × 10.` : ''),
     solution: `${n} × ${n} = ${n * n}, donc ${R(n * n)} = ${n}.` };
@@ -333,7 +347,8 @@ function L11(d) {
   if (v === 1) return { ...frac(a * a, b * b), html: `Calcule :${big(`(${F(a, b)})<sup>2</sup>`)}`,
     hint: `Mettre au carré, c'est multiplier par soi-même : ${F(a, b)} × ${F(a, b)}.`,
     solution: `(${F(a, b)})<sup>2</sup> = ${F(`${a} × ${a}`, `${b} × ${b}`)} = ${F(a * a, b * b)}` };
-  const c = ri(1, 5), e = ri(2, 6), N = a * c, D = b * e;
+  let c, e; do { e = ri(2, 6); c = horsMult(1, 5, e); } while (a * c === b * e);
+  const N = a * c, D = b * e;
   return { ...frac(N, D), html: `Calcule :${big(`${R(F(a * a, b * b))} × ${F(c, e)}`)}`,
     hint: `Commence par la racine : ${R(F(a * a, b * b))} = ? Puis multiplie les fractions (haut × haut, bas × bas).`,
     solution: `${R(F(a * a, b * b))} = ${F(a, b)}, puis ${F(a, b)} × ${F(c, e)} = ${F(N, D)}${simpl(N, D)}` };
@@ -363,20 +378,22 @@ function L12(d) {
       solution: `${F(a1, d1)} + ${F(a2, d2)} = ${F(a1 * k, d2)} + ${F(a2, d2)} = ${F(a1 * k + a2, d2)}, puis ${F(d2, d2)} − ${F(a1 * k + a2, d2)} = ${F(N, d2)}${simpl(N, d2)}` };
   }
   if (v === 1) {
-    const b = pick([3, 4, 5, 6, 7, 8]), a = ri(1, b - 1), N = b * ri(3, 8), X = N - N / b * a;
+    const b = pick([3, 4, 5, 6, 7, 8]), N = b * ri(3, 8); let a; do { a = ri(1, b - 1); } while (gcd(a, b) !== 1);
+    const X = N - N / b * a;
     return { ...int(X), html: `Dans un club de ${N} membres, les ${F(a, b)} sont des filles. Combien y a-t-il de garçons ?`,
       hint: `Calcule d'abord le nombre de filles (les ${F(a, b)} de ${N}), puis soustrais de ${N}.`,
       solution: `Filles : ${N} ÷ ${b} × ${a} = ${N / b * a}. Garçons : ${N} − ${N / b * a} = ${X}.` };
   }
   if (v === 2) {
-    const a = ri(1, 5), b = ri(2, 6), c = ri(1, 5), e0 = ri(2, 6), e = ri(1, 5), f = pick([2, 3, 4, 6]);
+    const b = ri(2, 6), e0 = ri(2, 6), f = pick([2, 3, 4, 6]), a = horsMult(1, 5, b), c = horsMult(1, 5, e0), e = horsMult(1, 5, f);
     const P = a * c, Q = b * e0, D = lcm(Q, f), N = P * (D / Q) + e * (D / f);
     return { ...frac(N, D), value: e / f + (a / b) * (c / e0), html: `Calcule (attention aux priorités !) :${big(`${F(e, f)} + ${F(a, b)} × ${F(c, e0)}`)}`,
       hint: `La multiplication est prioritaire : calcule d'abord ${F(a, b)} × ${F(c, e0)}, puis ajoute ${F(e, f)}.`,
       solution: `${F(a, b)} × ${F(c, e0)} = ${F(P, Q)}, puis ${F(e, f)} + ${F(P, Q)} = ${F(e * (D / f), D)} + ${F(P * (D / Q), D)} = ${F(N, D)}${simpl(N, D)}` };
   }
   if (v === 3) {
-    const n = ri(2, 9), m = ri(2, 9), a = ri(1, 6), b = ri(2, 7), N = n * a, D = m * b;
+    const n = ri(2, 9), b = ri(2, 7), a = horsMult(1, 6, b); let m; do { m = ri(2, 9); } while (m === n); // √(16/16) = 1 : trivial
+    const N = n * a, D = m * b;
     return { ...frac(N, D), html: `Calcule :${big(`${R(F(n * n, m * m))} × ${F(a, b)}`)}`,
       hint: `Commence par la racine, puis multiplie.`,
       solution: `${R(F(n * n, m * m))} = ${F(n, m)}, puis ${F(n, m)} × ${F(a, b)} = ${F(N, D)}${simpl(N, D)}` };
