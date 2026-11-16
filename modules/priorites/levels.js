@@ -346,11 +346,11 @@ function stepsExo(make, o) {
   return q;
 }
 
-/** exemple de cours : la chaîne de calcul et son arbre */
-function demo(make) {
+/** exemple de cours : la chaîne de calcul (titre facultatif) et, sauf tree = false, son arbre */
+function demo(make, title = '', tree = true) {
   const root = fixPar(make()), steps = run(root);
   const chain = steps.map((_, k) => R(root, k, { mode: 'val', hl: true }));
-  return `<div class="ex chain">${chain.map((s, k) => `<div>${k ? '= ' : ''}${s}</div>`).join('')}<div>= <b>${M(steps[steps.length - 1].val)}</b></div></div>${treeSVG(root)}`;
+  return `<div class="ex chain">${title ? `<span class="q">${title}</span>` : ''}${chain.map((s, k) => `<div>${k ? '= ' : ''}${s}</div>`).join('')}<div>= <b>${M(steps[steps.length - 1].val)}</b></div></div>${tree ? treeSVG(root) : ''}`;
 }
 
 /** tire un modèle dans le palier de difficulté d (parfois dans le palier d'avant) */
@@ -369,11 +369,15 @@ const H1 = 'La <b>multiplication</b> passe avant l\'addition et la soustraction 
 function L1(d) { return stepsExo(() => tier(d, T1)(), { hl: d < 2, hint: H1 }); }
 function C1() {
   return `<h2>1. La multiplication d'abord</h2>
+<p class="intro">Pour que tout le monde (toi, ton voisin, la calculatrice) trouve le même résultat, on suit des <b>règles de priorité</b>. La première : la multiplication passe avant l'addition et la soustraction.</p>
 <div class="def">Dans un calcul <b>sans parenthèses</b>, on effectue d'abord les <b>multiplications</b>, puis les additions et les soustractions.</div>
-<p>On écrit une ligne par étape : la partie calculée est remplacée par son résultat.</p>
-${demo(() => add(N(7), mul(N(4), N(5))))}
-<p>L'<b>arbre de calcul</b> montre l'ordre : le × est plus bas, il est calculé en premier (étape A), puis le + (étape B).</p>
-<div class="warn">⚠️ On ne calcule pas « dans l'ordre de lecture » : 7 + 4 × 5 ≠ 11 × 5. Le résultat est 27, pas 55.</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Repère les signes ×.</li><li>Calcule le produit et réécris toute la ligne avec son résultat.</li><li>Termine par les + et −, de gauche à droite.</li><li>Une ligne par étape : la partie <mark>en couleur</mark> est celle qu'on calcule.</li></ol></div>
+${demo(() => add(N(7), mul(N(4), N(5))), 'Exemple 1')}
+<p class="treecap">L'<b>arbre de calcul</b> montre l'ordre : le × est plus bas, il est calculé en premier (étape A), puis le + (étape B).</p>
+${demo(() => sub(add(N(3), mul(N(6), N(2))), N(5)), 'Exemple 2', false)}
+${demo(() => add(mul(N(4), N(3)), mul(N(2), N(5))), 'Exemple 3 : deux produits', false)}
+<div class="warn">⚠️ On ne calcule pas « dans l'ordre de lecture » : 7 + 4 × 5 n'est pas 11 × 5 = 55. Le résultat est 27.<br>⚠️ Avec deux produits, on peut commencer par l'un ou par l'autre : ils passent tous deux avant le +.</div>
+<div class="retenir">À retenir : × avant + et −.</div>`;
 }
 
 /* =====================================================================
@@ -392,10 +396,14 @@ const H2 = 'Il n\'y a que des + et des − : on calcule <b>de gauche à droite</
 function L2(d) { return stepsExo(() => chainAdd(d), { hl: d < 2, hint: H2 }); }
 function C2() {
   return `<h2>2. Additions et soustractions : de gauche à droite</h2>
-<div class="def">Quand il n'y a que des <b>+</b> et des <b>−</b>, on calcule <b>de gauche à droite</b>.</div>
-${demo(() => add(sub(N(10), N(3)), N(2)))}
-<div class="warn">⚠️ Le piège : 10 − 3 + 2 n'est pas 10 − 5. On ne commence pas par 3 + 2 ! Le signe − s'applique seulement au 3.</div>
-<div class="ex">Astuce : 10 − 3 + 2, c'est « j'ai 10 €, je dépense 3 €, puis je gagne 2 € » : il me reste 9 €.</div>`;
+<p class="intro">Quand il n'y a que des + et des −, on calcule dans l'ordre de lecture, comme on compte son argent au fil des achats.</p>
+<div class="def">Quand il n'y a que des <b>+</b> et des <b>−</b>, on calcule <b>de gauche à droite</b>.<br>Le signe écrit devant un nombre ne s'applique qu'à ce nombre.</div>
+<div class="methode"><b>Méthode</b><ol><li>Calcule les deux premiers nombres.</li><li>Remplace-les par leur résultat.</li><li>Continue avec le nombre suivant, jusqu'au bout.</li></ol></div>
+${demo(() => add(sub(N(10), N(3)), N(2)), 'Exemple 1')}
+${demo(() => sub(sub(N(20), N(6)), N(4)), 'Exemple 2', false)}
+<div class="ex"><span class="q">Exemple 3 : en euros</span><br>10 − 3 + 2, c'est « j'ai 10 €, je dépense 3 €, puis je gagne 2 € » : il me reste <b>9 €</b>.</div>
+<div class="warn">⚠️ 10 − 3 + 2 n'est pas 10 − 5 : on ne commence pas par 3 + 2 ! Le signe − s'applique seulement au 3.<br>⚠️ 20 − 6 − 4 n'est pas 20 − 2 : on enlève 6, puis on enlève encore 4.</div>
+<div class="retenir">À retenir : que des + et des − → de gauche à droite.</div>`;
 }
 
 /* =====================================================================
@@ -419,10 +427,14 @@ const H3 = 'Il n\'y a que des × et des ÷ : on calcule <b>de gauche à droite</
 function L3(d) { return stepsExo(() => chainMul(d), { hl: d < 2, hint: H3, ok: hasDivThen }); }
 function C3() {
   return `<h2>3. Multiplications et divisions : de gauche à droite</h2>
+<p class="intro">× et ÷ sont de la même « famille » : aucune ne passe avant l'autre, on les fait dans l'ordre de lecture.</p>
 <div class="def">× et ÷ ont la <b>même priorité</b>. Quand il n'y a que des × et des ÷, on calcule <b>de gauche à droite</b>.</div>
-${demo(() => mul(dvd(N(24), N(4)), N(3)))}
-<div class="warn">⚠️ 24 ÷ 4 × 3 n'est pas 24 ÷ 12 = 2. On fait d'abord 24 ÷ 4 = 6, puis 6 × 3 = 18.</div>
-<div class="ex">De même 36 ÷ 6 ÷ 2 = 6 ÷ 2 = 3 (et pas 36 ÷ 3).</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Calcule les deux premiers nombres (× ou ÷).</li><li>Remplace-les par leur résultat.</li><li>Continue vers la droite.</li></ol></div>
+${demo(() => mul(dvd(N(24), N(4)), N(3)), 'Exemple 1')}
+${demo(() => dvd(dvd(N(36), N(6)), N(2)), 'Exemple 2', false)}
+${demo(() => dvd(mul(N(5), N(6)), N(3)), 'Exemple 3', false)}
+<div class="warn">⚠️ 24 ÷ 4 × 3 n'est pas 24 ÷ 12 = 2 : on fait d'abord 24 ÷ 4 = 6, puis 6 × 3 = 18.<br>⚠️ 36 ÷ 6 ÷ 2 n'est pas 36 ÷ 3 : on divise par 6, puis encore par 2.</div>
+<div class="retenir">À retenir : que des × et des ÷ → de gauche à droite.</div>`;
 }
 
 /* =====================================================================
@@ -438,10 +450,14 @@ const H4 = 'Repère d\'abord tous les × et ÷ : ils passent avant les + et −.
 function L4(d) { return stepsExo(() => tier(d, T4)(), { hl: d < 2, hint: H4, ok: (r, s) => s.some(t => t.o === '/') }); }
 function C4() {
   return `<h2>4. Les quatre opérations</h2>
+<p class="intro">Quand les quatre opérations sont mélangées, on combine les deux règles précédentes.</p>
 <div class="def">Sans parenthèses : d'abord les <b>× et ÷</b> (de gauche à droite), ensuite les <b>+ et −</b> (de gauche à droite).</div>
-${demo(() => add(N(5), dvd(mul(N(6), N(4)), N(3))))}
-<div class="ex">On peut souligner au brouillon les « blocs » de × et ÷ : 5 + <u>6 × 4 ÷ 3</u>. Chaque bloc se calcule d'abord, puis on fait les + et −.</div>
-<div class="warn">⚠️ Dans 30 − 12 ÷ 3, on commence par 12 ÷ 3 = 4 : 30 − 4 = 26 (et pas 18 ÷ 3 = 6).</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Souligne au brouillon les « blocs » de × et ÷ : 5 + <u>6 × 4 ÷ 3</u>.</li><li>Calcule chaque bloc, de gauche à droite à l'intérieur du bloc.</li><li>Il ne reste que des + et − : de gauche à droite.</li></ol></div>
+${demo(() => add(N(5), dvd(mul(N(6), N(4)), N(3))), 'Exemple 1')}
+${demo(() => sub(N(30), dvd(N(12), N(3))), 'Exemple 2', false)}
+${demo(() => sub(add(dvd(N(18), N(3)), mul(N(4), N(5))), N(2)), 'Exemple 3 : deux blocs', false)}
+<div class="warn">⚠️ Dans 30 − 12 ÷ 3, on commence par 12 ÷ 3 = 4 : 30 − 4 = 26 (et pas 18 ÷ 3 = 6).<br>⚠️ La division est prioritaire sur le + et le −, comme la multiplication.</div>
+<div class="retenir">À retenir : × et ÷ d'abord, + et − ensuite, chaque fois de gauche à droite.</div>`;
 }
 
 /* =====================================================================
@@ -457,10 +473,15 @@ const H5 = 'On calcule d\'abord ce qui est <b>entre parenthèses</b>, même si c
 function L5(d) { return stepsExo(() => tier(d, T5)(), { hl: d < 2, hint: H5 }); }
 function C5() {
   return `<h2>5. Les parenthèses</h2>
-<div class="def">Les <b>parenthèses</b> passent avant tout : on calcule d'abord ce qu'elles contiennent.</div>
-${demo(() => mul(N(4), P(add(N(3), N(5)))))}
-<div class="ex">Comparer : 4 × 3 + 5 = 12 + 5 = 17, mais 4 × (3 + 5) = 4 × 8 = 32. Les parenthèses changent le résultat !</div>
-<div class="warn">⚠️ 50 − (12 + 8) = 50 − 20 = 30. Sans les parenthèses, 50 − 12 + 8 = 46 : ce n'est pas le même calcul.</div>`;
+<p class="intro">Les parenthèses servent à imposer un ordre : « calcule ceci en premier ». Elles changent souvent le résultat.</p>
+<div class="def">Les <b>parenthèses</b> passent avant tout : on calcule d'abord ce qu'elles contiennent, même si c'est une addition.</div>
+<div class="methode"><b>Méthode</b><ol><li>Repère les parenthèses.</li><li>Calcule leur contenu et remplace la parenthèse par le résultat.</li><li>Deux parenthèses : l'ordre entre elles est libre.</li><li>Puis applique les priorités habituelles.</li></ol></div>
+${demo(() => mul(N(4), P(add(N(3), N(5)))), 'Exemple 1')}
+<div class="ex"><span class="q">Comparer</span><br>4 × 3 + 5 = 12 + 5 = 17, mais 4 × (3 + 5) = 4 × 8 = 32 : les parenthèses changent le résultat !</div>
+${demo(() => dvd(N(36), P(sub(N(13), N(4)))), 'Exemple 2', false)}
+${demo(() => mul(P(add(N(2), N(5))), P(sub(N(9), N(3)))), 'Exemple 3 : deux parenthèses', false)}
+<div class="warn">⚠️ 50 − (12 + 8) = 50 − 20 = 30. Sans les parenthèses, 50 − 12 + 8 = 46 : ce n'est pas le même calcul.<br>⚠️ N'oublie pas d'enlever les parenthèses une fois leur contenu calculé.</div>
+<div class="retenir">À retenir : les parenthèses d'abord.</div>`;
 }
 
 /* =====================================================================
@@ -476,9 +497,14 @@ const H6 = 'Dans l\'ordre : les parenthèses d\'abord (et, à l\'intérieur, les
 function L6(d) { return stepsExo(() => tier(d, T6)(), { hl: d < 2, hint: H6, minSteps: 3 }); }
 function C6() {
   return `<h2>6. Parenthèses et priorités mêlées</h2>
+<p class="intro">Voici l'ordre complet pour les calculs du collège sans puissances : il suffit d'appliquer les règles une par une.</p>
 <div class="def">Ordre des calculs : 1) les <b>parenthèses</b> ; 2) les <b>× et ÷</b> ; 3) les <b>+ et −</b>. Chaque fois de gauche à droite.<br>À l'intérieur des parenthèses, on applique les mêmes règles.</div>
-${demo(() => sub(N(40), P(add(N(2), mul(N(3), N(6))))))}
-<div class="warn">⚠️ Dans 5 + 2 × (9 − 4), on calcule 9 − 4 = 5, puis 2 × 5 = 10, puis 5 + 10 = 15. Ne fais pas 5 + 2 = 7 !</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Ouvre la parenthèse : y a-t-il un × à l'intérieur ? Il passe avant le + de la parenthèse.</li><li>Quand la parenthèse est un seul nombre, enlève-la.</li><li>Puis × et ÷ ; enfin + et −.</li></ol></div>
+${demo(() => sub(N(40), P(add(N(2), mul(N(3), N(6))))), 'Exemple 1')}
+${demo(() => add(N(5), mul(N(2), P(sub(N(9), N(4))))), 'Exemple 2', false)}
+${demo(() => sub(mul(P(add(N(3), N(5))), N(2)), mul(N(4), N(3))), 'Exemple 3', false)}
+<div class="warn">⚠️ Dans 5 + 2 × (9 − 4), ne fais pas 5 + 2 = 7 ! On calcule 9 − 4 = 5, puis 2 × 5 = 10, puis 5 + 10 = 15.<br>⚠️ Dans 40 − (2 + 3 × 6), le × passe avant le + même dans la parenthèse.</div>
+<div class="retenir">À retenir : parenthèses, puis × ÷, puis + −.</div>`;
 }
 
 /* =====================================================================
@@ -494,10 +520,14 @@ const H7 = 'Commence par les parenthèses <b>les plus intérieures</b> ( ), puis
 function L7(d) { return stepsExo(() => tier(d, T7)(), { hl: d < 2, hint: H7, minSteps: 3 }); }
 function C7() {
   return `<h2>7. Crochets et parenthèses imbriquées</h2>
+<p class="intro">Parfois une parenthèse est à l'intérieur d'une autre. Pour s'y retrouver, la grande s'écrit avec des crochets [ ].</p>
 <div class="def">Quand des parenthèses sont à l'intérieur d'autres, on écrit les grandes avec des <b>crochets [ ]</b>. On commence par les parenthèses <b>les plus intérieures</b>.</div>
-${demo(() => mul(N(3), B(add(N(2), mul(N(4), P(sub(N(7), N(2))))))))}
-<div class="ex">Comme des poupées russes : on ouvre d'abord la plus petite.</div>
-<div class="warn">⚠️ À l'intérieur des crochets, les priorités continuent : dans [2 + 4 × 5], on fait 4 × 5 avant le +.</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Trouve la parenthèse la plus intérieure ( ) et calcule-la.</li><li>Calcule ensuite le contenu des crochets [ ], avec les priorités (× avant +).</li><li>Termine par ce qui est à l'extérieur.</li></ol></div>
+${demo(() => mul(N(3), B(add(N(2), mul(N(4), P(sub(N(7), N(2))))))), 'Exemple 1')}
+<p class="treecap">Comme des poupées russes : on ouvre d'abord la plus petite.</p>
+${demo(() => sub(N(50), B(mul(N(3), P(add(N(4), N(2)))))), 'Exemple 2', false)}
+<div class="warn">⚠️ À l'intérieur des crochets, les priorités continuent : dans [2 + 4 × 5], on fait 4 × 5 avant le +.<br>⚠️ Ne commence pas par les crochets : d'abord la parenthèse qui est dedans.</div>
+<div class="retenir">À retenir : de l'intérieur vers l'extérieur.</div>`;
 }
 
 /* =====================================================================
@@ -513,9 +543,13 @@ const H8 = 'Un trait de fraction est comme deux parenthèses : calcule d\'abord 
 function L8(d) { return stepsExo(() => tier(d, T8)(), { hl: d < 2, hint: H8 }); }
 function C8() {
   return `<h2>8. Le trait de fraction</h2>
+<p class="intro">Un trait de fraction est une division qui « cache » des parenthèses : tout le haut est divisé par tout le bas.</p>
 <div class="def">Le trait de fraction est une <b>division</b> ; il <b>regroupe</b> ce qui est au-dessus et ce qui est en dessous, comme des parenthèses :<br>${F('12 + 8', '7 − 2')} = (12 + 8) ÷ (7 − 2).</div>
-${demo(() => fr(add(N(12), N(8)), sub(N(7), N(2))))}
-<div class="warn">⚠️ On ne « simplifie » pas un morceau : dans ${F('12 + 8', '2')}, on ne divise pas seulement le 8 par 2. On calcule 12 + 8 = 20, puis 20 ÷ 2 = 10.</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Calcule tout le <b>numérateur</b> (en haut).</li><li>Calcule tout le <b>dénominateur</b> (en bas).</li><li>Fais la division.</li><li>Termine le reste du calcul avec les priorités.</li></ol></div>
+${demo(() => fr(add(N(12), N(8)), sub(N(7), N(2))), 'Exemple 1')}
+${demo(() => add(N(3), fr(mul(N(4), N(5)), N(2))), 'Exemple 2', false)}
+<div class="warn">⚠️ On ne « simplifie » pas un morceau : dans ${F('12 + 8', '2')}, on ne divise pas seulement le 8 par 2. On calcule 12 + 8 = 20, puis 20 ÷ 2 = 10.<br>⚠️ Le trait de fraction passe avant le + qui est à côté : 3 + ${F('20', '2')} = 3 + 10.</div>
+<div class="retenir">À retenir : tout le haut, tout le bas, puis la division.</div>`;
 }
 
 /* =====================================================================
@@ -531,10 +565,13 @@ const H9 = 'Le carré ne porte que sur ce qui est juste avant lui : un nombre se
 function L9(d) { return stepsExo(() => tier(d, T9)(), { hl: d < 2, hint: H9 }); }
 function C9() {
   return `<h2>9. Les carrés</h2>
-<div class="def">3<sup>2</sup> = 3 × 3 = 9. Le carré passe <b>avant</b> ×, ÷, + et −, mais <b>après</b> les parenthèses.<br>Il ne porte que sur ce qui est juste avant lui.</div>
-${demo(() => mul(N(2), sq(N(3))))}
-${demo(() => sq(P(mul(N(2), N(3)))))}
-<div class="warn">⚠️ 2 × 3<sup>2</sup> = 2 × 9 = 18, mais (2 × 3)<sup>2</sup> = 6<sup>2</sup> = 36. Et 3<sup>2</sup> = 9, pas 6 !</div>`;
+<p class="intro">Le carré est une multiplication d'un nombre par lui-même. Il a sa place dans l'ordre des priorités : juste après les parenthèses.</p>
+<div class="def">3<sup>2</sup> = 3 × 3 = 9. Le carré passe <b>avant</b> ×, ÷, + et −, mais <b>après</b> les parenthèses.<br>Il ne porte que sur ce qui est juste avant lui : un nombre seul, ou toute une parenthèse.</div>
+<div class="methode"><b>Méthode</b><ol><li>Parenthèses d'abord (même s'il y a un carré dessus).</li><li>Puis les carrés.</li><li>Puis × et ÷, enfin + et −.</li></ol></div>
+<div class="cols"><div>${demo(() => mul(N(2), sq(N(3))), 'Exemple 1 : 2 × 3<sup>2</sup>')}</div><div>${demo(() => sq(P(mul(N(2), N(3)))), 'Exemple 2 : (2 × 3)<sup>2</sup>')}</div></div>
+${demo(() => add(sq(N(3)), sq(N(4))), 'Exemple 3', false)}
+<div class="warn">⚠️ 2 × 3<sup>2</sup> = 2 × 9 = 18, mais (2 × 3)<sup>2</sup> = 6<sup>2</sup> = 36.<br>⚠️ 3<sup>2</sup> = 9, pas 6 ! Et 3<sup>2</sup> + 4<sup>2</sup> = 25, pas 7<sup>2</sup> = 49.</div>
+<div class="retenir">À retenir : parenthèses, puis carrés, puis × ÷, puis + −.</div>`;
 }
 
 /* =====================================================================
@@ -552,10 +589,14 @@ const H10 = 'Mêmes priorités qu\'avant ; en plus, la <b>règle des signes</b> 
 function L10(d) { return stepsExo(() => tier(d, T10)(), { hl: d < 2, neg: true, needNeg: true, hint: H10 }); }
 function C10() {
   return `<h2>10. Avec des nombres relatifs</h2>
-<div class="def">Les priorités ne changent pas. On ajoute la <b>règle des signes</b> : (−) × (−) = (+) ; (−) × (+) = (−).<br>Un nombre négatif s'écrit entre parenthèses après un signe : 5 × (−3).</div>
-${demo(() => add(N(-3), mul(N(4), N(-2))))}
-<div class="ex">(−2)<sup>2</sup> = (−2) × (−2) = 4 : le carré d'un nombre est toujours positif.</div>
-<div class="warn">⚠️ 6 − (−4) = 6 + 4 = 10 : soustraire un négatif, c'est ajouter son opposé.</div>`;
+<p class="intro">Les priorités ne changent pas avec les nombres négatifs ; on ajoute seulement les règles de calcul des relatifs à chaque étape.</p>
+<div class="def">Mêmes priorités. Règle des signes : (−) × (−) = (+) ; (−) × (+) = (−) ; pareil pour ÷.<br>Soustraire un nombre, c'est ajouter son opposé. Un nombre négatif s'écrit entre parenthèses après un signe : 5 × (−3).</div>
+<div class="methode"><b>Méthode</b><ol><li>Applique les priorités comme d'habitude.</li><li>Pour chaque × ou ÷ : règle des signes.</li><li>Pour chaque + ou − : règle d'addition des relatifs.</li><li>Garde les parenthèses autour des résultats négatifs.</li></ol></div>
+${demo(() => add(N(-3), mul(N(4), N(-2))), 'Exemple 1')}
+${demo(() => mul(P(add(N(-5), N(2))), N(-3)), 'Exemple 2', false)}
+<div class="ex"><span class="q">Exemple 3 : des carrés</span><br>(−2)<sup>2</sup> = (−2) × (−2) = <b>4</b> : le carré d'un nombre non nul est toujours positif.</div>
+<div class="warn">⚠️ 6 − (−4) = 6 + 4 = 10 : soustraire un négatif, c'est ajouter son opposé.<br>⚠️ (−3) × (−3) = 9, pas −9 : même signe → positif.</div>
+<div class="retenir">À retenir : mêmes priorités, plus la règle des signes.</div>`;
 }
 
 /* =====================================================================
@@ -651,10 +692,15 @@ function L11(d) {
 }
 function C11() {
   return `<h2>11. Programme de calcul → expression</h2>
-<div class="def">Un <b>programme de calcul</b> applique chaque instruction à <b>tout le résultat précédent</b>. Pour l'écrire en une seule expression, on met des <b>parenthèses</b> dès que l'instruction doit passer après un + ou un −.</div>
-<div class="ex">Choisis 5. Ajoute 3. Multiplie par 4.<br>→ (5 + 3) × 4 = 8 × 4 = 32.<br>Sans parenthèses, 5 + 3 × 4 = 17 : ce n'est pas le programme !</div>
+<p class="intro">Un programme de calcul donne des instructions l'une après l'autre. Pour l'écrire en une seule ligne, il faut parfois ajouter des parenthèses.</p>
+<div class="def">Un <b>programme de calcul</b> applique chaque instruction à <b>tout le résultat précédent</b>. Pour l'écrire en une seule expression, on met des <b>parenthèses</b> dès qu'une instruction ×, ÷ ou « au carré » suit un + ou un −.</div>
+<div class="methode"><b>Méthode</b><ol><li>Écris le nombre choisi.</li><li>Pour chaque instruction, applique-la à <b>tout</b> ce que tu as écrit.</li><li>Si c'est ×, ÷ ou un carré et que l'expression contient un + ou un −, mets-la entre parenthèses.</li><li>Vérifie en suivant le programme étape par étape.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1</span><ol class="prog"><li>Choisis 5.</li><li>Ajoute 3.</li><li>Multiplie par 4.</li></ol>→ (5 + 3) × 4. Sans parenthèses, 5 + 3 × 4 = 17 : ce n'est pas le programme !</div>
 ${demo(() => mul(P(add(N(5), N(3))), N(4)))}
-<div class="warn">⚠️ « Multiplie par 2, puis ajoute 7 » donne 5 × 2 + 7 : ici pas besoin de parenthèses, le × passe déjà en premier.</div>`;
+<div class="ex"><span class="q">Exemple 2</span><ol class="prog"><li>Choisis 4.</li><li>Soustrais 1.</li><li>Élève au carré.</li><li>Ajoute 5.</li></ol>→ (4 − 1)<sup>2</sup> + 5.</div>
+${demo(() => add(sq(P(sub(N(4), N(1)))), N(5)), '', false)}
+<div class="warn">⚠️ « Multiplie par 2, puis ajoute 7 » donne 5 × 2 + 7 : ici pas besoin de parenthèses, le × passe déjà en premier.<br>⚠️ « Soustrais 1, élève au carré » : 4 − 1<sup>2</sup> = 3, mais (4 − 1)<sup>2</sup> = 9.</div>
+<div class="retenir">À retenir : chaque instruction porte sur tout le résultat d'avant → parenthèses si besoin.</div>`;
 }
 
 /* =====================================================================
@@ -673,10 +719,13 @@ function L12(d) {
 }
 function C12() {
   return `<h2>12. Défis</h2>
-<p>Tout ce qu'on a vu, mélangé. Ici, c'est à toi de trouver le calcul prioritaire à chaque ligne.</p>
+<p class="intro">Tout ce qu'on a vu, mélangé. Ici, c'est à toi de trouver le calcul prioritaire à chaque ligne.</p>
 <div class="def">L'ordre complet :<br>1) parenthèses et crochets (les plus intérieurs d'abord), numérateur et dénominateur ;<br>2) carrés ;<br>3) × et ÷ de gauche à droite ;<br>4) + et − de gauche à droite.</div>
-${demo(() => sub(fr(add(N(9), mul(N(3), N(5))), sub(N(7), N(3))), sq(P(sub(N(4), N(2))))))}
-<div class="warn">⚠️ Écris une ligne par étape au brouillon et recopie bien tout ce qui n'a pas encore été calculé.</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Repère les « groupes » : parenthèses, crochets, traits de fraction.</li><li>Dans chaque groupe, applique l'ordre complet.</li><li>Quand deux calculs sont possibles en même temps, choisis celui que tu veux.</li><li>Une ligne par étape au brouillon.</li></ol></div>
+${demo(() => sub(fr(add(N(9), mul(N(3), N(5))), sub(N(7), N(3))), sq(P(sub(N(4), N(2))))), 'Exemple 1')}
+${demo(() => sub(mul(N(-2), B(add(N(3), sq(N(-1))))), fr(add(N(-6), N(2)), N(-2))), 'Exemple 2 : avec des relatifs', false)}
+<div class="warn">⚠️ Écris une ligne par étape et recopie bien tout ce qui n'a pas encore été calculé.<br>⚠️ (−1)<sup>2</sup> = 1 : le carré porte sur toute la parenthèse, signe compris.</div>
+<div class="retenir">À retenir : groupes, carrés, × ÷, + − : toujours dans cet ordre.</div>`;
 }
 
 export const LEVELS = [
