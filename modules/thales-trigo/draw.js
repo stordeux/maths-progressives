@@ -209,3 +209,20 @@ export function figure(o) {
   const vw = x1 - x0, vh = y1 - y0;
   return `<svg viewBox="${f1(x0)} ${f1(y0)} ${f1(vw)} ${f1(vh)}" width="${Math.round(vw)}" style="width:${Math.round(vw)}px;max-width:100%;height:auto" class="vis fig" role="img" aria-label="${esc(aria)}">${out}${labels}</svg>`;
 }
+
+/** fenêtre Cours : carrés de côté 1, 2 et 3 quadrillés — les longueurs sont multipliées par k, les aires par k² */
+export function grilleK() {
+  const u = 30, base = 100;
+  let x = 24, out = '';
+  for (const k of [1, 2, 3]) {
+    const a = k * u, y = base - a;
+    for (let i = 0; i < k; i++) for (let j = 0; j < k; j++) out += `<rect x="${x + i * u}" y="${y + j * u}" width="${u}" height="${u}" fill="${k === 1 ? '#d0ebff' : '#e5dbff'}" stroke="${PAR}" stroke-width="1.2"/>`;
+    out += `<rect x="${x}" y="${y}" width="${a}" height="${a}" fill="none" stroke="${INK}" stroke-width="2.2"/>`;
+    const cx = x + a / 2;
+    out += `<text x="${cx}" y="${base + 20}" font-size="15" font-weight="700" text-anchor="middle" fill="${INK}">k = ${k}</text>`;
+    out += `<text x="${cx}" y="${base + 40}" font-size="14" text-anchor="middle" fill="${SOFT}">aire × ${k * k}</text>`;
+    x += a + 46;
+  }
+  const W = x - 46 + 24, H = base + 50;
+  return `<svg viewBox="0 0 ${W} ${H}" width="${W}" style="width:${W}px;max-width:100%;height:auto" class="vis fig" role="img" aria-label="carrés de côtés 1, 2 et 3 : aires 1, 4 et 9" font-family="system-ui,sans-serif">${out}</svg>`;
+}
