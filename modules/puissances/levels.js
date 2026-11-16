@@ -364,7 +364,7 @@ function L7(d) {
       hint: `${ruleH}La virgule se déplace de ${rangs(n)} vers la <b>${dir}</b> (on ajoute des zéros si besoin).`,
       solution: `${ruleH}${H} = <b>${grp(rs)}</b> : la virgule se déplace de ${rangs(n)} vers la ${dir}.`,
       visual: numeration([{ s: xs, l: 'nombre' }], { hi, lo }),
-      afterVisual: numeration([{ s: xs, l: 'nombre' }, { s: rs, l: 'résultat', c: '#6741d9' }], { hi, lo, note: `chaque chiffre glisse de ${rangs(n)} vers la ${dir}` }),
+      afterVisual: numeration([{ s: xs, l: 'nombre' }, { s: rs, l: 'résultat', c: '#6741d9' }], { hi, lo, note: `chaque chiffre glisse de ${rangs(n)} vers la ${dir === 'droite' ? 'gauche' : 'droite'}` }), // la virgule et les chiffres vont en sens contraires
       replaceVisual: true,
     };
   }

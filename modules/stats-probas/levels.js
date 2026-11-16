@@ -85,6 +85,8 @@ function L1(d) {
     html = `Combien ${who(i)}&nbsp;?`;
     hint = `Repère la barre «&nbsp;${D.cats[i]}&nbsp;». ${lire}`;
     sol = `La barre «&nbsp;${D.cats[i]}&nbsp;» monte jusqu'à ${X} : il y a <b>${X}</b> élèves.`;
+  } else if ((v === 1 || (v === 3 && !D.numeric)) && new Set(D.vals).size < 2) {
+    return L1(d); // toutes les barres ont la même hauteur : pas de différence à demander (relecture Codex : boucle sans fin)
   } else if (v === 1 || (v === 3 && !D.numeric)) {
     let i, j; do { i = ri(0, n - 1); j = ri(0, n - 1); } while (i === j || D.vals[i] === D.vals[j]);
     if (D.vals[i] < D.vals[j]) [i, j] = [j, i];

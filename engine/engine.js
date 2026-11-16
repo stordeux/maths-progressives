@@ -1,5 +1,5 @@
 // Moteur commun : boucle d'exercice, adaptation du niveau, bandeaux, cours, menu, réglages.
-import { pick } from './util/rand.js';
+import { pick, chance } from './util/rand.js';
 import { strip } from './util/fmt.js';
 import { ANSWERS } from './answers/index.js';
 import { createKeypad, physicalKey } from './keypad.js';
@@ -11,6 +11,17 @@ export { setContexte };
 
 const PRAISE = ['Bravo !', 'Excellent !', 'Parfait !', 'Bien joué !', 'Super !', 'Exactement !', 'Très bien !'];
 const $ = (s, r = document) => r.querySelector(s);
+
+/**
+ * Difficulté d passée aux générateurs (0 à 5). La série de réussites ne va que de 0 à NEED − 1
+ * (au NEED-ième succès on change de niveau) : on l'étale sur 0…5, avec un peu de hasard pour que
+ * chaque valeur de d soit atteinte (NEED = 4 : série 0 → d 0 ou 1, 1 → 1 ou 2, 2 → 3 ou 4, 3 → 5).
+ * (Relecture Codex : sans cela, les variantes d ≥ 4 n'apparaissaient jamais.)
+ */
+export function difficulte(streak, need) {
+  const base = Math.floor(streak * 5 / Math.max(1, need - 1));
+  return Math.min(5, base + (base < 5 && chance(0.5) ? 1 : 0));
+}
 
 /** normalise la sortie d'un générateur (champs du contrat) */
 export function normalize(q) {
@@ -150,7 +161,7 @@ export function startModule(id, LEVELS, opts = {}) {
   let Q, ui, attempt, usedHint, done, pending = 0;
 
   function newQ() {
-    Q = normalize(LEVELS[S.level].generate(S.streak));
+    Q = normalize(LEVELS[S.level].generate(difficulte(S.streak, NEED)));
     attempt = 1; usedHint = false; done = false; S.n++;
     $('#q').innerHTML = Q.html;
     $('#vis').innerHTML = Q.visual;

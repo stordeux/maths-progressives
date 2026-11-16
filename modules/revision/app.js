@@ -56,11 +56,13 @@ function makeQuestion(m) {
     const html = `Calcul mental :<div class="big">${g.q}${g.q.includes('?') ? '' : ' = ?'}</div>`;
     return { mod: m, lv, q: normalize({ type: 'nums', html, tpl: 'Réponse : {0}', check: numsCheck([g.a]), keys: { comma: true }, hint: g.tip, solution: `${g.q.includes('?') ? g.q.replace('?', '<b>' + M(g.a) + '</b>') : g.q + ' = <b>' + M(g.a) + '</b>'}<br>💡 ${g.tip}` }) };
   }
-  return { mod: m, lv, q: normalize(L.generate(ri(1, 3))), keys: m.OPT.keys };
+  return { mod: m, lv, q: normalize(L.generate(ri(2, 5))), keys: m.OPT.keys };
 }
 
 function startScreen() {
   clearInterval(timer);
+  // abandonner proprement toute séance en cours (relecture Codex : Entrée pouvait la reprendre)
+  session = null; Q = null; ui = null; done = true;
   $('#qnum').textContent = 'Révision brevet'; $('#help').textContent = '';
   $('#lvlName').textContent = '';
   $('#score').textContent = S.best !== null ? `Record : ${S.best} %` : '';
