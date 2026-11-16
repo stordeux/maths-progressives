@@ -151,6 +151,11 @@ export function startModule(id, LEVELS, opts = {}) {
   let S = store.load(id, def);
   if (S.level >= LEVELS.length) S.level = 0;
   const save = () => { S.max = Math.max(S.max || 0, S.level); store.save(id, S); };
+  // « ?niveau=n » (liens des fiches de synthèse) : ouvre directement le niveau n, comme le menu Niveaux
+  const demande = +new URLSearchParams(location.search).get('niveau');
+  if (demande >= 1 && demande <= LEVELS.length && demande - 1 !== S.level) {
+    S.level = demande - 1; S.streak = 0; S.fails = 0; save();
+  }
 
   $('#dots').innerHTML = '<i></i>'.repeat(NEED);
   $('#menuNote').innerHTML = `Le niveau monte après <b>${NEED} bonnes réponses d'affilée</b> (du premier coup, sans indice) ; les exercices se corsent un peu à chaque réussite. Il redescend après <b>2 exercices ratés de suite</b>.`;

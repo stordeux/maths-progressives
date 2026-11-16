@@ -55,3 +55,20 @@ PW_PORT=8130 npx playwright test -g "<id> :"   # un port libre par copie de trav
 
 Puis **regarder** les captures `tests/e2e/captures/<id>-*.png` (portrait 800 × 1280 et paysage 1280 × 800) :
 pas de chevauchement, pas de texte coupé, figures lisibles. Enfin `npm test` complet avant la PR.
+
+# Ajouter une fiche de synthèse
+
+Une fiche est une page de lecture transversale (un grand thème, plusieurs modules), affichée par
+`fiches/index.html?f=<id>`. Modèle : `fiches/identites.js`.
+
+1. `fiches/<id>.js` exporte `contenu` (HTML fixe, sans aléatoire) et `liens` (`[{ module, niveau, texte }]`,
+   niveaux 1 à 12 de modules prêts : ce sont les cartes « S'entraîner »).
+2. Une entrée dans `fiches/registry.js` (`etat: 'bientot'` tant qu'elle n'est pas prête).
+3. Structure attendue, chaque partie en `<h2>` (le plan cliquable est généré à partir des h2) :
+   **En un coup d'œil** (vue d'ensemble : cartes `.apercu`, schéma SVG), **d'où ça vient**,
+   **reconnaître / choisir l'outil** (tableau `table.choix` « si tu vois… → c'est… → tu écris… » et/ou arbre de
+   décision SVG), **méthodes** avec exemples pas à pas (`ol.pas`), **à quoi ça sert**, **pièges** (`.warn`),
+   **À retenir** (`.retenir`). Classes dans `assets/css/fiche.css` (plus celles du cours : `.def`, `.methode`, `.ex`).
+   Formules qui ne doivent pas être coupées en fin de ligne : `<span class="nw">…</span>`.
+4. `node tools/sw-assets.mjs`, `npm test`, `npx playwright test -g "fiche <id>"`, puis regarder les captures
+   `tests/e2e/captures/fiche-<id>-*.png`.

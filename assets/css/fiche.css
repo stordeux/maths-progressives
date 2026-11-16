@@ -1,0 +1,34 @@
+/* Fiches de synthèse : page de lecture (tablette d'abord). Le contenu réutilise les classes du cours
+   (.def, .methode, .ex, .warn, .retenir, .cols) et ajoute des blocs de vue d'ensemble. */
+.fhead { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; gap: 12px; align-items: center; padding: 10px 16px; background: var(--card); box-shadow: 0 1px 3px rgba(0, 0, 0, .08); }
+.fhead h1 { margin: 0; font-size: 1.2em; color: var(--acc); }
+.fwrap { max-width: 900px; margin: 0 auto; padding: 16px; }
+.fplan { background: var(--card); border-radius: 14px; padding: 10px 16px; margin-bottom: 14px; border-left: 6px solid var(--acc); }
+.fplan ol { margin: 4px 0 0; padding-left: 1.4em; columns: 2 220px; }
+.fplan li { margin: 3px 0; }
+.fiche { background: var(--card); border-radius: 18px; padding: 18px 20px; font-size: 1em; }
+.fiche h2 { margin: 26px 0 8px; padding-top: 8px; border-top: 2px solid var(--acc2); scroll-margin-top: 70px; }
+.fiche h2:first-child { margin-top: 0; border-top: 0; padding-top: 0; }
+.fiche svg { max-width: 640px; }
+/* vue d'ensemble : cartes de notions côte à côte */
+.fiche .apercu { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 10px; margin: 10px 0; }
+.fiche .nw { white-space: nowrap; }
+.fiche .apercu > div { border: 2px solid var(--acc2); border-radius: 12px; padding: 10px 12px; }
+.fiche .apercu b.k { display: block; color: var(--acc); margin-bottom: 4px; }
+/* grande formule centrée */
+.fiche .formule { text-align: center; font-size: 1.25em; font-weight: 700; margin: 10px 0; padding: 8px; background: var(--acc2); border-radius: 12px; }
+/* « si tu vois… → pense à… » */
+.fiche table.choix { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: .95em; }
+.fiche table.choix th, .fiche table.choix td { border: 1px solid #ddd; padding: 8px 10px; vertical-align: top; text-align: left; }
+.fiche table.choix th { background: var(--acc2); }
+.fiche .tablewrap { overflow-x: auto; }
+/* étapes numérotées d'un exemple */
+.fiche .pas { counter-reset: pas; margin: 6px 0; padding: 0; list-style: none; }
+.fiche .pas li { counter-increment: pas; position: relative; padding: 4px 0 4px 2.2em; }
+.fiche .pas li::before { content: counter(pas); position: absolute; left: 0; top: 4px; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--acc); color: #fff; text-align: center; font-size: .85em; line-height: 1.6em; font-weight: 700; }
+/* liens « S'entraîner » */
+.fliens { margin-top: 16px; }
+.fliens .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
+.flien { display: flex; flex-direction: column; gap: 4px; background: var(--card); border-radius: 14px; padding: 12px 14px; text-decoration: none; color: var(--ink); border-top: 5px solid var(--c); box-shadow: 0 1px 3px rgba(0, 0, 0, .08); }
+.flien .t { font-weight: 700; }
+.flien .r { font-size: .85em; color: #3d434d; }

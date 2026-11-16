@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 // seuls ces éléments de la racine sont servis (comme dans le site déployé par la CI)
-const SERVED = new Set(['index.html', 'manifest.webmanifest', 'assets', 'engine', 'modules']);
+const SERVED = new Set(['index.html', 'manifest.webmanifest', 'assets', 'engine', 'modules', 'fiches']);
 const EXT = /\.(html|js|css|svg|png|webmanifest)$/;
 export function listAssets() {
   const out = [];

@@ -2,6 +2,7 @@
 // aucun appel réseau externe, captures d'écran (dans tests/e2e/captures/, à regarder).
 import { test, expect } from '@playwright/test';
 import { READY as MODULES } from '../../modules/registry.js';
+import { FICHES_PRETES } from '../../fiches/registry.js';
 
 const fmt = x => (x === Infinity ? 'i' : x === -Infinity ? 'i-' : (Math.abs(x) + '').replace('.', ',') + (x < 0 ? '-' : ''));
 
@@ -172,3 +173,35 @@ test('signaler une erreur : capture, texte, envoi', async ({ page }, info) => {
   expect(decodeURIComponent(href)).toContain('La correction dit 12 mais je trouve 14');
   expect(errors).toEqual([]);
 });
+
+for (const f of FICHES_PRETES) {
+  test(`fiche ${f.id} : plan, liens vers les niveaux, hors ligne`, async ({ page, context }, info) => {
+    const errors = [];
+    page.on('pageerror', e => errors.push(e.message));
+    await page.goto('./');
+    await page.locator(`a[href="fiches/?f=${f.id}"]`).click();
+    await expect(page.locator('#fplan li').first()).toBeVisible();
+    await expect(page.locator('#fiche svg').first()).toBeVisible();
+    const largeur = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(largeur).toBeLessThanOrEqual(0);
+    await page.screenshot({ path: `tests/e2e/captures/fiche-${f.id}-${info.project.name}.png`, fullPage: true });
+    // hors ligne, la fiche reste lisible
+    await page.evaluate(async () => { await navigator.serviceWorker.ready; });
+    await page.waitForFunction(async () => {
+      const ks = await caches.keys(); if (!ks.length) return false;
+      return (await (await caches.open(ks[0])).keys()).some(r => r.url.includes('/fiches/'));
+    });
+    await context.setOffline(true);
+    await page.reload();
+    await expect(page.locator('#fplan li').first()).toBeVisible();
+    await context.setOffline(false);
+    // un lien « S'entraîner » ouvre le bon niveau du module
+    const lien = page.locator('#fliensGrid a').first();
+    const href = await lien.getAttribute('href');
+    const niveau = +href.split('niveau=')[1];
+    await lien.click();
+    await expect(page.locator('#q')).not.toBeEmpty();
+    expect(await page.evaluate(() => window.__mp.state.level + 1)).toBe(niveau);
+    expect(errors).toEqual([]);
+  });
+}

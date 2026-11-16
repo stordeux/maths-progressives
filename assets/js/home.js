@@ -1,5 +1,6 @@
 // Accueil : cartes des modules (niveau atteint, records, dernière activité), export / import, réglages.
 import { MODULES, GROUPES } from '../../modules/registry.js';
+import { FICHES } from '../../fiches/registry.js';
 import * as store from '../../engine/storage.js';
 import { applySettings } from '../../engine/engine.js';
 import { installerSignalement, setContexte } from '../../engine/signaler.js';
@@ -41,7 +42,10 @@ function render() {
           <span class="bar" aria-hidden="true"><i style="width:${pct}%"></i></span></span></a>`;
     }).join('')}</div></section>`;
   }).join('');
-  $('#modules').innerHTML = html;
+  const fiches = `<section class="group" aria-labelledby="g-fiches"><h2 id="g-fiches">📚 Fiches de synthèse</h2><div class="grid">${FICHES.map(f => f.etat === 'bientot'
+    ? `<div class="mcard soon" style="--c:${f.couleur}" aria-disabled="true"><span class="t">${f.emoji} ${f.titre}</span><span class="cl">${f.classes}</span><span class="r">${f.resume}</span><span class="st"><span class="pill">Bientôt</span></span></div>`
+    : `<a class="mcard" href="fiches/?f=${f.id}" style="--c:${f.couleur}"><span class="t">${f.emoji} ${f.titre}</span><span class="cl">${f.classes}</span><span class="r">${f.resume}</span><span class="st"><span class="new">Fiche à lire</span></span></a>`).join('')}</div></section>`;
+  $('#modules').innerHTML = html + fiches;
   $('#global').textContent = debut ? `${debut} module${debut > 1 ? 's' : ''} commencé${debut > 1 ? 's' : ''} · ${tot} niveau${tot > 1 ? 'x' : ''} atteint${tot > 1 ? 's' : ''} en tout` : 'Choisis un module pour commencer 👇';
 }
 

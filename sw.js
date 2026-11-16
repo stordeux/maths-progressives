@@ -1,14 +1,16 @@
 // Service worker : met tout le site en cache pour qu'il marche hors ligne.
 // La liste ASSETS et VERSION sont régénérées par « node tools/sw-assets.mjs » (vérifié par les tests).
-const VERSION = '67fbdee4656d';
+const VERSION = 'f0055ebf8285';
 const ASSETS = [
   './',
   './assets/css/base.css',
+  './assets/css/fiche.css',
   './assets/css/home.css',
   './assets/icons/icon-192.png',
   './assets/icons/icon-512-maskable.png',
   './assets/icons/icon-512.png',
   './assets/icons/icon.svg',
+  './assets/js/fiche.js',
   './assets/js/home.js',
   './engine/answers/checks.js',
   './engine/answers/fields.js',
@@ -25,6 +27,9 @@ const ASSETS = [
   './engine/util/fmt.js',
   './engine/util/rand.js',
   './engine/vendor/html2canvas.min.js',
+  './fiches/identites.js',
+  './fiches/index.html',
+  './fiches/registry.js',
   './index.html',
   './manifest.webmanifest',
   './modules/aires-volumes/draw.js',
@@ -98,6 +103,7 @@ const ASSETS = [
   './modules/vecteurs/draw.js',
   './modules/vecteurs/index.html',
   './modules/vecteurs/levels.js',
+  './fiches/',
   './modules/aires-volumes/',
   './modules/angles/',
   './modules/calcul/',
