@@ -126,10 +126,18 @@ function L1(d) {
 function C1() {
   const f = x => x * x;
   return `<h2>1. Taux de variation</h2>
-<div class="def">Le <b>taux de variation</b> de f entre a et b (a ≠ b) est<br><b>(f(b) − f(a)) ÷ (b − a)</b>.<br>C'est la <b>pente</b> (le coefficient directeur) de la <b>sécante</b> (AB), où A(a ; f(a)) et B(b ; f(b)) sont sur la courbe.</div>
-<div class="ex">f(x) = x<sup>2</sup>, entre 1 et 3 : f(1) = 1, f(3) = 9.<br>Taux = (9 − 1) ÷ (3 − 1) = 8 ÷ 2 = <b>4</b>. De A à B, on avance de 2 et on monte de 8.</div>
-<div class="warn">⚠️ Même ordre en haut et en bas : (f(b) − f(a)) ÷ (b − a). Si on écrit (f(a) − f(b)) ÷ (b − a), on se trompe de signe.<br>⚠️ Ne pas oublier de diviser par b − a !</div>
-${graph({ xr: [-2, 5], yr: [-1, 10], fs: [{ f, l: 'y = x²' }], lines: [{ x: 1, y: 1, m: 4, c: COL.S, l: 'sécante (AB)' }], pts: [{ x: 1, y: 1, l: 'A' }, { x: 3, y: 9, l: 'B', anchor: 'end' }], tri: { x: 1, y: 1, dx: 2, dy: 8 } })}`;
+<p class="intro">Le taux de variation dit de combien f augmente <b>en moyenne</b> quand x augmente de 1, entre deux valeurs a et b. C'est la première marche vers la dérivée.</p>
+<div class="def">Le <b>taux de variation</b> de f entre a et b (a ≠ b) est<br><b>(f(b) − f(a)) ÷ (b − a)</b>.<br>C'est la <b>pente</b> (le coefficient directeur) de la <b>sécante</b> (AB), où A(a ; f(a)) et B(b ; f(b)) sont sur la courbe.<br>Taux positif : la sécante monte ; négatif : elle descend ; nul : elle est horizontale.</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Calcule f(a) et f(b), en mettant les nombres négatifs entre parenthèses.</li>
+<li>Calcule la variation de f : f(b) − f(a).</li>
+<li>Calcule la variation de x : b − a.</li>
+<li>Divise la première par la deuxième, puis contrôle le signe sur la figure.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : f(x) = x<sup>2</sup>, entre 1 et 3.</span><br>f(1) = 1 et f(3) = 9.<br>Taux = (9 − 1) ÷ (3 − 1) = 8 ÷ 2 = <b>4</b>. De A à B, on avance de 2 et on monte de 8.</div>
+${graph({ xr: [-2, 5], yr: [-1, 10], fs: [{ f, l: 'y = x²' }], lines: [{ x: 1, y: 1, m: 4, c: COL.S, l: 'sécante (AB)' }], pts: [{ x: 1, y: 1, l: 'A' }, { x: 3, y: 9, l: 'B', anchor: 'end' }], tri: { x: 1, y: 1, dx: 2, dy: 8 } })}
+<div class="ex"><span class="q">Exemple 2 : f(x) = −2x<sup>2</sup> + 3x + 1, entre −1 et 2.</span><br>f(−1) = −2 × (−1)<sup>2</sup> + 3 × (−1) + 1 = −2 − 3 + 1 = −4.<br>f(2) = −2 × 4 + 6 + 1 = −1.<br>Taux = (−1 − (−4)) ÷ (2 − (−1)) = 3 ÷ 3 = <b>1</b>.</div>
+<div class="warn">⚠️ Même ordre en haut et en bas : (f(b) − f(a)) ÷ (b − a). Avec (f(a) − f(b)) ÷ (b − a), on se trompe de signe.<br>⚠️ Ne pas oublier de <b>diviser</b> par b − a ! Et pas l'inverse : la variation de f va en haut.<br>⚠️ (−1)<sup>2</sup> = 1, mais −2 × (−1)<sup>2</sup> = −2 : le carré passe avant la multiplication.</div>
+<div class="retenir">À retenir : taux de variation = (f(b) − f(a)) ÷ (b − a) = pente de la sécante (AB).</div>`;
 }
 
 /* =====================================================================
@@ -182,11 +190,24 @@ function L2(d) {
 }
 function C2() {
   const f = x => x * x / 2;
+  const g = x => x * x / 4;
   return `<h2>2. Nombre dérivé et tangente</h2>
+<p class="intro">Le nombre dérivé mesure la pente de la courbe <b>en un point précis</b> : il dit à quelle vitesse f monte ou descend juste à cet endroit.</p>
 <div class="def">Quand B se rapproche de A sur la courbe, la sécante (AB) tourne et se rapproche d'une droite limite : la <b>tangente</b> à la courbe en A.<br>Sa pente s'appelle le <b>nombre dérivé</b> de f en a, noté <b>f${PR}(a)</b>.</div>
-<div class="ex">Pour lire f${PR}(a) : on part du point A, on avance de 1 en suivant la tangente, et on compte de combien elle monte (+) ou descend (−).<br>Ci-dessous : en A(2 ; 2), on avance de 1, la tangente monte de 2 : <b>f${PR}(2) = 2</b>.</div>
-<div class="warn">⚠️ f(a) est la <b>hauteur</b> du point A ; f${PR}(a) est la <b>pente</b> de la tangente. Ce n'est pas la même chose !<br>⚠️ Tangente qui descend → f${PR}(a) &lt; 0. Tangente horizontale → f${PR}(a) = 0.</div>
-${graph({ xr: [-3, 5], yr: [-2, 7], fs: [{ f, l: 'y = f(x)' }], lines: [{ x: 2, y: 2, m: 2, l: 'tangente T', c: COL.T }], pts: [{ x: 2, y: 2, l: 'A', anchor: 'end' }], tri: { x: 2, y: 2, dx: 1, dy: 2 } })}`;
+<div class="methode"><b>Méthode</b> pour lire f${PR}(a) sur un graphique<ol>
+<li>Repère le point A de la courbe et la tangente T qui passe par A.</li>
+<li>Pars de A et avance vers la droite en suivant T, jusqu'à un point de T placé sur un nœud du quadrillage (1, 2 ou 4 carreaux).</li>
+<li>Compte de combien T monte (+) ou descend (−).</li>
+<li>f${PR}(a) = déplacement vertical ÷ déplacement horizontal.</li></ol></div>
+<div class="cols">
+<div><div class="ex"><span class="q">Exemple 1 : la tangente monte.</span><br>En A(2 ; 2), on avance de 1 : T monte de 2.<br><b>f${PR}(2) = 2 ÷ 1 = 2</b>.</div>
+${graph({ xr: [-3, 5], yr: [-2, 7], fs: [{ f, l: 'y = f(x)' }], lines: [{ x: 2, y: 2, m: 2, l: 'tangente T', c: COL.T }], pts: [{ x: 2, y: 2, l: 'A', anchor: 'end' }], tri: { x: 2, y: 2, dx: 1, dy: 2 } })}</div>
+<div><div class="ex"><span class="q">Exemple 2 : la tangente descend.</span><br>En A(−2 ; 1), on avance de 1 : T descend de 1.<br><b>f${PR}(−2) = −1 ÷ 1 = −1</b>.</div>
+${graph({ xr: [-5, 3], yr: [-2, 6], fs: [{ f: g, l: 'y = g(x)' }], lines: [{ x: -2, y: 1, m: -1, l: 'tangente T', c: COL.T }], pts: [{ x: -2, y: 1, l: 'A', anchor: 'end' }], tri: { x: -2, y: 1, dx: 1, dy: -1 } })}</div>
+</div>
+<div class="ex"><span class="q">Cas particulier :</span> au sommet d'une parabole ou en haut d'une « bosse », la tangente est <b>horizontale</b> : f${PR}(a) = 0.</div>
+<div class="warn">⚠️ f(a) est la <b>hauteur</b> du point A ; f${PR}(a) est la <b>pente</b> de la tangente. Ce n'est pas la même chose !<br>⚠️ Tangente qui descend → f${PR}(a) &lt; 0. Tangente horizontale → f${PR}(a) = 0.<br>⚠️ Pente = vertical ÷ horizontal, pas l'inverse.</div>
+<div class="retenir">À retenir : f${PR}(a) est la pente de la tangente à la courbe au point d'abscisse a.</div>`;
 }
 
 /* =====================================================================
@@ -235,10 +256,20 @@ function L3(d) {
 function C3() {
   const f = x => x * x;
   return `<h2>3. Le nombre dérivé par le calcul</h2>
+<p class="intro">Sans graphique, on calcule f${PR}(a) exactement : on prend un point M très proche de A et on regarde ce que devient la pente de la sécante (AM).</p>
 <div class="def">f${PR}(a) est la <b>limite</b>, quand h tend vers 0, du taux d'accroissement<br><span class="frac"><span>f(a + h) − f(a)</span><span>h</span></span>.<br>C'est la pente de la sécante entre A et le point M d'abscisse a + h, quand M glisse jusqu'à A.</div>
-<div class="ex">f(x) = x<sup>2</sup> et a = 3 :<br>f(3 + h) − f(3) = (9 + 6h + h<sup>2</sup>) − 9 = 6h + h<sup>2</sup><br>On divise par h : 6 + h. Quand h tend vers 0 : <b>f${PR}(3) = 6</b>.</div>
-<div class="warn">⚠️ On ne remplace pas h par 1 : h devient <b>aussi petit qu'on veut</b>, donc « 6 + h » tend vers 6.<br>⚠️ (3 + h)<sup>2</sup> = 9 + 6h + h<sup>2</sup>, et pas 9 + h<sup>2</sup> (identité remarquable).</div>
-${graph({ xr: [-1, 5], yr: [-1, 17], fs: [{ f, l: 'y = x²' }], lines: [{ x: 3, y: 9, m: 7, c: COL.S, dash: true, l: 'sécante (AM)' }, { x: 3, y: 9, m: 6, c: COL.T, l: 'T' }], pts: [{ x: 3, y: 9, l: 'A', anchor: 'end' }, { x: 4, y: 16, l: 'M', anchor: 'end' }] })}`;
+<div class="methode"><b>Méthode</b><ol>
+<li>Calcule f(a).</li>
+<li>Écris f(a + h) en remplaçant x par (a + h), puis développe :<br>(a + h)<sup>2</sup> = a<sup>2</sup> + 2ah + h<sup>2</sup> ; (a + h)<sup>3</sup> = a<sup>3</sup> + 3a<sup>2</sup>h + 3ah<sup>2</sup> + h<sup>3</sup>.</li>
+<li>Retranche f(a) : il ne reste que des termes en h, h<sup>2</sup>, h<sup>3</sup>.</li>
+<li>Divise par h.</li>
+<li>Fais tendre h vers 0 : les termes qui contiennent encore h disparaissent.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : f(x) = x<sup>2</sup> et a = 3.</span><br>f(3 + h) − f(3) = (9 + 6h + h<sup>2</sup>) − 9 = <b>6h + h<sup>2</sup></b>.<br>On divise par h : 6 + h. Quand h tend vers 0 : <b>f${PR}(3) = 6</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : f(x) = −2x<sup>2</sup> + x et a = −1.</span><br>f(−1) = −2 × 1 + (−1) = −3.<br>f(−1 + h) = −2(1 − 2h + h<sup>2</sup>) + (−1 + h) = −3 + 5h − 2h<sup>2</sup>.<br>f(−1 + h) − f(−1) = <b>5h − 2h<sup>2</sup></b>. On divise par h : 5 − 2h.<br>Quand h tend vers 0 : <b>f${PR}(−1) = 5</b>.</div>
+<div class="warn">⚠️ On ne remplace pas h par 1 : h devient <b>aussi petit qu'on veut</b>, donc « 6 + h » tend vers 6.<br>⚠️ (3 + h)<sup>2</sup> = 9 + 6h + h<sup>2</sup>, et pas 9 + h<sup>2</sup> (identité remarquable).<br>⚠️ f${PR}(a) n'est pas f(a) : à la fin, il ne reste que le terme « sans h » du quotient.</div>
+${graph({ xr: [-1, 5], yr: [-1, 17], fs: [{ f, l: 'y = x²' }], lines: [{ x: 3, y: 9, m: 7, c: COL.S, dash: true, l: 'sécante (AM)' }, { x: 3, y: 9, m: 6, c: COL.T, l: 'T' }], pts: [{ x: 3, y: 9, l: 'A', anchor: 'end' }, { x: 4, y: 16, l: 'M', anchor: 'end' }] })}
+<p class="note">Sur la figure : avec h = 1, la sécante (AM) a pour pente 6 + 1 = 7 ; quand M glisse vers A, cette pente tend vers 6, la pente de la tangente T.</p>
+<div class="retenir">À retenir : développe f(a + h) − f(a), divise par h, puis fais tendre h vers 0.</div>`;
 }
 
 /* =====================================================================
@@ -285,10 +316,21 @@ function L4(d) {
 function C4() {
   const f = x => x * x / 2;
   return `<h2>4. Équation de la tangente</h2>
+<p class="intro">La tangente est une droite : on peut donc écrire son équation y = mx + p. Elle sert à approcher la courbe près du point A.</p>
 <div class="def">La tangente à la courbe de f au point d'abscisse a passe par A(a ; f(a)) et a pour pente f${PR}(a) :<br><b>y = f${PR}(a)(x − a) + f(a)</b></div>
-<div class="ex">f(2) = 2 et f${PR}(2) = 2 :<br>y = 2(x − 2) + 2 = 2x − 4 + 2, donc <b>y = 2x − 2</b>.<br>Vérification : pour x = 2, y = 2 = f(2). ✔</div>
-<div class="warn">⚠️ y = f${PR}(a)(x <b>−</b> a) + f(a) : avec a = −3, on écrit (x + 3).<br>⚠️ La constante n'est pas f(a) : il faut développer.</div>
-${graph({ xr: [-3, 5], yr: [-3, 7], fs: [{ f, l: 'y = f(x)' }], lines: [{ x: 2, y: 2, m: 2, l: 'tangente T', c: COL.T }], pts: [{ x: 2, y: 2, l: 'A(2 ; 2)', anchor: 'end' }, { x: 0, y: -2, l: '−2', c: COL.T }] })}`;
+<div class="methode"><b>Méthode</b><ol>
+<li>Trouve f(a) : par le calcul, ou en lisant la <b>hauteur</b> de A.</li>
+<li>Trouve f${PR}(a) : avec la formule de f${PR}, ou en lisant la <b>pente</b> de T.</li>
+<li>Remplace dans y = f${PR}(a)(x − a) + f(a).</li>
+<li>Développe et réduis : y = mx + p.</li>
+<li>Vérifie : pour x = a, on doit retrouver y = f(a).</li></ol></div>
+<div class="cols">
+<div class="ex"><span class="q">Exemple 1 : f(2) = 2 et f${PR}(2) = 2.</span><br>y = 2(x − 2) + 2 = 2x − 4 + 2, donc <b>y = 2x − 2</b>.<br>Vérification : pour x = 2, y = 4 − 2 = 2 = f(2). ✔</div>
+${graph({ xr: [-3, 5], yr: [-3, 7], fs: [{ f, l: 'y = f(x)' }], lines: [{ x: 2, y: 2, m: 2, l: 'tangente T', c: COL.T }], pts: [{ x: 2, y: 2, l: 'A(2 ; 2)', anchor: 'end' }, { x: 0, y: -2, l: '−2', c: COL.T }] })}
+</div>
+<div class="ex"><span class="q">Exemple 2 : f(x) = x<sup>2</sup> + 2x − 1, avec f${PR}(x) = 2x + 2, en a = −3.</span><br>f(−3) = 9 − 6 − 1 = 2 et f${PR}(−3) = 2 × (−3) + 2 = −4.<br>y = −4(x + 3) + 2 = −4x − 12 + 2, donc <b>y = −4x − 10</b>.<br>Vérification : pour x = −3, y = 12 − 10 = 2. ✔</div>
+<div class="warn">⚠️ y = f${PR}(a)(x <b>−</b> a) + f(a) : avec a = −3, on écrit (x + 3).<br>⚠️ La constante p n'est pas f(a) : il faut développer.<br>⚠️ Le coefficient de x est la <b>pente</b> f${PR}(a), pas f(a) : ne les inverse pas.</div>
+<div class="retenir">À retenir : T : y = f${PR}(a)(x − a) + f(a), puis on développe.</div>`;
 }
 
 /* =====================================================================
@@ -366,12 +408,20 @@ function L5(d) {
 }
 function C5() {
   return `<h2>5. Dérivées usuelles</h2>
+<p class="intro">Plutôt que de recalculer une limite à chaque fois, on apprend une fois pour toutes les dérivées des fonctions de référence.</p>
 <div class="def">La <b>fonction dérivée</b> f${PR} associe à chaque x le nombre dérivé f${PR}(x).<br>
 <table class="data" style="margin:6px auto"><tr><th>f(x)</th><td>k (constante)</td><td>x</td><td>x<sup>2</sup></td><td>x<sup>n</sup></td><td>${F(1, 'x')}</td><td>${R('x')}</td></tr>
 <tr><th>f${PR}(x)</th><td>0</td><td>1</td><td>2x</td><td>n x<sup>n − 1</sup></td><td>−${F(1, 'x<sup>2</sup>')}</td><td>${F(1, '2' + R('x'))}</td></tr></table></div>
-<div class="ex">(x<sup>5</sup>)${PR} = 5x<sup>4</sup> &nbsp; ; &nbsp; f(x) = 1/x : f${PR}(2) = −1/4 = −0,25 &nbsp; ; &nbsp; f(x) = √x : f${PR}(4) = 1/(2 × 2) = 0,25.</div>
-<div class="warn">⚠️ (1/x)${PR} = <b>−</b>1/x<sup>2</sup> : n'oublie pas le signe moins (la fonction inverse est décroissante).<br>⚠️ (x<sup>3</sup>)${PR} = 3x<sup>2</sup> : l'exposant descend devant <b>et</b> baisse de 1.</div>
-${graph({ xr: [-1, 5], yr: [-1, 4], fs: [{ f: x => (x >= 0 ? Math.sqrt(x) : NaN), dom: [0, 5], l: 'y = √x' }], lines: [{ x: 4, y: 2, m: 0.25, l: 'tangente T', c: COL.T }], pts: [{ x: 4, y: 2, l: 'A', anchor: 'end', ly: -14 }, { x: 0, y: 1, c: COL.T }], tri: { x: 0, y: 1, dx: 4, dy: 1 } })}`;
+<p class="note">La formule de (1/x)${PR} est valable pour x ≠ 0, celle de (√x)${PR} pour x &gt; 0 (√x n'est pas dérivable en 0).</p>
+<div class="methode"><b>Méthode</b><ol>
+<li>Reconnais la forme de f dans le tableau.</li>
+<li>Applique la formule : pour x<sup>n</sup>, l'exposant n descend devant et l'exposant baisse de 1.</li>
+<li>Si on demande un nombre dérivé f${PR}(a) : calcule d'abord f${PR}(x), puis remplace x par a.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : f(x) = x<sup>5</sup>.</span><br>n = 5 : <b>f${PR}(x) = 5x<sup>4</sup></b> (coefficient 5, exposant 4).</div>
+<div class="ex"><span class="q">Exemple 2 : des nombres dérivés.</span><br>f(x) = x<sup>3</sup> : f${PR}(x) = 3x<sup>2</sup>, donc f${PR}(−2) = 3 × (−2)<sup>2</sup> = <b>12</b>.<br>f(x) = ${F(1, 'x')} : f${PR}(−2) = −${F(1, '(−2)<sup>2</sup>')} = −${F(1, 4)} = <b>−0,25</b> (toujours négatif).<br>f(x) = ${R('x')} : f${PR}(4) = ${F(1, '2 × 2')} = <b>0,25</b>, ce que montre la figure.</div>
+${graph({ xr: [-1, 5], yr: [-1, 4], fs: [{ f: x => (x >= 0 ? Math.sqrt(x) : NaN), dom: [0, 5], l: 'y = √x' }], lines: [{ x: 4, y: 2, m: 0.25, l: 'tangente T', c: COL.T }], pts: [{ x: 4, y: 2, l: 'A', anchor: 'end', ly: -14 }, { x: 0, y: 1, c: COL.T }], tri: { x: 0, y: 1, dx: 4, dy: 1 } })}
+<div class="warn">⚠️ (1/x)${PR} = <b>−</b>1/x<sup>2</sup> : n'oublie pas le signe moins (la fonction inverse est décroissante).<br>⚠️ (x<sup>3</sup>)${PR} = 3x<sup>2</sup> : l'exposant descend devant <b>et</b> baisse de 1.<br>⚠️ La dérivée d'une constante est 0 (droite horizontale), et (x)${PR} = 1, pas 0.</div>
+<div class="retenir">À retenir : (x<sup>n</sup>)${PR} = n x<sup>n − 1</sup> ; (1/x)${PR} = −1/x<sup>2</sup> ; (√x)${PR} = 1/(2√x).</div>`;
 }
 
 /* =====================================================================
@@ -432,11 +482,19 @@ function L6(d) {
 function C6() {
   const f = x => x ** 3 - 3 * x;
   return `<h2>6. Somme et multiple : les polynômes</h2>
-<div class="def"><b>(u + v)${PR} = u${PR} + v${PR}</b> &nbsp; et &nbsp; <b>(k u)${PR} = k u${PR}</b> (k constante).<br>On dérive donc un polynôme <b>terme à terme</b>.</div>
-<div class="ex">f(x) = 2x<sup>3</sup> − 5x<sup>2</sup> + 4x − 7<br>f${PR}(x) = 2 × 3x<sup>2</sup> − 5 × 2x + 4 − 0 = <b>6x<sup>2</sup> − 10x + 4</b></div>
-<div class="ex">f(x) = ${F(1, 3)}x<sup>3</sup> + ${F(3, 2)}x<sup>2</sup> : f${PR}(x) = ${F(1, 3)} × 3x<sup>2</sup> + ${F(3, 2)} × 2x = <b>x<sup>2</sup> + 3x</b></div>
-<div class="warn">⚠️ La constante disparaît : (−7)${PR} = 0.<br>⚠️ (5x)${PR} = 5, pas 5x ni 0.</div>
-${graph({ xr: [-3, 3], yr: [-3, 4], fs: [{ f, l: 'y = x³ − 3x' }], lines: [{ x: -1, y: 2, m: 0, l: 'tangente T', c: COL.T }, { x: 1, y: -2, m: 0, c: COL.T }], pts: [{ x: -1, y: 2, l: 'f′(−1) = 0', anchor: 'end' }, { x: 1, y: -2, l: 'f′(1) = 0', ly: 22 }] })}`;
+<p class="intro">Avec deux règles simples, tu peux dériver n'importe quel polynôme à partir des dérivées usuelles.</p>
+<div class="def"><b>(u + v)${PR} = u${PR} + v${PR}</b> &nbsp; et &nbsp; <b>(k u)${PR} = k u${PR}</b> (k constante).<br>On dérive donc un polynôme <b>terme à terme</b> : (a x<sup>n</sup>)${PR} = a × n x<sup>n − 1</sup>.</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Range les termes par puissances décroissantes (ils peuvent être donnés dans le désordre).</li>
+<li>Dérive chaque terme : (ax<sup>3</sup>)${PR} = 3ax<sup>2</sup> ; (ax<sup>2</sup>)${PR} = 2ax ; (ax)${PR} = a ; constante → 0 ; (k/x)${PR} = −k/x<sup>2</sup>.</li>
+<li>Simplifie les coefficients (fractions comprises) et écris f${PR}(x) réduite.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : f(x) = 2x<sup>3</sup> − 5x<sup>2</sup> + 4x − 7.</span><br>f${PR}(x) = 2 × 3x<sup>2</sup> − 5 × 2x + 4 − 0 = <b>6x<sup>2</sup> − 10x + 4</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : des fractions.</span> f(x) = ${F(1, 3)}x<sup>3</sup> + ${F(3, 2)}x<sup>2</sup> − x<br>f${PR}(x) = ${F(1, 3)} × 3x<sup>2</sup> + ${F(3, 2)} × 2x − 1 = <b>x<sup>2</sup> + 3x − 1</b>.</div>
+<div class="ex"><span class="q">Exemple 3 : avec 1/x.</span> f(x) = 3x<sup>2</sup> − x − ${F(4, 'x')} (x ≠ 0)<br>(−${F(4, 'x')})${PR} = −4 × (−${F(1, 'x<sup>2</sup>')}) = +${F(4, 'x<sup>2</sup>')}, donc <b>f${PR}(x) = 6x − 1 + ${F(4, 'x<sup>2</sup>')}</b>.</div>
+<div class="warn">⚠️ La constante disparaît : (−7)${PR} = 0.<br>⚠️ (5x)${PR} = 5, pas 5x ni 0.<br>⚠️ Multiplie le coefficient par l'exposant : (−5x<sup>2</sup>)${PR} = −10x, pas −5x.</div>
+${graph({ xr: [-3, 3], yr: [-3, 4], fs: [{ f, l: 'y = x³ − 3x' }], lines: [{ x: -1, y: 2, m: 0, l: 'tangente T', c: COL.T }, { x: 1, y: -2, m: 0, c: COL.T }], pts: [{ x: -1, y: 2, l: 'f′(−1) = 0', anchor: 'end' }, { x: 1, y: -2, l: 'f′(1) = 0', ly: 22 }] })}
+<p class="note">Sur la figure : f(x) = x<sup>3</sup> − 3x, f${PR}(x) = 3x<sup>2</sup> − 3. En x = −1 et x = 1, f${PR}(x) = 0 : les tangentes sont horizontales.</p>
+<div class="retenir">À retenir : un polynôme se dérive terme à terme, et les constantes disparaissent.</div>`;
 }
 
 /* =====================================================================
@@ -480,10 +538,20 @@ function L7(d) {
 function C7() {
   const f = x => (x - 1) * (x + 2) * x / 2;
   return `<h2>7. Dérivée d'un produit</h2>
+<p class="intro">Quand f est un produit de deux facteurs, on ne dérive pas chaque facteur séparément : une formule spéciale relie les deux.</p>
 <div class="def">Si u et v sont dérivables : <b>(uv)${PR} = u${PR}v + uv${PR}</b></div>
-<div class="ex">f(x) = (2x + 1)(x − 3) : u = 2x + 1, u${PR} = 2 ; v = x − 3, v${PR} = 1.<br>f${PR}(x) = 2(x − 3) + 1 × (2x + 1) = 2x − 6 + 2x + 1 = <b>4x − 5</b>.<br>Vérification : f(x) = 2x<sup>2</sup> − 5x − 3, et (2x<sup>2</sup> − 5x − 3)${PR} = 4x − 5. ✔</div>
-<div class="warn">⚠️ <b>(uv)${PR} ≠ u${PR}v${PR}</b> ! Ici u${PR}v${PR} = 2 × 1 = 2, ce qui est faux.</div>
-${graph({ xr: [-3, 3], yr: [-3, 5], fs: [{ f, l: 'y = f(x)' }], lines: [{ x: 1, y: 0, m: 1.5, l: 'tangente T', c: COL.T }], pts: [{ x: 1, y: 0, l: 'A' }], tri: { x: 1, y: 0, dx: 2, dy: 3 } })}`;
+<div class="methode"><b>Méthode</b><ol>
+<li>Pose u = le 1<sup>er</sup> facteur et v = le 2<sup>e</sup> facteur.</li>
+<li>Calcule u${PR} et v${PR}.</li>
+<li>Écris u${PR}v + uv${PR}, avec des parenthèses autour de u et de v.</li>
+<li>Développe et réduis ; si on demande f${PR}(a), remplace x par a.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : f(x) = (2x + 1)(x − 3).</span><br>u = 2x + 1, u${PR} = 2 ; v = x − 3, v${PR} = 1.<br>f${PR}(x) = 2(x − 3) + 1 × (2x + 1) = 2x − 6 + 2x + 1 = <b>4x − 5</b>.<br>Vérification : f(x) = 2x<sup>2</sup> − 5x − 3, et (2x<sup>2</sup> − 5x − 3)${PR} = 4x − 5. ✔</div>
+<div class="ex"><span class="q">Exemple 2 : f(x) = (x − 2)(3x<sup>2</sup> + 1).</span><br>u = x − 2, u${PR} = 1 ; v = 3x<sup>2</sup> + 1, v${PR} = 6x.<br>f${PR}(x) = 1 × (3x<sup>2</sup> + 1) + 6x(x − 2) = 3x<sup>2</sup> + 1 + 6x<sup>2</sup> − 12x = <b>9x<sup>2</sup> − 12x + 1</b>.</div>
+<div class="ex"><span class="q">Exemple 3 : f(x) = (2x + 1)${R('x')}, calcule f${PR}(4).</span><br>u${PR} = 2 ; v = ${R('x')}, v${PR} = ${F(1, '2' + R('x'))}.<br>f${PR}(x) = 2${R('x')} + (2x + 1) × ${F(1, '2' + R('x'))}, donc f${PR}(4) = 2 × 2 + ${F(9, 4)} = <b>6,25</b>.</div>
+${graph({ xr: [-3, 3], yr: [-3, 5], fs: [{ f, l: 'y = f(x)' }], lines: [{ x: 1, y: 0, m: 1.5, l: 'tangente T', c: COL.T }], pts: [{ x: 1, y: 0, l: 'A' }], tri: { x: 1, y: 0, dx: 2, dy: 3 } })}
+<p class="note">Sur la figure : f(x) = ${F(1, 2)}x(x − 1)(x + 2) ; la tangente en A(1 ; 0) a pour pente f${PR}(1) = 1,5 (on avance de 2, on monte de 3).</p>
+<div class="warn">⚠️ <b>(uv)${PR} ≠ u${PR}v${PR}</b> ! Dans l'exemple 1, u${PR}v${PR} = 2 × 1 = 2, ce qui est faux.<br>⚠️ Avec un facteur négatif, garde les parenthèses : −3(x + 2) = −3x − 6.</div>
+<div class="retenir">À retenir : (uv)${PR} = u${PR}v + uv${PR}.</div>`;
 }
 
 /* =====================================================================
@@ -536,10 +604,20 @@ function L8(d) {
 function C8() {
   const f = x => (x + 1) / (x - 1);
   return `<h2>8. Dérivée d'un quotient</h2>
+<p class="intro">Pour une fraction dont le haut et le bas dépendent de x, on utilise la formule du quotient, cousine de celle du produit.</p>
 <div class="def">Si v ne s'annule pas :<br><b>(${F(1, 'v')})${PR} = ${F(`−v${PR}`, 'v<sup>2</sup>')}</b> &nbsp;&nbsp; et &nbsp;&nbsp; <b>(${F('u', 'v')})${PR} = ${F(`u${PR}v − uv${PR}`, 'v<sup>2</sup>')}</b></div>
-<div class="ex">f(x) = ${F('x + 1', 'x − 1')} : u = x + 1, u${PR} = 1 ; v = x − 1, v${PR} = 1.<br>u${PR}v − uv${PR} = (x − 1) − (x + 1) = −2, donc <b>f${PR}(x) = ${F('−2', '(x − 1)<sup>2</sup>')}</b>.</div>
-<div class="warn">⚠️ L'ordre compte : u${PR}v <b>−</b> uv${PR} (u${PR} en premier). L'inverse donne le signe contraire.<br>⚠️ (u/v)${PR} ≠ u${PR}/v${PR}. On garde v<sup>2</sup> au dénominateur sans le développer.</div>
-${graph({ xr: [-4, 5], yr: [-5, 6], fs: [{ f, dom: [-4, 0.98] }, { f, dom: [1.02, 5], l: 'y = f(x)' }], lines: [{ x: 3, y: 2, m: -0.5, l: 'tangente T', c: COL.T }], pts: [{ x: 3, y: 2, l: 'A', ly: -14 }], tri: { x: 3, y: 2, dx: 2, dy: -1 } })}`;
+<div class="methode"><b>Méthode</b><ol>
+<li>Repère u (en haut) et v (en bas). Si le haut est un simple nombre k, écris f = k × (1/v) et utilise la formule de (1/v)${PR}.</li>
+<li>Calcule u${PR} et v${PR}.</li>
+<li>Calcule le numérateur u${PR}v − uv${PR}, dans cet ordre, puis développe et réduis.</li>
+<li>Écris le dénominateur v<sup>2</sup> sans le développer.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : f(x) = ${F('x + 1', 'x − 1')} (x ≠ 1).</span><br>u = x + 1, u${PR} = 1 ; v = x − 1, v${PR} = 1.<br>u${PR}v − uv${PR} = (x − 1) − (x + 1) = −2, donc <b>f${PR}(x) = ${F('−2', '(x − 1)<sup>2</sup>')}</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : f(x) = ${F(3, 'x<sup>2</sup> + 2')}.</span><br>f = 3 × ${F(1, 'v')} avec v = x<sup>2</sup> + 2, v${PR} = 2x.<br>f${PR}(x) = 3 × ${F('−2x', '(x<sup>2</sup> + 2)<sup>2</sup>')} = <b>${F('−6x', '(x<sup>2</sup> + 2)<sup>2</sup>')}</b>.</div>
+<div class="ex"><span class="q">Exemple 3 : f(x) = ${F('2x − 1', 'x<sup>2</sup> + 1')}.</span><br>u${PR} = 2 ; v${PR} = 2x.<br>u${PR}v − uv${PR} = 2(x<sup>2</sup> + 1) − 2x(2x − 1) = 2x<sup>2</sup> + 2 − 4x<sup>2</sup> + 2x = −2x<sup>2</sup> + 2x + 2.<br><b>f${PR}(x) = ${F('−2x<sup>2</sup> + 2x + 2', '(x<sup>2</sup> + 1)<sup>2</sup>')}</b>.</div>
+${graph({ xr: [-4, 5], yr: [-5, 6], fs: [{ f, dom: [-4, 0.98] }, { f, dom: [1.02, 5], l: 'y = f(x)' }], lines: [{ x: 3, y: 2, m: -0.5, l: 'tangente T', c: COL.T }], pts: [{ x: 3, y: 2, l: 'A', ly: -14 }], tri: { x: 3, y: 2, dx: 2, dy: -1 } })}
+<p class="note">Sur la figure (exemple 1) : f${PR}(3) = ${F('−2', '2<sup>2</sup>')} = −0,5. La tangente en A(3 ; 2) descend de 1 quand on avance de 2.</p>
+<div class="warn">⚠️ L'ordre compte : u${PR}v <b>−</b> uv${PR} (u${PR} en premier). L'inverse donne le signe contraire.<br>⚠️ (u/v)${PR} ≠ u${PR}/v${PR}. On garde v<sup>2</sup> au dénominateur sans le développer.<br>⚠️ (${F(1, 'v')})${PR} = <b>−</b>${F(`v${PR}`, 'v<sup>2</sup>')} : n'oublie pas le signe moins.</div>
+<div class="retenir">À retenir : (${F('u', 'v')})${PR} = ${F(`u${PR}v − uv${PR}`, 'v<sup>2</sup>')}, avec u${PR} en premier.</div>`;
 }
 
 /* =====================================================================
@@ -587,11 +665,20 @@ const facD = (k, r1, r2) => `${co(3 * k)}${[r1, r2].map(r => (r === 0 ? 'x' : `(
 function C9() {
   const f = x => (2 * x - 1) ** 2 / 2;
   return `<h2>9. Dérivée de x ↦ g(ax + b)</h2>
+<p class="intro">Quand une fonction de référence s'applique à « ax + b » au lieu de x, on la dérive comme d'habitude… sans oublier un facteur a.</p>
 <div class="def">Si f(x) = g(ax + b), alors <b>f${PR}(x) = a × g${PR}(ax + b)</b>.</div>
-<div class="ex">f(x) = (3x − 1)<sup>4</sup> : g(X) = X<sup>4</sup>, g${PR}(X) = 4X<sup>3</sup>.<br>f${PR}(x) = 3 × 4(3x − 1)<sup>3</sup> = <b>12(3x − 1)<sup>3</sup></b>.</div>
-<div class="ex">f(x) = √(2x + 5) : f${PR}(x) = 2 × ${F(1, '2√(2x + 5)')} = <b>${F(1, '√(2x + 5)')}</b>.</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Repère la fonction de référence g (X<sup>2</sup>, X<sup>n</sup>, √X ou ${F(1, 'X')}) et le nombre a devant x.</li>
+<li>Dérive g : g${PR}(X).</li>
+<li>Remplace X par ax + b, sans toucher à l'intérieur de la parenthèse.</li>
+<li>Multiplie par a (attention s'il est négatif).</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : f(x) = (3x − 1)<sup>4</sup>.</span><br>g(X) = X<sup>4</sup>, g${PR}(X) = 4X<sup>3</sup> et a = 3.<br>f${PR}(x) = 3 × 4(3x − 1)<sup>3</sup> = <b>12(3x − 1)<sup>3</sup></b>.</div>
+<div class="ex"><span class="q">Exemple 2 : f(x) = ${R('2x + 5')}.</span><br>g(X) = √X, g${PR}(X) = ${F(1, '2√X')} et a = 2.<br>f${PR}(x) = 2 × ${F(1, '2' + R('2x + 5'))} = <b>${F(2, '2' + R('2x + 5'))}</b> = ${F(1, R('2x + 5'))}.</div>
+<div class="ex"><span class="q">Exemple 3 : f(x) = ${F(1, '−2x + 3')}, avec a négatif.</span><br>g(X) = ${F(1, 'X')}, g${PR}(X) = −${F(1, 'X<sup>2</sup>')} et a = −2.<br>f${PR}(x) = −2 × (−${F(1, '(−2x + 3)<sup>2</sup>')}) = <b>${F(2, '(−2x + 3)<sup>2</sup>')}</b>.</div>
+${graph({ xr: [-2, 3], yr: [-1, 5], fs: [{ f, l: 'y = f(x)' }], lines: [{ x: 1, y: 0.5, m: 2, l: 'tangente T', c: COL.T }], pts: [{ x: 1, y: 0.5, l: 'A', anchor: 'end' }], tri: { x: 1, y: 0.5, dx: 1, dy: 2 } })}
+<p class="note">Sur la figure : f(x) = ${F(1, 2)}(2x − 1)<sup>2</sup>, f${PR}(x) = ${F(1, 2)} × 2 × 2(2x − 1) = 2(2x − 1), donc f${PR}(1) = 2 : la tangente monte de 2 quand on avance de 1.</p>
 <div class="warn">⚠️ Ne pas oublier le <b>facteur a</b> : ((3x − 1)<sup>4</sup>)${PR} ≠ 4(3x − 1)<sup>3</sup>.<br>⚠️ (1/(ax + b))${PR} = −a/(ax + b)<sup>2</sup> : signe moins <b>et</b> facteur a.</div>
-${graph({ xr: [-2, 3], yr: [-1, 5], fs: [{ f, l: 'y = f(x)' }], lines: [{ x: 1, y: 0.5, m: 2, l: 'tangente T', c: COL.T }], pts: [{ x: 1, y: 0.5, l: 'A', anchor: 'end' }], tri: { x: 1, y: 0.5, dx: 1, dy: 2 } })}`;
+<div class="retenir">À retenir : (g(ax + b))${PR} = a × g${PR}(ax + b).</div>`;
 }
 
 /* =====================================================================
@@ -699,13 +786,26 @@ function L10(d) {
 }
 function C10() {
   const f = x => x ** 3 / 3 - x * x - 3 * x + 3;
+  const fp = x => x * x - 2 * x - 3;
   return `<h2>10. Signe de f${PR} et variations</h2>
+<p class="intro">La dérivée sert surtout à savoir où une fonction monte et où elle descend, sans tracer sa courbe.</p>
 <div class="def">Sur un intervalle :<br>• si <b>f${PR}(x) ≥ 0</b>, f est <b>croissante</b> ↗ ;<br>• si <b>f${PR}(x) ≤ 0</b>, f est <b>décroissante</b> ↘.</div>
-<div class="ex">f(x) = ${F(1, 3)}x<sup>3</sup> − x<sup>2</sup> − 3x + 3 : f${PR}(x) = x<sup>2</sup> − 2x − 3 = (x + 1)(x − 3).
+<div class="methode"><b>Méthode</b><ol>
+<li>Calcule f${PR}(x).</li>
+<li>Cherche où f${PR}(x) = 0 : équation du 1<sup>er</sup> degré, ou forme factorisée k(x − r<sub>1</sub>)(x − r<sub>2</sub>).</li>
+<li>Trouve le signe dans chaque zone : pour ax + b, signe de −a avant la racine et de a après ; pour k(x − r<sub>1</sub>)(x − r<sub>2</sub>), signe de k à l'extérieur des racines, contraire entre elles.</li>
+<li>Conclus : + → f ↗ ; − → f ↘. Dans les intervalles, crochets <b>fermés</b> aux points où f${PR} s'annule.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : f(x) = x<sup>2</sup> − 4x + 1.</span><br>f${PR}(x) = 2x − 4, nul pour x = 2. Comme 2 &gt; 0, f${PR}(x) est − avant 2 et + après.<br>f est décroissante sur <b>]−∞ ; 2]</b> et croissante sur <b>[2 ; +∞[</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : f(x) = ${F(1, 3)}x<sup>3</sup> − x<sup>2</sup> − 3x + 3.</span><br>f${PR}(x) = x<sup>2</sup> − 2x − 3 = (x + 1)(x − 3), signe de 1 (+) à l'extérieur des racines.
 ${signTableHTML(['−1', '3'], [[`f${PR}(x)`, ['+', '0', '−', '0', '+']], ['f', ['↗', '', '↘', '', '↗']]])}
 f est croissante sur ]−∞ ; −1] et sur [3 ; +∞[, décroissante sur [−1 ; 3].</div>
-<div class="warn">⚠️ Ne pas confondre le <b>signe de f${PR}</b> (qui donne les variations) avec le <b>signe de f</b> (la courbe au-dessus ou en dessous de l'axe).<br>⚠️ Sur un graphique de f${PR}, on regarde si la courbe est au-dessus ou en dessous de l'axe, pas si elle monte.</div>
-${graph({ xr: [-3, 5], yr: [-7, 6], fs: [{ f, l: 'y = f(x)' }], lines: [{ x: -1, y: f(-1), m: 0, c: COL.T }, { x: 3, y: f(3), m: 0, c: COL.T }], pts: [{ x: -1, y: f(-1), l: 'max', ly: -12 }, { x: 3, y: f(3), l: 'min', ly: 24 }] })}`;
+<div class="cols">
+<div><b>Courbe de f</b>${graph({ xr: [-3, 5], yr: [-7, 6], fs: [{ f, l: 'y = f(x)' }], lines: [{ x: -1, y: f(-1), m: 0, c: COL.T }, { x: 3, y: f(3), m: 0, c: COL.T }], pts: [{ x: -1, y: f(-1), l: 'max', ly: -12 }, { x: 3, y: f(3), l: 'min', ly: 24 }] })}</div>
+<div><b>Courbe de f${PR}</b>${graph({ xr: [-3, 5], yr: [-5, 6], fs: [{ f: fp, l: `y = f${PR}(x)`, c: COL.G }], band: [-1, 3] })}</div>
+</div>
+<p class="note">Sur [−1 ; 3] (en orange), la courbe de f${PR} est <b>sous l'axe</b> : f${PR} ≤ 0, donc f décroît, même si la courbe de f${PR} remonte à partir de x = 1.</p>
+<div class="warn">⚠️ Ne pas confondre le <b>signe de f${PR}</b> (qui donne les variations) avec le <b>signe de f</b> (la courbe au-dessus ou en dessous de l'axe).<br>⚠️ Sur un graphique de f${PR}, on regarde si la courbe est au-dessus ou en dessous de l'axe, pas si elle monte.<br>⚠️ Ne réponds pas « croissante » quand on demande « décroissante » : relis bien la question.</div>
+<div class="retenir">À retenir : f${PR} positive → f croissante ; f${PR} négative → f décroissante.</div>`;
 }
 
 /* =====================================================================
@@ -781,10 +881,25 @@ function L11(d) {
 function C11() {
   const f = x => x * (10 - x);
   return `<h2>11. Extremums et optimisation</h2>
+<p class="intro">Trouver la plus grande aire, le plus petit coût, le plus grand volume… : la dérivée permet de trouver la meilleure valeur.</p>
 <div class="def">Si f${PR} <b>s'annule en changeant de signe</b> en x<sub>0</sub>, f admet un extremum local en x<sub>0</sub> :<br>• f${PR} passe de + à − : <b>maximum</b> (la courbe monte puis descend) ;<br>• f${PR} passe de − à + : <b>minimum</b>.<br>En ce point, la tangente est <b>horizontale</b>.</div>
-<div class="ex">Rectangle de périmètre 20 cm, de côté x : aire A(x) = x(10 − x) = 10x − x<sup>2</sup>.<br>A${PR}(x) = 10 − 2x, nulle en x = 5, positive avant, négative après : <b>maximum A(5) = 25 cm<sup>2</sup></b>.</div>
-<div class="warn">⚠️ f${PR}(x<sub>0</sub>) = 0 ne suffit pas : il faut que f${PR} change de signe (x<sup>3</sup> a une dérivée nulle en 0 sans extremum).<br>⚠️ La réponse demande souvent deux choses : <b>où</b> (la valeur de x) et <b>combien</b> (la valeur de f).</div>
-${graph({ xr: [-1, 11], yr: [-2, 30], fs: [{ f, dom: [0, 10], l: 'y = A(x)' }], lines: [{ x: 5, y: 25, m: 0, c: COL.T }], pts: [{ x: 5, y: 25, l: 'maximum', ly: -12, px: true }] })}`;
+<div class="methode"><b>Méthode</b><ol>
+<li>Écris la grandeur à optimiser en fonction de x (souvent elle est donnée), et note les valeurs permises pour x.</li>
+<li>Calcule la dérivée.</li>
+<li>Résous « dérivée = 0 » et vérifie que la dérivée change de signe.</li>
+<li>Conclus : + puis − → maximum ; − puis + → minimum.</li>
+<li>Réponds aux deux questions : la valeur de x, puis la valeur de la fonction en x (avec l'unité).</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : f(x) = −2x<sup>2</sup> + 8x − 3.</span><br>f${PR}(x) = −4x + 8, nulle en x = 2 ; + avant 2, − après : <b>maximum</b>.<br>f(2) = −8 + 16 − 3 = <b>5</b>. Le maximum vaut 5, atteint en x = 2.</div>
+<div class="cols">
+<div class="ex"><span class="q">Exemple 2 : un rectangle de périmètre 20 cm.</span><br>Côté x : aire A(x) = x(10 − x) = 10x − x<sup>2</sup>.<br>A${PR}(x) = 10 − 2x, nulle en x = 5, + avant, − après.<br><b>x = 5 cm</b> (un carré) et <b>A(5) = 25 cm<sup>2</sup></b>.</div>
+${graph({ xr: [-1, 11], yr: [-2, 30], fs: [{ f, dom: [0, 10], l: 'y = A(x)' }], lines: [{ x: 5, y: 25, m: 0, c: COL.T }], pts: [{ x: 5, y: 25, l: 'maximum', ly: -12, px: true }] })}
+</div>
+<div class="cols">
+<div class="ex"><span class="q">Exemple 3 : un enclos contre un mur, avec 40 m de grillage.</span><br>A(x) = x(40 − 2x) = 40x − 2x<sup>2</sup>, A${PR}(x) = 40 − 4x, nulle en x = 10 (+ puis −).<br><b>x = 10 m</b> et A(10) = 10 × 20 = <b>200 m<sup>2</sup></b>.</div>
+${enclos(40)}
+</div>
+<div class="warn">⚠️ f${PR}(x<sub>0</sub>) = 0 ne suffit pas : il faut que f${PR} change de signe (x<sup>3</sup> a une dérivée nulle en 0 sans extremum).<br>⚠️ La réponse demande deux choses : <b>où</b> (la valeur de x) et <b>combien</b> (la valeur de f). Ne les inverse pas.</div>
+<div class="retenir">À retenir : un extremum se trouve là où f${PR} s'annule en changeant de signe.</div>`;
 }
 
 /* =====================================================================
@@ -836,11 +951,22 @@ function L12(d) {
 }
 function C12() {
   return `<h2>12. Défi : la fonction exponentielle</h2>
+<p class="intro">L'exponentielle a une propriété unique : elle est sa propre dérivée. C'est pour cela qu'elle décrit les croissances « qui s'accélèrent ».</p>
 <div class="def">La fonction <b>exponentielle</b> x ↦ e<sup>x</sup> est la seule fonction égale à sa dérivée avec e<sup>0</sup> = 1 :<br><b>(e<sup>x</sup>)${PR} = e<sup>x</sup></b> &nbsp;&nbsp; et &nbsp;&nbsp; <b>(e<sup>ax + b</sup>)${PR} = a e<sup>ax + b</sup></b>.<br>e<sup>x</sup> &gt; 0 pour tout x, donc e<sup>x</sup> est croissante.</div>
-<div class="ex">f(x) = 3e<sup>−2x + 1</sup> : f${PR}(x) = 3 × (−2)e<sup>−2x + 1</sup> = <b>−6e<sup>−2x + 1</sup></b>.</div>
-<div class="ex">f(x) = (x + 2)e<sup>x</sup> : f${PR}(x) = 1 × e<sup>x</sup> + (x + 2)e<sup>x</sup> = <b>(x + 3)e<sup>x</sup></b>.</div>
-<div class="warn">⚠️ (e<sup>ax + b</sup>)${PR} ≠ e<sup>ax + b</sup> : il faut le <b>facteur a</b> (règle g(ax + b) du niveau 9).<br>⚠️ e<sup>0</sup> = 1, pas 0 : la tangente en 0 à y = e<sup>x</sup> est y = x + 1.</div>
-${graph({ xr: [-3, 3], yr: [-2, 7], fs: [{ f: Math.exp, l: 'y = eˣ' }], lines: [{ x: 0, y: 1, m: 1, l: 'T : y = x + 1', c: COL.T }], pts: [{ x: 0, y: 1, l: 'A(0 ; 1)', anchor: 'end' }], tri: { x: 0, y: 1, dx: 1, dy: 1 } })}`;
+<div class="methode"><b>Méthode</b><ol>
+<li>Une constante ajoutée disparaît ; un coefficient k devant reste : (k e<sup>x</sup> + c)${PR} = k e<sup>x</sup>.</li>
+<li>Pour k e<sup>ax + b</sup> : multiplie k par a, et garde e<sup>ax + b</sup> tel quel.</li>
+<li>Pour un produit (ax + b)e<sup>cx</sup> : (uv)${PR} = u${PR}v + uv${PR}, puis factorise par e<sup>cx</sup>.</li>
+<li>Pour la tangente en 0 : f(0) et f${PR}(0) avec e<sup>0</sup> = 1, puis y = f${PR}(0)x + f(0).</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : f(x) = 3e<sup>−2x + 1</sup>.</span><br>f${PR}(x) = 3 × (−2)e<sup>−2x + 1</sup> = <b>−6e<sup>−2x + 1</sup></b>.</div>
+<div class="ex"><span class="q">Exemple 2 : f(x) = (x + 2)e<sup>x</sup>.</span><br>f${PR}(x) = 1 × e<sup>x</sup> + (x + 2)e<sup>x</sup> = <b>(x + 3)e<sup>x</sup></b>.</div>
+<div class="ex"><span class="q">Exemple 3 : f(x) = (2x − 1)e<sup>−x</sup>.</span><br>u = 2x − 1, u${PR} = 2 ; v = e<sup>−x</sup>, v${PR} = −e<sup>−x</sup>.<br>f${PR}(x) = 2e<sup>−x</sup> + (2x − 1)(−e<sup>−x</sup>) = (2 − 2x + 1)e<sup>−x</sup> = <b>(−2x + 3)e<sup>−x</sup></b>.</div>
+<div class="cols">
+<div class="ex"><span class="q">Exemple 4 : tangente en 0 à y = 2e<sup>3x</sup>.</span><br>f(0) = 2 × e<sup>0</sup> = 2 ; f${PR}(x) = 6e<sup>3x</sup>, donc f${PR}(0) = 6.<br><b>y = 6x + 2</b>.<br>Sur la figure, le cas le plus simple : y = e<sup>x</sup>, tangente y = x + 1.</div>
+${graph({ xr: [-3, 3], yr: [-2, 7], fs: [{ f: Math.exp, l: 'y = eˣ' }], lines: [{ x: 0, y: 1, m: 1, l: 'T : y = x + 1', c: COL.T }], pts: [{ x: 0, y: 1, l: 'A(0 ; 1)', anchor: 'end' }], tri: { x: 0, y: 1, dx: 1, dy: 1 } })}
+</div>
+<div class="warn">⚠️ (e<sup>ax + b</sup>)${PR} ≠ e<sup>ax + b</sup> : il faut le <b>facteur a</b> (règle g(ax + b) du niveau 9).<br>⚠️ e<sup>0</sup> = 1, pas 0 : la tangente en 0 à y = e<sup>x</sup> est y = x + 1.<br>⚠️ (uv)${PR} ≠ u${PR}v${PR} : pour (x + 2)e<sup>x</sup>, il faut les deux termes.</div>
+<div class="retenir">À retenir : (e<sup>x</sup>)${PR} = e<sup>x</sup> et (e<sup>ax + b</sup>)${PR} = a e<sup>ax + b</sup>.</div>`;
 }
 
 /* ================= niveaux ================= */

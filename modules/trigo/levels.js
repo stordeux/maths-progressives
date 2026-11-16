@@ -53,6 +53,11 @@ function piCheck(P, Q, o = {}) {
   fn.expected = [rp, rq];
   return fn;
 }
+/** encarts du cours : exemple corrigé, méthode (étapes), à retenir */
+const exq = (q, t) => `<div class="ex"><span class="q">${q}</span><br>${t}</div>`;
+const meth = steps => `<div class="methode"><b>Méthode</b><ol>${steps.map(s => `<li>${s}</li>`).join('')}</ol></div>`;
+const nw = s => `<span style="white-space:nowrap">${s}</span>`;
+const ret = t => `<div class="retenir">À retenir : ${t}</div>`;
 /** check « une case » avec message ciblé */
 const chk = (E, msg) => numsCheck([E], { msg: v => (v[0] === null ? '' : msg ? msg(v[0]) || '' : '') });
 
@@ -115,10 +120,15 @@ function L1(d) {
 }
 function C1() {
   return `<h2>1. Des degrés aux radians</h2>
-<div class="def">Sur un cercle de rayon 1, un angle de <b>x radians</b> intercepte un arc de <b>longueur x</b>.<br>Le cercle entier mesure 2π : <b>360° = 2π rad</b>, donc <b>180° = π rad</b>.<br>Pour convertir : <b>degrés × π ÷ 180</b>, puis on simplifie.</div>
-<div class="ex">60° = ${F(60, 180)} × π = ${F('π', 3)}.<br>135° = ${F(135, 180)} × π = ${F('3π', 4)} (on simplifie par 45).<br>−30° = −${F('π', 6)}.</div>
-<div class="warn">⚠️ π rad = 180°, pas 360° !<br>⚠️ On garde π dans la réponse : ${F('π', 3)} est une valeur exacte, 1,047 n'est qu'une valeur approchée.</div>
-${cercle({ marks: true, noGrad: true, arc: { t: PI / 3 }, pts: [{ t: PI / 3, l: '60° = π/3' }], tl: [{ t: PI, l: '180° = π' }, { t: PI / 2, l: '90° = π/2' }] })}`;
+<p class="intro">En trigonométrie, on mesure les angles en <b>radians</b> plutôt qu'en degrés : c'est l'unité qui relie un angle à une longueur d'arc. Tu vas apprendre à passer des degrés aux radians.</p>
+<div class="def">Sur un cercle de rayon 1, un angle de <b>x radians</b> intercepte un arc de <b>longueur x</b>.<br>Le cercle entier mesure 2π : <b>360° = 2π rad</b>, donc <b>180° = π rad</b>.<br>Conversion : <b>mesure en radians = degrés × ${F('π', 180)}</b>, puis on simplifie la fraction.</div>
+${meth([`Écris la fraction ${F('degrés', 180)} devant π.`, 'Simplifie la fraction (divise en haut et en bas par le même nombre).', 'Garde le signe : un angle négatif reste négatif.', `Saisie : le nombre devant π en haut, le dénominateur en bas (π s'écrit 1 π / 1, ${F('5π', 2)} s'écrit 5 π / 2).`])}
+<div class="cols"><div>
+${exq('Exemple 1 : 135°', `135° = ${F(135, 180)} × π. On simplifie par 45 : <b>${F('3π', 4)}</b>.`)}
+${exq('Exemple 2 : −20° et 450°', `−20° = −${F(20, 180)} × π = <b>−${F('π', 9)}</b> (on simplifie par 20).<br>450° = ${F(450, 180)} × π = <b>${F('5π', 2)}</b> (par 90) : plus d'un tour, c'est permis.`)}
+</div>${cercle({ marks: true, noGrad: true, arc: { t: 3 * PI / 4 }, pts: [{ t: 3 * PI / 4, l: '135° = 3π/4' }], tl: [{ t: 0, l: '0' }, { t: PI / 2, l: '90° = π/2' }, { t: -PI / 2, l: '−90° = −π/2' }] })}</div>
+<div class="warn">⚠️ π rad = <b>180°</b>, pas 360° !<br>⚠️ Ne fais pas l'inverse : on divise les degrés par 180, pas 180 par les degrés.<br>⚠️ On garde π : ${F('π', 3)} est une valeur exacte, 1,047 n'est qu'une valeur approchée.</div>
+${ret(`180° = π rad, donc on multiplie les degrés par ${F('π', 180)} et on simplifie.`)}`;
 }
 
 /* =====================================================================
@@ -160,11 +170,15 @@ function L2(d) {
 }
 function C2() {
   return `<h2>2. Des radians aux degrés</h2>
-<div class="def">On remplace <b>π par 180°</b> : <b>radians × 180 ÷ π</b>.<br>Repères à connaître : ${F('π', 6)} = 30°, ${F('π', 4)} = 45°, ${F('π', 3)} = 60°, ${H2} = 90°, π = 180°, 2π = 360°.</div>
-<div class="ex">${F('5π', 6)} = 5 × 180° ÷ 6 = 900° ÷ 6 = <b>150°</b>.<br>−${F('3π', 4)} = −3 × 180° ÷ 4 = <b>−135°</b>.</div>
-<div class="ex">Sans π : 2 rad = 2 × 180 ÷ π ≈ <b>115°</b> (1 rad ≈ 57,3°).</div>
-<div class="warn">⚠️ ${F('2π', 3)} ne vaut pas 2 ÷ 3 degré : on remplace π par 180, ce qui donne 120°.</div>
-${cercle({ marks: true, noGrad: true, arc: { t: 5 * PI / 6 }, pts: [{ t: 5 * PI / 6, l: '5π/6 = 150°' }], tl: [{ t: 0, l: '0' }, { t: PI / 2, l: '90°' }] })}`;
+<p class="intro">Le chemin inverse : un angle donné en radians, tu le traduis en degrés pour mieux te le représenter.</p>
+<div class="def">Comme π rad = 180°, on <b>remplace π par 180°</b>.<br>Si la mesure n'a pas de π : <b>degrés = radians × 180 ÷ π</b> (1 rad ≈ 57,3°).<br>Repères : ${F('π', 6)} = 30°, ${F('π', 4)} = 45°, ${F('π', 3)} = 60°, ${H2} = 90°, π = 180°, 2π = 360°.</div>
+${meth(['Remplace π par 180.', 'Fais le calcul : multiplie par le nombre devant π, puis divise par le dénominateur.', 'Garde le signe.', 'Sans π (par exemple 2 rad) : multiplie par 180, divise par π à la calculatrice, puis arrondis à l\'unité.'])}
+<div class="cols"><div>
+${exq(`Exemple 1 : ${F('5π', 6)}`, `${F('5π', 6)} = 5 × 180° ÷ 6 = 900° ÷ 6 = <b>150°</b>.`)}
+${exq(`Exemple 2 : −${F('7π', 3)} et 2 rad`, `−${F('7π', 3)} = −7 × 180° ÷ 3 = −1 260° ÷ 3 = <b>−420°</b>.<br>2 rad = 2 × 180 ÷ π ≈ 114,6°, soit <b>115°</b> à l'unité.`)}
+</div>${cercle({ marks: true, noGrad: true, arc: { t: 2 }, pts: [{ t: 5 * PI / 6, l: '5π/6', c: COL.sin }, { t: 2, l: '2 rad' }], tl: [{ t: -PI / 6, l: '5π/6 = 150°', c: COL.sin }, { t: -PI / 3, l: '2 rad ≈ 115°', c: COL.P }] })}</div>
+<div class="warn">⚠️ ${F('2π', 3)} ne vaut pas 2 ÷ 3 degré : on remplace π par 180, ce qui donne 120°.<br>⚠️ Ne confonds pas ${F('2π', 3)} ≈ 2,09 (radians, en décimal) et 120° (degrés).</div>
+${ret('pour passer en degrés, on remplace π par 180.')}`;
 }
 
 /* =====================================================================
@@ -230,11 +244,16 @@ function L3(d) {
 }
 function C3() {
   return `<h2>3. Le cercle trigonométrique</h2>
-<div class="def">C'est le cercle de centre O et de <b>rayon 1</b>, orienté dans le <b>sens direct</b> (inverse des aiguilles d'une montre).<br>À chaque réel x on associe un point M : on part de I(1 ; 0) et on parcourt un arc de longueur x (vers l'arrière si x &lt; 0).</div>
-<div class="ex">Quart de tour : ${H2}. Demi-tour : π. Un tour : 2π.<br>${F('π', 6)} = un tiers de quart de tour, ${F('π', 4)} = la moitié, ${F('π', 3)} = deux tiers.</div>
-<div class="ex">x et x + 2π (un tour de plus) donnent le <b>même point</b> : ${F('13π', 6)} = ${F('π', 6)} + 2π.</div>
-<div class="warn">⚠️ Un réel négatif se place en tournant dans le sens des aiguilles d'une montre.<br>⚠️ ${F('π', 6)} est près de l'axe horizontal, ${F('π', 3)} près de l'axe vertical.</div>
-${cercle({ marks: true, noGrad: true, tl: [{ t: 0, l: '0' }, { t: PI / 6, l: 'π/6' }, { t: PI / 4, l: 'π/4' }, { t: PI / 3, l: 'π/3' }, { t: PI / 2, l: 'π/2' }, { t: 2 * PI / 3, l: '2π/3' }, { t: 3 * PI / 4, l: '3π/4' }, { t: 5 * PI / 6, l: '5π/6' }, { t: PI, l: 'π' }, { t: -PI / 2, l: '−π/2' }, { t: -PI / 4, l: '−π/4' }, { t: -3 * PI / 4, l: '−3π/4' }] })}`;
+<p class="intro">Le cercle trigonométrique transforme chaque nombre réel en un point : c'est la base de tout le chapitre. Il faut savoir placer un réel, et retrouver le réel d'un point.</p>
+<div class="def">C'est le cercle de centre O et de <b>rayon 1</b>, orienté dans le <b>sens direct</b> (inverse des aiguilles d'une montre).<br>À chaque réel x on associe un point M : on part de I(1 ; 0) et on parcourt un arc de longueur x (dans l'autre sens si x &lt; 0).<br>Repères : quart de tour = ${H2}, demi-tour = π, un tour = 2π. ${F('π', 6)} = un tiers de quart de tour, ${F('π', 4)} = la moitié, ${F('π', 3)} = deux tiers.</div>
+${meth(['Si le réel dépasse un tour, enlève ou ajoute des tours de 2π : x et x + 2π donnent le <b>même point</b>.', 'Regarde le signe : positif → sens inverse des aiguilles d\'une montre ; négatif → sens des aiguilles.', `Compte les quarts de tour (${H2}), puis la fraction de quart qui reste (${F('π', 6)}, ${F('π', 4)} ou ${F('π', 3)}).`, 'Pour retrouver le réel d\'un point M : fais le chemin inverse depuis I(1 ; 0), puis ajoute des tours si l\'énoncé le demande.'])}
+<div class="cols"><div>
+${exq(`Exemple 1 : placer ${F('13π', 6)}`, `${F('13π', 6)} = ${F('π', 6)} + ${F('12π', 6)} = ${F('π', 6)} + 2π.<br>Même point que ${F('π', 6)} : un tiers de quart de tour, près de l'axe horizontal.`)}
+${exq(`Exemple 2 : placer −${F('2π', 3)}`, `Négatif : on tourne dans le sens des aiguilles d'une montre.<br>${F('2π', 3)} = un quart de tour (${H2}) + ${F('π', 6)}. On arrive en bas à gauche, au même point que ${F('4π', 3)}.`)}
+</div>${cercle({ marks: true, noGrad: true, arc: { t: -2 * PI / 3 }, pts: [{ t: -2 * PI / 3, l: '−2π/3' }, { t: PI / 6, l: '13π/6', c: COL.sin }] })}</div>
+<div class="warn">⚠️ Le sens positif est le sens <b>inverse</b> des aiguilles d'une montre.<br>⚠️ ${F('π', 6)} est près de l'axe horizontal, ${F('π', 3)} près de l'axe vertical : ne les échange pas.<br>⚠️ Un demi-tour de trop envoie au point diamétralement opposé.</div>
+${cercle({ marks: true, noGrad: true, tl: [{ t: 0, l: '0' }, { t: PI / 6, l: 'π/6' }, { t: PI / 4, l: 'π/4' }, { t: PI / 3, l: 'π/3' }, { t: PI / 2, l: 'π/2' }, { t: 2 * PI / 3, l: '2π/3' }, { t: 3 * PI / 4, l: '3π/4' }, { t: 5 * PI / 6, l: '5π/6' }, { t: PI, l: 'π' }, { t: -PI / 2, l: '−π/2' }, { t: -PI / 4, l: '−π/4' }, { t: -3 * PI / 4, l: '−3π/4' }] })}
+${ret('un réel, c\'est un chemin sur le cercle depuis I(1 ; 0) ; un tour de 2π de plus ramène au même point.')}`;
 }
 
 /* =====================================================================
@@ -270,12 +289,16 @@ function L4(d) {
 }
 function C4() {
   return `<h2>4. Mesure principale</h2>
-<div class="def">Les réels x, x + 2π, x − 2π, x + 4π… donnent tous le <b>même point</b> du cercle.<br>Parmi eux, un seul est dans <b>]−π ; π]</b> : c'est la <b>mesure principale</b>.</div>
-<div class="ex">${F('17π', 6)} : un tour vaut ${F('12π', 6)}. ${F('17π', 6)} − ${F('12π', 6)} = <b>${F('5π', 6)}</b>, qui est dans ]−π ; π].</div>
-<div class="ex">${F('7π', 4)} : ${F('7π', 4)} − ${F('8π', 4)} = <b>−${F('π', 4)}</b>. (${F('7π', 4)} n'est pas dans ]−π ; π].)</div>
-<div class="ex">−${F('11π', 3)} : on ajoute deux tours, ${F('12π', 3)} : −${F('11π', 3)} + ${F('12π', 3)} = <b>${F('π', 3)}</b>.</div>
-<div class="warn">⚠️ La mesure principale peut être négative.<br>⚠️ π est dans ]−π ; π] mais −π n'y est pas.</div>
-${cercle({ marks: true, arc: { t: 17 * PI / 6 }, pts: [{ t: 17 * PI / 6, l: '17π/6 → 5π/6' }] })}`;
+<p class="intro">Un même point du cercle correspond à une infinité de réels. Pour parler tous de la même chose, on choisit le « représentant » le plus simple : la mesure principale.</p>
+<div class="def">Les réels x, x + 2π, x − 2π, x + 4π… donnent tous le <b>même point</b> du cercle.<br>Parmi eux, un seul est dans <b>]−π ; π]</b> : c'est la <b>mesure principale</b> de x.</div>
+${meth([`Écris un tour, 2π, avec le même dénominateur : par exemple ${nw(`2π = ${F('12π', 6)} = ${F('8π', 4)} = ${F('6π', 3)}.`)}`, 'Enlève (si x est positif) ou ajoute (si x est négatif) des tours, jusqu\'à arriver entre −π et π.', 'Astuce pour les grands nombres : divise le numérateur par 2 × dénominateur ; le reste te donne presque la réponse.', 'Vérifie que le résultat est dans ]−π ; π] : sinon, enlève ou ajoute encore un tour.'])}
+<div class="cols"><div>
+${exq(`Exemple 1 : ${F('17π', 6)}`, `Un tour vaut ${F('12π', 6)}. ${F('17π', 6)} − ${F('12π', 6)} = <b>${F('5π', 6)}</b>, qui est bien dans ]−π ; π].`)}
+${exq(`Exemple 2 : ${F('43π', 6)}`, `Un tour = ${F('12π', 6)} et 43 = 3 × 12 + 7 : on enlève 3 tours, il reste ${F('7π', 6)}.<br>Piège : ${F('7π', 6)} &gt; π ! On enlève encore un tour : ${F('7π', 6)} − ${F('12π', 6)} = <b>−${F('5π', 6)}</b>.`)}
+${exq(`Exemple 3 : −${F('11π', 3)}`, `Négatif : on ajoute 2 tours, ${F('12π', 3)}.<br>−${F('11π', 3)} + ${F('12π', 3)} = <b>${F('π', 3)}</b>.`)}
+</div>${cercle({ marks: true, arc: { t: 17 * PI / 6 }, pts: [{ t: 17 * PI / 6, l: '5π/6' }], tl: [{ t: -PI / 2, l: '17π/6 → 5π/6 (un tour en moins)', c: COL.P }] })}</div>
+<div class="warn">⚠️ La mesure principale peut être <b>négative</b> : ${F('7π', 4)} a pour mesure principale −${F('π', 4)}.<br>⚠️ π est dans ]−π ; π] mais −π n'y est pas : la mesure principale de −π (ou de 5π) est π.<br>⚠️ Retirer un tour, c'est retirer 2π, pas π.</div>
+${ret('la mesure principale est l\'unique réel de ]−π ; π] associé au même point ; on l\'obtient en enlevant ou ajoutant des tours de 2π.')}`;
 }
 
 /* =====================================================================
@@ -312,11 +335,16 @@ function L5(d) {
 }
 function C5() {
   return `<h2>5. Cosinus et sinus des angles remarquables</h2>
-<div class="def">Si M est le point du cercle associé au réel x, ses coordonnées sont <b>M(cos x ; sin x)</b>.<br><b>cos x</b> se lit sur l'axe horizontal, <b>sin x</b> sur l'axe vertical.</div>
+<p class="intro">Le cosinus et le sinus d'un réel sont les coordonnées de son point sur le cercle. Pour les angles remarquables, on connaît leurs valeurs exactes.</p>
+<div class="def">Si M est le point du cercle associé au réel x, ses coordonnées sont <b>M(cos x ; sin x)</b>.<br><b>cos x</b> se lit sur l'axe horizontal (abscisse), <b>sin x</b> sur l'axe vertical (ordonnée).</div>
 <div class="ex"><table class="st"><tr><td>x</td><td>0</td><td>${F('π', 6)}</td><td>${F('π', 4)}</td><td>${F('π', 3)}</td><td>${H2}</td></tr><tr><td>cos x</td><td>1</td><td>${F(R(3), 2)}</td><td>${F(R(2), 2)}</td><td>${F(1, 2)}</td><td>0</td></tr><tr><td>sin x</td><td>0</td><td>${F(1, 2)}</td><td>${F(R(2), 2)}</td><td>${F(R(3), 2)}</td><td>1</td></tr></table></div>
-<div class="ex">Ailleurs, on utilise les symétries : ${F('2π', 3)} est le symétrique de ${F('π', 3)} par rapport à l'axe vertical, donc cos ${F('2π', 3)} = −${F(1, 2)} et sin ${F('2π', 3)} = ${F(R(3), 2)}.</div>
-<div class="warn">⚠️ cos ${F('π', 3)} = ${F(1, 2)} mais cos ${F('π', 6)} = ${F(R(3), 2)} : π/3 est près de l'axe vertical, son abscisse est petite.<br>⚠️ Le signe dépend du quart de cercle où se trouve le point.</div>
-${cercle({ marks: true, arc: { t: PI / 3 }, pts: [{ t: PI / 3, l: 'π/3', proj: true, lc: '1/2', ls: '√3/2' }] })}`;
+${meth(['Si le réel est hors de ]−π ; π], ramène-le à sa mesure principale (enlève des tours de 2π).', `Place le point et repère son <b>angle de référence</b> avec l'axe horizontal : ${F('π', 6)}, ${F('π', 4)} ou ${F('π', 3)}.`, 'Lis la valeur (sans signe) dans le tableau.', 'Mets le signe : cos &lt; 0 si le point est à gauche, sin &lt; 0 s\'il est en bas.'])}
+<div class="cols"><div>
+${exq(`Exemple 1 : cos ${F('3π', 4)}`, `${F('3π', 4)} = π − ${F('π', 4)} : symétrique de ${F('π', 4)} par rapport à l'axe vertical, en haut à gauche.<br>Donc cos ${F('3π', 4)} = <b>−${F(R(2), 2)}</b> (à gauche : négatif).`)}
+${exq(`Exemple 2 : ${nw(`sin(−${F('17π', 6)})`)}`, `−${F('17π', 6)} + 2π = −${F('5π', 6)} : en bas à gauche, à ${F('π', 6)} de l'axe horizontal.<br>sin ${F('π', 6)} = ${F(1, 2)} et le point est en bas : ${nw(`sin(−${F('17π', 6)})`)} = <b>−${F(1, 2)}</b>.`)}
+</div>${cercle({ marks: true, pts: [{ t: PI / 3, l: 'π/3', proj: true, lc: '1/2', ls: '√3/2' }, { t: 3 * PI / 4, l: '3π/4', c: COL.A, proj: true, lc: '−√2/2' }] })}</div>
+<div class="warn">⚠️ cos ${F('π', 3)} = ${F(1, 2)} mais cos ${F('π', 6)} = ${F(R(3), 2)} : ${F('π', 3)} est près de l'axe vertical, son abscisse est petite.<br>⚠️ Ne confonds pas cosinus (horizontal) et sinus (vertical).<br>⚠️ Le signe dépend du quart de cercle où se trouve le point.</div>
+${ret('M(x) a pour coordonnées (cos x ; sin x) : la valeur vient du tableau, le signe vient de la position du point.')}`;
 }
 
 /* =====================================================================
@@ -364,10 +392,15 @@ function L6(d) {
 }
 function C6() {
   return `<h2>6. Angles associés : −x, π − x, π + x</h2>
+<p class="intro">Connaissant cos x et sin x, tu peux obtenir sans calculatrice le cosinus et le sinus de −x, π − x ou π + x : il suffit de regarder des symétries sur le cercle.</p>
 <div class="def">Sur le cercle, les points associés à −x, π − x et π + x sont des <b>symétriques</b> du point M(x) :<br>• −x : symétrie d'axe horizontal → <b>cos(−x) = cos x</b>, <b>sin(−x) = −sin x</b> ;<br>• π − x : symétrie d'axe vertical → <b>cos(π − x) = −cos x</b>, <b>sin(π − x) = sin x</b> ;<br>• π + x : symétrie de centre O → <b>cos(π + x) = −cos x</b>, <b>sin(π + x) = −sin x</b>.</div>
-<div class="ex">Si cos x = 0,6 et sin x = 0,8 : cos(π − x) = −0,6 ; sin(π − x) = 0,8 ; sin(π + x) = −0,8.</div>
-<div class="warn">⚠️ Ces formules gardent la même fonction (cos reste cos) ; seul le signe peut changer.<br>⚠️ Ne pas apprendre par cœur sans dessin : on retrouve tout sur le cercle.</div>
-${cercle({ pts: [{ t: 0.9273, l: 'M(x)', proj: true }, { t: PI - 0.9273, l: 'π − x', c: COL.A }, { t: -0.9273, l: '−x', c: COL.cos }, { t: PI + 0.9273, l: 'π + x', c: COL.sin }] })}`;
+${meth(['Repère la symétrie : −x (axe horizontal), π − x (axe vertical), π + x (centre O).', '2π − x donne le même point que −x, et x − π le même point que π + x (un tour d\'écart).', 'Garde la <b>même fonction</b> : cos reste cos, sin reste sin.', 'Choisis le signe en regardant où est le point N sur la figure.'])}
+<div class="cols"><div>
+${exq('Exemple 1 : cos x = 0,6 et sin x = 0,8', 'cos(π − x) = −cos x = <b>−0,6</b> ; sin(π − x) = sin x = <b>0,8</b> ; sin(π + x) = −sin x = <b>−0,8</b>.')}
+${exq('Exemple 2 : cos x = −0,28 et sin x = 0,96', 'cos(2π − x) = cos(−x) = cos x = <b>−0,28</b>.<br>sin(x − π) = sin(π + x) = −sin x = <b>−0,96</b>.<br>Attention : « −cos x » avec cos x = −0,28 donne +0,28.')}
+</div>${cercle({ pts: [{ t: 0.9273, l: 'M(x)', proj: true }, { t: PI - 0.9273, l: 'π − x', c: COL.A }, { t: -0.9273, l: '−x', c: COL.cos }, { t: PI + 0.9273, l: 'π + x', c: COL.sin }] })}</div>
+<div class="warn">⚠️ Ces formules gardent la même fonction (cos reste cos) ; seul le signe peut changer.<br>⚠️ Si cos x est déjà négatif, −cos x est positif : remplace avec des parenthèses.<br>⚠️ Plutôt que d'apprendre par cœur, retrouve tout sur le cercle.</div>
+${ret('−x, π − x et π + x sont des symétriques de x : même fonction, et le signe se lit sur la figure.')}`;
 }
 function L7(d) {
   const fk = d < 1 ? 'hmx' : d < 2 ? pick(['hmx', 'hpx']) : d < 3 ? pick(['hmx', 'hpx']) : d < 4 ? pick(['hmx', 'hpx', 'xmh']) : pick(['hmx', 'hpx', 'xmh', 'mx', 'pmx', 'ppx']);
@@ -375,10 +408,15 @@ function L7(d) {
 }
 function C7() {
   return `<h2>7. Angles associés : π/2 − x et π/2 + x</h2>
-<div class="def">Le point associé à ${H2} − x est le symétrique de M(x) par rapport à la <b>diagonale</b> y = x : les coordonnées <b>s'échangent</b>.<br><b>cos(${H2} − x) = sin x</b> et <b>sin(${H2} − x) = cos x</b>.<br>Pour ${H2} + x (quart de tour de plus) : <b>cos(${H2} + x) = −sin x</b> et <b>sin(${H2} + x) = cos x</b>.</div>
-<div class="ex">Si cos x = 0,28 et sin x = 0,96 : cos(${H2} − x) = 0,96 ; cos(${H2} + x) = −0,96 ; sin(${H2} + x) = 0,28.</div>
-<div class="warn">⚠️ Avec ${H2}, cosinus et sinus s'échangent ; avec π, ils restent les mêmes.<br>⚠️ Vérifie le signe sur la figure : N à gauche de l'axe vertical → cosinus négatif.</div>
-${cercle({ pts: [{ t: 0.4, l: 'M(x)', proj: true }, { t: PI / 2 - 0.4, l: 'π/2 − x', c: COL.A, proj: true }, { t: PI / 2 + 0.4, l: 'π/2 + x', c: COL.sin }] })}`;
+<p class="intro">Ajouter ou retirer un quart de tour fait « tourner » le point : son abscisse et son ordonnée s'échangent. C'est ce qui relie cosinus et sinus.</p>
+<div class="def">Le point associé à ${H2} − x est le symétrique de M(x) par rapport à la <b>diagonale</b> y = x : les coordonnées <b>s'échangent</b>.<br><b>cos(${H2} − x) = sin x</b> et <b>sin(${H2} − x) = cos x</b>.<br>Pour ${H2} + x (quart de tour de plus) : <b>cos(${H2} + x) = −sin x</b> et <b>sin(${H2} + x) = cos x</b>.<br>Pour x − ${H2} (un quart de tour en arrière) : <b>cos(x − ${H2}) = sin x</b> et <b>sin(x − ${H2}) = −cos x</b>.</div>
+${meth([`Repère la présence de ${H2} : cosinus et sinus <b>s'échangent</b> (cos devient sin, sin devient cos).`, 'Trouve le signe : place le point N sur la figure (à gauche → cos &lt; 0, en bas → sin &lt; 0).', 'Remplace par la valeur donnée, entre parenthèses si elle est négative.', 'Sans ' + H2 + ' (−x, π − x, π + x) : on revient aux formules du niveau 6, sans échange.'])}
+<div class="cols"><div>
+${exq('Exemple 1 : cos x = 0,28 et sin x = 0,96', `cos(${H2} − x) = sin x = <b>0,96</b> ; cos(${H2} + x) = −sin x = <b>−0,96</b> ; sin(${H2} + x) = cos x = <b>0,28</b>.`)}
+${exq('Exemple 2 : cos x = −0,6 et sin x = 0,8', `cos(${H2} + x) = −sin x = <b>−0,8</b>.<br>sin(x − ${H2}) = −cos x = −(−0,6) = <b>0,6</b>.`)}
+</div>${cercle({ pts: [{ t: 0.4, l: 'M(x)', proj: true }, { t: PI / 2 - 0.4, l: 'π/2 − x', c: COL.A, proj: true }, { t: PI / 2 + 0.4, l: 'π/2 + x', c: COL.sin }] })}</div>
+<div class="warn">⚠️ Avec ${H2}, cosinus et sinus s'échangent ; avec π, ils restent les mêmes.<br>⚠️ Vérifie le signe sur la figure : N à gauche de l'axe vertical → cosinus négatif.<br>⚠️ −(−0,6) = +0,6 : attention aux doubles signes.</div>
+${ret(`avec ${H2}, on échange cos et sin ; le signe se lit sur le cercle.`)}`;
 }
 
 /* =====================================================================
@@ -446,10 +484,17 @@ function L8(d) {
 }
 function C8() {
   return `<h2>8. La relation cos² x + sin² x = 1</h2>
+<p class="intro">Si tu connais le cosinus d'un réel, tu peux retrouver son sinus (et l'inverse) : c'est le théorème de Pythagore dans le cercle trigonométrique.</p>
 <div class="def">Le point M(cos x ; sin x) est sur le cercle de rayon 1, donc (Pythagore) :<br><b>cos<sup>2</sup> x + sin<sup>2</sup> x = 1</b>.<br>Connaissant cos x, on trouve sin<sup>2</sup> x, donc sin x <b>au signe près</b> : le signe se lit avec l'intervalle où se trouve x.</div>
-<div class="ex">cos x = 0,6 et x ∈ ]−π ; 0[.<br>sin<sup>2</sup> x = 1 − 0,36 = 0,64, donc sin x = 0,8 ou sin x = −0,8.<br>Sur ]−π ; 0[, le point est en bas : <b>sin x = −0,8</b>.</div>
-<div class="warn">⚠️ sin<sup>2</sup> x = 1 − cos<sup>2</sup> x, et non 1 − cos x.<br>⚠️ Deux points du cercle ont la même abscisse : c'est l'intervalle qui permet de choisir.</div>
-${cercle({ arcs: [{ a: -PI, b: 0, c: '#f783ac' }], vline: { x: 0.6, l: 'cos x = 0,6' }, pts: [{ t: -0.9273, l: 'M', proj: true, ls: '−0,8' }] })}`;
+${meth(['Écris la relation : sin<sup>2</sup> x = 1 − cos<sup>2</sup> x (ou cos<sup>2</sup> x = 1 − sin<sup>2</sup> x).', 'Calcule le carré de la valeur donnée (un carré est toujours positif), puis la soustraction.', 'Prends la racine carrée : deux possibilités, une positive et une négative.', 'Choisis le signe grâce à l\'intervalle (partie colorée du cercle). Arrondis seulement à la fin si on le demande.'])}
+<div class="cols"><div>
+${exq('Exemple 1 : cos x = 0,6 et x ∈ ]−π ; 0[', 'sin<sup>2</sup> x = 1 − 0,6<sup>2</sup> = 1 − 0,36 = 0,64, donc sin x = 0,8 ou sin x = −0,8.<br>Sur ]−π ; 0[, le point est en bas : <b>sin x = −0,8</b>.')}
+${exq(`Exemple 2 : sin x = −0,28 et x ∈ ${nw(`]−π ; −${H2}[`)}`, `cos<sup>2</sup> x = 1 − (−0,28)<sup>2</sup> = 1 − 0,0784 = 0,9216, donc cos x = ±0,96.<br>Sur ${nw(`]−π ; −${H2}[`)}, le point est à gauche : <b>cos x = −0,96</b>.`)}
+${exq('Exemple 3 : cos x = 0,3, x ∈ ]0 ; π[, au millième', `sin<sup>2</sup> x = 1 − 0,09 = 0,91 ; en haut, sin x = ${R('0,91')} ≈ <b>0,954</b>.`)}
+</div><div>${cercle({ arcs: [{ a: -PI, b: 0, c: '#f783ac' }], vline: { x: 0.6, l: 'cos x = 0,6' }, pts: [{ t: -0.9273, l: 'M', proj: true, ls: '−0,8' }] })}
+${cercle({ arcs: [{ a: -PI, b: -PI / 2, c: '#f783ac' }], hline: { y: -0.28, l: 'sin x = −0,28' }, pts: [{ t: -PI + Math.asin(0.28), l: 'M', proj: true, lc: '−0,96' }] })}</div></div>
+<div class="warn">⚠️ sin<sup>2</sup> x = 1 − cos<sup>2</sup> x, et non 1 − cos x : n'oublie pas le carré.<br>⚠️ N'oublie pas la racine carrée à la fin : 0,64 c'est sin<sup>2</sup> x, pas sin x.<br>⚠️ Deux points du cercle ont la même abscisse : c'est l'intervalle qui permet de choisir le signe.</div>
+${ret('cos² x + sin² x = 1 donne la valeur au signe près ; l\'intervalle donne le signe.')}`;
 }
 
 /* =====================================================================
@@ -532,17 +577,30 @@ const L9 = d => equation('cos', d);
 const L10 = d => equation('sin', d);
 function C9() {
   return `<h2>9. Équation cos x = a</h2>
-<div class="def">On trace la droite <b>verticale</b> d'abscisse a. Si −1 &lt; a &lt; 1, elle coupe le cercle en <b>deux points symétriques</b> par rapport à l'axe horizontal.<br>Si cos α = a, les solutions dans ]−π ; π] sont <b>α et −α</b>.<br>Si a &gt; 1 ou a &lt; −1 : <b>aucune solution</b>.</div>
-<div class="ex">cos x = ${F(1, 2)} : cos ${F('π', 3)} = ${F(1, 2)}, donc S = { −${F('π', 3)} ; ${F('π', 3)} }.<br>2 cos x + ${R(2)} = 0 ⟺ cos x = −${F(R(2), 2)} : S = { −${F('3π', 4)} ; ${F('3π', 4)} }.</div>
-<div class="warn">⚠️ N'oublie pas la deuxième solution (la calculatrice n'en donne qu'une).<br>⚠️ cos x = 1 n'a qu'une solution dans ]−π ; π] : x = 0 ; cos x = −1 : x = π.</div>
-${cercle({ marks: true, vline: { x: 0.5, l: 'x = 1/2' }, pts: [{ t: PI / 3, l: 'π/3' }, { t: -PI / 3, l: '−π/3' }] })}`;
+<p class="intro">Résoudre cos x = a, c'est chercher tous les points du cercle d'abscisse a, puis lire leurs réels dans ]−π ; π].</p>
+<div class="def">On trace la droite <b>verticale</b> d'abscisse a. Si −1 &lt; a &lt; 1, elle coupe le cercle en <b>deux points symétriques</b> par rapport à l'axe horizontal.<br>Si cos α = a avec α ∈ [0 ; π], les solutions dans ]−π ; π] sont <b>α et −α</b>.<br>Si a &gt; 1 ou a &lt; −1 : <b>aucune solution</b> (un cosinus est toujours entre −1 et 1).</div>
+${meth(['Isole cos x si besoin : 2 cos x + ' + R(2) + ' = 0 donne cos x = −' + F(R(2), 2) + '.', 'Si a n\'est pas entre −1 et 1 : aucune solution, c\'est fini.', 'Trouve α ∈ [0 ; π] avec cos α = a (tableau + symétrie si a &lt; 0).', 'Écris S = { −α ; α }. Cas particuliers : a = 1 donne seulement 0, a = −1 seulement π.'])}
+<div class="cols"><div>
+${exq(`Exemple 1 : cos x = ${F(1, 2)}`, `cos ${F('π', 3)} = ${F(1, 2)}, donc <b>S = { −${F('π', 3)} ; ${F('π', 3)} }</b>.`)}
+${exq(`Exemple 2 : 2 cos x + ${R(2)} = 0`, `cos x = −${F(R(2), 2)}. cos ${F('π', 4)} = ${F(R(2), 2)} ; à gauche, c'est π − ${F('π', 4)} = ${F('3π', 4)}.<br><b>S = { −${F('3π', 4)} ; ${F('3π', 4)} }</b>.`)}
+${exq('Exemple 3 : 2 cos x − 3 = 0 et cos x = 0', 'cos x = 1,5 &gt; 1 : <b>aucune solution</b>.<br>cos x = 0 : S = { −' + H2 + ' ; ' + H2 + ' } (points du haut et du bas).')}
+</div><div>${cercle({ marks: true, vline: { x: 0.5, l: 'x = 1/2' }, pts: [{ t: PI / 3, l: 'π/3' }, { t: -PI / 3, l: '−π/3' }] })}
+${cercle({ marks: true, vline: { x: -Math.SQRT2 / 2, l: 'x = −√2/2' }, pts: [{ t: 3 * PI / 4, l: '3π/4' }, { t: -3 * PI / 4, l: '−3π/4' }] })}</div></div>
+<div class="warn">⚠️ N'oublie pas la deuxième solution (la calculatrice n'en donne qu'une).<br>⚠️ Pour cos, les deux solutions sont <b>opposées</b> : ne confonds pas avec sin.<br>⚠️ cos x = 1 n'a qu'une solution dans ]−π ; π] : x = 0 ; cos x = −1 : x = π.</div>
+${ret('cos x = cos α ⟺ x = α ou x = −α (dans ]−π ; π]).')}`;
 }
 function C10() {
   return `<h2>10. Équation sin x = a</h2>
-<div class="def">On trace la droite <b>horizontale</b> d'ordonnée a. Elle coupe le cercle en deux points <b>symétriques par rapport à l'axe vertical</b>.<br>Si sin α = a, les solutions sont <b>α et π − α</b> (on revient dans ]−π ; π] si besoin, en ajoutant ou retirant 2π).</div>
-<div class="ex">sin x = ${F(R(3), 2)} : S = { ${F('π', 3)} ; ${F('2π', 3)} }.<br>sin x = −${F(1, 2)} : α = −${F('π', 6)} et π − α = ${F('7π', 6)}, qui donne −${F('5π', 6)} : S = { −${F('5π', 6)} ; −${F('π', 6)} }.</div>
-<div class="warn">⚠️ Pour le sinus, les solutions ne sont pas opposées : sin(−x) = −sin x.<br>⚠️ sin x = 0 a deux solutions dans ]−π ; π] : 0 et π.</div>
-${cercle({ marks: true, hline: { y: Math.sqrt(3) / 2, l: 'y = √3/2' }, pts: [{ t: PI / 3, l: 'π/3' }, { t: 2 * PI / 3, l: '2π/3' }] })}`;
+<p class="intro">Même idée que pour le cosinus, mais on lit cette fois sur l'axe vertical : on cherche les points du cercle d'ordonnée a.</p>
+<div class="def">On trace la droite <b>horizontale</b> d'ordonnée a. Si −1 &lt; a &lt; 1, elle coupe le cercle en deux points <b>symétriques par rapport à l'axe vertical</b>.<br>Si sin α = a avec α ∈ [−${H2} ; ${H2}], les solutions sont <b>α et π − α</b> (on revient dans ]−π ; π] si besoin, en retirant 2π).<br>Si a &gt; 1 ou a &lt; −1 : <b>aucune solution</b>.</div>
+${meth(['Isole sin x si besoin : 2 sin x − ' + R(3) + ' = 0 donne sin x = ' + F(R(3), 2) + '.', 'Si a n\'est pas entre −1 et 1 : aucune solution.', `Trouve α entre −${H2} et ${H2} avec sin α = a (négatif si a &lt; 0).`, 'Deuxième solution : π − α ; si elle dépasse π, retire 2π. Cas particuliers : sin x = 1 donne seulement ' + H2 + ', sin x = −1 seulement −' + H2 + '.'])}
+<div class="cols"><div>
+${exq(`Exemple 1 : 2 sin x − ${R(3)} = 0`, `sin x = ${F(R(3), 2)} ; α = ${F('π', 3)} et π − α = ${F('2π', 3)}.<br><b>S = { ${F('π', 3)} ; ${F('2π', 3)} }</b>.`)}
+${exq(`Exemple 2 : sin x = −${F(1, 2)}`, `α = −${F('π', 6)} et π − α = ${F('7π', 6)} &gt; π, donc ${F('7π', 6)} − 2π = −${F('5π', 6)}.<br><b>S = { −${F('5π', 6)} ; −${F('π', 6)} }</b>.`)}
+</div><div>${cercle({ marks: true, hline: { y: Math.sqrt(3) / 2, l: 'y = √3/2' }, pts: [{ t: PI / 3, l: 'π/3' }, { t: 2 * PI / 3, l: '2π/3' }] })}
+${cercle({ marks: true, hline: { y: -0.5, l: 'y = −1/2' }, pts: [{ t: -PI / 6, l: '−π/6' }, { t: -5 * PI / 6, l: '−5π/6' }] })}</div></div>
+<div class="warn">⚠️ Pour le sinus, les solutions ne sont pas opposées : ce sont α et π − α.<br>⚠️ sin x = 0 a deux solutions dans ]−π ; π] : 0 et π.<br>⚠️ Ne réponds pas avec les solutions de cos x = a : lis bien sur l'axe vertical.</div>
+${ret('sin x = sin α ⟺ x = α ou x = π − α (ramené dans ]−π ; π]).')}`;
 }
 
 /* =====================================================================
@@ -627,10 +685,18 @@ function L11(d) {
 }
 function C11() {
   return `<h2>11. Signes et inéquations sur le cercle</h2>
-<div class="def"><b>cos x &gt; 0</b> quand le point est à <b>droite</b> de l'axe vertical, <b>sin x &gt; 0</b> quand il est <b>au-dessus</b> de l'axe horizontal.<br>Pour <b>cos x ≥ a</b> : on garde l'arc du cercle à droite de la droite verticale x = a. Pour <b>sin x ≥ a</b> : l'arc au-dessus de la droite y = a.</div>
-<div class="ex">cos x ≥ ${F(1, 2)} dans ]−π ; π] : l'arc va de −${F('π', 3)} à ${F('π', 3)}, S = [−${F('π', 3)} ; ${F('π', 3)}].<br>Dans [0 ; 2π[, le même arc se lit en deux morceaux : S = [0 ; ${F('π', 3)}] ∪ [${F('5π', 3)} ; 2π[.</div>
-<div class="warn">⚠️ Inégalité stricte (&gt;, &lt;) : bornes exclues, crochets tournés vers l'extérieur.<br>⚠️ Lis l'arc dans l'intervalle demandé : ]−π ; π] et [0 ; 2π[ ne donnent pas la même écriture.</div>
-${cercle({ marks: true, vline: { x: 0.5, l: 'x = 1/2' }, arcs: [{ a: -PI / 3, b: PI / 3 }], ends: [{ t: -PI / 3 }, { t: PI / 3 }], tl: [{ t: PI / 3, l: 'π/3' }, { t: -PI / 3, l: '−π/3' }] })}`;
+<p class="intro">Le cercle permet de voir d'un coup d'œil le signe de cos x et de sin x, et de résoudre des inéquations : on colorie l'arc des points qui conviennent.</p>
+<div class="def"><b>cos x &gt; 0</b> quand le point est à <b>droite</b> de l'axe vertical, <b>sin x &gt; 0</b> quand il est <b>au-dessus</b> de l'axe horizontal.<br>Pour <b>cos x ≥ a</b> : on garde l'arc du cercle à droite de la droite verticale x = a (à gauche pour ≤). Pour <b>sin x ≥ a</b> : l'arc au-dessus de la droite y = a (en dessous pour ≤).</div>
+<div class="cols">${exq('Exemple 1 : signes pour x = −' + F('3π', 4), `−${F('3π', 4)} : on tourne dans le sens des aiguilles d'une montre, le point est en bas à gauche.<br>Donc <b>cos x &lt; 0 et sin x &lt; 0</b>.`)}
+${cercle({ marks: true, noGrad: true, pts: [{ t: -3 * PI / 4, l: '−3π/4', proj: true }], tl: [{ t: PI / 4, l: '(+ ; +)', c: COL.sin }, { t: 3 * PI / 4, l: '(− ; +)', c: COL.sin }, { t: 5 * PI / 4, l: '(− ; −)', c: COL.sin }, { t: 7 * PI / 4, l: '(+ ; −)', c: COL.sin }] })}</div>
+${meth(['Résous d\'abord l\'équation : trouve les deux réels où cos x (ou sin x) vaut exactement a.', 'Trace la droite (verticale pour cos, horizontale pour sin) et colorie l\'arc du bon côté.', 'Lis l\'arc dans le sens direct, en restant dans l\'intervalle demandé : ]−π ; π] ou [0 ; 2π[. S\'il passe par la borne de l\'intervalle, il se coupe en deux morceaux (∪).', 'Crochets : inégalité large (≤, ≥) → bornes comprises ; stricte (&lt;, &gt;) → bornes exclues.'])}
+<div class="cols"><div>
+${exq(`Exemple 2 : cos x ≥ ${F(1, 2)}`, `Dans ]−π ; π] : l'arc va de −${F('π', 3)} à ${F('π', 3)}, <b>${nw(`S = [−${F('π', 3)} ; ${F('π', 3)}]`)}</b>.<br>Dans [0 ; 2π[, le même arc se lit en deux morceaux : S = [0 ; ${F('π', 3)}] ∪ [${F('5π', 3)} ; 2π[.`)}
+${exq(`Exemple 3 : ${nw(`sin x &lt; −${F(R(2), 2)}`)} dans [0 ; 2π[`, `sin x = −${F(R(2), 2)} pour ${F('5π', 4)} et ${F('7π', 4)}. On garde l'arc en dessous, bornes exclues : <b>${nw(`S = ]${F('5π', 4)} ; ${F('7π', 4)}[`)}</b>.`)}
+</div><div>${cercle({ marks: true, vline: { x: 0.5, l: 'x = 1/2' }, arcs: [{ a: -PI / 3, b: PI / 3 }], ends: [{ t: -PI / 3 }, { t: PI / 3 }], tl: [{ t: PI / 3, l: 'π/3' }, { t: -PI / 3, l: '−π/3' }] })}
+${cercle({ marks: true, hline: { y: -Math.SQRT2 / 2, l: 'y = −√2/2' }, arcs: [{ a: 5 * PI / 4, b: 7 * PI / 4 }], ends: [{ t: 5 * PI / 4, open: true }, { t: 7 * PI / 4, open: true }], tl: [{ t: 5 * PI / 4, l: '5π/4' }, { t: 7 * PI / 4, l: '7π/4' }] })}</div></div>
+<div class="warn">⚠️ Inégalité stricte (&gt;, &lt;) : bornes exclues, crochets tournés vers l'extérieur.<br>⚠️ Ne prends pas l'arc du mauvais côté : relis le sens de l'inégalité.<br>⚠️ Lis l'arc dans l'intervalle demandé : ]−π ; π] et [0 ; 2π[ ne donnent pas la même écriture.</div>
+${ret('on résout d\'abord l\'égalité, puis on lit l\'arc colorié dans le sens direct, avec les bons crochets.')}`;
 }
 
 /* =====================================================================
@@ -721,10 +787,18 @@ function L12(d) {
 }
 function C12() {
   return `<h2>12. Fonctions cosinus et sinus</h2>
+<p class="intro">x ↦ cos x et x ↦ sin x sont des fonctions définies sur ℝ. Leurs courbes en « vagues » résument tout ce que tu as vu sur le cercle.</p>
 <div class="def">cos et sin sont définies sur ℝ, à valeurs dans [−1 ; 1].<br>• <b>2π-périodiques</b> : cos(x + 2π) = cos x, sin(x + 2π) = sin x (la courbe se répète tous les 2π).<br>• cos est <b>paire</b> : cos(−x) = cos x (courbe symétrique par rapport à l'axe des ordonnées).<br>• sin est <b>impaire</b> : sin(−x) = −sin x (courbe symétrique par rapport à O).</div>
-<div class="ex">cos(${F('9π', 2)}) = cos(${H2} + 2 × 2π) = cos(${H2}) = 0.<br>f(x) = x sin x : f(−x) = (−x) × (−sin x) = x sin x = f(x), donc f est paire.</div>
-<div class="warn">⚠️ cos 0 = 1 et sin 0 = 0 : c'est le plus simple pour reconnaître les courbes.<br>⚠️ Une période de 2π contient en général <b>deux</b> solutions de cos x = a (−1 &lt; a &lt; 1).</div>
-${courbe({ xr: [-2 * PI, 2 * PI], fs: [{ f: Math.cos, l: 'y = cos x', c: COL.cos }, { f: Math.sin, l: 'y = sin x', c: COL.sin }], xl: XL2 })}`;
+${meth(['Parité : calcule f(−x) avec cos(−x) = cos x, sin(−x) = −sin x, (−x)<sup>2</sup> = x<sup>2</sup> ; compare à f(x) et à −f(x).', 'Grand réel : retire des périodes de 2π pour revenir dans [−2π ; 2π], puis lis la courbe.', 'Reconnaître une courbe : lis f(0) (1 pour cos, 0 pour sin), puis regarde si elle monte ou descend juste après 0.', 'Nombre de solutions de cos x = a ou sin x = a : trace la droite y = a et compte les croisements dont l\'abscisse est dans l\'intervalle.'])}
+<div class="cols">
+${exq('Exemple 1 : périodicité', `${nw(`cos(${F('9π', 2)})`)} = cos(${H2} + 2 × 2π) = cos(${H2}) = <b>0</b>.<br>${nw(`sin(−${F('7π', 2)})`)} = sin(${H2} − 2 × 2π) = sin(${H2}) = <b>1</b>.`)}
+${exq('Exemple 2 : parité', 'f(x) = x sin x : f(−x) = (−x) × (−sin x) = x sin x = f(x), donc f est <b>paire</b>.<br>g(x) = x cos x : g(−x) = (−x) cos x = −g(x), donc g est <b>impaire</b>.')}
+</div>
+${courbe({ xr: [-2 * PI, 2 * PI], fs: [{ f: Math.cos, l: 'y = cos x', c: COL.cos }, { f: Math.sin, l: 'y = sin x', c: COL.sin }], xl: XL2 })}
+<div class="cols">${exq('Exemple 3 : cos x = 0,4 dans [0 ; 3π]', 'La droite y = 0,4 coupe la courbe de cos 2 fois sur [0 ; 2π], puis encore 1 fois entre 2π et 3π : <b>3 solutions</b>.')}
+${courbe({ xr: [0, 3 * PI], fs: [{ f: Math.cos, l: 'y = cos x', c: COL.cos }], h: { y: 0.4, l: 'y = 0,4' }, pts: [Math.acos(0.4), 2 * PI - Math.acos(0.4), 2 * PI + Math.acos(0.4)].map(x => ({ x, y: 0.4, c: COL.A })) })}</div>
+<div class="warn">⚠️ cos 0 = 1 et sin 0 = 0 : c'est le plus simple pour reconnaître les courbes.<br>⚠️ Paire : symétrie par rapport à l'axe des ordonnées ; impaire : symétrie par rapport à O. Ne les échange pas.<br>⚠️ Une période de 2π contient en général <b>deux</b> solutions de cos x = a (−1 &lt; a &lt; 1) : attention aux bords de l'intervalle.</div>
+${ret('cos et sin sont 2π-périodiques ; cos est paire, sin est impaire.')}`;
 }
 
 /* ================= niveaux ================= */

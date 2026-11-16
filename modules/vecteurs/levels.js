@@ -47,6 +47,12 @@ const red = (m, p) => `y = ${terms([[m, 'x'], [p, '']])}`;
 /** quotient n ÷ q écrit en fraction irréductible (ou en entier) */
 const kfr = (n, q) => { const g = gcd(n, q) || 1, s = (n < 0) !== (q < 0) ? -1 : 1, a = Math.abs(n) / g, b = Math.abs(q) / g; return b === 1 ? M(s * a) : (s < 0 ? '−' : '') + F(a, b); };
 const ex = t => `<div class="ex">${t}</div>`;
+// briques des encarts de cours
+const exq = (n, q, t) => ex(`<span class="q">Exemple ${n} : ${q}</span><br>${t}`);
+const meth = steps => `<div class="methode"><b>Méthode</b><ol>${steps.map(s => `<li>${s}</li>`).join('')}</ol></div>`;
+const cols = (...a) => `<div class="cols">${a.join('')}</div>`;
+const warn = list => `<div class="warn">${list.map(s => `⚠️ ${s}`).join('<br>')}</div>`;
+const retenir = s => `<div class="retenir">À retenir : ${s}</div>`;
 /** sens d'un déplacement */
 const hor = a => (a > 0 ? `${M(a)} vers la droite` : a < 0 ? `${M(-a)} vers la gauche` : 'aucun déplacement horizontal');
 const ver = b => (b > 0 ? `${M(b)} vers le haut` : b < 0 ? `${M(-b)} vers le bas` : 'aucun déplacement vertical');
@@ -103,12 +109,18 @@ function L1(d) {
 }
 function C1() {
   const vec = { x: -3, y: -1, dx: 4, dy: 3, l: '{u}', c: C.u }, v2 = { x: 2, y: 3, dx: 3, dy: -4, l: '{v}', c: C.v };
+  const w = { x: 3, y: 2, dx: -5, dy: 0, l: '{w}', c: C.w }, u2 = { x: -3, y: -3, dx: 4, dy: 3, l: '{u}', c: C.u, side: -1 };
   return `<h2>1. Coordonnées d'un vecteur</h2>
+<p class="intro">Un vecteur, c'est un déplacement. Ses coordonnées disent « de combien » on bouge : c'est la base de tout le chapitre.</p>
 <div class="def">Un <b>vecteur</b> représente un <b>déplacement</b> : une direction, un sens et une longueur.<br>Ses <b>coordonnées</b> (x ; y) disent de combien on se déplace :<br>• <b>x</b> : horizontalement (positif vers la droite, négatif vers la gauche) ;<br>• <b>y</b> : verticalement (positif vers le haut, négatif vers le bas).</div>
-${ex(`Sur la figure, ${V('u')} fait avancer de 4 carreaux vers la droite et monter de 3 : ${V('u')}(4 ; 3).<br>${V('v')} fait avancer de 3 vers la droite et descendre de 4 : ${V('v')}(3 ; −4).`)}
-<div class="warn">⚠️ On compte du <b>départ</b> vers la <b>pointe</b> de la flèche, jamais l'inverse.<br>⚠️ L'ordre compte : d'abord x (horizontal), puis y (vertical).</div>
-${grille({ xr: [-4, 6], yr: [-3, 4], vecs: [vec, v2], steps: [{ x: -3, y: -1, dx: 4, dy: 3 }, { x: 2, y: 3, dx: 3, dy: -4, c: C.v }] })}
-<p class="note">Un vecteur ne dépend pas de l'endroit où on le dessine : deux flèches parallèles, de même sens et de même longueur représentent le même vecteur.</p>`;
+${meth(['Repère le <b>départ</b> de la flèche (le bout sans pointe) et sa <b>pointe</b>.', 'Compte les carreaux <b>horizontalement</b> du départ jusqu\'à la hauteur de la pointe : → positif, ← négatif. C\'est <b>x</b>.', 'Compte ensuite <b>verticalement</b> : ↑ positif, ↓ négatif. C\'est <b>y</b>.', 'Écris (x ; y) dans cet ordre. Pas de déplacement dans un sens ? La coordonnée vaut <b>0</b>.'])}
+${exq(1, 'une flèche qui monte', `${V('u')} avance de 4 carreaux vers la droite et monte de 3 : <b>${V('u')}(4 ; 3)</b>.`)}
+${exq(2, 'des signes moins', `${V('v')} avance de 3 vers la droite et <b>descend</b> de 4 : <b>${V('v')}(3 ; −4)</b>.<br>${V('w')} recule de 5 vers la gauche et ne monte pas : <b>${V('w')}(−5 ; 0)</b>.`)}
+${cols(grille({ xr: [-4, 6], yr: [-3, 4], vecs: [vec, v2], steps: [{ x: -3, y: -1, dx: 4, dy: 3 }, { x: 2, y: 3, dx: 3, dy: -4, c: C.v }], aria: 'vecteurs u et v avec leurs déplacements' }),
+    grille({ xr: [-4, 5], yr: [-4, 3], vecs: [w, u2, { x: 0, y: -2, dx: 4, dy: 3, l: '{u}', c: C.u, side: -1 }], aria: 'vecteur w horizontal et deux flèches du même vecteur u' }))}
+<p class="note">À droite : deux flèches parallèles, de même sens et de même longueur représentent le <b>même</b> vecteur ${V('u')}(4 ; 3). Un vecteur ne dépend pas de l'endroit où on le dessine.</p>
+${warn(['On compte du <b>départ</b> vers la <b>pointe</b> de la flèche, jamais l\'inverse (sinon tous les signes sont faux).', 'L\'ordre compte : d\'abord x (horizontal), puis y (vertical).', 'Vers la gauche ou vers le bas, la coordonnée est <b>négative</b>.'])}
+${retenir(`${V('u')}(x ; y) : x carreaux en horizontal, puis y carreaux en vertical, du départ vers la pointe.`)}`;
 }
 
 /* =====================================================================
@@ -141,10 +153,15 @@ function L2(d) {
 }
 function C2() {
   return `<h2>2. Le vecteur ${V('AB')}</h2>
+<p class="intro">Quand on connaît deux points, on peut calculer le déplacement de l'un à l'autre sans rien dessiner.</p>
 <div class="def">Le vecteur ${V('AB')} est le déplacement qui va de <b>A</b> (départ) à <b>B</b> (arrivée).<br>Ses coordonnées : <b>${V('AB')}(${xs('B')} − ${xs('A')} ; ${ys('B')} − ${ys('A')})</b> : « arrivée moins départ ».</div>
-${ex(`A(−2 ; 1) et B(3 ; −1) : ${V('AB')}(3 − (−2) ; −1 − 1) = <b>(5 ; −2)</b>.<br>On vérifie sur la figure : de A à B, 5 carreaux vers la droite et 2 vers le bas.`)}
-<div class="warn">⚠️ ${V('BA')} est le déplacement inverse : ${V('BA')}(−5 ; 2). Ne pas confondre ${V('AB')} et ${V('BA')} !<br>⚠️ Attention aux parenthèses : 3 − (−2) = 3 + 2 = 5.</div>
-${grille({ xr: [-3, 4], yr: [-2, 2], pts: [{ x: -2, y: 1, l: 'A', pos: 'nw' }, { x: 3, y: -1, l: 'B', pos: 'ne' }], vecs: [{ x: -2, y: 1, dx: 5, dy: -2, l: '{AB}', c: C.u, side: -1 }], steps: [{ x: -2, y: 1, dx: 5, dy: -2 }] })}`;
+${meth([`Repère le <b>départ</b> (première lettre) et l'<b>arrivée</b> (deuxième lettre) : pour ${V('BA')}, on part de B !`, `Calcule x<sub>arrivée</sub> − x<sub>départ</sub>, en mettant les nombres négatifs entre parenthèses.`, `Calcule de même y<sub>arrivée</sub> − y<sub>départ</sub>.`, 'Contrôle sur la figure : le signe de chaque coordonnée doit correspondre au sens du déplacement.'])}
+${exq(1, 'des nombres positifs', `A(1 ; 1) et B(4 ; 3) : ${V('AB')}(4 − 1 ; 3 − 1) = <b>(3 ; 2)</b>.`)}
+${exq(2, 'avec des négatifs', `A(−2 ; 1) et B(3 ; −1) : ${V('AB')}(3 − (−2) ; −1 − 1) = <b>(5 ; −2)</b>.<br>De A à B : 5 carreaux vers la droite et 2 vers le bas.<br>Et ${V('BA')}(−2 − 3 ; 1 − (−1)) = <b>(−5 ; 2)</b> : le déplacement inverse.`)}
+${cols(grille({ xr: [-3, 4], yr: [-2, 2], pts: [{ x: -2, y: 1, l: 'A', pos: 'nw' }, { x: 3, y: -1, l: 'B', pos: 'ne' }], vecs: [{ x: -2, y: 1, dx: 5, dy: -2, l: '{AB}', c: C.u, side: -1 }], steps: [{ x: -2, y: 1, dx: 5, dy: -2 }], aria: 'vecteur AB' }),
+    grille({ xr: [-3, 4], yr: [-2, 2], pts: [{ x: -2, y: 1, l: 'A', pos: 'nw' }, { x: 3, y: -1, l: 'B', pos: 'ne' }], vecs: [{ x: 3, y: -1, dx: -5, dy: 2, l: '{BA}', c: C.v, side: -1 }], steps: [{ x: 3, y: -1, dx: -5, dy: 2, c: C.v }], aria: 'vecteur BA, opposé de AB' }))}
+${warn([`« Arrivée moins départ », pas l'inverse : départ − arrivée donne ${V('BA')}, avec tous les signes changés.`, 'On <b>soustrait</b> les coordonnées, on ne les additionne pas.', 'Attention aux parenthèses : 3 − (−2) = 3 + 2 = 5.'])}
+${retenir(`${V('AB')}(${xs('B')} − ${xs('A')} ; ${ys('B')} − ${ys('A')}) : arrivée moins départ.`)}`;
 }
 
 /* =====================================================================
@@ -192,11 +209,15 @@ function L3(d) {
 }
 function C3() {
   return `<h2>3. Translation</h2>
-<div class="def">L'<b>image</b> d'un point M par la <b>translation de vecteur</b> ${V('u')} est le point M′ tel que <b>${V('MM′')} = ${V('u')}</b> : on fait glisser M en suivant ${V('u')}.<br>Si ${V('u')}(a ; b) et M(x ; y), alors <b>M′(x + a ; y + b)</b>.</div>
-${ex(`M(−3 ; 2) et ${V('u')}(4 ; −3) : M′(−3 + 4 ; 2 + (−3)) = <b>M′(1 ; −1)</b>.`)}
-${ex(`La translation qui transforme A en B est celle de vecteur ${V('AB')}. Alors ABM′M est un <b>parallélogramme</b> (éventuellement aplati).`)}
-<div class="warn">⚠️ On <b>ajoute</b> les coordonnées du vecteur à celles du point (on ne soustrait pas).<br>⚠️ Ne pas confondre le vecteur ${V('u')} (un déplacement) et le point M′ (une position).</div>
-${grille({ xr: [-4, 3], yr: [-2, 3], pts: [{ x: -3, y: 2, l: 'M', pos: 'nw' }, { x: 1, y: -1, l: 'M′', c: C.s, pos: 'se' }], vecs: [{ x: -3, y: 2, dx: 4, dy: -3, c: C.s, l: '{u}' }], steps: [{ x: -3, y: 2, dx: 4, dy: -3 }] })}`;
+<p class="intro">Une translation fait glisser une figure sans la tourner ni la déformer. Avec les coordonnées, trouver l'image d'un point est une simple addition.</p>
+<div class="def">L'<b>image</b> d'un point M par la <b>translation de vecteur</b> ${V('u')} est le point M′ tel que <b>${V('MM′')} = ${V('u')}</b> : on fait glisser M en suivant ${V('u')}.<br>Si ${V('u')}(a ; b) et M(x ; y), alors <b>M′(x + a ; y + b)</b>.<br>La translation qui <b>transforme A en B</b> est celle de vecteur ${V('AB')}.</div>
+${meth([`Trouve les coordonnées (a ; b) du vecteur de la translation. Si on parle de la translation qui transforme A en B, calcule d'abord ${V('AB')} (arrivée − départ).`, 'Ajoute : x′ = x + a et y′ = y + b.', 'Contrôle sur la figure : M′ est au bout de la flèche partie de M.'])}
+${exq(1, 'translation de vecteur donné', `M(−3 ; 2) et ${V('u')}(4 ; −3) : M′(−3 + 4 ; 2 + (−3)) = <b>M′(1 ; −1)</b>.`)}
+${exq(2, 'la translation qui transforme A en B', `A(−3 ; −2), B(0 ; −1) et M(−2 ; 2).<br>${V('AB')}(0 − (−3) ; −1 − (−2)) = (3 ; 1).<br>M′(−2 + 3 ; 2 + 1) = <b>M′(1 ; 3)</b>. ABM′M est un <b>parallélogramme</b>.`)}
+${cols(grille({ xr: [-4, 3], yr: [-2, 3], pts: [{ x: -3, y: 2, l: 'M', pos: 'nw' }, { x: 1, y: -1, l: 'M′', c: C.s, pos: 'se' }], vecs: [{ x: -3, y: 2, dx: 4, dy: -3, c: C.s, l: '{u}' }], steps: [{ x: -3, y: 2, dx: 4, dy: -3 }], aria: 'image de M par la translation de vecteur u' }),
+    grille({ xr: [-4, 2], yr: [-3, 4], center: [-1, 0.5], pts: [{ x: -3, y: -2, l: 'A', c: C.u }, { x: 0, y: -1, l: 'B', c: C.u }, { x: -2, y: 2, l: 'M' }, { x: 1, y: 3, l: 'M′', c: C.s }], poly: { pts: [[-3, -2], [0, -1], [1, 3], [-2, 2]], c: '#868e96' }, vecs: [{ x: -3, y: -2, dx: 3, dy: 1, c: C.u }, { x: -2, y: 2, dx: 3, dy: 1, c: C.s }], aria: 'translation qui transforme A en B : ABM′M est un parallélogramme' }))}
+${warn(['On <b>ajoute</b> les coordonnées du vecteur à celles du point (on ne soustrait pas).', `Ne réponds pas avec les coordonnées de ${V('u')} : on demande le <b>point d'arrivée</b> M′.`, 'Ne pas confondre le vecteur (un déplacement) et le point (une position).'])}
+${retenir(`M′ image de M par la translation de vecteur ${V('u')}(a ; b) : M′(x + a ; y + b).`)}`;
 }
 
 /* =====================================================================
@@ -270,11 +291,15 @@ function L4(d) {
 }
 function C4() {
   return `<h2>4. Somme de vecteurs</h2>
-<div class="def">Si ${V('u')}(x ; y) et ${V('v')}(x′ ; y′), alors <b>${V('u')} + ${V('v')}(x + x′ ; y + y′)</b>.<br>Sur un dessin, on met les flèches <b>bout à bout</b> : le départ de ${V('v')} à la pointe de ${V('u')}.<br><b>Relation de Chasles</b> : ${V('AB')} + ${V('BC')} = ${V('AC')}.</div>
-${ex(`${V('u')}(3 ; 1) et ${V('v')}(1 ; 3) : ${V('u')} + ${V('v')}(3 + 1 ; 1 + 3) = <b>(4 ; 4)</b>.`)}
-${ex(`${V('u')} − ${V('v')} = ${V('u')} + (−${V('v')}) : (3 − 1 ; 1 − 3) = <b>(2 ; −2)</b>.`)}
-<div class="warn">⚠️ On ajoute x avec x et y avec y, jamais x avec y.<br>⚠️ Chasles : la pointe du premier vecteur doit être le départ du second (${V('AB')} + ${V('BC')}, B au milieu).</div>
-${grille({ xr: [-1, 5], yr: [-1, 5], vecs: [{ x: 0, y: 0, dx: 3, dy: 1, l: '{u}', c: C.u, side: -1 }, { x: 3, y: 1, dx: 1, dy: 3, l: '{v}', c: C.v, side: -1 }, { x: 0, y: 0, dx: 4, dy: 4, l: '{u} + {v}', c: C.s, w: 4, at: 0.55 }] })}`;
+<p class="intro">Faire un déplacement puis un autre, c'est faire leur somme. On additionne les coordonnées une par une.</p>
+<div class="def">Si ${V('u')}(x ; y) et ${V('v')}(x′ ; y′), alors <b>${V('u')} + ${V('v')}(x + x′ ; y + y′)</b> et <b>${V('u')} − ${V('v')}(x − x′ ; y − y′)</b>.<br>Sur un dessin, on met les flèches <b>bout à bout</b> : le départ de ${V('v')} à la pointe de ${V('u')}.<br><b>Relation de Chasles</b> : ${V('AB')} + ${V('BC')} = ${V('AC')}.</div>
+${meth(['Somme : ajoute les abscisses entre elles, puis les ordonnées entre elles (avec trois vecteurs, trois termes).', `Différence : ${V('u')} − ${V('v')} = ${V('u')} + (−${V('v')}) : on soustrait x′ de x et y′ de y.`, `Avec des points (${V('AB')} + ${V('BC')}) : Chasles donne ${V('AC')}, puis arrivée − départ.`])}
+${exq(1, 'une somme', `${V('u')}(3 ; 1) et ${V('v')}(1 ; 3) : ${V('u')} + ${V('v')}(3 + 1 ; 1 + 3) = <b>(4 ; 4)</b>.<br>Différence : ${V('u')} − ${V('v')}(3 − 1 ; 1 − 3) = <b>(2 ; −2)</b>.`)}
+${exq(2, 'relation de Chasles', `A(1 ; 0), B(4 ; 2) et C(2 ; 5) : ${V('AB')} + ${V('BC')} = ${V('AC')}.<br>${V('AC')}(2 − 1 ; 5 − 0) = <b>(1 ; 5)</b>.<br>Vérification : ${V('AB')}(3 ; 2) + ${V('BC')}(−2 ; 3) = (1 ; 5).`)}
+${cols(grille({ xr: [-1, 5], yr: [-1, 5], vecs: [{ x: 0, y: 0, dx: 3, dy: 1, l: '{u}', c: C.u, side: -1 }, { x: 3, y: 1, dx: 1, dy: 3, l: '{v}', c: C.v, side: -1 }, { x: 0, y: 0, dx: 4, dy: 4, l: '{u} + {v}', c: C.s, w: 4, at: 0.55 }], aria: 'somme de u et v, flèches bout à bout' }),
+    grille({ xr: [-1, 5], yr: [-1, 6], center: [2.3, 2.3], pts: [{ x: 1, y: 0, l: 'A' }, { x: 4, y: 2, l: 'B' }, { x: 2, y: 5, l: 'C' }], vecs: [{ x: 1, y: 0, dx: 3, dy: 2, c: C.u, l: '{AB}', side: -1 }, { x: 4, y: 2, dx: -2, dy: 3, c: C.v, l: '{BC}', side: -1 }, { x: 1, y: 0, dx: 1, dy: 5, c: C.s, w: 4, l: '{AC}' }], aria: 'relation de Chasles : AB + BC = AC' }))}
+${warn(['On ajoute x avec x et y avec y, jamais x avec y.', 'Pour une différence, soustrais <b>toutes</b> les coordonnées de ' + V('v') + ' (attention aux signes moins).', `Chasles : la pointe du premier vecteur doit être le départ du second (${V('AB')} + ${V('BC')}, B au milieu). On n'additionne pas les points !`])}
+${retenir(`on additionne les vecteurs coordonnée par coordonnée ; ${V('AB')} + ${V('BC')} = ${V('AC')}.`)}`;
 }
 
 /* =====================================================================
@@ -336,11 +361,16 @@ function L5(d) {
 }
 function C5() {
   return `<h2>5. Produit d'un vecteur par un réel</h2>
+<p class="intro">Multiplier un vecteur par un nombre, c'est l'allonger, le raccourcir ou le retourner, sans changer sa direction.</p>
 <div class="def">Si ${V('u')}(x ; y) et k est un réel, alors <b>k${V('u')}(kx ; ky)</b>.<br>k${V('u')} a la même <b>direction</b> que ${V('u')} ; même sens si k &gt; 0, sens <b>contraire</b> si k &lt; 0 ; sa longueur est multipliée par |k|.</div>
-${ex(`${V('u')}(2 ; 1) : 3${V('u')}(6 ; 3) et −2${V('u')}(−4 ; −2).`)}
-${ex(`${V('u')}(4 ; −2) : 0,5${V('u')}(2 ; −1) : la moitié de ${V('u')}.`)}
-<div class="warn">⚠️ On multiplie les <b>deux</b> coordonnées par k.<br>⚠️ −${V('u')} est l'opposé de ${V('u')} : (−x ; −y).</div>
-${grille({ xr: [-5, 7], yr: [-3, 4], vecs: [{ x: -1, y: 1, dx: 2, dy: 1, l: '{u}', c: C.u }, { x: 0, y: -1, dx: 6, dy: 3, l: '3{u}', c: C.s, side: -1, w: 4 }, { x: -1, y: 2, dx: -4, dy: -2, l: '−2{u}', c: C.v }] })}`;
+${meth(['Multiplie <b>chaque</b> coordonnée par k, avec la règle des signes.', 'Si k est décimal (0,5 ; 1,5…), calcule avec soin : 0,5 × 4 = 2, 1,5 × (−2) = −3.', `Pour une combinaison comme 2${V('u')} − ${V('v')} : calcule d'abord 2${V('u')} et −${V('v')}, puis ajoute-les coordonnée par coordonnée.`])}
+${exq(1, 'k entier', `${V('u')}(2 ; 1) : 3${V('u')}(3 × 2 ; 3 × 1) = <b>(6 ; 3)</b> et −2${V('u')}(−2 × 2 ; −2 × 1) = <b>(−4 ; −2)</b>.`)}
+${exq(2, 'k décimal', `${V('u')}(4 ; −2) : 0,5${V('u')}(2 ; −1) (la moitié de ${V('u')}) et −1,5${V('u')}(−6 ; 3).`)}
+${exq(3, 'une combinaison', `${V('u')}(1 ; 2) et ${V('v')}(3 ; −1) : 2${V('u')}(2 ; 4) et −${V('v')}(−3 ; 1).<br>2${V('u')} − ${V('v')}(2 + (−3) ; 4 + 1) = <b>(−1 ; 5)</b>.`)}
+${cols(grille({ xr: [-5, 7], yr: [-3, 4], vecs: [{ x: -1, y: 1, dx: 2, dy: 1, l: '{u}', c: C.u }, { x: 0, y: -1, dx: 6, dy: 3, l: '3{u}', c: C.s, side: -1, w: 4 }, { x: -1, y: 2, dx: -4, dy: -2, l: '−2{u}', c: C.v }], aria: 'u, 3u et −2u ont la même direction' }),
+    grille({ xr: [-2, 3], yr: [-1, 6], vecs: [{ x: 0, y: 0, dx: 2, dy: 4, l: '2{u}', c: C.u, side: -1 }, { x: 2, y: 4, dx: -3, dy: 1, l: '−{v}', c: C.v }, { x: 0, y: 0, dx: -1, dy: 5, l: '2{u} − {v}', c: C.s, w: 4 }], aria: 'combinaison 2u − v' }))}
+${warn(['On multiplie les <b>deux</b> coordonnées par k (pas seulement la première).', 'On <b>multiplie</b>, on n\'ajoute pas k.', `−${V('u')} est l'opposé de ${V('u')} : (−x ; −y). Si k &lt; 0, les deux signes changent.`])}
+${retenir(`k${V('u')}(kx ; ky) : même direction que ${V('u')}, sens contraire si k est négatif.`)}`;
 }
 
 /* =====================================================================
@@ -390,11 +420,15 @@ function L6(d) {
 }
 function C6() {
   return `<h2>6. Milieu d'un segment</h2>
+<p class="intro">Le milieu d'un segment est « à mi-chemin » : ses coordonnées sont les moyennes de celles des extrémités.</p>
 <div class="def">Le milieu I de [AB] a pour coordonnées la <b>moyenne</b> de celles de A et B :<br><b>${xs('I')} = (${xs('A')} + ${xs('B')}) ÷ 2</b> et <b>${ys('I')} = (${ys('A')} + ${ys('B')}) ÷ 2</b>.<br>Avec les vecteurs : I est le milieu de [AB] quand ${V('AI')} = ${V('IB')}.</div>
-${ex('A(−3 ; 2) et B(5 ; −1) : I((−3 + 5) ÷ 2 ; (2 + (−1)) ÷ 2) = <b>I(1 ; 0,5)</b>.')}
-${ex(`Si I(1 ; 0,5) est le milieu de [AB] et A(−3 ; 2) : ${xs('B')} = 2 × 1 − (−3) = 5 et ${ys('B')} = 2 × 0,5 − 2 = −1.`)}
-<div class="warn">⚠️ C'est une somme divisée par 2, pas une différence.<br>⚠️ Le résultat peut être décimal (…,5).</div>
-${grille({ xr: [-4, 6], yr: [-2, 3], pts: [{ x: -3, y: 2, l: 'A', pos: 'nw' }, { x: 5, y: -1, l: 'B', pos: 'se' }, { x: 1, y: 0.5, l: 'I', c: C.s, pos: 'n' }], segs: [{ x1: -3, y1: 2, x2: 5, y2: -1 }] })}`;
+${meth(['Pour trouver le milieu : <b>ajoute</b> les deux abscisses puis divise par 2 ; pareil pour les ordonnées.', 'Le résultat peut être décimal : (−3 + 2) ÷ 2 = −0,5.', `Pour trouver une extrémité B quand on connaît A et le milieu I : <b>${xs('B')} = 2 × ${xs('I')} − ${xs('A')}</b> et ${ys('B')} = 2 × ${ys('I')} − ${ys('A')} (ou bien ${V('IB')} = ${V('AI')}).`])}
+${exq(1, 'calculer le milieu', 'A(−3 ; 2) et B(5 ; −1) : I((−3 + 5) ÷ 2 ; (2 + (−1)) ÷ 2) = <b>I(1 ; 0,5)</b>.')}
+${exq(2, 'retrouver une extrémité', `I(0 ; 1) est le milieu de [AB] et A(2 ; −3).<br>${xs('B')} = 2 × 0 − 2 = −2 et ${ys('B')} = 2 × 1 − (−3) = 5 : <b>B(−2 ; 5)</b>.<br>Vérification : (2 + (−2)) ÷ 2 = 0 et (−3 + 5) ÷ 2 = 1.`)}
+${cols(grille({ xr: [-4, 6], yr: [-2, 3], pts: [{ x: -3, y: 2, l: 'A', pos: 'nw' }, { x: 5, y: -1, l: 'B', pos: 'se' }, { x: 1, y: 0.5, l: 'I', c: C.s, pos: 'n' }], segs: [{ x1: -3, y1: 2, x2: 5, y2: -1 }], aria: 'milieu I du segment AB' }),
+    grille({ xr: [-3, 3], yr: [-4, 6], pts: [{ x: 2, y: -3, l: 'A', pos: 'e' }, { x: 0, y: 1, l: 'I', c: C.s, pos: 'e' }, { x: -2, y: 5, l: 'B', pos: 'w' }], vecs: [{ x: 2, y: -3, dx: -2, dy: 4, c: C.u, l: '{AI}', side: -1 }, { x: 0, y: 1, dx: -2, dy: 4, c: C.u, l: '{IB}', side: -1 }], aria: 'B est de l\'autre côté de I : AI = IB' }))}
+${warn(['C\'est une <b>somme</b> divisée par 2, pas une différence.', 'N\'oublie pas de diviser par 2 !', 'Pour retrouver B, ce n\'est pas le milieu de [AI] : B est <b>de l\'autre côté</b> de I, à la même distance.'])}
+${retenir('le milieu a pour coordonnées les moyennes : ((x<sub>A</sub> + x<sub>B</sub>) ÷ 2 ; (y<sub>A</sub> + y<sub>B</sub>) ÷ 2).')}`;
 }
 
 /* =====================================================================
@@ -438,11 +472,16 @@ function L7(d) {
 }
 function C7() {
   return `<h2>7. Norme et distance</h2>
+<p class="intro">La longueur d'une flèche se calcule avec le théorème de Pythagore : le déplacement horizontal et le déplacement vertical forment un triangle rectangle.</p>
 <div class="def">Dans un repère <b>orthonormé</b>, la <b>norme</b> (longueur) de ${V('u')}(x ; y) est <b>‖${V('u')}‖ = √(x<sup>2</sup> + y<sup>2</sup>)</b> (théorème de Pythagore).<br>La distance AB est la norme de ${V('AB')} : <b>AB = √((${xs('B')} − ${xs('A')})<sup>2</sup> + (${ys('B')} − ${ys('A')})<sup>2</sup>)</b>.</div>
-${ex(`${V('u')}(3 ; −4) : ‖${V('u')}‖<sup>2</sup> = 3<sup>2</sup> + (−4)<sup>2</sup> = 9 + 16 = 25, donc ‖${V('u')}‖ = √25 = <b>5</b>.`)}
-${ex('A(1 ; 2) et B(4 ; 6) : AB<sup>2</sup> = 3<sup>2</sup> + 4<sup>2</sup> = 25, donc <b>AB = 5</b>.')}
-<div class="warn">⚠️ Un carré est toujours positif : (−4)<sup>2</sup> = 16.<br>⚠️ √(9 + 16) n'est pas √9 + √16 : 5 ≠ 7.<br>⚠️ La formule n'est valable que dans un repère orthonormé.</div>
-${grille({ xr: [-3, 4], yr: [-2, 4], vecs: [{ x: -1, y: 3, dx: 3, dy: -4, l: '{u}', c: C.u, side: -1 }], steps: [{ x: -1, y: 3, dx: 3, dy: -4 }] })}`;
+${meth([`Avec deux points, calcule d'abord ${V('AB')}(x ; y) (arrivée − départ).`, 'Élève <b>chaque</b> coordonnée au carré, puis <b>ajoute</b> : x<sup>2</sup> + y<sup>2</sup>.', 'Prends la racine carrée pour avoir la longueur. Si on demande AB<sup>2</sup>, on s\'arrête avant la racine.'])}
+${exq(1, 'norme d\'un vecteur', `${V('u')}(3 ; −4) : ‖${V('u')}‖<sup>2</sup> = 3<sup>2</sup> + (−4)<sup>2</sup> = 9 + 16 = 25, donc ‖${V('u')}‖ = √25 = <b>5</b>.`)}
+${exq(2, 'distance entre deux points', `A(−1 ; 2) et B(5 ; −6) : ${V('AB')}(6 ; −8).<br>AB<sup>2</sup> = 6<sup>2</sup> + (−8)<sup>2</sup> = 36 + 64 = 100, donc <b>AB = 10</b>.`)}
+${exq(3, 'le carré de la distance', `A(1 ; −2) et B(3 ; 1) : ${V('AB')}(2 ; 3), AB<sup>2</sup> = 4 + 9 = <b>13</b> (et AB = √13 ≈ 3,6).`)}
+${cols(grille({ xr: [-3, 4], yr: [-2, 4], vecs: [{ x: -1, y: 3, dx: 3, dy: -4, l: '{u}', c: C.u, side: -1 }], steps: [{ x: -1, y: 3, dx: 3, dy: -4 }], aria: 'norme de u : triangle rectangle de côtés 3 et 4' }),
+    grille({ xr: [-1, 4], yr: [-3, 2], pts: [{ x: 1, y: -2, l: 'A', pos: 'w' }, { x: 3, y: 1, l: 'B', pos: 'nw' }], segs: [{ x1: 1, y1: -2, x2: 3, y2: 1, c: C.u, w: 3 }], steps: [{ x: 1, y: -2, dx: 2, dy: 3 }], aria: 'distance AB : triangle rectangle de côtés 2 et 3' }))}
+${warn(['On n\'additionne pas les déplacements : 3 + 4 = 7 n\'est pas la longueur, c\'est <b>Pythagore</b>.', 'Un carré est toujours positif : (−4)<sup>2</sup> = 16. Et (x + y)<sup>2</sup> n\'est pas x<sup>2</sup> + y<sup>2</sup>.', '√(9 + 16) n\'est pas √9 + √16 : 5 ≠ 7. La formule n\'est valable que dans un repère <b>orthonormé</b>.'])}
+${retenir(`‖${V('u')}‖ = √(x<sup>2</sup> + y<sup>2</sup>) : on ajoute les carrés, puis on prend la racine.`)}`;
 }
 
 /* =====================================================================
@@ -502,11 +541,16 @@ function L8(d) {
 }
 function C8() {
   return `<h2>8. Vecteurs colinéaires</h2>
+<p class="intro">Deux vecteurs colinéaires ont la même direction. Le déterminant permet de le vérifier par un seul calcul.</p>
 <div class="def">${V('u')} et ${V('v')} sont <b>colinéaires</b> quand l'un est un multiple de l'autre (${V('v')} = k${V('u')}) : ils ont la même direction.<br>Le <b>déterminant</b> de ${V('u')}(x ; y) et ${V('v')}(x′ ; y′) est <b>det(${V('u')}, ${V('v')}) = x × y′ − y × x′</b>.<br>${V('u')} et ${V('v')} sont colinéaires <b>si et seulement si</b> det(${V('u')}, ${V('v')}) = 0.</div>
-${ex(`${V('u')}(2 ; −1) et ${V('v')}(−6 ; 3) : det = 2 × 3 − (−1) × (−6) = 6 − 6 = <b>0</b> : colinéaires (${V('v')} = −3${V('u')}).`)}
-${ex(`${V('u')}(2 ; −1) et ${V('w')}(3 ; 1) : det = 2 × 1 − (−1) × 3 = 2 + 3 = 5 ≠ 0 : pas colinéaires.`)}
-<div class="warn">⚠️ C'est un produit « en croix » : x × y′ − y × x′, pas x × x′ + y × y′.<br>⚠️ Colinéaires ne veut pas dire « même sens » : −3${V('u')} est colinéaire à ${V('u')}.</div>
-${grille({ xr: [-6, 4], yr: [-2, 4], vecs: [{ x: 0, y: 0, dx: 2, dy: -1, l: '{u}', c: C.u, side: -1 }, { x: 0, y: 0, dx: -6, dy: 3, l: '{v}', c: C.v }, { x: 0, y: 0, dx: 3, dy: 1, l: '{w}', c: C.w }] })}`;
+${meth([`Écris les coordonnées l'une sous l'autre : x et y de ${V('u')}, puis x′ et y′ de ${V('v')}.`, 'Fais le produit « en croix » <b>x × y′</b>, puis retranche l\'autre produit <b>y × x′</b>.', 'Déterminant nul ⇔ colinéaires ; déterminant non nul ⇔ pas colinéaires.', 'S\'il manque une coordonnée, écris det = 0 et résous l\'équation obtenue.'])}
+${exq(1, 'colinéaires', `${V('u')}(2 ; −1) et ${V('v')}(−6 ; 3) : det = 2 × 3 − (−1) × (−6) = 6 − 6 = <b>0</b> : colinéaires (${V('v')} = −3${V('u')}).`)}
+${exq(2, 'pas colinéaires', `${V('u')}(2 ; −1) et ${V('w')}(3 ; 1) : det = 2 × 1 − (−1) × 3 = 2 + 3 = 5 ≠ 0 : <b>pas colinéaires</b>.`)}
+${exq(3, 'coordonnée manquante', `${V('u')}(2 ; −1) et ${V('v')}(6 ; y) colinéaires : 2 × y − (−1) × 6 = 0, soit 2y + 6 = 0, donc <b>y = −3</b>.<br>On a bien ${V('v')}(6 ; −3) = 3${V('u')}.`)}
+${cols(grille({ xr: [-6, 4], yr: [-2, 4], vecs: [{ x: 0, y: 0, dx: 2, dy: -1, l: '{u}', c: C.u, side: -1 }, { x: 0, y: 0, dx: -6, dy: 3, l: '{v}', c: C.v }, { x: 0, y: 0, dx: 3, dy: 1, l: '{w}', c: C.w }], aria: 'u et v colinéaires, w non' }),
+    grille({ xr: [-1, 7], yr: [-4, 2], vecs: [{ x: 0, y: 0, dx: 6, dy: -3, l: '{v}', c: C.v, at: 0.7 }, { x: 0, y: 0, dx: 2, dy: -1, l: '{u}', c: C.u, w: 5, side: -1, at: 0.6 }], lines: [{ a: 1, b: 0, c: -6, col: '#adb5bd', dash: true, l: 'x = 6', at: 0.85 }], aria: 'v(6 ; y) colinéaire à u : y = −3' }))}
+${warn(['C\'est un produit « en croix » : x × y′ − y × x′, pas x × x′ + y × y′.', `L'ordre compte : commence par x de ${V('u')} (sinon on obtient l'opposé).`, `Colinéaires ne veut pas dire « même sens » : −3${V('u')} est colinéaire à ${V('u')}.`])}
+${retenir(`${V('u')} et ${V('v')} colinéaires ⇔ x × y′ − y × x′ = 0.`)}`;
 }
 
 /* =====================================================================
@@ -541,10 +585,15 @@ function L9(d) {
 }
 function C9() {
   return `<h2>9. Parallélogramme</h2>
-<div class="def">ABCD est un <b>parallélogramme</b> ⇔ <b>${V('AB')} = ${V('DC')}</b> ⇔ ${V('AD')} = ${V('BC')} ⇔ les diagonales [AC] et [BD] ont le <b>même milieu</b>.<br>Pour trouver D : D est l'image de A par la translation de vecteur ${V('BC')}.</div>
-${ex(`A(0 ; 0), B(4 ; 1), C(5 ; 4) : ${V('BC')}(1 ; 3), donc D(0 + 1 ; 0 + 3) = <b>D(1 ; 3)</b>.<br>Vérification : milieu de [AC] = (2,5 ; 2) = milieu de [BD].`)}
-<div class="warn">⚠️ L'ordre des lettres compte : dans ABCD, A est relié à B et à D ; D est le sommet <b>opposé</b> à B.<br>⚠️ ${V('AB')} = ${V('DC')} (et non ${V('CD')}) : les flèches vont dans le même sens.</div>
-${grille({ xr: [-1, 6], yr: [-1, 5], center: [2.5, 2], pts: [{ x: 0, y: 0, l: 'A' }, { x: 4, y: 1, l: 'B' }, { x: 5, y: 4, l: 'C' }, { x: 1, y: 3, l: 'D', c: C.s }], poly: { pts: [[0, 0], [4, 1], [5, 4], [1, 3]] }, vecs: [{ x: 0, y: 0, dx: 4, dy: 1, c: C.u }, { x: 1, y: 3, dx: 4, dy: 1, c: C.u }] })}`;
+<p class="intro">Les vecteurs donnent une façon très rapide de construire le quatrième sommet d'un parallélogramme.</p>
+<div class="def">ABCD est un <b>parallélogramme</b> ⇔ <b>${V('AB')} = ${V('DC')}</b> ⇔ ${V('AD')} = ${V('BC')} ⇔ les diagonales [AC] et [BD] ont le <b>même milieu</b>.<br>Dans ABCD, les sommets se suivent dans l'ordre : A et C sont opposés, B et D aussi.</div>
+${meth([`Choisis l'égalité qui contient le point cherché : pour D, ${V('AD')} = ${V('BC')} ; pour C, ${V('DC')} = ${V('AB')}.`, 'Calcule le vecteur connu (arrivée − départ).', `Ajoute ses coordonnées au point de départ : D = A + ${V('BC')}, ou C = D + ${V('AB')}.`, 'Vérifie : [AC] et [BD] doivent avoir le même milieu.'])}
+${exq(1, 'trouver D', `A(0 ; 0), B(4 ; 1), C(5 ; 4) : ${V('BC')}(1 ; 3), donc D(0 + 1 ; 0 + 3) = <b>D(1 ; 3)</b>.<br>Vérification : milieu de [AC] = (2,5 ; 2) = milieu de [BD].`)}
+${exq(2, 'trouver C', `A(1 ; −1), B(3 ; 2), D(−2 ; 1) : ${V('AB')}(2 ; 3).<br>${V('DC')} = ${V('AB')}, donc C(−2 + 2 ; 1 + 3) = <b>C(0 ; 4)</b>.<br>Vérification : milieu de [AC] = (0,5 ; 1,5) = milieu de [BD].`)}
+${cols(grille({ xr: [-1, 6], yr: [-1, 5], center: [2.5, 2], pts: [{ x: 0, y: 0, l: 'A' }, { x: 4, y: 1, l: 'B' }, { x: 5, y: 4, l: 'C' }, { x: 1, y: 3, l: 'D', c: C.s }], poly: { pts: [[0, 0], [4, 1], [5, 4], [1, 3]] }, vecs: [{ x: 0, y: 0, dx: 4, dy: 1, c: C.u }, { x: 1, y: 3, dx: 4, dy: 1, c: C.u }], aria: 'parallélogramme ABCD : AB = DC' }),
+    grille({ xr: [-3, 4], yr: [-2, 5], center: [0.5, 1.5], pts: [{ x: 1, y: -1, l: 'A' }, { x: 3, y: 2, l: 'B' }, { x: 0, y: 4, l: 'C', c: C.s }, { x: -2, y: 1, l: 'D' }, { x: 0.5, y: 1.5, l: '', c: C.s }], poly: { pts: [[1, -1], [3, 2], [0, 4], [-2, 1]] }, segs: [{ x1: 1, y1: -1, x2: 0, y2: 4, c: '#868e96', dash: true }, { x1: 3, y1: 2, x2: -2, y2: 1, c: '#868e96', dash: true }], aria: 'les diagonales d\'un parallélogramme ont le même milieu' }))}
+${warn(['L\'ordre des lettres compte : dans ABCD, A est relié à B et à D ; D est le sommet <b>opposé</b> à B.', `${V('AB')} = ${V('DC')} (et non ${V('CD')}) : les flèches vont dans le même sens.`, 'Fais la vérification des milieux : elle détecte presque toutes les erreurs.'])}
+${retenir(`ABCD parallélogramme ⇔ ${V('AB')} = ${V('DC')} ⇔ [AC] et [BD] ont le même milieu.`)}`;
 }
 
 /* =====================================================================
@@ -618,11 +667,16 @@ function L10(d) {
 }
 function C10() {
   return `<h2>10. Équation cartésienne d'une droite</h2>
-<div class="def">Un <b>vecteur directeur</b> d'une droite d est un vecteur ${V('u')} non nul qui a sa direction (par exemple ${V('AB')} si A et B sont sur d).<br>Toute droite a une équation <b>ax + by + c = 0</b> (a et b non tous deux nuls), et <b>${V('u')}(−b ; a)</b> est un vecteur directeur.<br>Méthode : M(x ; y) ∈ d ⇔ ${V('AM')} et ${V('u')} colinéaires ⇔ det(${V('AM')}, ${V('u')}) = 0.</div>
-${ex(`d passe par A(1 ; 2), de vecteur directeur ${V('u')}(3 ; 1) :<br>(x − 1) × 1 − (y − 2) × 3 = 0 ⇔ x − 1 − 3y + 6 = 0 ⇔ <b>x − 3y + 5 = 0</b>.`)}
-${ex(`Pour 2x + 5y − 1 = 0 : a = 2, b = 5, donc ${V('u')}(−5 ; 2) est un vecteur directeur.`)}
-<div class="warn">⚠️ Une droite a <b>plusieurs</b> équations cartésiennes : 2x − 6y + 10 = 0 décrit la même droite que x − 3y + 5 = 0.<br>⚠️ (a ; b) n'est pas un vecteur directeur : c'est <b>(−b ; a)</b>.</div>
-${grille({ xr: [-5, 5], yr: [-1, 4], pts: [{ x: 1, y: 2, l: 'A', pos: 'nw' }], vecs: [{ x: 1, y: 2, dx: 3, dy: 1, l: '{u}', c: C.u }], lines: [{ a: 1, b: -3, c: 5, l: 'd : x − 3y + 5 = 0', at: 0.3, side: -1 }] })}`;
+<p class="intro">Une équation de droite est un « test » : un point est sur la droite exactement quand ses coordonnées vérifient l'équation.</p>
+<div class="def">Un <b>vecteur directeur</b> d'une droite d est un vecteur ${V('u')} non nul qui a sa direction (par exemple ${V('AB')} si A et B sont sur d).<br>Toute droite a une équation <b>ax + by + c = 0</b> (a et b non tous deux nuls), et <b>${V('u')}(−b ; a)</b> est un vecteur directeur.</div>
+${meth([`Trouve un point A de d et un vecteur directeur ${V('u')} (avec deux points : ${V('u')} = ${V('AB')}).`, `Pour un point M(x ; y) : M ∈ d ⇔ ${V('AM')}(x − ${xs('A')} ; y − ${ys('A')}) et ${V('u')} colinéaires ⇔ det(${V('AM')}, ${V('u')}) = 0.`, 'Développe et range sous la forme ax + by + c = 0. Si un terme manque, son coefficient vaut 0.', 'Dans l\'autre sens : de ax + by + c = 0, on lit le vecteur directeur <b>(−b ; a)</b>.'])}
+${exq(1, 'un point et un vecteur directeur', `d passe par A(1 ; 2), de vecteur directeur ${V('u')}(3 ; 1) :<br>(x − 1) × 1 − (y − 2) × 3 = 0 ⇔ x − 1 − 3y + 6 = 0 ⇔ <b>x − 3y + 5 = 0</b>.`)}
+${exq(2, 'deux points', `A(−1 ; 0) et B(1 ; 4) : ${V('AB')}(2 ; 4).<br>(x + 1) × 4 − (y − 0) × 2 = 0 ⇔ <b>4x − 2y + 4 = 0</b> (ou, en divisant par 2, 2x − y + 2 = 0).`)}
+${exq(3, 'lire un vecteur directeur', `Pour 2x + 5y − 1 = 0 : a = 2, b = 5, donc ${V('u')}(−5 ; 2).<br>Pour 3y − 6 = 0 : a = 0, b = 3, donc ${V('u')}(−3 ; 0) : la droite est horizontale.`)}
+${cols(grille({ xr: [-5, 5], yr: [-1, 4], pts: [{ x: 1, y: 2, l: 'A', pos: 'nw' }], vecs: [{ x: 1, y: 2, dx: 3, dy: 1, l: '{u}', c: C.u }], lines: [{ a: 1, b: -3, c: 5, l: 'd : x − 3y + 5 = 0', at: 0.3, side: -1 }], aria: 'droite passant par A de vecteur directeur u' }),
+    grille({ xr: [-3, 3], yr: [-1, 5], pts: [{ x: -1, y: 0, l: 'A', pos: 'se' }, { x: 1, y: 4, l: 'B', pos: 'se' }], vecs: [{ x: -1, y: 0, dx: 2, dy: 4, l: '{AB}', c: C.u, at: 0.3 }], lines: [{ a: 2, b: -1, c: 2, l: 'd : 2x − y + 2 = 0' }], aria: 'droite (AB)' }))}
+${warn(['Une droite a <b>plusieurs</b> équations cartésiennes : 2x − 6y + 10 = 0 décrit la même droite que x − 3y + 5 = 0.', '(a ; b) n\'est pas un vecteur directeur : c\'est <b>(−b ; a)</b>.', 'Pour c, vérifie en remplaçant x et y par les coordonnées de A : on doit trouver 0.'])}
+${retenir(`ax + by + c = 0 a pour vecteur directeur (−b ; a) ; on l'obtient avec det(${V('AM')}, ${V('u')}) = 0.`)}`;
 }
 
 /* =====================================================================
@@ -686,11 +740,16 @@ function L11(d) {
 }
 function C11() {
   return `<h2>11. Équation réduite</h2>
-<div class="def">Une droite <b>non verticale</b> a une équation réduite <b>y = mx + p</b> : m est le <b>coefficient directeur</b> (la pente), p l'<b>ordonnée à l'origine</b>.<br>Si A et B sont sur la droite : <b>m = (${ys('B')} − ${ys('A')}) ÷ (${xs('B')} − ${xs('A')})</b>. Puis p avec ${ys('A')} = m${xs('A')} + p.<br>Une droite verticale a une équation x = k.</div>
-${ex(`A(1 ; 1) et B(3 ; 5) : m = (5 − 1) ÷ (3 − 1) = 2 ; 1 = 2 × 1 + p donc p = −1 : <b>y = 2x − 1</b>.`)}
-${ex('De 2x + 4y − 8 = 0 : 4y = −2x + 8, donc y = −0,5x + 2.')}
-<div class="warn">⚠️ m = variation de y ÷ variation de x (et pas l'inverse), dans le même ordre en haut et en bas.<br>⚠️ Pour passer de ax + by + c = 0 à y = mx + p, il faut <b>diviser par b</b>.</div>
-${grille({ xr: [-2, 5], yr: [-2, 6], pts: [{ x: 1, y: 1, l: 'A', pos: 'nw' }, { x: 3, y: 5, l: 'B', pos: 'nw' }], lines: [{ a: 2, b: -1, c: -1, l: 'y = 2x − 1', at: 0.82, side: -1 }], steps: [{ x: 1, y: 1, dx: 2, dy: 4 }] })}`;
+<p class="intro">L'équation réduite y = mx + p se lit directement : m dit si la droite monte ou descend, p dit où elle coupe l'axe des ordonnées.</p>
+<div class="def">Une droite <b>non verticale</b> a une équation réduite <b>y = mx + p</b> : m est le <b>coefficient directeur</b> (la pente), p l'<b>ordonnée à l'origine</b>.<br>Si A et B sont sur la droite : <b>m = (${ys('B')} − ${ys('A')}) ÷ (${xs('B')} − ${xs('A')})</b>.<br>Une droite verticale a une équation x = k (pas d'équation réduite y = …).</div>
+${meth([`Calcule m = (${ys('B')} − ${ys('A')}) ÷ (${xs('B')} − ${xs('A')}) : variation de y en haut, variation de x en bas, dans le même ordre.`, `Trouve p en écrivant que A est sur la droite : ${ys('A')} = m × ${xs('A')} + p.`, 'Depuis ax + by + c = 0 : laisse by d\'un côté, passe le reste de l\'autre (en changeant les signes), puis <b>divise par b</b>.'])}
+${exq(1, 'avec deux points', `A(1 ; 1) et B(3 ; 5) : m = (5 − 1) ÷ (3 − 1) = 4 ÷ 2 = 2.<br>1 = 2 × 1 + p donc p = −1 : <b>y = 2x − 1</b>.`)}
+${exq(2, 'une pente décimale', 'A(−2 ; 3) et B(2 ; 1) : m = (1 − 3) ÷ (2 − (−2)) = −2 ÷ 4 = −0,5.<br>3 = −0,5 × (−2) + p = 1 + p, donc p = 2 : <b>y = −0,5x + 2</b>.')}
+${exq(3, 'depuis une équation cartésienne', '2x + 4y − 8 = 0 ⇔ 4y = −2x + 8 ⇔ y = (−2x + 8) ÷ 4 ⇔ <b>y = −0,5x + 2</b>.<br>C\'est la même droite qu\'à l\'exemple 2 !')}
+${cols(grille({ xr: [-2, 5], yr: [-2, 6], pts: [{ x: 1, y: 1, l: 'A', pos: 'nw' }, { x: 3, y: 5, l: 'B', pos: 'nw' }], lines: [{ a: 2, b: -1, c: -1, l: 'y = 2x − 1', at: 0.82, side: -1 }], steps: [{ x: 1, y: 1, dx: 2, dy: 4 }], aria: 'droite y = 2x − 1 : on avance de 2, on monte de 4' }),
+    grille({ xr: [-3, 5], yr: [-1, 4], pts: [{ x: -2, y: 3, l: 'A', pos: 'sw' }, { x: 2, y: 1, l: 'B', pos: 'sw' }, { x: 0, y: 2, l: 'p = 2', c: C.s, pos: 'ne' }], lines: [{ a: 1, b: 2, c: -4, l: 'y = −0,5x + 2', at: 0.88 }], steps: [{ x: 2, y: 1, dx: 2, dy: -1 }], aria: 'droite y = −0,5x + 2 : pente négative, ordonnée à l\'origine 2' }))}
+${warn(['m = variation de y ÷ variation de x (et pas l\'inverse), dans le même ordre en haut et en bas.', 'Pour passer de ax + by + c = 0 à y = mx + p, il faut <b>diviser par b</b> (et garder les bons signes).', 'm &gt; 0 : la droite monte ; m &lt; 0 : elle descend. Contrôle sur la figure !'])}
+${retenir('y = mx + p : m = (y<sub>B</sub> − y<sub>A</sub>) ÷ (x<sub>B</sub> − x<sub>A</sub>), puis p avec les coordonnées d\'un point.')}`;
 }
 
 /* =====================================================================
@@ -769,11 +828,16 @@ function L12(d) {
 }
 function C12() {
   return `<h2>12. Droites parallèles ou sécantes</h2>
-<div class="def">Deux droites sont <b>parallèles</b> quand leurs vecteurs directeurs sont <b>colinéaires</b> (déterminant nul) ; avec des équations réduites : même coefficient directeur m.<br>Sinon, elles sont <b>sécantes</b> : leur point d'intersection est la solution du <b>système</b> formé par les deux équations.<br>Deux droites parallèles sont soit <b>strictement parallèles</b>, soit <b>confondues</b>.</div>
-${ex('d<sub>1</sub> : y = 2x − 1 et d<sub>2</sub> : y = −x + 5.<br>2x − 1 = −x + 5 ⇔ 3x = 6 ⇔ x = 2, puis y = 2 × 2 − 1 = 3 : <b>I(2 ; 3)</b>.')}
-${ex('d<sub>1</sub> : 2x − y − 1 = 0 et d<sub>3</sub> : 4x − 2y − 3 = 0 : vecteurs directeurs (1 ; 2) et (2 ; 4), colinéaires ; mais les équations ne sont pas proportionnelles : <b>strictement parallèles</b>.')}
-<div class="warn">⚠️ Une fois x trouvé, ne pas oublier de calculer y !<br>⚠️ Vérifier en remplaçant : I doit vérifier les <b>deux</b> équations.</div>
-${grille({ xr: [-2, 5], yr: [-2, 6], lines: [{ a: 2, b: -1, c: -1, col: C.u, l: 'd₁', at: 0.85 }, { a: 1, b: 1, c: -5, col: C.v, l: 'd₂', at: 0.15 }, { a: 4, b: -2, c: -3, col: '#868e96', l: 'd₃', at: 0.7, dash: true }], pts: [{ x: 2, y: 3, l: 'I(2 ; 3)', c: C.s, pos: 'e' }] })}`;
+<p class="intro">Deux droites du plan sont soit parallèles, soit sécantes. Les vecteurs directeurs le disent ; un système d'équations donne le point commun.</p>
+<div class="def">Deux droites sont <b>parallèles</b> quand leurs vecteurs directeurs sont <b>colinéaires</b> (déterminant nul) ; avec des équations réduites : même coefficient directeur m.<br>Sinon, elles sont <b>sécantes</b> : leur point d'intersection est la solution du <b>système</b> formé par les deux équations.<br>Deux droites parallèles sont soit <b>strictement parallèles</b>, soit <b>confondues</b> (équations proportionnelles).</div>
+${meth(['Parallèles ou sécantes ? Prends les vecteurs directeurs (−b ; a) et calcule leur déterminant : nul ⇔ parallèles.', 'Parallèles : si un point de d<sub>1</sub> est aussi sur d<sub>2</sub>, elles sont confondues ; sinon, strictement parallèles.', 'Sécantes, avec y = mx + p : écris m<sub>1</sub>x + p<sub>1</sub> = m<sub>2</sub>x + p<sub>2</sub>, trouve x, puis y.', 'Sécantes, avec ax + by + c = 0 : isole une inconnue dans une équation et remplace-la dans l\'autre (substitution), ou combine les équations.', 'Vérifie : le point trouvé doit vérifier les <b>deux</b> équations.'])}
+${exq(1, 'équations réduites', 'd<sub>1</sub> : y = 2x − 1 et d<sub>2</sub> : y = −x + 5.<br>2x − 1 = −x + 5 ⇔ 3x = 6 ⇔ x = 2, puis y = 2 × 2 − 1 = 3 : <b>I(2 ; 3)</b>.')}
+${exq(2, 'un système', 'd<sub>1</sub> : 2x + y − 4 = 0 et d<sub>2</sub> : x − y + 1 = 0.<br>De d<sub>2</sub> : y = x + 1. Dans d<sub>1</sub> : 2x + (x + 1) − 4 = 0 ⇔ 3x = 3 ⇔ x = 1, puis y = 1 + 1 = 2 : <b>I(1&nbsp;;&nbsp;2)</b>.<br>Vérification : 2 × 1 + 2 − 4 = 0 et 1 − 2 + 1 = 0.')}
+${exq(3, 'parallèles', 'd<sub>1</sub> : 2x − y − 1 = 0 et d<sub>3</sub> : 4x − 2y − 3 = 0 : vecteurs directeurs (1 ; 2) et (2 ; 4), det = 1 × 4 − 2 × 2 = 0 : parallèles. Les équations ne sont pas proportionnelles (−1 × 2 ≠ −3) : <b>strictement parallèles</b>.<br>Avec 4x − 2y − 2 = 0 (2 fois d<sub>1</sub>), elles seraient <b>confondues</b>.')}
+${cols(grille({ xr: [-2, 5], yr: [-2, 6], lines: [{ a: 2, b: -1, c: -1, col: C.u, l: 'd₁', at: 0.85 }, { a: 1, b: 1, c: -5, col: C.v, l: 'd₂', at: 0.15 }, { a: 4, b: -2, c: -3, col: '#868e96', l: 'd₃', at: 0.7, dash: true }], pts: [{ x: 2, y: 3, l: 'I(2 ; 3)', c: C.s, pos: 'e' }], aria: 'd1 et d2 sécantes en I, d1 et d3 parallèles' }),
+    grille({ xr: [-2, 4], yr: [-2, 5], lines: [{ a: 2, b: 1, c: -4, col: C.u, l: 'd₁', at: 0.2 }, { a: 1, b: -1, c: 1, col: C.v, l: 'd₂', at: 0.85 }], pts: [{ x: 1, y: 2, l: 'I(1 ; 2)', c: C.s, pos: 'e' }], aria: 'intersection de deux droites par un système' }))}
+${warn(['Une fois x trouvé, ne pas oublier de calculer y !', 'Ne pas inverser x et y dans la réponse.', 'Même direction ne veut pas dire même droite : teste un point pour savoir si elles sont confondues.'])}
+${retenir('parallèles ⇔ vecteurs directeurs colinéaires ; sinon, le point d\'intersection est la solution du système.')}`;
 }
 
 /* ================= niveaux ================= */

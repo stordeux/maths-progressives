@@ -107,6 +107,30 @@ export function gauss(n) {
 }
 
 /**
+ * Somme géométrique 1 + 2 + 4 + … + 2ⁿ en bandes : chaque bande est aussi longue que toutes les précédentes
+ * plus 1 ; avec la case grise « + 1 », la barre a la longueur 2ⁿ⁺¹ (cours du niveau 11).
+ */
+export function somme2(n) {
+  const tot = 2 ** (n + 1), L = 14, W = 440, pw = W - 2 * L, k = pw / tot, T = 30, h = 34, H = T + h + 62;
+  const cols = ['#a5d8ff', '#ffd8a8', '#b2f2bb', '#eebefa', '#ffec99', '#99e9f2'];
+  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis" style="width:100%;max-width:${W}px" role="img" aria-label="1 + 2 + 4 + … + 2 puissance n égale 2 puissance n+1 moins 1" font-family="system-ui,sans-serif">`;
+  let x = L;
+  // case grise : le « + 1 » qui complète
+  s += `<rect x="${r1(x)}" y="${T}" width="${r1(k)}" height="${h}" fill="#dee2e6" stroke="#868e96" stroke-dasharray="3 2"/>`;
+  x += k;
+  for (let j = 0; j <= n; j++) {
+    const w = 2 ** j * k;
+    s += `<rect x="${r1(x)}" y="${T}" width="${r1(w)}" height="${h}" fill="${cols[j % cols.length]}" stroke="#495057"/>`;
+    if (w >= 12) s += `<text x="${r1(x + w / 2)}" y="${T + h / 2 + 6}" font-size="15" font-weight="700" text-anchor="middle" fill="#212529">${M(2 ** j)}</text>`;
+    x += w;
+  }
+  s += `<text x="${L}" y="${T - 10}" font-size="15" fill="#495057">case grise : + 1</text>`
+    + `<path d="M${L},${T + h + 10}v8H${L + pw}v-8" fill="none" stroke="#c2255c" stroke-width="2"/>`
+    + `<text x="${L + pw / 2}" y="${T + h + 40}" font-size="16" font-weight="700" text-anchor="middle" fill="#c2255c">1 + (1 + 2 + … + ${M(2 ** n)}) = ${M(tot)} = 2<tspan baseline-shift="super" font-size="70%">${n + 1}</tspan></text>`;
+  return s + '</svg>';
+}
+
+/**
  * Escalier de récurrence pour uₙ₊₁ = f(uₙ) : courbe y = f(x), droite y = x, et le chemin
  * u₀ → (u₀ ; u₁) → (u₁ ; u₁) → (u₁ ; u₂) … ; les termes sont repérés sur l'axe des abscisses.
  * o = { f, u0, k (nombre de pas), fl (étiquette de la courbe), s (indice du premier terme, 0 par défaut) }
