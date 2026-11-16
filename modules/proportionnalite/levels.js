@@ -75,7 +75,7 @@ ${graph({ xr: [0, 10], xs: 1, yr: [0, 16], ys: 2, xt: 'nombre de croissants', yt
 <div class="methode"><b>Méthode</b><ol>
 <li>Pour chaque colonne, divise le nombre du bas par celui du haut.</li>
 <li>Si tu trouves <b>toujours le même quotient</b>, c'est proportionnel : ce quotient est le coefficient.</li>
-<li>Si un seul quotient est différent, ce n'est <b>pas</b> proportionnel.</li></ol></div>
+<li>Si au moins un quotient est différent des autres, ce n'est <b>pas</b> proportionnel.</li></ol></div>
 <div class="ex"><span class="q">Exemple 1 : des croissants à 1,50 € pièce.</span>${tab(['Nombre de croissants', 'Prix (€)'], [2, 4, 10], [3, 6, 15], { coef: '× 1,5' })}3 ÷ 2 = 1,5 ; 6 ÷ 4 = 1,5 ; 15 ÷ 10 = 1,5 : toujours 1,5, c'est proportionnel.</div>
 <div class="ex"><span class="q">Exemple 2 : trois tableaux qui ne sont pas proportionnels.</span>${tab(['Âge de Léa', 'Âge de son frère'], [1, 2, 3], [4, 5, 6])}• On ajoute toujours 3, mais 4 ÷ 1 = 4 et 5 ÷ 2 = 2,5.<br>• 2 → 6, 5 → 15, 8 → 25 : 6 ÷ 2 = 3 et 15 ÷ 5 = 3, mais 25 ÷ 8 = 3,125. Une seule colonne suffit à tout casser.<br>• 1 → 5, 2 → 8, 3 → 11 (on multiplie par 3 puis on ajoute 2) : 5 ÷ 1 = 5 et 8 ÷ 2 = 4.</div>
 <div class="warn">⚠️ <b>Ajouter n'est pas multiplier</b> : ajouter toujours le même nombre ne donne pas un tableau de proportionnalité.<br>⚠️ Il faut vérifier <b>toutes</b> les colonnes, pas seulement la première.</div>
