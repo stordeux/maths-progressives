@@ -114,13 +114,19 @@ function L1(d) {
     html: `<b>${D.titre}</b><br>${html}`, visual, afterVisual: drawBars(D, { hl }), replaceVisual: true,
     verify: E => approx(ask(parseBars(visual)), E[0]), hint, solution: sol };
 }
+/** fenêtre Cours : affiche une figure plus petite (largeur en pixels) */
+const petit = (svg, w) => svg.replace(/style="width:[\d.]+px"/, `style="width:${w}px;max-width:min(${w}px, 100%)"`);
 function C1() {
   return `<h2>1. Lire un diagramme en barres</h2>
+<p class="intro">Un diagramme en barres permet de voir d'un coup d'œil les résultats d'une enquête. Encore faut-il le lire avec précision.</p>
 <div class="def">Dans un <b>diagramme en barres</b>, chaque barre correspond à une valeur (ou une catégorie). Sa <b>hauteur</b> donne l'<b>effectif</b> : le nombre d'individus qui ont cette valeur.</div>
-${barChart({ cats: ['Foot', 'Basket', 'Danse', 'Judo'], vals: [7, 4, 6, 3], grid: 1, lab: 1, hl: [0] })}
-<div class="ex">La barre «&nbsp;Foot&nbsp;» monte jusqu'à 7 : <b>7 élèves</b> préfèrent le foot. Le foot a 7 − 4 = 3 élèves de plus que le basket.</div>
-<div class="ex">«&nbsp;<b>Au moins</b> 2&nbsp;» veut dire 2, 3, 4… ; «&nbsp;<b>au plus</b> 2&nbsp;» veut dire 0, 1 ou 2.</div>
-<div class="warn">⚠️ Regarde ce que vaut <b>une graduation</b> de l'axe vertical : parfois elle vaut 2, et le haut d'une barre peut tomber entre deux lignes.</div>`;
+${barChart({ cats: ['Foot', 'Basket', 'Danse', 'Judo'], vals: [7, 4, 6, 3], grid: 1, lab: 1, hl: [0, 1], width: 400 })}
+<div class="methode"><b>Méthode</b><ol><li>Lis le titre et ce qui est écrit sous les barres.</li><li>Regarde ce que vaut <b>une graduation</b> de l'axe vertical (1, 2, 5…).</li><li>Pars du haut de la barre et suis l'horizontale jusqu'à l'axe : c'est l'effectif.</li><li>Fais le calcul demandé : « de plus que » → différence ; « A <b>ou</b> B » → somme ; « au moins », « au plus » → somme de plusieurs barres.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : combien d'élèves préfèrent le foot ? Combien de plus que le basket ?</span><br>La barre « Foot » monte jusqu'à 7 : <b>7 élèves</b>. Le basket en a 4 : 7 − 4 = <b>3 élèves de plus</b>.</div>
+${barChart({ cats: ['0', '1', '2', '3'], vals: [3, 6, 5, 2], grid: 1, lab: 1, xTitle: 'nombre de frères et sœurs', hl: [2, 3], width: 400 })}
+<div class="ex"><span class="q">Exemple 2 : combien d'élèves ont <b>au moins</b> 2 frères et sœurs ?</span><br>« Au moins 2 », c'est 2 <b>ou plus</b> : barres 2 et 3. 5 + 2 = <b>7 élèves</b>.<br>« Au plus 1 », ce serait les barres 0 et 1 : 3 + 6 = 9 élèves.</div>
+<div class="warn">⚠️ Regarde ce que vaut <b>une graduation</b> : parfois elle vaut 2, et le haut d'une barre peut tomber entre deux lignes.<br>⚠️ « Au moins 2 » contient 2 ; « au plus 2 » aussi.<br>⚠️ Ne confonds pas la valeur (en bas) et l'effectif (la hauteur).</div>
+<div class="retenir">À retenir : la hauteur d'une barre est l'effectif de la valeur écrite dessous.</div>`;
 }
 
 /* ===================================================================== 2. effectif total, fréquence */
@@ -166,12 +172,14 @@ function L2(d) {
 }
 function C2() {
   return `<h2>2. Effectif total et fréquence</h2>
+<p class="intro">Pour comparer des groupes de tailles différentes, on ne compare pas les effectifs mais les <b>fréquences</b> : la part de chaque valeur dans le total.</p>
 <div class="def">L'<b>effectif total</b> est la somme de tous les effectifs.<br>La <b>fréquence</b> d'une valeur = ${F('effectif de la valeur', 'effectif total')}. On peut l'écrire en fraction, en décimal ou en pourcentage.</div>
-${dataTable('Couleur des yeux', ['bleus', 'verts', 'marron'], 'Effectif', [5, 3, 12])}
-<div class="ex">Effectif total : 5 + 3 + 12 = 20. Fréquence des yeux bleus : ${F(5, 20)} = ${F(1, 4)} = 0,25 = <b>25 %</b>.</div>
-${barChart({ cats: ['bleus', 'verts', 'marron'], vals: [5, 3, 12], grid: 1, lab: 2, hl: [0], width: 340 })}
-<div class="warn">⚠️ On divise par l'<b>effectif total</b> (20), pas par le nombre de valeurs (3) ni par un autre effectif.</div>
-<div class="warn">⚠️ Une fréquence est toujours entre 0 et 1 (entre 0 % et 100 %). La somme de toutes les fréquences vaut 1 (100 %).</div>`;
+<div class="cols">${dataTable('Couleur des yeux', ['bleus', 'verts', 'marron'], 'Effectif', [5, 3, 12])}${barChart({ cats: ['bleus', 'verts', 'marron'], vals: [5, 3, 12], grid: 1, lab: 2, hl: [0], width: 300 })}</div>
+<div class="methode"><b>Méthode</b><ol><li>Effectif total : additionne <b>tous</b> les effectifs (toutes les barres, toute la ligne du tableau).</li><li>Fréquence : effectif de la valeur ÷ effectif total (en fraction, simplifie si tu peux).</li><li>En pourcentage : calcule la fréquence en décimal, puis multiplie par 100.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : effectif total et fréquence des yeux bleus.</span><br>Effectif total : 5 + 3 + 12 = 20.<br>Fréquence des yeux bleus : ${F(5, 20)} = ${F(1, 4)} = 0,25 = <b>25 %</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : 7 élèves sur 25 ont eu la note 3. Fréquence en pourcentage ?</span><br>${F(7, 25)} = 7 ÷ 25 = 0,28, soit <b>28 %</b>.</div>
+<div class="warn">⚠️ On divise par l'<b>effectif total</b> (20), pas par le nombre de valeurs (3) ni par un autre effectif.<br>⚠️ Une fréquence est toujours entre 0 et 1 (entre 0 % et 100 %). La somme de toutes les fréquences vaut 1 (100 %).<br>⚠️ L'effectif (5) n'est pas la fréquence : il faut diviser.</div>
+<div class="retenir">À retenir : fréquence = effectif ÷ effectif total.</div>`;
 }
 
 /* ===================================================================== 3. moyenne d'une liste */
@@ -193,12 +201,15 @@ function L3(d) {
 }
 function C3() {
   return `<h2>3. Moyenne d'une série</h2>
+<p class="intro">La moyenne résume une série par un seul nombre : la valeur qu'aurait chaque donnée si on les rendait toutes égales.</p>
 <div class="def">Moyenne = ${F('somme de toutes les valeurs', 'nombre de valeurs')}</div>
-<div class="ex">Notes : 12 ; 9 ; 15 ; 14. Somme : 12 + 9 + 15 + 14 = 50. Il y a 4 notes : 50 ÷ 4 = <b>12,5</b>.</div>
 ${barChart({ cats: ['n°1', 'n°2', 'n°3', 'n°4'], vals: [12, 9, 15, 14], grid: 2, lab: 4, yTitle: 'notes', meanLine: 12.5, width: 360 })}
-<p>La moyenne, c'est la hauteur commune qu'auraient les barres si on «&nbsp;égalisait&nbsp;» : ce qui dépasse comble les creux.</p>
-<div class="warn">⚠️ N'oublie pas de <b>diviser</b> : la somme (50) n'est pas la moyenne. Et compte bien le nombre de valeurs.</div>
-<div class="warn">⚠️ La moyenne est toujours entre la plus petite et la plus grande valeur : sinon, il y a une erreur.</div>`;
+<p>La moyenne, c'est la hauteur commune qu'auraient les barres si on « égalisait » : ce qui dépasse comble les creux.</p>
+<div class="methode"><b>Méthode</b><ol><li>Additionne toutes les valeurs.</li><li>Compte combien il y a de valeurs.</li><li>Divise la somme par ce nombre.</li><li>Contrôle : la moyenne est entre la plus petite et la plus grande valeur.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : notes 12 ; 9 ; 15 ; 14.</span><br>Somme : 12 + 9 + 15 + 14 = 50. Il y a 4 notes : 50 ÷ 4 = <b>12,5</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : temps de trajet 8 ; 11 ; 9 ; 14 ; 12 (en minutes).</span><br>Somme : 54. Il y a 5 valeurs : 54 ÷ 5 = <b>10,8 min</b>.<br>Contrôle : 10,8 est bien entre 8 et 14.</div>
+<div class="warn">⚠️ N'oublie pas de <b>diviser</b> : la somme (50) n'est pas la moyenne.<br>⚠️ Compte bien le nombre de valeurs : une de trop ou de moins fausse tout.<br>⚠️ La moyenne est toujours entre la plus petite et la plus grande valeur : sinon, il y a une erreur.</div>
+<div class="retenir">À retenir : moyenne = somme des valeurs ÷ nombre de valeurs.</div>`;
 }
 
 /* ===================================================================== 4. moyenne pondérée */
@@ -226,12 +237,14 @@ function L4(d) {
 }
 function C4() {
   return `<h2>4. Moyenne pondérée (tableau d'effectifs)</h2>
+<p class="intro">Quand une valeur apparaît plusieurs fois, on ne la réécrit pas : on utilise un tableau d'effectifs, et chaque valeur « pèse » selon son effectif.</p>
 <div class="def">Quand les données sont dans un tableau d'effectifs :<br>Moyenne = ${F('somme des (valeur × effectif)', 'effectif total')}</div>
-${dataTable('Note', [10, 12, 16], 'Effectif', [2, 5, 3])}
-<div class="ex">Somme : 10 × 2 + 12 × 5 + 16 × 3 = 20 + 60 + 48 = 128. Effectif total : 2 + 5 + 3 = 10.<br>Moyenne : 128 ÷ 10 = <b>12,8</b>.</div>
-${barChart({ cats: ['10', '12', '16'], vals: [2, 5, 3], grid: 1, lab: 1, xTitle: 'note', width: 340 })}
-<div class="warn">⚠️ Moyenne non pondérée : (10 + 12 + 16) ÷ 3 ≈ 12,7 est <b>faux</b>, car 5 élèves ont 12 et seulement 2 ont 10. Chaque valeur compte autant de fois que son effectif.</div>
-<div class="warn">⚠️ On divise par l'effectif total (10), pas par le nombre de colonnes (3).</div>`;
+<div class="cols">${dataTable('Note', [10, 12, 16], 'Effectif', [2, 5, 3])}${barChart({ cats: ['10', '12', '16'], vals: [2, 5, 3], grid: 1, lab: 1, xTitle: 'note', width: 300 })}</div>
+<div class="methode"><b>Méthode</b><ol><li>Multiplie chaque valeur par son effectif.</li><li>Additionne ces produits.</li><li>Calcule l'effectif total (somme des effectifs).</li><li>Divise la somme des produits par l'effectif total.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : le tableau des notes ci-dessus.</span><br>Somme : 10 × 2 + 12 × 5 + 16 × 3 = 20 + 60 + 48 = 128. Effectif total : 2 + 5 + 3 = 10.<br>Moyenne : 128 ÷ 10 = <b>12,8</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : pointures 36 (3 élèves), 37 (5 élèves), 38 (2 élèves).</span><br>36 × 3 + 37 × 5 + 38 × 2 = 108 + 185 + 76 = 369 ; effectif total 10.<br>Moyenne : 369 ÷ 10 = <b>36,9</b>.</div>
+<div class="warn">⚠️ Moyenne non pondérée : (10 + 12 + 16) ÷ 3 ≈ 12,7 est <b>faux</b>, car 5 élèves ont 12 et seulement 2 ont 10. Chaque valeur compte autant de fois que son effectif.<br>⚠️ On divise par l'effectif total (10), pas par le nombre de colonnes (3).</div>
+<div class="retenir">À retenir : moyenne pondérée = somme des (valeur × effectif) ÷ effectif total.</div>`;
 }
 
 /* ===================================================================== 5. médiane, nombre impair */
@@ -259,12 +272,15 @@ function L5(d) {
 }
 function C5() {
   return `<h2>5. Médiane (nombre impair de valeurs)</h2>
+<p class="intro">La médiane coupe la série en deux moitiés : autant de valeurs en dessous qu'au-dessus. Contrairement à la moyenne, une valeur extrême ne la fait pas bouger.</p>
 <div class="def">La <b>médiane</b> partage la série <b>rangée dans l'ordre croissant</b> en deux groupes de même effectif : au moins la moitié des valeurs sont inférieures ou égales à la médiane, au moins la moitié sont supérieures ou égales.</div>
-<div class="ex">Série : 14 ; 8 ; 11 ; 17 ; 9. On range : 8 ; 9 ; <b>11</b> ; 14 ; 17. Il y a 5 valeurs : la médiane est la 3<sup>e</sup>, <b>11</b>.</div>
-${tiles([8, 9, 11, 14, 17], { hl: [2], label: 'rangée' })}
-<div class="ex">Avec n valeurs (n impair), la médiane est la valeur de rang ${F('n + 1', 2)}. Pour 7 valeurs : la 4<sup>e</sup>.</div>
-<div class="warn">⚠️ Erreur classique : prendre la valeur du milieu <b>sans trier</b>. Dans 14 ; 8 ; 11 ; 17 ; 9, la valeur du milieu est 11 par hasard… mais dans 14 ; 8 ; 17 ; 11 ; 9 ce serait 17 : faux !</div>
-<div class="warn">⚠️ La médiane n'est pas la moyenne (ici la moyenne vaut 11,8).</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Range les valeurs dans l'ordre croissant (garde les valeurs répétées).</li><li>Compte le nombre n de valeurs.</li><li>n impair : la médiane est la valeur de rang ${F('n + 1', 2)}.</li><li>Vérifie : autant de valeurs avant qu'après.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : 14 ; 8 ; 11 ; 17 ; 9.</span><br>On range : 8 ; 9 ; <b>11</b> ; 14 ; 17. Il y a 5 valeurs : la médiane est la 3<sup>e</sup>, <b>11</b>.</div>
+${tiles([8, 9, 11, 14, 17], { hl: [2], label: 'rangée : 2 valeurs avant, 2 après' })}
+<div class="ex"><span class="q">Exemple 2 (valeurs répétées) : 12 ; 5 ; 9 ; 12 ; 7 ; 15 ; 9.</span><br>Rangée : 5 ; 7 ; 9 ; <b>9</b> ; 12 ; 12 ; 15. 7 valeurs : la médiane est la ${F('7 + 1', 2)} = 4<sup>e</sup>, soit <b>9</b>.</div>
+${tiles([5, 7, 9, 9, 12, 12, 15], { hl: [3], label: 'rangée : 3 valeurs avant, 3 après' })}
+<div class="warn">⚠️ Erreur classique : prendre la valeur du milieu <b>sans trier</b>. Dans 14 ; 8 ; 17 ; 11 ; 9, la valeur du milieu est 17 : faux !<br>⚠️ Les valeurs répétées comptent chacune : on ne les supprime pas.<br>⚠️ La médiane n'est pas la moyenne (dans l'exemple 1, la moyenne vaut 11,8).</div>
+<div class="retenir">À retenir : on range d'abord ; avec n impair, la médiane est la valeur de rang (n + 1) ÷ 2.</div>`;
 }
 
 /* ===================================================================== 6. médiane, nombre pair */
@@ -294,12 +310,14 @@ function L6(d) {
 }
 function C6() {
   return `<h2>6. Médiane (nombre pair de valeurs)</h2>
+<p class="intro">Avec un nombre pair de valeurs, il n'y a pas une valeur pile au milieu : on prend le milieu des deux valeurs centrales.</p>
 <div class="def">Avec un nombre <b>pair</b> de valeurs, il y a <b>deux</b> valeurs au milieu. La médiane est la moyenne de ces deux valeurs (elle est à mi-chemin).</div>
-<div class="ex">Série : 13 ; 7 ; 10 ; 15 ; 9 ; 12. Rangée : 7 ; 9 ; <b>10 ; 12</b> ; 13 ; 15. Médiane : (10 + 12) ÷ 2 = <b>11</b>.</div>
-${tiles([7, 9, 10, 12, 13, 15], { hl: [2, 3], label: 'rangée' })}
-<div class="ex">Avec un tableau d'effectifs (N = 20) : la médiane est entre la 10<sup>e</sup> et la 11<sup>e</sup> valeur. On les trouve avec les <b>effectifs cumulés</b>.</div>
-<div class="warn">⚠️ Toujours <b>ranger</b> les valeurs d'abord. Et ne pas prendre une seule des deux valeurs du milieu.</div>
-<div class="warn">⚠️ La médiane peut être un nombre qui n'est pas dans la série (11 ici).</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Range les valeurs dans l'ordre croissant.</li><li>n pair : repère les valeurs de rang ${F('n', 2)} et ${F('n', 2)} + 1.</li><li>Médiane = leur moyenne : (première + seconde) ÷ 2.</li><li>Avec un tableau d'effectifs : calcule les <b>effectifs cumulés</b> pour trouver ces deux rangs.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : 13 ; 7 ; 10 ; 15 ; 9 ; 12.</span><br>Rangée : 7 ; 9 ; <b>10 ; 12</b> ; 13 ; 15. 6 valeurs : 3<sup>e</sup> et 4<sup>e</sup>. Médiane : (10 + 12) ÷ 2 = <b>11</b>.</div>
+${tiles([7, 9, 10, 12, 13, 15], { hl: [2, 3], label: 'rangée : les deux valeurs du milieu' })}
+<div class="ex"><span class="q">Exemple 2 : un tableau d'effectifs (16 personnes).</span>${dataTable('Âge (ans)', [10, 11, 12, 13], 'Effectif', [3, 5, 4, 4])}Effectifs cumulés : 3 ; 8 ; 12 ; 16. On cherche la 8<sup>e</sup> et la 9<sup>e</sup> valeur.<br>La 8<sup>e</sup> est 11 (les rangs 4 à 8 valent 11), la 9<sup>e</sup> est 12. Médiane : (11 + 12) ÷ 2 = <b>11,5</b>.</div>
+<div class="warn">⚠️ Toujours <b>ranger</b> les valeurs d'abord. Et ne pas prendre une seule des deux valeurs du milieu.<br>⚠️ Dans un tableau, la colonne du milieu n'est pas forcément la médiane : utilise les effectifs cumulés.<br>⚠️ La médiane peut être un nombre qui n'est pas dans la série (11 ou 11,5 ici).</div>
+<div class="retenir">À retenir : n pair → médiane = moyenne des valeurs de rangs n ÷ 2 et n ÷ 2 + 1.</div>`;
 }
 
 /* ===================================================================== 7. étendue */
@@ -337,12 +355,16 @@ function L7(d) {
 }
 function C7() {
   return `<h2>7. Étendue</h2>
+<p class="intro">Deux séries peuvent avoir la même moyenne et être très différentes : l'étendue mesure si les valeurs sont serrées ou étalées.</p>
 <div class="def">L'<b>étendue</b> d'une série est la différence entre la plus grande et la plus petite valeur. Elle mesure la <b>dispersion</b> : plus elle est grande, plus les valeurs sont étalées.</div>
-<div class="ex">Températures : 3 ; −4 ; 7 ; 0 ; −2. Plus grande : 7 ; plus petite : −4. Étendue : 7 − (−4) = 7 + 4 = <b>11</b> °C.</div>
-${tiles([-4, -2, 0, 3, 7], { hl: [0, 4], label: 'rangées' })}
-<div class="ex">Sur un diagramme en barres, on lit les valeurs <b>en bas</b> : la plus petite et la plus grande qui ont une barre.</div>
-<div class="warn">⚠️ Soustraire un nombre négatif revient à ajouter son opposé : 7 − (−4) = 11, pas 3.</div>
-<div class="warn">⚠️ Une valeur d'effectif 0 ne fait pas partie de la série. Et on calcule sur les valeurs, pas sur les effectifs.</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Repère la plus grande valeur et la plus petite valeur (pas la première et la dernière de la liste).</li><li>Étendue = plus grande − plus petite.</li><li>Avec des nombres négatifs : soustraire un négatif, c'est ajouter son opposé.</li><li>Sur un diagramme en barres : lis les valeurs <b>en bas</b>, seulement celles qui ont une barre.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : distances 12 ; 35 ; 28 ; 17 ; 40 (en km).</span><br>Plus grande : 40 ; plus petite : 12. Étendue : 40 − 12 = <b>28 km</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : températures 3 ; −4 ; 7 ; 0 ; −2 (en °C).</span><br>Plus grande : 7 ; plus petite : −4. Étendue : 7 − (−4) = 7 + 4 = <b>11 °C</b>.</div>
+${tiles([-4, -2, 0, 3, 7], { hl: [0, 4], label: 'rangées : la plus petite et la plus grande' })}
+<div class="ex"><span class="q">Exemple 3 : nombre de jeux vidéo (diagramme ci-dessous).</span><br>Les valeurs 0 et 6 ont un effectif nul : elles ne sont pas dans la série. Plus petite valeur : 1 ; plus grande : 5. Étendue : 5 − 1 = <b>4</b>.</div>
+${barChart({ cats: ['0', '1', '2', '3', '4', '5', '6'], vals: [0, 2, 5, 3, 4, 1, 0], grid: 1, lab: 1, xTitle: 'nombre de jeux vidéo', hl: [1, 5], width: 400 })}
+<div class="warn">⚠️ Soustraire un nombre négatif revient à ajouter son opposé : 7 − (−4) = 11, pas 3.<br>⚠️ Une valeur d'effectif 0 ne fait pas partie de la série.<br>⚠️ On calcule sur les <b>valeurs</b>, pas sur les effectifs (hauteurs des barres).</div>
+<div class="retenir">À retenir : étendue = plus grande valeur − plus petite valeur.</div>`;
 }
 
 /* ===================================================================== 8. diagrammes circulaires et tableaux */
@@ -387,12 +409,15 @@ function L8(d) {
 }
 function C8() {
   return `<h2>8. Diagrammes circulaires et tableaux</h2>
+<p class="intro">Un diagramme circulaire montre la part de chaque catégorie dans le tout. Tout repose sur la proportionnalité entre effectifs et angles.</p>
 <div class="def">Dans un <b>diagramme circulaire</b>, les <b>angles</b> des secteurs sont proportionnels aux effectifs. Le disque entier (360°) représente l'effectif total (100 %).</div>
-${dataTable('Transport', ['Bus', 'Vélo', 'À pied'], 'Effectif', [15, 6, 9], 30)}
-<div class="ex">30 élèves ↔ 360°, donc 1 élève ↔ 360 ÷ 30 = 12°. Bus : 15 × 12 = <b>180°</b> ; vélo : 6 × 12 = 72° ; à pied : 9 × 12 = 108°.</div>
-${pieChart([{ l: 'Bus', v: 180, txt: '180°' }, { l: 'Vélo', v: 72, txt: '72°' }, { l: 'À pied', v: 108, txt: '108°' }], { width: 400 })}
-<div class="ex">Pourcentage : 72° sur 360°, c'est ${F(72, 360)} = ${F(1, 5)} = <b>20 %</b>. Repères : 90° = 25 %, 180° = 50 %, 36° = 10 %.</div>
-<div class="warn">⚠️ Ne confonds pas l'angle (en °), l'effectif (nombre d'individus) et le pourcentage. La somme des angles fait toujours 360°.</div>`;
+<div class="cols">${dataTable('Transport', ['Bus', 'Vélo', 'À pied'], 'Effectif', [15, 6, 9], 30)}${pieChart([{ l: 'Bus', v: 180, txt: '180°' }, { l: 'Vélo', v: 72, txt: '72°' }, { l: 'À pied', v: 108, txt: '108°' }], { width: 320 })}</div>
+<div class="methode"><b>Méthode</b><ol><li>Calcule l'angle pour 1 individu : 360° ÷ effectif total.</li><li>Angle d'un secteur = effectif × angle pour 1 individu.</li><li>Effectif à partir d'un angle : angle ÷ angle pour 1 individu.</li><li>Pourcentage à partir d'un angle : ${F('angle', '360')} × 100. Repères : 90° = 25 %, 180° = 50 %, 36° = 10 %.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : angles du tableau ci-dessus (30 élèves).</span><br>1 élève ↔ 360 ÷ 30 = 12°. Bus : 15 × 12 = <b>180°</b> ; vélo : 6 × 12 = 72° ; à pied : 9 × 12 = 108°.<br>Contrôle : 180 + 72 + 108 = 360.</div>
+<div class="ex"><span class="q">Exemple 2 : quel pourcentage représente le secteur de 72° ?</span><br>${F(72, 360)} = ${F(1, 5)} = <b>20 %</b>.</div>
+<div class="ex"><span class="q">Exemple 3 : 24 élèves en tout ; le secteur « Tram » mesure 105°. Combien d'élèves ?</span><br>1 élève ↔ 360 ÷ 24 = 15°. 105 ÷ 15 = <b>7 élèves</b>.</div>
+<div class="warn">⚠️ Ne confonds pas l'angle (en °), l'effectif (nombre d'individus) et le pourcentage.<br>⚠️ La somme des angles fait toujours 360° ; s'il manque un effectif, c'est le total moins les autres.</div>
+<div class="retenir">À retenir : 360° ↔ effectif total : angles et effectifs sont proportionnels.</div>`;
 }
 
 /* ===================================================================== 9. vocabulaire des probabilités */
@@ -469,12 +494,15 @@ function L9(d) {
 }
 function C9() {
   return `<h2>9. Vocabulaire des probabilités</h2>
-<div class="def">Une <b>expérience aléatoire</b> a plusieurs résultats possibles, qu'on ne peut pas prévoir à l'avance. Chaque résultat possible est une <b>issue</b>.<br>Un <b>événement</b> est une condition qui peut être réalisée ou non ; il est réalisé par certaines issues.</div>
-${dieFaces({ hl: [2, 4, 6] })}
-<div class="ex">On lance un dé à 6 faces. Issues : 1, 2, 3, 4, 5, 6. L'événement «&nbsp;obtenir un nombre pair&nbsp;» est réalisé par 3 issues : 2, 4 et 6.</div>
-<div class="ex">«&nbsp;Obtenir 7&nbsp;» est un événement <b>impossible</b> (aucune issue). «&nbsp;Obtenir un nombre entre 1 et 6&nbsp;» est <b>certain</b> (toutes les issues).</div>
-<div class="warn">⚠️ «&nbsp;Supérieur ou égal à 4&nbsp;» : 4, 5, 6. «&nbsp;Strictement supérieur à 4&nbsp;» : 5, 6 seulement.</div>
-<div class="warn">⚠️ Si on note la <b>couleur</b> d'une boule, les issues sont les couleurs, pas les boules.</div>`;
+<p class="intro">Avant de calculer des chances, il faut parler le même langage : expérience, issue, événement.</p>
+<div class="def">Une <b>expérience aléatoire</b> a plusieurs résultats possibles, qu'on ne peut pas prévoir à l'avance. Chaque résultat possible est une <b>issue</b>.<br>Un <b>événement</b> est une condition qui peut être réalisée ou non ; il est réalisé par certaines issues. Il est <b>impossible</b> si aucune issue ne le réalise, <b>certain</b> si toutes le réalisent.</div>
+<div class="cols">${dieFaces({ hl: [2, 4, 6] })}${petit(spinner(10, { hl: [8, 9, 10] }), 230)}</div>
+<div class="methode"><b>Méthode</b><ol><li>Écris la liste de toutes les issues (ce que l'on <b>note</b> : un nombre, une couleur…).</li><li>Pour un événement, teste chaque issue une par une.</li><li>Fais attention aux mots « strictement » et « ou égal ».</li><li>Aucune issue : impossible ; toutes : certain.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : on lance un dé à 6 faces.</span><br>Issues : 1, 2, 3, 4, 5, 6. « Obtenir un nombre pair » est réalisé par 3 issues : 2, 4 et 6.<br>« Obtenir 7 » est <b>impossible</b> ; « obtenir un nombre entre 1 et 6 » est <b>certain</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : roue de 10 secteurs numérotés de 1 à 10.</span><br>« Strictement supérieur à 7 » : 8, 9, 10, soit <b>3 issues</b>.<br>« Supérieur ou égal à 7 » : 7, 8, 9, 10, soit <b>4 issues</b>.</div>
+<div class="ex"><span class="q">Exemple 3 : une urne contient 3 boules rouges et 2 bleues ; on note la couleur.</span><br>Il y a <b>2 issues</b> : rouge et bleu (pas 5 : on note la couleur, pas la boule).</div>
+<div class="warn">⚠️ « Supérieur ou égal à 4 » : 4, 5, 6. « Strictement supérieur à 4 » : 5, 6 seulement.<br>⚠️ Si on note la <b>couleur</b> d'une boule, les issues sont les couleurs, pas les boules.<br>⚠️ « Ni certain ni impossible » : certaines issues le réalisent, d'autres non.</div>
+<div class="retenir">À retenir : issue = un résultat possible ; événement = un ensemble d'issues.</div>`;
 }
 
 /* ===================================================================== 10. probabilité : dé, urne, cartes */
@@ -547,13 +575,16 @@ function L10(d) {
 }
 function C10() {
   return `<h2>10. Calculer une probabilité</h2>
+<p class="intro">La probabilité mesure la chance qu'un événement se réalise, par un nombre entre 0 (impossible) et 1 (certain).</p>
 <div class="def">Quand toutes les issues ont la même chance de se produire (<b>équiprobabilité</b>) :<br>P(A) = ${F("nombre d'issues qui réalisent A", "nombre total d'issues")}</div>
-${urn([{ c: 'R' }, { c: 'R' }, { c: 'R' }, { c: 'B' }, { c: 'B' }, { c: 'V' }])}
-<div class="ex">Urne : 3 rouges, 2 bleues, 1 verte. P(rouge) = ${F(3, 6)} = ${F(1, 2)} ; P(verte) = ${F(1, 6)}.</div>
-<div class="ex">Dé : P(«&nbsp;obtenir au moins 5&nbsp;») = ${F(2, 6)} = ${F(1, 3)} (issues 5 et 6).</div>
-<div class="ex">Jeu de 32 cartes : P(roi) = ${F(4, 32)} = ${F(1, 8)} ; P(cœur) = ${F(8, 32)} = ${F(1, 4)}.</div>
-<div class="warn">⚠️ Une probabilité est toujours <b>entre 0 et 1</b>. Si tu trouves ${F(7, 4)}, il y a une erreur !</div>
-<div class="warn">⚠️ On divise par le nombre <b>total</b> d'issues, pas par le nombre d'issues défavorables.</div>`;
+<div class="cols">${urn([{ c: 'R' }, { c: 'R' }, { c: 'R' }, { c: 'B' }, { c: 'B' }, { c: 'V' }])}<div class="ex"><span class="q">Exemple 1 : urne de 3 rouges, 2 bleues, 1 verte.</span><br>6 boules en tout. P(rouge) = ${F(3, 6)} = ${F(1, 2)} ; P(verte) = ${F(1, 6)}.</div></div>
+<div class="methode"><b>Méthode</b><ol><li>Compte le nombre total d'issues équiprobables (faces, boules, cartes…).</li><li>Compte les issues qui réalisent l'événement (aide-toi du dessin).</li><li>Écris la fraction favorables ÷ total, et simplifie-la si possible.</li><li>Contrôle : le résultat est entre 0 et 1.</li></ol></div>
+<div class="ex"><span class="q">Exemple 2 : dé à 6 faces, « obtenir au moins 5 ».</span><br>Issues favorables : 5 et 6. P = ${F(2, 6)} = <b>${F(1, 3)}</b>.</div>
+${cards32(c => c.r === 'R')}
+<div class="ex"><span class="q">Exemple 3 : jeu de 32 cartes.</span><br>P(roi) = ${F(4, 32)} = <b>${F(1, 8)}</b> (les 4 rois sont mis en valeur) ; P(cœur) = ${F(8, 32)} = ${F(1, 4)}.</div>
+<div class="ex"><span class="q">Exemple 4 : dé à 12 faces, « obtenir un nombre pair strictement supérieur à 7 ».</span><br>Issues favorables : 8, 10, 12. P = ${F(3, 12)} = <b>${F(1, 4)}</b>.</div>
+<div class="warn">⚠️ Une probabilité est toujours <b>entre 0 et 1</b>. Si tu trouves ${F(7, 4)}, il y a une erreur !<br>⚠️ On divise par le nombre <b>total</b> d'issues, pas par le nombre d'issues défavorables.<br>⚠️ Dans une urne, chaque <b>boule</b> a la même chance : compte toutes les boules, pas seulement les couleurs.</div>
+<div class="retenir">À retenir : P(A) = issues favorables ÷ issues possibles (si elles sont équiprobables).</div>`;
 }
 
 /* ===================================================================== 11. événement contraire */
@@ -605,12 +636,15 @@ function L11(d) {
 }
 function C11() {
   return `<h2>11. Événement contraire</h2>
-<div class="def">L'événement <b>contraire</b> de A, noté «&nbsp;non A&nbsp;» (ou Ā), est réalisé quand A ne l'est pas.<br><b>P(non A) = 1 − P(A)</b>. La somme des probabilités de toutes les issues vaut 1.</div>
+<p class="intro">Il est parfois plus simple de calculer la probabilité que quelque chose <b>ne</b> se produise <b>pas</b>, puis d'en déduire celle qu'on cherche.</p>
+<div class="def">L'événement <b>contraire</b> de A, noté « non A » (ou Ā), est réalisé quand A ne l'est pas.<br><b>P(non A) = 1 − P(A)</b>. La somme des probabilités de toutes les issues vaut 1.</div>
 ${probaBar([{ l: 'A', v: 0.3, txt: '0,3' }, { l: 'non A', v: 0.7, txt: '0,7' }])}
-<div class="ex">P(pluie) = 0,3, donc P(pas de pluie) = 1 − 0,3 = <b>0,7</b>.</div>
-<div class="ex">Urne : 2 rouges sur 7 boules. P(pas rouge) = 1 − ${F(2, 7)} = ${F(5, 7)}.</div>
-<div class="ex">P(rouge) = ${F(1, 4)}, P(verte) = ${F(1, 3)}, il reste les bleues : 1 − ${F(3, 12)} − ${F(4, 12)} = ${F(5, 12)}.</div>
-<div class="warn">⚠️ Une probabilité ne dépasse jamais 1 : si P(A) + P(non A) ne fait pas 1, il y a une erreur.</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Repère l'événement contraire (« ne pas… », « pas de… »).</li><li>Calcule 1 − P(A) : avec une fraction, écris 1 = ${F('n', 'n')} ; avec un décimal, calcule directement.</li><li>S'il y a plusieurs issues, enlève à 1 toutes les probabilités connues.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : P(pluie) = 0,3.</span><br>P(pas de pluie) = 1 − 0,3 = <b>0,7</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : urne de 7 boules dont 2 rouges.</span><br>P(rouge) = ${F(2, 7)}, donc P(pas rouge) = 1 − ${F(2, 7)} = ${F(7, 7)} − ${F(2, 7)} = <b>${F(5, 7)}</b>.</div>
+<div class="ex"><span class="q">Exemple 3 : trois couleurs. P(rouge) = ${F(1, 4)}, P(verte) = ${F(1, 3)}. P(bleue) ?</span><br>Même dénominateur 12 : 1 − ${F(3, 12)} − ${F(4, 12)} = ${F(12, 12)} − ${F(7, 12)} = <b>${F(5, 12)}</b>.</div>
+<div class="warn">⚠️ Une probabilité ne dépasse jamais 1 : si P(A) + P(non A) ne fait pas 1, il y a une erreur.<br>⚠️ Lis bien la question : on demande souvent le <b>contraire</b>, pas l'événement donné.<br>⚠️ Une probabilité s'écrit en fraction ou en décimal (0,7), pas « 70 » !</div>
+<div class="retenir">À retenir : P(non A) = 1 − P(A).</div>`;
 }
 
 /* ===================================================================== 12. deux épreuves (arbres) et défis */
@@ -683,14 +717,17 @@ function L12(d) {
 function C12() {
   const T = urnTree(3, 2, false);
   return `<h2>12. Deux épreuves : arbres, et défis</h2>
+<p class="intro">Quand on répète une expérience (deux tirages, deux lancers), un arbre permet de ne rater aucun cas et de calculer chaque probabilité.</p>
 <div class="def">Pour une expérience à <b>deux épreuves</b>, on dessine un <b>arbre</b>. La probabilité d'un chemin est le <b>produit</b> des probabilités sur ses branches. Si plusieurs chemins réalisent l'événement, on <b>additionne</b> leurs probabilités.</div>
 <p>Urne : 3 rouges et 2 bleues. On tire deux boules <b>sans remise</b> :</p>
 ${T(['RB', 'BR'])}
-<div class="ex">P(R ; R) = ${F(3, 5)} × ${F(2, 4)} = ${F(6, 20)} = ${F(3, 10)}.<br>P(une de chaque couleur) = P(R ; B) + P(B ; R) = ${F(3, 5)} × ${F(2, 4)} + ${F(2, 5)} × ${F(3, 4)} = ${F(6, 20)} + ${F(6, 20)} = ${F(3, 5)}.</div>
-<div class="ex"><b>Avec remise</b>, la 2<sup>e</sup> épreuve est identique à la 1<sup>re</sup> : P(R ; R) = ${F(3, 5)} × ${F(3, 5)} = ${F(9, 25)}.</div>
-<div class="warn">⚠️ L'ordre compte : (R ; B) et (B ; R) sont deux chemins différents. Ne pas en oublier un !</div>
-<div class="warn">⚠️ Sans remise, au 2<sup>e</sup> tirage il y a une boule de moins. Et sur un chemin on multiplie, on n'additionne pas.</div>
-<div class="warn">⚠️ Deux dés : les sommes 2 à 12 ne sont pas équiprobables ; on compte les 36 couples.</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Dessine l'arbre : 1<sup>re</sup> épreuve, puis 2<sup>e</sup> épreuve au bout de chaque branche.</li><li>Sans remise : au 2<sup>e</sup> tirage, une boule de moins (et une de moins de la couleur tirée).</li><li>Probabilité d'un chemin : <b>multiplie</b> les probabilités de ses branches.</li><li>Plusieurs chemins conviennent : <b>additionne</b>. « Au moins un… » : pense à l'événement contraire.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : sans remise.</span><br>P(R ; R) = ${F(3, 5)} × ${F(2, 4)} = ${F(6, 20)} = ${F(3, 10)}.<br>P(une de chaque couleur) = P(R ; B) + P(B ; R) = ${F(3, 5)} × ${F(2, 4)} + ${F(2, 5)} × ${F(3, 4)} = ${F(6, 20)} + ${F(6, 20)} = <b>${F(3, 5)}</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : avec remise.</span><br>La 2<sup>e</sup> épreuve est identique à la 1<sup>re</sup> : P(R ; R) = ${F(3, 5)} × ${F(3, 5)} = <b>${F(9, 25)}</b>.</div>
+<div class="cols">${petit(sumTable(7), 260)}<div class="ex"><span class="q">Exemple 3 : deux dés, somme égale à 7.</span><br>36 couples équiprobables ; 6 donnent 7 (les cases en couleur).<br>P = ${F(6, 36)} = <b>${F(1, 6)}</b>.</div></div>
+<div class="ex"><span class="q">Exemple 4 (défi) : notes 12 ; 9 ; 14. Quelle 4<sup>e</sup> note pour avoir 12 de moyenne ?</span><br>Total nécessaire : 12 × 4 = 48. Déjà : 12 + 9 + 14 = 35. Note : 48 − 35 = <b>13</b>.</div>
+<div class="warn">⚠️ L'ordre compte : (R ; B) et (B ; R) sont deux chemins différents. Ne pas en oublier un !<br>⚠️ Sans remise, au 2<sup>e</sup> tirage il y a une boule de moins. Et sur un chemin on multiplie, on n'additionne pas.<br>⚠️ Deux dés : les sommes 2 à 12 ne sont pas équiprobables ; on compte les 36 couples. Deux pièces : 4 chemins (PP, PF, FP, FF), pas 3.</div>
+<div class="retenir">À retenir : sur un chemin on multiplie, entre plusieurs chemins on additionne.</div>`;
 }
 
 export const LEVELS = [

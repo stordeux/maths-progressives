@@ -36,7 +36,7 @@ const clear = (n, t, fs = FS, gap = 7) => gap + Math.abs(n[0]) * tw(t, fs) / 2 +
  * o.decor   : [{ pts: [[x,y],…], close, fill, stroke, sw, dash }] éléments de décor (mur, sol…), dessinés dessous
  * o.rot     : rotation en degrés ; o.flip : symétrie ; o.size : taille visée du dessin (pixels)
  * o.names   : false pour cacher les noms des points ; o.vdir : { D: [dx, dy] } direction imposée d'un nom (pixels)
- * o.aria    : description ; dans o.sides, gapU = écart supplémentaire (unités de la figure), par exemple l'épaisseur d'un mur
+ * o.maxw    : largeur maximale d'affichage en pixels (fenêtre Cours, figures hautes) ; o.aria : description ; dans o.sides, gapU = écart supplémentaire (unités de la figure), par exemple l'épaisseur d'un mur
  */
 export function figure(o) {
   const names = Object.keys(o.pts);
@@ -117,7 +117,7 @@ export function figure(o) {
     });
   }
   const pad = 4, W = box.x1 - box.x0 + 2 * pad, H = box.y1 - box.y0 + 2 * pad;
-  return `<svg viewBox="${f1(box.x0 - pad)} ${f1(box.y0 - pad)} ${f1(W)} ${f1(H)}" width="${Math.round(W)}" class="vis fig" role="img" aria-label="${o.aria || 'figure'}" font-family="system-ui,sans-serif">${s}</svg>`;
+  return `<svg viewBox="${f1(box.x0 - pad)} ${f1(box.y0 - pad)} ${f1(W)} ${f1(H)}" width="${Math.round(W)}" class="vis fig"${o.maxw ? ` style="max-width:${o.maxw}px"` : ''} role="img" aria-label="${o.aria || 'figure'}" font-family="system-ui,sans-serif">${s}</svg>`;
 }
 
 /* ---------- décors (coordonnées mathématiques) ---------- */
@@ -144,6 +144,28 @@ export function carres(list, aria = 'carrés') {
   });
   const pad = 4;
   return `<svg viewBox="${f1(box.x0 - pad)} ${f1(box.y0 - pad)} ${f1(box.x1 - box.x0 + 2 * pad)} ${f1(box.y1 - box.y0 + 2 * pad)}" width="${Math.round(box.x1 - box.x0 + 2 * pad)}" class="vis fig" role="img" aria-label="${aria}" font-family="system-ui,sans-serif">${s}</svg>`;
+}
+
+/* ---------- zoom sur un arrondi au dixième (fenêtre Cours) ---------- */
+/** droite graduée de lo à lo + 0,1 (centièmes), point x marqué avec le texte t, flèche vers le dixième le plus proche */
+export function zoomArrondi(lo, x, t) {
+  const dec = v => (Math.round(v * 100) / 100).toFixed(2).replace('.', ',').replace(/0$/, '');
+  const x0 = 30, W = 380, y = 62, X = v => x0 + (v - lo) / 0.1 * W;
+  const up = x - lo >= 0.05, tgt = up ? lo + 0.1 : lo;
+  let s = `<line x1="${x0 - 14}" y1="${y}" x2="${x0 + W + 14}" y2="${y}" stroke="${INK}" stroke-width="2"/>`;
+  for (let i = 0; i <= 10; i++) {
+    const v = lo + i / 100, xx = f1(X(v)), big = i === 0 || i === 10, mid = i === 5;
+    s += `<line x1="${xx}" y1="${y - (big ? 14 : mid ? 11 : 6)}" x2="${xx}" y2="${y + (big ? 14 : mid ? 11 : 6)}" stroke="${mid ? '#868e96' : INK}" stroke-width="${big ? 2.5 : 1.4}"${mid ? ' stroke-dasharray="3 2"' : ''}/>`;
+  }
+  s += `<line x1="${f1(X(x))}" y1="${y}" x2="${f1(X(tgt))}" y2="${y}" stroke="#2f9e44" stroke-width="6" stroke-linecap="round" opacity=".75"/>`;
+  s += `<circle cx="${f1(X(x))}" cy="${y}" r="6" fill="${ACC}"/>`;
+  const box = Box(); box.add(x0 - 14, y - 14); box.add(x0 + W + 14, y + 14);
+  s += label(box, X(x), y - 30, t, { fs: 17, bold: true, c: ACC });
+  s += label(box, X(lo), y + 32, dec(lo), { fs: 18, bold: !up, c: up ? INK : '#2b8a3e' });
+  s += label(box, X(lo + 0.1), y + 32, dec(lo + 0.1), { fs: 18, bold: up, c: up ? '#2b8a3e' : INK });
+  s += label(box, X(lo + 0.05), y + 30, dec(lo + 0.05), { fs: 14, c: '#868e96' });
+  const pad = 4;
+  return `<svg viewBox="${f1(box.x0 - pad)} ${f1(box.y0 - pad)} ${f1(box.x1 - box.x0 + 2 * pad)} ${f1(box.y1 - box.y0 + 2 * pad)}" class="vis fig" role="img" aria-label="arrondi au dixième : ${t} est plus proche de ${dec(tgt)}" font-family="system-ui,sans-serif">${s}</svg>`;
 }
 
 /* ---------- repère quadrillé (distance entre deux points) ---------- */

@@ -8,7 +8,7 @@ import { ri, pick, shuffle, chance, prenom } from '../../engine/util/rand.js';
 import { M, R } from '../../engine/util/fmt.js';
 import { approx, r6 } from '../../engine/util/arith.js';
 import { choiceCheck, numsCheck } from '../../engine/answers/checks.js';
-import { figure, carres, repere, pave, decorMur, decorSol } from './draw.js';
+import { figure, carres, repere, pave, decorMur, decorSol, zoomArrondi } from './draw.js';
 
 const big = s => `<div class="big">${s}</div>`;
 const sq = s => `${s}<sup>2</sup>`;
@@ -66,7 +66,7 @@ function triFig(T, pts, o = {}) {
     pts, polys: [[...T.n]], rights: o.noRight ? [] : [[T.R, T.P, T.Q]], sides: o.squares ? [] : sides, flip: o.flip,
     squares: o.squares ? [['a', T.Q], ['b', T.P], ['c', T.R]].map(([k, away]) => ({ k: S[k], t: o.squares[k], away })) : undefined,
     size: o.squares ? [300, 260] : undefined,
-    aria: `triangle ${T.n}${o.noRight ? '' : ' rectangle en ' + T.R}`,
+    aria: `triangle ${T.n}${o.noRight ? '' : ' rectangle en ' + T.R}`, maxw: o.maxw,
   });
 }
 
@@ -174,13 +174,16 @@ function L1(d) {
     verify: E => Math.abs(cR) < 1e-9 && E === longest };
 }
 function C1() {
-  const T = { n: 'ABC', R: 'A', P: 'B', Q: 'C' };
+  const T = { n: 'ABC', R: 'A', P: 'B', Q: 'C' }, U = { n: 'RST', R: 'S', P: 'R', Q: 'T' };
   return `<h2>1. Le triangle rectangle et son hypoténuse</h2>
+<p class="intro">Avant d'utiliser le théorème de Pythagore, il faut savoir « lire » un triangle rectangle : où est l'angle droit, et quel côté est l'hypoténuse.</p>
 <div class="def">Un triangle <b>rectangle</b> a un angle droit, codé par un petit carré.<br>• Les deux côtés qui forment l'angle droit sont les <b>côtés de l'angle droit</b>.<br>• Le côté <b>opposé</b> à l'angle droit s'appelle l'<b>hypoténuse</b>. C'est le plus long côté.</div>
-${triFig(T, place(T, 5, 3.4, 0), { lab: { c: 'hypoténuse' } })}
-<div class="ex">ABC est rectangle en A : l'angle droit est en A, l'hypoténuse est [BC] (le côté qui ne passe pas par A). [AB] et [AC] sont les côtés de l'angle droit.</div>
-<div class="warn">⚠️ L'hypoténuse n'est pas toujours « en bas » ou « en biais » : la figure peut être tournée. Cherche le codage de l'angle droit, puis le côté d'en face.</div>
-<div class="warn">⚠️ Les lettres changent : dans un triangle RST rectangle en S, l'hypoténuse est [RT].</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Cherche le petit carré : son sommet est le sommet de l'angle droit.</li><li>Les deux côtés qui <b>partent</b> de ce sommet sont les côtés de l'angle droit.</li><li>Le troisième côté, qui ne touche pas ce sommet, est l'hypoténuse.</li><li>Vérifie : c'est bien le plus long des trois côtés.</li></ol></div>
+<div class="cols">${triFig(T, place(T, 5, 3.4, 0), { lab: { c: 'hypoténuse' }, maxw: 320 })}${triFig(U, place(U, 4.2, 3, 125), { lab: { c: 'hypoténuse' }, maxw: 260 })}</div>
+<div class="ex"><span class="q">Exemple 1 : ABC est rectangle en A.</span><br>L'angle droit est en A. Les côtés qui partent de A sont [AB] et [AC] : ce sont les côtés de l'angle droit.<br>L'hypoténuse est <b>[BC]</b>, le côté qui ne passe pas par A.</div>
+<div class="ex"><span class="q">Exemple 2 : une figure tournée, RST rectangle en S.</span><br>Le petit carré est en S, même si le triangle est « penché ».<br>Côtés de l'angle droit : [RS] et [ST]. Hypoténuse : <b>[RT]</b>.<br>Astuce : l'hypoténuse s'écrit avec les deux lettres qui ne sont <b>pas</b> le sommet de l'angle droit.</div>
+<div class="warn">⚠️ L'hypoténuse n'est pas toujours « en bas » ou « en biais » : la figure peut être tournée. Cherche d'abord le codage de l'angle droit.<br>⚠️ L'hypoténuse ne touche jamais le petit carré : si ton côté passe par le sommet de l'angle droit, c'est un côté de l'angle droit.<br>⚠️ Si on te demande les <b>côtés de l'angle droit</b>, réponds par les deux côtés qui partent du petit carré, pas par l'hypoténuse.</div>
+<div class="retenir">À retenir : l'hypoténuse est le côté en face de l'angle droit ; c'est le plus long côté du triangle rectangle.</div>`;
 }
 
 /* ======================================================================
@@ -236,12 +239,16 @@ function L2(d) {
 }
 function C2() {
   return `<h2>2. Carrés et racines carrées</h2>
+<p class="intro">Le théorème de Pythagore parle de <b>carrés</b> de longueurs ; pour revenir à une longueur, on prend une <b>racine carrée</b>. Ce niveau t'entraîne à ces deux calculs.</p>
 <div class="def">• Le <b>carré</b> d'un nombre : ${sq('a')} = a × a. C'est l'aire d'un carré de côté a.<br>• La <b>racine carrée</b> d'un nombre positif b est le nombre positif dont le carré est b : ${R(49)} = 7 car ${sqn(7)} = 49. C'est le côté d'un carré d'aire b.</div>
-${carres([{ c: 3, side: '3', area: '9' }, { c: 5, side: '5', area: '25' }])}
-<div class="ex">Carrés à connaître : 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225…</div>
-<div class="ex">${R(50)} n'est pas entier : 49 &lt; 50 &lt; 64, donc 7 &lt; ${R(50)} &lt; 8. La calculatrice donne ${R(50)} ≈ 7,07.</div>
-<div class="warn">⚠️ ${sqn(6)} = 6 × 6 = 36, pas 6 × 2 = 12.</div>
-<div class="warn">⚠️ ${sqn(3)} + ${sqn(4)} = 9 + 16 = 25, mais (3 + 4)² = 49 : on calcule chaque carré <b>avant</b> d'additionner.</div>`;
+<div class="cols">${carres([{ c: 3, side: '3', area: '9' }, { c: 5, side: '5', area: '25' }], 'carrés de côtés 3 et 5, d\'aires 9 et 25')}<div class="ex">Carrés à connaître : 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225, 256, 289, 324, 361, 400 (de ${sqn(1)} à ${sqn(20)}).</div></div>
+<div class="methode"><b>Méthode</b><ol><li><b>Carré</b> : multiplie le nombre par lui-même (${sqn(6)} = 6 × 6).</li><li><b>Racine carrée</b> : cherche le nombre positif qui, multiplié par lui-même, donne le nombre.</li><li><b>Encadrer</b> ${R('N')} : trouve les deux carrés parfaits qui se suivent autour de N.</li><li><b>Somme ou différence de carrés</b> : calcule chaque carré d'abord, puis additionne ou soustrais.</li><li><b>Décimal</b> : calcule sans la virgule, puis mets deux fois plus de chiffres après la virgule.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : ${sqn(13)} et ${R(81)}.</span><br>${sqn(13)} = 13 × 13 = 169.<br>9 × 9 = 81, donc ${R(81)} = 9.</div>
+<div class="ex"><span class="q">Exemple 2 : entre quels entiers consécutifs est ${R(50)} ?</span><br>49 &lt; 50 &lt; 64, c'est-à-dire ${sqn(7)} &lt; 50 &lt; ${sqn(8)}, donc 7 &lt; ${R(50)} &lt; 8. (La calculatrice donne ${R(50)} ≈ 7,07.)</div>
+${carres([{ c: 7, side: '7', area: '49' }, { c: Math.sqrt(50), side: '?', area: '50' }, { c: 8, side: '8', area: '64' }], 'un carré d\'aire 50 a un côté entre 7 et 8')}
+<div class="ex"><span class="q">Exemple 3 : ${sqn(2.4)} et ${sqn(9)} − ${sqn(5)}.</span><br>24 × 24 = 576 et 2,4 a un chiffre après la virgule, donc ${sqn(2.4)} = 5,76 (deux chiffres après la virgule).<br>${sqn(9)} − ${sqn(5)} = 81 − 25 = 56.</div>
+<div class="warn">⚠️ ${sqn(6)} = 6 × 6 = 36, pas 6 × 2 = 12.<br>⚠️ ${sqn(3)} + ${sqn(4)} = 9 + 16 = 25, mais (3 + 4)² = 49 : on calcule chaque carré <b>avant</b> d'additionner.<br>⚠️ ${sqn(2.4)} n'est pas 4,16 : on ne met pas au carré « la partie entière puis la partie décimale ».</div>
+<div class="retenir">À retenir : carré = nombre × lui-même ; racine carrée = le nombre positif dont le carré est donné.</div>`;
 }
 
 /* ======================================================================
@@ -277,13 +284,15 @@ function L3(d) {
 function C3() {
   const T = { n: 'ABC', R: 'A', P: 'B', Q: 'C' };
   return `<h2>3. L'égalité de Pythagore</h2>
+<p class="intro">Le théorème de Pythagore relie les trois côtés d'un triangle rectangle. Bien l'écrire, c'est déjà la moitié du travail.</p>
 <div class="def"><b>Théorème de Pythagore.</b> Si un triangle est rectangle, alors le carré de l'hypoténuse est égal à la somme des carrés des deux autres côtés.<br>ABC rectangle en A : &nbsp;<b>${sq('BC')} = ${sq('AB')} + ${sq('AC')}</b></div>
-${triFig(T, place(T, 4, 3, 0), { squares: { a: 'AB²', b: 'AC²', c: 'BC²' } })}
-<p>L'aire du grand carré (sur l'hypoténuse) est égale à la somme des aires des deux petits carrés.</p>
-<div class="ex">RST rectangle en S : l'hypoténuse est [RT], donc ${sq('RT')} = ${sq('RS')} + ${sq('ST')}.</div>
-<div class="ex">Pour un côté de l'angle droit, on transforme l'égalité : ${sq('RS')} = ${sq('RT')} − ${sq('ST')}.</div>
-<div class="warn">⚠️ Sans les carrés, c'est faux : BC n'est pas égal à AB + AC.</div>
-<div class="warn">⚠️ L'hypoténuse est toujours seule d'un côté du signe = dans ${sq('BC')} = ${sq('AB')} + ${sq('AC')}.</div>`;
+<div class="cols">${triFig(T, place(T, 4, 3, 0), { squares: { a: 'AB²', b: 'AC²', c: 'BC²' } })}${triFig(T, place(T, 4, 3, 0), { squares: { a: '16', b: '9', c: '25' } })}</div>
+<p>L'aire du grand carré (construit sur l'hypoténuse) est égale à la somme des aires des deux petits carrés : 16 + 9 = 25.</p>
+<div class="methode"><b>Méthode</b><ol><li>Repère l'angle droit, puis l'hypoténuse (en face).</li><li>Écris : hypoténuse² = côté² + autre côté². L'ordre des deux côtés de droite n'a pas d'importance.</li><li>Pour isoler un côté de l'angle droit : côté² = hypoténuse² − autre côté².</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : RST est rectangle en S.</span><br>L'hypoténuse est [RT] (en face de S), donc ${sq('RT')} = ${sq('RS')} + ${sq('ST')}.<br>On peut aussi écrire ${sq('RT')} = ${sq('ST')} + ${sq('RS')} : c'est la même égalité.</div>
+<div class="ex"><span class="q">Exemple 2 : EFG est rectangle en F. Quelle égalité permet de calculer EF ?</span><br>L'hypoténuse est [EG] : ${sq('EG')} = ${sq('EF')} + ${sq('FG')}.<br>On enlève ${sq('FG')} des deux côtés : <b>${sq('EF')} = ${sq('EG')} − ${sq('FG')}</b>.</div>
+<div class="warn">⚠️ Sans les carrés, c'est faux : BC n'est pas égal à AB + AC.<br>⚠️ L'hypoténuse est toujours <b>seule</b> d'un côté du signe = dans l'égalité de départ.<br>⚠️ Pour un côté de l'angle droit, c'est l'hypoténuse² <b>moins</b> l'autre côté², jamais l'inverse : ${sq('EF')} = ${sq('FG')} − ${sq('EG')} est faux.</div>
+<div class="retenir">À retenir : hypoténuse² = somme des carrés des deux côtés de l'angle droit.</div>`;
 }
 
 /* ======================================================================
@@ -333,11 +342,14 @@ function L4(d) {
 function C4() {
   const T = { n: 'ABC', R: 'A', P: 'B', Q: 'C' };
   return `<h2>4. Calculer l'hypoténuse</h2>
-<div class="def">On connaît les deux côtés de l'angle droit. On écrit l'égalité de Pythagore, on remplace, on calcule la somme des carrés, puis on prend la <b>racine carrée</b>.</div>
-${triFig(T, place(T, 4, 3, 0), { lab: { a: '4 cm', b: '3 cm', c: '?' } })}
-<div class="ex">ABC rectangle en A, AB = 4 cm, AC = 3 cm.<br>${sq('BC')} = ${sq('AB')} + ${sq('AC')} = ${sqn(4)} + ${sqn(3)} = 16 + 9 = 25<br>BC = ${R(25)} = 5 cm.</div>
-<div class="warn">⚠️ Ne t'arrête pas à ${sq('BC')} = 25 : on cherche BC, pas ${sq('BC')}. N'oublie pas la <b>racine carrée</b>.</div>
-<div class="warn">⚠️ BC n'est pas 4 + 3 = 7 : on additionne les <b>carrés</b>.</div>`;
+<p class="intro">Quand tu connais les deux côtés de l'angle droit, le théorème de Pythagore te donne la longueur du troisième côté, l'hypoténuse.</p>
+<div class="def">On connaît les deux côtés de l'angle droit. On calcule la <b>somme</b> de leurs carrés : c'est le carré de l'hypoténuse. L'hypoténuse est la <b>racine carrée</b> de cette somme.</div>
+<div class="cols">${triFig(T, place(T, 4, 3, 0), { lab: { a: '4 cm', b: '3 cm', c: '?' } })}${triFig(T, place(T, 4, 3, 0), { squares: { a: '16', b: '9', c: '25' } })}</div>
+<div class="methode"><b>Méthode</b><ol><li>Repère l'angle droit : l'hypoténuse est le côté cherché, en face.</li><li>Écris l'égalité de Pythagore.</li><li>Remplace par les longueurs données.</li><li>Calcule les carrés, puis leur somme.</li><li>Prends la racine carrée et n'oublie pas l'unité.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : ABC rectangle en A, AB = 4 cm, AC = 3 cm. Calcule BC.</span><br>L'hypoténuse est [BC]. D'après le théorème de Pythagore :<br>${sq('BC')} = ${sq('AB')} + ${sq('AC')} = ${sqn(4)} + ${sqn(3)} = 16 + 9 = 25<br>BC = ${R(25)} = <b>5 cm</b>.</div>
+<div class="ex"><span class="q">Exemple 2 (décimaux) : DEF rectangle en E, DE = 1,5 cm, EF = 2 cm. Calcule DF.</span><br>${sq('DF')} = ${sqn(1.5)} + ${sqn(2)} = 2,25 + 4 = 6,25<br>DF = ${R('6,25')} = <b>2,5 cm</b> (car 2,5 × 2,5 = 6,25).</div>
+<div class="warn">⚠️ Ne t'arrête pas à ${sq('BC')} = 25 : on cherche BC, pas ${sq('BC')}. N'oublie pas la <b>racine carrée</b>.<br>⚠️ BC n'est pas 4 + 3 = 7 : on additionne les <b>carrés</b>, pas les longueurs.<br>⚠️ Contrôle : l'hypoténuse est plus longue que chacun des deux autres côtés (5 &gt; 4 et 5 &gt; 3).</div>
+<div class="retenir">À retenir : hypoténuse = racine carrée de la somme des carrés des deux autres côtés.</div>`;
 }
 
 function L5(d) {
@@ -347,12 +359,15 @@ function L5(d) {
 function C5() {
   const T = { n: 'ABC', R: 'A', P: 'B', Q: 'C' };
   return `<h2>5. Hypoténuse : arrondir au dixième</h2>
-<div class="def">Souvent, la racine carrée ne « tombe pas juste ». On donne alors une valeur <b>arrondie au dixième</b> (un chiffre après la virgule) avec le signe ≈. On regarde le chiffre des centièmes : de 0 à 4 on garde, de 5 à 9 on augmente le chiffre des dixièmes.</div>
-${triFig(T, place(T, 5, 3, 0), { lab: { a: '5 cm', b: '3 cm', c: '?' } })}
-<div class="ex">${sq('BC')} = ${sqn(5)} + ${sqn(3)} = 25 + 9 = 34, BC = ${R(34)} ≈ 5,83… donc BC ≈ 5,8 cm.</div>
-<div class="ex">Sur le pavé, utilise la touche <b>,</b> pour écrire 5,8.</div>
-<div class="warn">⚠️ 5,83… arrondi au dixième donne 5,8 ; mais 5,86… donne 5,9 (le chiffre des centièmes est 6).</div>
-<div class="warn">⚠️ On arrondit seulement à la fin, sur la racine carrée, pas sur les carrés.</div>`;
+<p class="intro">Le plus souvent, la racine carrée « ne tombe pas juste ». On donne alors une valeur approchée, arrondie au dixième.</p>
+<div class="def">Arrondir <b>au dixième</b>, c'est garder un seul chiffre après la virgule, en prenant la valeur la plus proche. On regarde le chiffre des <b>centièmes</b> : de 0 à 4 on garde le chiffre des dixièmes, de 5 à 9 on l'augmente de 1. On écrit le signe <b>≈</b>.</div>
+<div class="cols">${triFig(T, place(T, 5, 3, 0), { lab: { a: '5 cm', b: '3 cm', c: '?' } })}${zoomArrondi(5.8, 5.831, '√34 ≈ 5,83')}</div>
+<div class="methode"><b>Méthode</b><ol><li>Écris l'égalité de Pythagore et calcule la somme des carrés.</li><li>Calcule la racine carrée à la calculatrice et écris au moins deux chiffres après la virgule.</li><li>Regarde le chiffre des centièmes pour arrondir au dixième.</li><li>Écris le résultat avec ≈ et l'unité (touche <b>,</b> du pavé pour la virgule).</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : AB = 5 cm, AC = 3 cm, ABC rectangle en A.</span><br>${sq('BC')} = ${sqn(5)} + ${sqn(3)} = 25 + 9 = 34<br>BC = ${R(34)} ≈ 5,83… Le chiffre des centièmes est 3 : on garde. BC ≈ <b>5,8 cm</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : AB = 4 cm, AC = 7 cm.</span><br>${sq('BC')} = 16 + 49 = 65, BC = ${R(65)} ≈ 8,06…<br>Le chiffre des centièmes est 6 : on augmente. BC ≈ <b>8,1 cm</b>.</div>
+<div class="ex"><span class="q">Exemple 3 (décimaux) : AB = 2,5 cm, AC = 4 cm.</span><br>${sq('BC')} = ${sqn(2.5)} + ${sqn(4)} = 6,25 + 16 = 22,25<br>BC = ${R('22,25')} ≈ 4,71… donc BC ≈ <b>4,7 cm</b>.</div>
+<div class="warn">⚠️ 5,83… arrondi au dixième donne 5,8 ; mais 8,06… donne 8,1 (le chiffre des centièmes est 6).<br>⚠️ Arrondir au dixième, c'est <b>un</b> chiffre après la virgule : ni 5,83 ni 6.<br>⚠️ On arrondit seulement à la fin, sur la racine carrée, pas sur les carrés.</div>
+<div class="retenir">À retenir : on calcule la racine carrée à la calculatrice, puis on regarde le chiffre des centièmes pour arrondir.</div>`;
 }
 
 function L6(d) {
@@ -363,11 +378,14 @@ function L6(d) {
 function C6() {
   const T = { n: 'ABC', R: 'A', P: 'B', Q: 'C' };
   return `<h2>6. Calculer un côté de l'angle droit</h2>
-<div class="def">On connaît l'hypoténuse et un côté de l'angle droit. On écrit l'égalité de Pythagore, puis on <b>soustrait</b> :<br>${sq('BC')} = ${sq('AB')} + ${sq('AC')} &nbsp;donc&nbsp; ${sq('AC')} = ${sq('BC')} − ${sq('AB')}</div>
-${triFig(T, place(T, 12, 5, 0), { lab: { a: '12 cm', b: '?', c: '13 cm' } })}
-<div class="ex">ABC rectangle en A, BC = 13 cm, AB = 12 cm.<br>${sq('AC')} = ${sqn(13)} − ${sqn(12)} = 169 − 144 = 25, donc AC = ${R(25)} = 5 cm.</div>
-<div class="warn">⚠️ L'erreur la plus fréquente : <b>additionner</b> au lieu de soustraire. Ici 169 + 144 = 313 donnerait AC ≈ 17,7 cm, plus long que l'hypoténuse : impossible !</div>
-<div class="warn">⚠️ Contrôle : un côté de l'angle droit est toujours plus court que l'hypoténuse.</div>`;
+<p class="intro">Si tu connais l'hypoténuse et un côté de l'angle droit, Pythagore te donne aussi le troisième côté : cette fois, on <b>soustrait</b>.</p>
+<div class="def">ABC rectangle en A : ${sq('BC')} = ${sq('AB')} + ${sq('AC')} &nbsp;donc&nbsp; <b>${sq('AC')} = ${sq('BC')} − ${sq('AB')}</b><br>Le carré d'un côté de l'angle droit = hypoténuse² <b>moins</b> l'autre côté².</div>
+<div class="cols">${triFig(T, place(T, 12, 5, 0), { lab: { a: '12 cm', b: '?', c: '13 cm' } })}${triFig(T, place(T, 12, 5, 0), { squares: { a: '144', b: '?', c: '169' } })}</div>
+<div class="methode"><b>Méthode</b><ol><li>Repère l'hypoténuse : ici, c'est une longueur <b>connue</b>.</li><li>Écris l'égalité de Pythagore, puis transforme-la : côté² = hypoténuse² − autre côté².</li><li>Remplace, calcule la différence.</li><li>Prends la racine carrée, avec l'unité.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : ABC rectangle en A, BC = 13 cm, AB = 12 cm. Calcule AC.</span><br>L'hypoténuse est [BC]. ${sq('BC')} = ${sq('AB')} + ${sq('AC')}, donc ${sq('AC')} = ${sq('BC')} − ${sq('AB')}<br>${sq('AC')} = ${sqn(13)} − ${sqn(12)} = 169 − 144 = 25, donc AC = ${R(25)} = <b>5 cm</b>.</div>
+<div class="ex"><span class="q">Exemple 2 (décimaux) : MNP rectangle en N, MP = 2,5 cm, MN = 1,5 cm. Calcule NP.</span><br>L'hypoténuse est [MP]. ${sq('NP')} = ${sqn(2.5)} − ${sqn(1.5)} = 6,25 − 2,25 = 4<br>NP = ${R(4)} = <b>2 cm</b>.</div>
+<div class="warn">⚠️ L'erreur la plus fréquente : <b>additionner</b> au lieu de soustraire. Ici 169 + 144 = 313 donnerait AC ≈ 17,7 cm, plus long que l'hypoténuse : impossible !<br>⚠️ C'est toujours la plus grande moins la plus petite : 144 − 169 serait négatif.<br>⚠️ Contrôle : un côté de l'angle droit est toujours plus court que l'hypoténuse.</div>
+<div class="retenir">À retenir : pour un côté de l'angle droit, on fait hypoténuse² − autre côté², puis la racine carrée.</div>`;
 }
 
 function L7(d) {
@@ -382,11 +400,14 @@ function L7(d) {
 function C7() {
   const T = { n: 'ABC', R: 'A', P: 'B', Q: 'C' };
   return `<h2>7. Côté de l'angle droit : arrondir au dixième</h2>
-<div class="def">Même méthode : hypoténuse² <b>moins</b> l'autre côté², puis racine carrée, puis arrondi au dixième.</div>
-${triFig(T, place(T, 6, 5.3, 0), { lab: { a: '6 cm', b: '?', c: '8 cm' } })}
-<div class="ex">BC = 8 cm, AB = 6 cm : ${sq('AC')} = 64 − 36 = 28, AC = ${R(28)} ≈ 5,29… donc AC ≈ 5,3 cm.</div>
-<div class="warn">⚠️ Si tu trouves un côté plus long que l'hypoténuse, tu as additionné au lieu de soustraire.</div>
-<div class="warn">⚠️ Avec des décimaux : ${sqn(2.5)} = 6,25 (pas 4,25 ni 5).</div>`;
+<p class="intro">On combine les deux niveaux précédents : soustraire les carrés, puis arrondir la racine carrée au dixième.</p>
+<div class="def">Même méthode qu'au niveau 6 : hypoténuse² <b>moins</b> l'autre côté², puis racine carrée. Si elle ne tombe pas juste, on l'arrondit au dixième avec le signe ≈.</div>
+<div class="cols">${triFig(T, place(T, 6, 5.3, 0), { lab: { a: '6 cm', b: '?', c: '8 cm' } })}${zoomArrondi(5.2, 5.292, '√28 ≈ 5,29')}</div>
+<div class="methode"><b>Méthode</b><ol><li>Repère l'hypoténuse (connue) et le côté cherché.</li><li>côté² = hypoténuse² − autre côté² : calcule la différence.</li><li>Racine carrée à la calculatrice (ou tape ${R('64 − 36')} avec des parenthèses).</li><li>Arrondis au dixième grâce au chiffre des centièmes, et écris l'unité.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : ABC rectangle en A, BC = 8 cm, AB = 6 cm.</span><br>${sq('AC')} = ${sqn(8)} − ${sqn(6)} = 64 − 36 = 28<br>AC = ${R(28)} ≈ 5,29… Le chiffre des centièmes est 9 : on augmente. AC ≈ <b>5,3 cm</b>.</div>
+<div class="ex"><span class="q">Exemple 2 (décimaux) : BC = 7,5 cm, AB = 4,2 cm.</span><br>${sq('AC')} = ${sqn(7.5)} − ${sqn(4.2)} = 56,25 − 17,64 = 38,61<br>AC = ${R('38,61')} ≈ 6,21… donc AC ≈ <b>6,2 cm</b>.</div>
+<div class="warn">⚠️ Si tu trouves un côté plus long que l'hypoténuse, tu as additionné au lieu de soustraire.<br>⚠️ Avec des décimaux : ${sqn(2.5)} = 6,25 (pas 4,25 ni 5).<br>⚠️ Si tu tapes ${R(64)} − 36 à la calculatrice, tu obtiens 8 − 36 : mets des parenthèses ou calcule 28 d'abord.</div>
+<div class="retenir">À retenir : soustraire les carrés, prendre la racine carrée, puis arrondir à la toute fin.</div>`;
 }
 
 /* ======================================================================
@@ -471,11 +492,15 @@ function L8(d) {
 }
 function C8() {
   return `<h2>8. Pythagore en situation</h2>
-<div class="def">Dans un problème : 1) repère un <b>triangle rectangle</b> (mur et sol, coin d'un rectangle, verticale…) ; 2) repère l'<b>hypoténuse</b> ; 3) applique le théorème ; 4) réponds avec l'<b>unité</b>.</div>
-${figure({ pts: { A: [0, 4], B: [0, 0], C: [1.5, 0] }, rights: [['B', 'A', 'C']], sides: [{ k: 'AB', t: '4 m', away: 'C', gapU: 0.24 }, { k: 'BC', t: '1,5 m', away: 'A' }, { k: 'AC', t: '?', unk: true, away: 'B' }], decor: decorMur(4, 1.9) })}
-<div class="ex">Échelle : le pied est à 1,5 m du mur, le haut à 4 m du sol. Le mur est perpendiculaire au sol, ABC est rectangle en B.<br>${sq('AC')} = ${sqn(1.5)} + ${sqn(4)} = 2,25 + 16 = 18,25 ; AC = ${R('18,25')} ≈ 4,27… ≈ 4,3 m.</div>
-<div class="ex">Diagonale d'un rectangle de 30 cm sur 40 cm : ${sq('d')} = 900 + 1 600 = 2 500, d = 50 cm.</div>
-<div class="warn">⚠️ L'échelle (ou le fil, la diagonale) est l'<b>hypoténuse</b> : si elle est connue, on soustrait pour trouver la hauteur.</div>`;
+<p class="intro">Échelles, écrans, terrains, cerfs-volants : dès qu'un angle droit se cache dans un problème, Pythagore permet de calculer une distance qu'on ne peut pas mesurer.</p>
+<div class="def">Les angles droits les plus courants : un <b>mur</b> vertical et le <b>sol</b> ; les <b>coins d'un rectangle</b> ; une <b>verticale</b> (fil à plomb, poteau) et le sol. L'objet « en biais » (échelle, fil, diagonale, glissière) est l'<b>hypoténuse</b>.</div>
+<div class="cols">${figure({ pts: { A: [0, 4], B: [0, 0], C: [1.5, 0] }, rights: [['B', 'A', 'C']], sides: [{ k: 'AB', t: '4 m', away: 'C', gapU: 0.24 }, { k: 'BC', t: '1,5 m', away: 'A' }, { k: 'AC', t: '?', unk: true, away: 'B' }], decor: decorMur(4, 1.9), aria: 'échelle contre un mur', maxw: 210 })}${figure({ pts: { A: [0, 45], B: [0, 0], C: [80, 0], D: [80, 45] }, polys: [['A', 'B', 'C', 'D']], segs: [{ k: 'AC', sw: 2.4 }], rights: [['B', 'A', 'C']], sides: [{ k: 'AB', t: '45 cm', away: 'C' }, { k: 'BC', t: '80 cm', away: 'A' }, { k: 'AC', t: '?', unk: true, away: 'D' }], decor: [{ pts: [[0, 0], [80, 0], [80, 45], [0, 45]], close: true, fill: '#343a40', stroke: '#212529', sw: 3 }], aria: 'écran rectangulaire et sa diagonale' })}</div>
+<div class="methode"><b>Méthode</b><ol><li>Repère le triangle rectangle et <b>justifie</b> l'angle droit (« le mur est perpendiculaire au sol »).</li><li>Repère l'hypoténuse : l'échelle, le fil, la diagonale, la glissière.</li><li>Hypoténuse cherchée : on <b>additionne</b> les carrés. Côté de l'angle droit cherché : on <b>soustrait</b>.</li><li>Racine carrée, arrondi au dixième si besoin, et réponds avec l'<b>unité</b> (m ou cm).</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : le pied d'une échelle est à 1,5 m du mur, son haut à 4 m du sol. Longueur de l'échelle ?</span><br>Le mur est perpendiculaire au sol : ABC est rectangle en B, d'hypoténuse [AC].<br>${sq('AC')} = ${sqn(1.5)} + ${sqn(4)} = 2,25 + 16 = 18,25 ; AC = ${R('18,25')} ≈ 4,27… ≈ <b>4,3 m</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : un écran de 80 cm de large et 45 cm de haut. Diagonale ?</span><br>Les angles d'un rectangle sont droits : ${sq('AC')} = ${sqn(80)} + ${sqn(45)} = 6 400 + 2 025 = 8 425<br>AC = ${R('8 425')} ≈ 91,78… ≈ <b>91,8 cm</b>.</div>
+<div class="ex"><span class="q">Exemple 3 : le fil d'un cerf-volant mesure 25 m ; le point du sol sous le cerf-volant est à 15 m. Hauteur ?</span><br>Le fil est l'hypoténuse (connue) : on soustrait. h² = ${sqn(25)} − ${sqn(15)} = 625 − 225 = 400, h = ${R(400)} = <b>20 m</b>.</div>
+<div class="warn">⚠️ L'échelle (ou le fil, la diagonale) est l'<b>hypoténuse</b> : si elle est connue, on soustrait pour trouver la hauteur.<br>⚠️ Toutes les longueurs doivent être dans la même unité avant de calculer.<br>⚠️ N'oublie pas l'unité dans la réponse.</div>
+<div class="retenir">À retenir : trouver l'angle droit caché, repérer l'hypoténuse, puis appliquer Pythagore.</div>`;
 }
 
 /* ======================================================================
@@ -550,12 +575,16 @@ function L9(d) {
 function C9() {
   const D = { T: { n: 'ABC' }, lens: { AB: 6, AC: 8, BC: 10 } };
   D.pts = triFromSides(D.T, D.lens, 0);
+  const sqf = figure({ pts: D.pts, polys: [['A', 'B', 'C']], squares: [{ k: 'AB', t: '36', away: 'C' }, { k: 'AC', t: '64', away: 'B' }, { k: 'BC', t: '100', away: 'A' }], size: [300, 260], aria: 'carrés construits sur les côtés : 36 + 64 = 100' });
   return `<h2>9. La réciproque : prouver qu'un triangle est rectangle</h2>
-<div class="def"><b>Réciproque du théorème de Pythagore.</b> Si, dans un triangle, le carré du plus grand côté est <b>égal</b> à la somme des carrés des deux autres côtés, alors ce triangle est rectangle. L'angle droit est en face du plus grand côté.</div>
-${recFig(D, false)}
-<div class="ex">ABC avec AB = 6 cm, AC = 8 cm, BC = 10 cm. Le plus grand côté est [BC].<br>${sq('BC')} = 100 et ${sq('AB')} + ${sq('AC')} = 36 + 64 = 100.<br>Les deux résultats sont égaux : d'après la réciproque du théorème de Pythagore, ABC est rectangle en A.</div>
-<div class="warn">⚠️ On calcule les deux nombres <b>séparément</b>, puis on compare. N'écris pas ${sq('BC')} = ${sq('AB')} + ${sq('AC')} avant de l'avoir vérifié.</div>
-<div class="warn">⚠️ L'angle droit est au sommet qui n'est <b>pas</b> sur le plus grand côté.</div>`;
+<p class="intro">On connaît les trois côtés d'un triangle, sans codage d'angle droit. Un calcul permet de <b>prouver</b> qu'il est rectangle et de dire où est l'angle droit.</p>
+<div class="def"><b>Réciproque du théorème de Pythagore.</b> Si, dans un triangle, le carré du plus grand côté est <b>égal</b> à la somme des carrés des deux autres côtés, alors ce triangle est rectangle. L'angle droit est au sommet <b>en face du plus grand côté</b>.</div>
+<div class="cols">${recFig(D, false)}${sqf}</div>
+<div class="methode"><b>Méthode</b><ol><li>Repère le plus grand côté.</li><li>Calcule son carré.</li><li>Calcule <b>séparément</b> la somme des carrés des deux autres côtés.</li><li>Compare : si c'est égal, le triangle est rectangle (réciproque du théorème de Pythagore).</li><li>L'angle droit est au sommet qui n'est pas sur le plus grand côté.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : ABC avec AB = 6 cm, AC = 8 cm, BC = 10 cm.</span><br>Le plus grand côté est [BC].<br>${sq('BC')} = ${sqn(10)} = 100<br>${sq('AB')} + ${sq('AC')} = 36 + 64 = 100<br>Les deux résultats sont égaux : d'après la réciproque du théorème de Pythagore, ABC est rectangle en <b>A</b>.</div>
+<div class="ex"><span class="q">Exemple 2 (décimaux) : EFG avec EF = 1,5 cm, FG = 2 cm, EG = 2,5 cm.</span><br>Le plus grand côté est [EG] : ${sq('EG')} = 6,25.<br>${sq('EF')} + ${sq('FG')} = 2,25 + 4 = 6,25.<br>Égalité vérifiée : EFG est rectangle en <b>F</b> (le sommet qui n'est pas sur [EG]).</div>
+<div class="warn">⚠️ On calcule les deux nombres <b>séparément</b>, puis on compare. N'écris pas ${sq('BC')} = ${sq('AB')} + ${sq('AC')} avant de l'avoir vérifié.<br>⚠️ L'angle droit est au sommet qui n'est <b>pas</b> sur le plus grand côté : pas en B ni en C ici.<br>⚠️ Ne compare pas avec n'importe quel côté : c'est le carré du <b>plus grand</b> côté qu'on compare.</div>
+<div class="retenir">À retenir : plus grand côté² = somme des deux autres carrés ⟹ triangle rectangle, en face du plus grand côté.</div>`;
 }
 
 function L10(d) {
@@ -579,13 +608,17 @@ function L10(d) {
 function C10() {
   const D = { T: { n: 'RST' }, lens: { RS: 5, RT: 7, ST: 9 } };
   D.pts = triFromSides(D.T, D.lens, 0);
+  const Y = { T: { n: 'ABC' }, lens: { AB: 6, AC: 8, BC: 10 } }, N = { T: { n: 'ABC' }, lens: { AB: 6, AC: 8, BC: 11 } };
+  Y.pts = triFromSides(Y.T, Y.lens, 0); N.pts = triFromSides(N.T, N.lens, 0);
   return `<h2>10. Rectangle ou pas ? La contraposée</h2>
+<p class="intro">Deux triangles peuvent se ressembler beaucoup sans être tous les deux rectangles. Le calcul tranche : il dit oui (réciproque) ou non (contraposée).</p>
 <div class="def"><b>Contraposée du théorème de Pythagore.</b> Si le carré du plus grand côté n'est <b>pas égal</b> à la somme des carrés des deux autres, alors le triangle n'est <b>pas</b> rectangle.</div>
-${recFig(D, false)}
-<div class="ex">RST avec RS = 5 cm, RT = 7 cm, ST = 9 cm. Le plus grand côté est [ST].<br>${sq('ST')} = 81 et ${sq('RS')} + ${sq('RT')} = 25 + 49 = 74.<br>81 ≠ 74 : d'après la contraposée du théorème de Pythagore, RST n'est pas rectangle.</div>
-<div class="ex">Si les deux nombres sont égaux, on utilise la <b>réciproque</b> : le triangle est rectangle.</div>
-<div class="warn">⚠️ Une figure qui « a l'air » rectangle ne prouve rien : seul le calcul compte.</div>
-<div class="warn">⚠️ 6, 8 et 11 « ressemblent » à 6, 8, 10 : 121 ≠ 100, ce triangle n'est pas rectangle.</div>`;
+<div class="cols"><div>${recFig(Y, false)}<p>6, 8, 10 : 100 = 36 + 64, <b>rectangle</b></p></div><div>${recFig(N, false)}<p>6, 8, 11 : 121 ≠ 100, <b>pas rectangle</b></p></div></div>
+<div class="methode"><b>Méthode</b><ol><li>Repère le plus grand côté et calcule son carré.</li><li>Calcule la somme des carrés des deux autres côtés.</li><li>Égaux : le triangle est rectangle (réciproque), en face du plus grand côté.</li><li>Différents : le triangle n'est pas rectangle (contraposée).</li></ol></div>
+<div class="cols"><div class="ex"><span class="q">Exemple 1 : RST avec RS = 5 cm, RT = 7 cm, ST = 9 cm.</span><br>Le plus grand côté est [ST].<br>${sq('ST')} = 81 et ${sq('RS')} + ${sq('RT')} = 25 + 49 = 74.<br>81 ≠ 74 : d'après la contraposée du théorème de Pythagore, RST <b>n'est pas</b> rectangle.</div>${recFig(D, false)}</div>
+<div class="ex"><span class="q">Exemple 2 (presque un piège) : IJK avec IJ = 0,7 cm, JK = 2,4 cm, IK = 2,6 cm.</span><br>${sq('IK')} = 6,76 et ${sq('IJ')} + ${sq('JK')} = 0,49 + 5,76 = 6,25.<br>6,76 ≠ 6,25 : IJK n'est pas rectangle. (Avec IK = 2,5 cm, il l'aurait été !)</div>
+<div class="warn">⚠️ Une figure qui « a l'air » rectangle ne prouve rien : seul le calcul compte.<br>⚠️ 6, 8 et 11 « ressemblent » à 6, 8, 10, mais 121 ≠ 100 : ce triangle n'est pas rectangle.<br>⚠️ Si c'est rectangle, l'angle droit est en face du plus grand côté, pas n'importe où.</div>
+<div class="retenir">À retenir : égalité ⟹ rectangle (réciproque) ; pas d'égalité ⟹ pas rectangle (contraposée).</div>`;
 }
 
 /* ======================================================================
@@ -662,13 +695,19 @@ function L11(d) {
 }
 function C11() {
   const pts = { A: [0, 4], B: [-3, 0], C: [3, 0], H: [0, 0] };
+  const iso = figure({ pts, polys: [['A', 'B', 'C']], segs: [{ k: 'AH', dash: true }], rights: [['H', 'A', 'C']], sides: [{ k: 'AB', t: '5 cm', away: 'C' }, { k: 'AC', t: '5 cm', away: 'B' }, { k: 'BH', t: '3 cm', away: 'A' }, { k: 'HC', t: '3 cm', away: 'A' }, { k: 'AH', t: '?', unk: true, away: 'C' }], aria: 'triangle isocèle et sa hauteur' });
+  const P2 = { A: [0, 3], B: [0, 0], C: [4, 0] }; P2.D = [4 + (3 / 5) * 12, (4 / 5) * 12]; // [CD] perpendiculaire à [AC], CD = 12
+  const two = figure({ pts: P2, polys: [['A', 'B', 'C'], ['A', 'C', 'D']], rights: [['B', 'A', 'C'], ['C', 'A', 'D']], sides: [{ k: 'AB', t: '3 cm', away: 'C' }, { k: 'BC', t: '4 cm', away: 'A' }, { k: 'CD', t: '12 cm', away: 'A' }, { k: 'AD', t: '?', unk: true, away: 'C' }], aria: 'triangles ABC et ACD rectangles accolés' });
   return `<h2>11. Problèmes à deux étapes</h2>
-<div class="def">On utilise Pythagore pour trouver une longueur <b>intermédiaire</b>, puis on s'en sert : pour un périmètre, une aire, ou un deuxième Pythagore dans un autre triangle rectangle.</div>
-${figure({ pts, polys: [['A', 'B', 'C']], segs: [{ k: 'AH', dash: true }], rights: [['H', 'A', 'C']], sides: [{ k: 'AB', t: '5 cm', away: 'C' }, { k: 'AC', t: '5 cm', away: 'B' }, { k: 'BH', t: '3 cm', away: 'A' }, { k: 'HC', t: '3 cm', away: 'A' }] })}
-<div class="ex">ABC isocèle en A, AB = 5 cm, BC = 6 cm, H milieu de [BC]. ABH est rectangle en H : ${sq('AH')} = ${sqn(5)} − ${sqn(3)} = 25 − 9 = 16, AH = 4 cm. Aire = 6 × 4 ÷ 2 = 12 cm².</div>
-<div class="ex">Deux triangles accolés : on calcule d'abord le côté commun, puis on l'utilise dans le second triangle.</div>
-<div class="warn">⚠️ Garde la valeur <b>exacte</b> pour la deuxième étape (par exemple ${sq('AC')} = 25), et n'arrondis qu'à la fin.</div>
-<div class="warn">⚠️ À chaque étape, repère bien l'hypoténuse du triangle utilisé : elle change d'un triangle à l'autre.</div>`;
+<p class="intro">Souvent, Pythagore ne donne pas directement la réponse : il fournit une longueur <b>intermédiaire</b> qu'on réutilise ensuite.</p>
+<div class="def">Étape 1 : Pythagore dans un triangle rectangle où deux longueurs sont connues.<br>Étape 2 : on se sert du résultat pour un <b>périmètre</b> (somme des 3 côtés), une <b>aire</b> (triangle rectangle : côté × côté de l'angle droit ÷ 2 ; triangle : base × hauteur ÷ 2) ou un <b>deuxième Pythagore</b>.</div>
+<div class="cols">${iso}${two}</div>
+<div class="methode"><b>Méthode</b><ol><li>Repère le triangle rectangle dans lequel deux longueurs sont connues.</li><li>Calcule la longueur manquante avec Pythagore (addition ou soustraction).</li><li>Utilise-la dans la deuxième étape : périmètre, aire ou autre triangle rectangle.</li><li>Garde la valeur exacte (ou la calculatrice) et n'arrondis qu'à la fin.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 (périmètre) : ABC rectangle en A, AB = 4 cm, AC = 7 cm.</span><br>${sq('BC')} = 16 + 49 = 65, BC = ${R(65)} ≈ 8,06… ≈ 8,1 cm.<br>Périmètre = 4 + 7 + ${R(65)} ≈ 19,06… ≈ <b>19,1 cm</b>.</div>
+<div class="ex"><span class="q">Exemple 2 (isocèle) : ABC isocèle en A, AB = 5 cm, BC = 6 cm, H milieu de [BC].</span><br>BH = 6 ÷ 2 = 3 cm. ABH est rectangle en H : ${sq('AH')} = ${sqn(5)} − ${sqn(3)} = 25 − 9 = 16, AH = 4 cm.<br>Aire = BC × AH ÷ 2 = 6 × 4 ÷ 2 = <b>12 cm²</b>.</div>
+<div class="ex"><span class="q">Exemple 3 (deux triangles) : ABC rectangle en B, ACD rectangle en C, AB = 3 cm, BC = 4 cm, CD = 12 cm.</span><br>Dans ABC : ${sq('AC')} = 9 + 16 = 25, AC = 5 cm.<br>Dans ACD, [AD] est l'hypoténuse : ${sq('AD')} = ${sqn(5)} + ${sqn(12)} = 25 + 144 = 169, AD = <b>13 cm</b>.</div>
+<div class="warn">⚠️ Garde la valeur <b>exacte</b> pour la deuxième étape (par exemple ${sq('AC')} = 25), et n'arrondis qu'à la fin.<br>⚠️ À chaque étape, repère bien l'hypoténuse du triangle utilisé : elle change d'un triangle à l'autre.<br>⚠️ L'aire d'un triangle rectangle utilise les deux côtés de l'angle droit, pas l'hypoténuse ; dans l'isocèle, BH est la <b>moitié</b> de BC.</div>
+<div class="retenir">À retenir : d'abord la longueur intermédiaire avec Pythagore, ensuite le calcul demandé.</div>`;
 }
 
 /* ======================================================================
@@ -751,13 +790,16 @@ function L12(d) {
 }
 function C12() {
   return `<h2>12. Défis</h2>
-<p>On réutilise tout : repérer un triangle rectangle caché, calculer, arrondir, raisonner en deux étapes.</p>
-<div class="def">• Dans un <b>repère</b>, AB est l'hypoténuse d'un triangle rectangle dont on compte les côtés en carreaux.<br>• Dans un <b>carré</b> de côté c, la diagonale d vérifie d² = c² + c² = 2c².<br>• Dans un <b>pavé droit</b>, on calcule d'abord la diagonale de la base, puis la grande diagonale.</div>
-${repere([1, 1], [4, 5], { tri: ['3', '4'] })}
-<div class="ex">A(1 ; 1), B(4 ; 5) : 3 carreaux à l'horizontale, 4 à la verticale. ${sq('AB')} = 9 + 16 = 25, AB = 5.</div>
-<div class="ex">Carré de côté 5 cm : ${sq('d')} = 25 + 25 = 50, d = ${R(50)} ≈ 7,1 cm.</div>
-<div class="warn">⚠️ Une échelle qui glisse garde la même longueur : c'est l'hypoténuse dans les deux positions.</div>
-<div class="warn">⚠️ N'arrondis pas les résultats intermédiaires.</div>`;
+<p class="intro">On réutilise tout : repérer un triangle rectangle caché, calculer, arrondir, raisonner en deux étapes.</p>
+<div class="def">• Dans un <b>repère</b>, AB est l'hypoténuse d'un triangle rectangle dont on compte les côtés en carreaux.<br>• Dans un <b>carré</b> de côté c, la diagonale d vérifie d² = c² + c² = 2c².<br>• Dans un triangle <b>équilatéral</b>, la hauteur tombe au milieu du côté opposé.<br>• Dans un <b>pavé droit</b>, on calcule d'abord la diagonale de la base, puis la grande diagonale.</div>
+<div class="cols">${repere([-2, 2], [2, 5], { tri: ['4', '3'] })}${pave(4, 3, 4, { L: '4 cm', l: '3 cm', h: '4 cm' }, { diag: true, base: true })}</div>
+<div class="methode"><b>Méthode</b><ol><li>Cherche le triangle rectangle caché (carreaux, coin du carré, hauteur, arête verticale du pavé, mur).</li><li>Note ce que tu connais : deux côtés de l'angle droit, ou l'hypoténuse et un côté.</li><li>Applique Pythagore, éventuellement deux fois.</li><li>Arrondis au dixième seulement à la fin.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 (repère) : A(−2 ; 2) et B(2 ; 5).</span><br>Horizontalement : 2 − (−2) = 4 carreaux ; verticalement : 5 − 2 = 3 carreaux.<br>${sq('AB')} = ${sqn(4)} + ${sqn(3)} = 16 + 9 = 25, AB = <b>5</b>.</div>
+<div class="ex"><span class="q">Exemple 2 (carré) : la diagonale d'un carré mesure 10 cm. Son côté c ?</span><br>c² + c² = ${sqn(10)}, donc 2c² = 100, c² = 50, c = ${R(50)} ≈ <b>7,1 cm</b>.</div>
+<div class="ex"><span class="q">Exemple 3 (équilatéral) : côté 6 cm, hauteur AH ?</span><br>BH = 3 cm et ABH est rectangle en H : ${sq('AH')} = 36 − 9 = 27, AH = ${R(27)} ≈ 5,19… ≈ <b>5,2 cm</b>.</div>
+<div class="ex"><span class="q">Exemple 4 (pavé) : AB = 4 cm, BC = 3 cm, CG = 4 cm.</span><br>Base : ${sq('AC')} = 16 + 9 = 25, AC = 5 cm. ACG est rectangle en C : ${sq('AG')} = 25 + 16 = 41, AG ≈ <b>6,4 cm</b>.</div>
+<div class="warn">⚠️ Une échelle qui glisse garde la même longueur : c'est l'hypoténuse dans les deux positions.<br>⚠️ Avec des coordonnées négatives, compte bien les carreaux : de −2 à 2, il y a 4 carreaux, pas 0.<br>⚠️ N'arrondis pas les résultats intermédiaires.</div>
+<div class="retenir">À retenir : dans chaque défi, il y a un triangle rectangle caché ; trouve-le, et Pythagore fait le reste.</div>`;
 }
 
 export const LEVELS = [

@@ -6,7 +6,7 @@ import { ri, pick, shuffle, chance } from '../../engine/util/rand.js';
 import { gcd, r6, decimals } from '../../engine/util/arith.js';
 import { M, F, big } from '../../engine/util/fmt.js';
 import { numsCheck, choiceCheck } from '../../engine/answers/checks.js';
-import { figure } from './draw.js';
+import { figure, grilleK } from './draw.js';
 
 /* ================= outils ================= */
 const DEG = Math.PI / 180;
@@ -192,38 +192,52 @@ function L1(d) {
 }
 function C1() {
   const T = { AB: 10, AC: 12, BC: 9, k: 0.4 };
+  const emb = mk(thalesPts(T.AB, T.AC, T.BC, T.k, false, 0), {}, { segs: thalesSegs(false), par: [['M', 'N'], ['B', 'C']], aria: 'triangles emboîtés AMN et ABC' });
+  const pap = mk(thalesPts(8, 10, 9, 0.5, true, 0), {}, { segs: thalesSegs(true), par: [['M', 'N'], ['B', 'C']], aria: 'configuration papillon' });
   return `<h2>1. Reconnaître une configuration de Thalès</h2>
+<p class="intro">Le théorème de Thalès sert à calculer des longueurs quand deux droites parallèles coupent deux droites sécantes. Avant de calculer, il faut savoir écrire la bonne égalité.</p>
 <div class="def">Deux droites sécantes en <b>A</b> ; M et B sur l'une, N et C sur l'autre ; <b>(MN) // (BC)</b>.<br>
 Alors les triangles AMN et ABC ont des côtés proportionnels : ${big(`${F('AM', 'AB')} = ${F('AN', 'AC')} = ${F('MN', 'BC')}`)}</div>
-${mk(thalesPts(T.AB, T.AC, T.BC, T.k, false, 0), {}, { segs: thalesSegs(false), par: [['M', 'N'], ['B', 'C']], aria: 'triangles emboîtés' })}
-<div class="ex">Méthode : en haut, les trois côtés du <b>petit</b> triangle AMN ; en bas, les côtés correspondants du <b>grand</b> triangle ABC.
-Deux côtés « correspondants » sont sur la même droite (AM et AB) ou parallèles (MN et BC).</div>
-<div class="warn">⚠️ Rapports dans le désordre : ${F('AM', 'AB')} = ${F('AC', 'AN')} est faux (un rapport est retourné).<br>⚠️ On mesure depuis le sommet commun A : ${F('AM', 'MB')} ne fait pas partie de l'égalité de Thalès.</div>
-<p class="note">Le théorème marche aussi quand M et N sont de l'autre côté de A (configuration « papillon », niveau 5).</p>`;
+<div class="cols">${emb}${pap}</div>
+<div class="methode"><b>Méthode</b><ol><li>Repère le sommet commun A : le point où se coupent les deux droites.</li><li>Repère les deux droites parallèles : elles donnent le triangle AMN et le triangle ABC.</li><li>En haut des fractions : les côtés de AMN (AM, AN, MN). En bas : les côtés <b>correspondants</b> de ABC (AB, AC, BC).</li><li>Vérifie : dans chaque fraction, les deux longueurs sont sur la même droite, ou sur les deux parallèles.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : M ∈ [AB], N ∈ [AC] et (MN) // (BC).</span><br>Petit triangle AMN, grand triangle ABC : ${F('AM', 'AB')} = ${F('AN', 'AC')} = ${F('MN', 'BC')}.</div>
+<div class="ex"><span class="q">Exemple 2 : d'autres lettres. R ∈ [PT], S ∈ [PU] et (RS) // (TU).</span><br>Le sommet commun est P ; les parallèles sont (RS) et (TU).<br>Donc ${F('PR', 'PT')} = ${F('PS', 'PU')} = ${F('RS', 'TU')}.</div>
+<div class="warn">⚠️ Rapports dans le désordre : ${F('AM', 'AB')} = ${F('AC', 'AN')} est faux (un rapport est retourné).<br>⚠️ On mesure depuis le sommet commun A : ${F('AM', 'MB')} ne fait pas partie de l'égalité de Thalès.<br>⚠️ Le troisième rapport compare les deux côtés <b>parallèles</b> : ${F('MN', 'BC')}, pas ${F('MN', 'AC')}.</div>
+<p class="note">Le théorème marche aussi quand M et N sont de l'autre côté de A (configuration « papillon », à droite, et niveau 5).</p>
+<div class="retenir">À retenir : en haut le petit triangle, en bas le grand, côtés correspondants face à face.</div>`;
 }
 
 /* ---------- 2. triangles emboîtés : entiers ---------- */
 function L2(d) { return thalesAsk(d, { pap: false, mode: 'int', ...pickIJS(d), extra: d >= 4 }); }
 function C2() {
   const T = { AB: 10, AC: 12, BC: 15, k: 0.4 };
+  const f1 = mk(thalesPts(T.AB, T.AC, T.BC, T.k, false, 0), {}, { segs: thalesSegs(false), par: [['M', 'N'], ['B', 'C']], lens: [lenLab(false, ['A', 'M'], '4 cm'), lenLab(false, ['A', 'B'], '10 cm'), lenLab(false, ['B', 'C'], '15 cm'), lenLab(false, ['M', 'N'], '?', true)], aria: 'exemple 1' });
+  const f2 = mk(thalesPts(7.5, 9, 6, 2 / 3, false, 0), {}, { segs: thalesSegs(false), par: [['M', 'N'], ['B', 'C']], lens: [lenLab(false, ['A', 'N'], '6 cm'), lenLab(false, ['A', 'C'], '9 cm'), lenLab(false, ['M', 'N'], '4 cm'), lenLab(false, ['B', 'C'], '?', true)], aria: 'exemple 2' });
   return `<h2>2. Calculer une longueur avec Thalès</h2>
-<div class="def">Si M ∈ [AB], N ∈ [AC] et (MN) // (BC), alors ${F('AM', 'AB')} = ${F('AN', 'AC')} = ${F('MN', 'BC')}.<br>On garde <b>deux</b> rapports : un rapport complet (deux longueurs connues) et celui qui contient la longueur cherchée.</div>
-${mk(thalesPts(T.AB, T.AC, T.BC, T.k, false, 0), {}, { segs: thalesSegs(false), par: [['M', 'N'], ['B', 'C']], lens: [lenLab(false, ['A', 'M'], '4 cm'), lenLab(false, ['A', 'B'], '10 cm'), lenLab(false, ['B', 'C'], '15 cm'), lenLab(false, ['M', 'N'], '?', true)], aria: 'exemple' })}
-<div class="ex">AM = 4 cm, AB = 10 cm, BC = 15 cm. On cherche MN.<br>${F('AM', 'AB')} = ${F('MN', 'BC')} donc ${F('4', '10')} = ${F('MN', '15')}.<br>Produit en croix : MN = 15 × 4 ÷ 10 = <b>6 cm</b>.</div>
-<div class="warn">⚠️ Ne pas inverser : ${F('4', '10')} = ${F('15', 'MN')} donnerait MN = 37,5 cm, plus grand que BC… impossible pour le petit triangle !</div>
-<p class="note">Contrôle rapide : le petit triangle a des côtés plus courts que le grand.</p>`;
+<p class="intro">Grâce à l'égalité des rapports, on calcule une longueur qu'on ne connaît pas à partir de trois longueurs connues.</p>
+<div class="def">Si M ∈ [AB], N ∈ [AC] et (MN) // (BC), alors ${F('AM', 'AB')} = ${F('AN', 'AC')} = ${F('MN', 'BC')}.<br>On garde <b>deux</b> rapports : un rapport <b>complet</b> (deux longueurs connues) et celui qui contient la longueur cherchée.</div>
+<div class="methode"><b>Méthode</b><ol><li>Écris l'égalité des trois rapports avec les lettres.</li><li>Remplace par les longueurs connues.</li><li>Garde le rapport complet et le rapport où se trouve l'inconnue.</li><li>Produit en croix : inconnue = (les deux nombres en diagonale multipliés) ÷ le troisième.</li><li>Contrôle : un côté du petit triangle est plus court que le côté correspondant du grand.</li></ol></div>
+<div class="cols">${f1}<div class="ex"><span class="q">Exemple 1 : AM = 4 cm, AB = 10 cm, BC = 15 cm. Calcule MN.</span><br>${F('AM', 'AB')} = ${F('MN', 'BC')} donc ${F('4', '10')} = ${F('MN', '15')}.<br>MN = 15 × 4 ÷ 10 = <b>6 cm</b>.</div></div>
+<div class="cols">${f2}<div class="ex"><span class="q">Exemple 2 : l'inconnue est en bas. AN = 6 cm, AC = 9 cm, MN = 4 cm. Calcule BC.</span><br>${F('AN', 'AC')} = ${F('MN', 'BC')} donc ${F('6', '9')} = ${F('4', 'BC')}.<br>BC = 4 × 9 ÷ 6 = <b>6 cm</b>.</div></div>
+<p class="note">Parfois l'énoncé donne une longueur de trop : elle ne sert pas, ne te laisse pas piéger.</p>
+<div class="warn">⚠️ Ne pas inverser : ${F('4', '10')} = ${F('15', 'MN')} donnerait MN = 37,5 cm, plus grand que BC… impossible pour le petit triangle !<br>⚠️ Choisis un rapport où les <b>deux</b> longueurs sont connues : avec ${F('AN', 'AC')} sans AN, on ne peut rien calculer.</div>
+<div class="retenir">À retenir : égalité des rapports, on garde le rapport complet et celui de l'inconnue, puis produit en croix.</div>`;
 }
 
 /* ---------- 3. décimaux ---------- */
 function L3(d) { return thalesAsk(d, { pap: false, mode: 'dec', ...pickIJS(Math.max(d, 1)), extra: d >= 4 }); }
 function C3() {
   const T = { AB: 7.5, AC: 9, BC: 6.5, k: 0.4 };
+  const f1 = mk(thalesPts(T.AB, T.AC, T.BC, T.k, false, 0), {}, { segs: thalesSegs(false), par: [['M', 'N'], ['B', 'C']], lens: [lenLab(false, ['A', 'N'], '3,6 cm'), lenLab(false, ['A', 'C'], '9 cm'), lenLab(false, ['M', 'N'], '2,6 cm'), lenLab(false, ['B', 'C'], '?', true)], aria: 'exemple 1' });
+  const f2 = mk(thalesPts(6, 8.5, 7, 0.4, false, 0), {}, { segs: thalesSegs(false), par: [['M', 'N'], ['B', 'C']], lens: [lenLab(false, ['A', 'M'], '2,4 cm'), lenLab(false, ['A', 'B'], '6 cm'), lenLab(false, ['A', 'C'], '8,5 cm'), lenLab(false, ['A', 'N'], '?', true)], aria: 'exemple 2' });
   return `<h2>3. Thalès avec des décimaux</h2>
-<div class="def">La méthode ne change pas : égalité des rapports, puis produit en croix.<br>Avec la calculatrice, on tape le calcul en une fois : <b>a × b ÷ c</b>.</div>
-${mk(thalesPts(T.AB, T.AC, T.BC, T.k, false, 0), {}, { segs: thalesSegs(false), par: [['M', 'N'], ['B', 'C']], lens: [lenLab(false, ['A', 'N'], '3,6 cm'), lenLab(false, ['A', 'C'], '9 cm'), lenLab(false, ['M', 'N'], '2,6 cm'), lenLab(false, ['B', 'C'], '?', true)], aria: 'exemple' })}
-<div class="ex">AN = 3,6 cm, AC = 9 cm, MN = 2,6 cm. On cherche BC.<br>${F('AN', 'AC')} = ${F('MN', 'BC')} donc ${F('3,6', '9')} = ${F('2,6', 'BC')}.<br>BC = 2,6 × 9 ÷ 3,6 = <b>6,5 cm</b>.</div>
-<div class="warn">⚠️ Rapports dans le désordre : écris toujours la ligne ${F('AM', 'AB')} = ${F('AN', 'AC')} = ${F('MN', 'BC')} avec les lettres <b>avant</b> de remplacer par les nombres.</div>
-<p class="note">Ici les réponses tombent juste : pas besoin d'arrondir.</p>`;
+<p class="intro">Les longueurs ne sont pas toujours entières. La méthode reste exactement la même : seule la calculatrice travaille un peu plus.</p>
+<div class="def">Égalité des rapports, puis produit en croix.<br>Avec la calculatrice, on tape le calcul en une fois : <b>a × b ÷ c</b>.<br>Autre façon : le rapport k = ${F('AM', 'AB')} est le même partout ; une longueur du petit triangle = k × la longueur correspondante du grand.</div>
+<div class="methode"><b>Méthode</b><ol><li>Écris la ligne ${F('AM', 'AB')} = ${F('AN', 'AC')} = ${F('MN', 'BC')} avec les lettres.</li><li>Remplace par les nombres décimaux (virgule !).</li><li>Produit en croix, calcul en une seule fois à la calculatrice.</li><li>Vérifie l'ordre de grandeur, puis écris le résultat avec la touche <b>,</b>.</li></ol></div>
+<div class="cols">${f1}<div class="ex"><span class="q">Exemple 1 : AN = 3,6 cm, AC = 9 cm, MN = 2,6 cm. Calcule BC.</span><br>${F('AN', 'AC')} = ${F('MN', 'BC')} donc ${F('3,6', '9')} = ${F('2,6', 'BC')}.<br>BC = 2,6 × 9 ÷ 3,6 = <b>6,5 cm</b>.</div></div>
+<div class="cols">${f2}<div class="ex"><span class="q">Exemple 2 : AM = 2,4 cm, AB = 6 cm, AC = 8,5 cm. Calcule AN.</span><br>${F('AM', 'AB')} = ${F('AN', 'AC')} donc ${F('2,4', '6')} = ${F('AN', '8,5')}.<br>AN = 8,5 × 2,4 ÷ 6 = <b>3,4 cm</b>.<br>(Ou : k = 2,4 ÷ 6 = 0,4 et AN = 0,4 × 8,5 = 3,4.)</div></div>
+<div class="warn">⚠️ Rapports dans le désordre : écris toujours la ligne avec les lettres <b>avant</b> de remplacer par les nombres.<br>⚠️ Ici les réponses tombent juste : si tu obtiens beaucoup de décimales, vérifie ton produit en croix.<br>⚠️ Contrôle : AN doit être plus petit que AC (3,4 &lt; 8,5).</div>
+<div class="retenir">À retenir : avec des décimaux, même méthode ; écris d'abord les lettres, puis les nombres.</div>`;
 }
 
 /* ---------- 4. côté « extérieur » : AB = AM + MB ---------- */
@@ -272,24 +286,32 @@ function L4(d) {
 }
 function C4() {
   const T = { AB: 10, AC: 12, BC: 15, k: 0.4 };
+  const f1 = mk(thalesPts(T.AB, T.AC, T.BC, T.k, false, 0), {}, { segs: thalesSegs(false), par: [['M', 'N'], ['B', 'C']], lens: [{ a: 'A', b: 'M', t: '4 cm' }, { a: 'M', b: 'B', t: '6 cm' }, { a: 'M', b: 'N', t: '6 cm' }, { a: 'B', b: 'C', ask: true }], aria: 'exemple 1' });
+  const f2 = mk(thalesPts(10, 12.5, 11, 0.4, false, 0), {}, { segs: thalesSegs(false), par: [['M', 'N'], ['B', 'C']], lens: [{ a: 'A', b: 'M', t: '4 cm' }, { a: 'M', b: 'B', t: '6 cm' }, { a: 'A', b: 'N', t: '5 cm' }, { a: 'N', b: 'C', ask: true }], aria: 'exemple 2' });
   return `<h2>4. Quand on donne MB au lieu de AB</h2>
+<p class="intro">L'énoncé ne donne pas toujours les longueurs depuis le sommet A. Il faut alors une petite addition (ou soustraction) avant ou après Thalès.</p>
 <div class="def">Les rapports de Thalès partent <b>toujours du sommet commun A</b>.<br>Si M ∈ [AB] : <b>AB = AM + MB</b> ; si N ∈ [AC] : <b>NC = AC − AN</b>.</div>
-${mk(thalesPts(T.AB, T.AC, T.BC, T.k, false, 0), {}, { segs: thalesSegs(false), par: [['M', 'N'], ['B', 'C']], lens: [{ a: 'A', b: 'M', t: '4 cm' }, { a: 'M', b: 'B', t: '6 cm' }, { a: 'M', b: 'N', t: '6 cm' }, { a: 'B', b: 'C', ask: true }], aria: 'exemple' })}
-<div class="ex">AM = 4 cm, MB = 6 cm, MN = 6 cm. On cherche BC.<br>AB = 4 + 6 = 10 cm. ${F('AM', 'AB')} = ${F('MN', 'BC')} : ${F('4', '10')} = ${F('6', 'BC')}, donc BC = 6 × 10 ÷ 4 = <b>15 cm</b>.</div>
-<div class="warn">⚠️ Mesure depuis le mauvais sommet : ${F('AM', 'MB')} = ${F('MN', 'BC')} est faux ! MB ne part pas de A.</div>
-<div class="warn">⚠️ Si l'on demande NC, Thalès donne d'abord AC ; il faut ensuite enlever AN.</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Si on te donne MB : calcule d'abord AB = AM + MB.</li><li>Écris l'égalité de Thalès (longueurs depuis A) et fais le produit en croix.</li><li>Si on te demande NC : Thalès donne AC, puis NC = AC − AN.</li></ol></div>
+<div class="cols">${f1}<div class="ex"><span class="q">Exemple 1 : AM = 4 cm, MB = 6 cm, MN = 6 cm. Calcule BC.</span><br>AB = 4 + 6 = 10 cm.<br>${F('AM', 'AB')} = ${F('MN', 'BC')} : ${F('4', '10')} = ${F('6', 'BC')}, donc BC = 6 × 10 ÷ 4 = <b>15 cm</b>.</div></div>
+<div class="cols">${f2}<div class="ex"><span class="q">Exemple 2 : AM = 4 cm, MB = 6 cm, AN = 5 cm. Calcule NC.</span><br>AB = 4 + 6 = 10 cm.<br>${F('AM', 'AB')} = ${F('AN', 'AC')} : ${F('4', '10')} = ${F('5', 'AC')}, donc AC = 5 × 10 ÷ 4 = 12,5 cm.<br>NC = AC − AN = 12,5 − 5 = <b>7,5 cm</b>.</div></div>
+<div class="warn">⚠️ Mesure depuis le mauvais sommet : ${F('AM', 'MB')} = ${F('MN', 'BC')} est faux ! MB ne part pas de A.<br>⚠️ Si l'on demande NC, Thalès donne d'abord AC ; il faut ensuite enlever AN.<br>⚠️ Les lettres peuvent changer de côté : repère toujours quel point est sur quel segment.</div>
+<div class="retenir">À retenir : toutes les longueurs des rapports partent du sommet commun A.</div>`;
 }
 
 /* ---------- 5. papillon ---------- */
 function L5(d) { return thalesAsk(d, { pap: true, mode: d >= 3 ? 'dec' : 'int', ...pickIJS(d), extra: d >= 4 }); }
 function C5() {
   const T = { AB: 8, AC: 10, BC: 9, k: 0.5 };
+  const f1 = mk(thalesPts(T.AB, T.AC, T.BC, T.k, true, 0), {}, { segs: thalesSegs(true), par: [['M', 'N'], ['B', 'C']], lens: [lenLab(true, ['A', 'M'], '4 cm'), lenLab(true, ['A', 'B'], '8 cm'), lenLab(true, ['B', 'C'], '9 cm'), lenLab(true, ['M', 'N'], '?', true)], aria: 'papillon, exemple 1' });
+  const f2 = mk(thalesPts(4, 5, 5, 1.5, true, 0), {}, { segs: thalesSegs(true), par: [['M', 'N'], ['B', 'C']], lens: [lenLab(true, ['A', 'M'], '6 cm'), lenLab(true, ['A', 'B'], '4 cm'), lenLab(true, ['B', 'C'], '5 cm'), lenLab(true, ['M', 'N'], '?', true)], aria: 'papillon, exemple 2' });
   return `<h2>5. La configuration « papillon »</h2>
+<p class="intro">Les deux triangles peuvent aussi être « tête-bêche », de part et d'autre du point A. Le théorème de Thalès s'applique de la même façon.</p>
 <div class="def">Les droites (MB) et (NC) se coupent en A, avec M et B <b>de part et d'autre</b> de A. Si <b>(MN) // (BC)</b> :${big(`${F('AM', 'AB')} = ${F('AN', 'AC')} = ${F('MN', 'BC')}`)}C'est la même égalité que pour les triangles emboîtés.</div>
-${mk(thalesPts(T.AB, T.AC, T.BC, T.k, true, 0), {}, { segs: thalesSegs(true), par: [['M', 'N'], ['B', 'C']], lens: [lenLab(true, ['A', 'M'], '4 cm'), lenLab(true, ['A', 'B'], '8 cm'), lenLab(true, ['B', 'C'], '9 cm'), lenLab(true, ['M', 'N'], '?', true)], aria: 'papillon' })}
-<div class="ex">AM = 4 cm, AB = 8 cm, BC = 9 cm : ${F('4', '8')} = ${F('MN', '9')}, donc MN = 9 × 4 ÷ 8 = <b>4,5 cm</b>.</div>
-<div class="warn">⚠️ Ici AB n'est <b>pas</b> AM + MB : A est entre M et B, et MB = AM + AB.</div>
-<div class="warn">⚠️ Associe bien les côtés : AM et AB sont sur la même droite ; MN et BC sont parallèles.</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Repère A, le point où se croisent les deux droites.</li><li>Associe les côtés : AM avec AB (même droite), AN avec AC (même droite), MN avec BC (parallèles).</li><li>Écris l'égalité des rapports, remplace, produit en croix.</li></ol></div>
+<div class="cols">${f1}<div class="ex"><span class="q">Exemple 1 : AM = 4 cm, AB = 8 cm, BC = 9 cm. Calcule MN.</span><br>${F('AM', 'AB')} = ${F('MN', 'BC')} : ${F('4', '8')} = ${F('MN', '9')}, donc MN = 9 × 4 ÷ 8 = <b>4,5 cm</b>.</div></div>
+<div class="cols">${f2}<div class="ex"><span class="q">Exemple 2 : ici le triangle AMN est le plus grand ! AM = 6 cm, AB = 4 cm, BC = 5 cm.</span><br>${F('AM', 'AB')} = ${F('MN', 'BC')} : ${F('6', '4')} = ${F('MN', '5')}, donc MN = 5 × 6 ÷ 4 = <b>7,5 cm</b>.<br>Le rapport est supérieur à 1 : c'est normal, AMN est plus grand.</div></div>
+<div class="warn">⚠️ Ici AB n'est <b>pas</b> AM + MB : A est entre M et B, et c'est MB = AM + AB.<br>⚠️ Associe bien les côtés : AM et AB sont sur la même droite ; MN et BC sont parallèles.<br>⚠️ En papillon, le « petit » triangle n'est pas toujours le plus petit : ne te fie qu'aux lettres.</div>
+<div class="retenir">À retenir : papillon ou emboîtés, c'est la même égalité ${F('AM', 'AB')} = ${F('AN', 'AC')} = ${F('MN', 'BC')}.</div>`;
 }
 
 /* ---------- 6. réciproque ---------- */
@@ -333,12 +355,19 @@ function L6(d) {
   }
 }
 function C6() {
+  const al = 60 * DEG, u = [Math.cos(-Math.PI / 2 - al / 2), Math.sin(-Math.PI / 2 - al / 2)], v = [Math.cos(-Math.PI / 2 + al / 2), Math.sin(-Math.PI / 2 + al / 2)];
+  const non = { A: [0, 0], B: mul(u, 10), C: mul(v, 13), M: mul(u, 4), N: mul(v, 5) };
+  const f1 = mk(thalesPts(10, 15, 12, 0.4, false, 0), {}, { segs: thalesSegs(false, false), lens: [{ a: 'A', b: 'M', t: '4 cm' }, { a: 'A', b: 'B', t: '10 cm', dim: true }, { a: 'A', b: 'N', t: '6 cm' }, { a: 'A', b: 'C', t: '15 cm', dim: true }], aria: 'rapports égaux : parallèles' });
+  const f2 = mk(non, {}, { segs: thalesSegs(false, false), lens: [{ a: 'A', b: 'M', t: '4 cm' }, { a: 'A', b: 'B', t: '10 cm', dim: true }, { a: 'A', b: 'N', t: '5 cm' }, { a: 'A', b: 'C', t: '13 cm', dim: true }], aria: 'rapports différents : pas parallèles' });
   return `<h2>6. La réciproque de Thalès</h2>
-<div class="def">Si les points A, M, B et A, N, C sont alignés <b>dans le même ordre</b> et si ${F('AM', 'AB')} = ${F('AN', 'AC')}, alors <b>(MN) // (BC)</b>.<br>Si les rapports sont <b>différents</b>, les droites ne sont <b>pas</b> parallèles (sinon Thalès donnerait l'égalité).</div>
-${mk(thalesPts(10, 15, 12, 0.4, false, 0), {}, { segs: thalesSegs(false, false), lens: [{ a: 'A', b: 'M', t: '4 cm' }, { a: 'A', b: 'B', t: '10 cm', dim: true }, { a: 'A', b: 'N', t: '6 cm' }, { a: 'A', b: 'C', t: '15 cm', dim: true }], aria: 'réciproque' })}
-<div class="ex">AM = 4, AB = 10, AN = 6, AC = 15. Produits en croix : 4 × 15 = 60 et 10 × 6 = 60. Égaux : <b>(MN) // (BC)</b>.</div>
-<div class="ex">AM = 4, AB = 10, AN = 5, AC = 13 : 4 × 13 = 52 et 10 × 5 = 50. Différents : <b>pas parallèles</b>.</div>
-<div class="warn">⚠️ Une figure « qui a l'air » parallèle ne prouve rien : on calcule.<br>⚠️ Compare des rapports écrits dans le même sens (petit ÷ grand des deux côtés).</div>`;
+<p class="intro">Cette fois, on ne sait pas si (MN) et (BC) sont parallèles : on veut le <b>prouver</b> (ou montrer que non) grâce aux longueurs.</p>
+<div class="def"><b>Réciproque.</b> Si les points A, M, B et A, N, C sont alignés <b>dans le même ordre</b> et si ${F('AM', 'AB')} = ${F('AN', 'AC')}, alors <b>(MN) // (BC)</b>.<br>Si les rapports sont <b>différents</b>, les droites ne sont <b>pas</b> parallèles (sinon le théorème de Thalès donnerait l'égalité).</div>
+<div class="methode"><b>Méthode</b><ol><li>Si on te donne MB et NC : calcule d'abord AB = AM + MB et AC = AN + NC.</li><li>Écris les deux rapports ${F('AM', 'AB')} et ${F('AN', 'AC')}, dans le même sens.</li><li>Compare-les avec les produits en croix : AM × AC et AB × AN.</li><li>Égaux (et points dans le même ordre) : parallèles. Différents : pas parallèles.</li></ol></div>
+<div class="cols">${f1}<div class="ex"><span class="q">Exemple 1 : AM = 4, AB = 10, AN = 6, AC = 15.</span><br>Produits en croix : 4 × 15 = 60 et 10 × 6 = 60.<br>Égaux : d'après la réciproque du théorème de Thalès, <b>(MN) // (BC)</b>.</div></div>
+<div class="cols">${f2}<div class="ex"><span class="q">Exemple 2 : AM = 4, AB = 10, AN = 5, AC = 13.</span><br>4 × 13 = 52 et 10 × 5 = 50.<br>Différents : <b>(MN) et (BC) ne sont pas parallèles</b>, même si ça y ressemble.</div></div>
+<div class="ex"><span class="q">Exemple 3 : on donne AM = 3, MB = 4,5, AN = 4, NC = 6.</span><br>AB = 3 + 4,5 = 7,5 et AC = 4 + 6 = 10.<br>3 × 10 = 30 et 7,5 × 4 = 30 : égaux, donc <b>(MN) // (BC)</b>.</div>
+<div class="warn">⚠️ Une figure « qui a l'air » parallèle ne prouve rien : on calcule. « On ne peut pas savoir » n'est jamais la bonne réponse ici.<br>⚠️ Compare des rapports écrits dans le même sens (petit ÷ grand des deux côtés).<br>⚠️ ${F('AM', 'MB')} et ${F('AN', 'NC')} ne servent pas : les rapports partent de A.</div>
+<div class="retenir">À retenir : rapports égaux ⟹ parallèles ; rapports différents ⟹ pas parallèles.</div>`;
 }
 
 /* ---------- 7. agrandissement et réduction ---------- */
@@ -407,11 +436,15 @@ function L7(d) {
 function C7() {
   const P = { A: [0, 0], B: [4, 0], C: [2.2, 2.4], 'A′': [5.5, 0], 'B′': [11.5, 0], 'C′': [8.8, 3.6] };
   return `<h2>7. Agrandissement et réduction</h2>
-<div class="def">Une figure de rapport <b>k</b> s'obtient en multipliant <b>toutes les longueurs par k</b> (les angles ne changent pas).<br>k &gt; 1 : agrandissement ; k &lt; 1 : réduction. Les <b>aires</b> sont multipliées par <b>k²</b>.</div>
-${figure({ P, segs: [['A', 'B'], ['B', 'C'], ['C', 'A'], ['A′', 'B′'], ['B′', 'C′'], ['C′', 'A′']], lens: [{ a: 'A', b: 'B', t: '4 cm' }, { a: 'A′', b: 'B′', t: '6 cm' }], W: 380, H: 150, aria: 'agrandissement' })}
-<div class="ex">AB = 4 cm et A′B′ = 6 cm : k = 6 ÷ 4 = <b>1,5</b>. Si l'aire de ABC est 5 cm², celle de A′B′C′ est 1,5² × 5 = <b>11,25 cm²</b>.</div>
+<p class="intro">Une photo agrandie, un plan, une maquette : toutes les longueurs sont multipliées par un même nombre k. Ce nombre suffit pour tout calculer.</p>
+<div class="def">Une figure de rapport <b>k</b> s'obtient en multipliant <b>toutes les longueurs par k</b> (les angles ne changent pas).<br>k &gt; 1 : <b>agrandissement</b> ; k &lt; 1 : <b>réduction</b>.<br>k = ${F('longueur de l\'image', 'longueur de départ')} ; les <b>aires</b> sont multipliées par <b>k²</b>.</div>
+<div class="cols">${figure({ P, segs: [['A', 'B'], ['B', 'C'], ['C', 'A'], ['A′', 'B′'], ['B′', 'C′'], ['C′', 'A′']], lens: [{ a: 'A', b: 'B', t: '4 cm' }, { a: 'A′', b: 'B′', t: '6 cm' }], W: 380, H: 150, aria: 'agrandissement de rapport 1,5' })}${grilleK()}</div>
+<div class="methode"><b>Méthode</b><ol><li>Trouver k : divise une longueur de l'image par la longueur correspondante de départ.</li><li>Longueur de l'image : multiplie par k.</li><li>Revenir à la figure de départ : divise par k.</li><li>Aire de l'image : multiplie l'aire de départ par k².</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : AB = 4 cm et A′B′ = 6 cm.</span><br>k = 6 ÷ 4 = <b>1,5</b> (k &gt; 1 : agrandissement).<br>Si l'aire de ABC est 5 cm², celle de A′B′C′ est 1,5² × 5 = 2,25 × 5 = <b>11,25 cm²</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : réduction de rapport k = 0,75 avec B′C′ = 6 cm. Calcule BC.</span><br>B′C′ = 0,75 × BC, donc BC = 6 ÷ 0,75 = <b>8 cm</b>.<br>Contrôle : la figure de départ est plus grande que sa réduction (8 &gt; 6).</div>
 <div class="ex">Dans une configuration de Thalès, le triangle AMN est une réduction du triangle ABC, de rapport k = ${F('AM', 'AB')}.</div>
-<div class="warn">⚠️ k = longueur de l'<b>image</b> ÷ longueur de <b>départ</b> (pas l'inverse).<br>⚠️ Une aire n'est pas multipliée par k mais par k².</div>`;
+<div class="warn">⚠️ k = longueur de l'<b>image</b> ÷ longueur de <b>départ</b> (pas l'inverse).<br>⚠️ Une aire n'est pas multipliée par k mais par k² : en doublant les côtés, l'aire est multipliée par 4.<br>⚠️ Pour revenir de l'image au départ, on <b>divise</b> par k.</div>
+<div class="retenir">À retenir : longueurs × k, aires × k².</div>`;
 }
 
 /* ================= trigonométrie ================= */
@@ -479,11 +512,17 @@ function L8(d) {
 }
 function C8() {
   const P = trigPts(35, 'adj', 8);
+  const f1 = mk(P, { V: 'A', R: 'B', W: 'C' }, { segs: [['V', 'R'], ['R', 'W'], ['V', 'W']], right: [['R', 'V', 'W']], angs: [{ v: 'V', a: 'R', b: 'W', t: ang('B', 'A', 'C') }], lens: [{ a: 'V', b: 'R', t: 'adjacent' }, { a: 'R', b: 'W', t: 'opposé' }, { a: 'V', b: 'W', t: 'hypoténuse' }], aria: 'vocabulaire pour l\'angle en A' });
+  const f2 = mk(P, { V: 'A', R: 'B', W: 'C' }, { segs: [['V', 'R'], ['R', 'W'], ['V', 'W']], right: [['R', 'V', 'W']], angs: [{ v: 'W', a: 'R', b: 'V', t: ang('B', 'C', 'A') }], lens: [{ a: 'V', b: 'R', t: 'opposé' }, { a: 'R', b: 'W', t: 'adjacent' }, { a: 'V', b: 'W', t: 'hypoténuse' }], aria: 'vocabulaire pour l\'angle en C' });
   return `<h2>8. Côté adjacent, côté opposé, hypoténuse</h2>
-<div class="def">Dans un triangle <b>rectangle</b>, pour un angle aigu donné :<br>• l'<b>hypoténuse</b> est en face de l'angle droit (c'est le plus long côté) ;<br>• le <b>côté adjacent</b> touche le sommet de l'angle (et n'est pas l'hypoténuse) ;<br>• le <b>côté opposé</b> est en face de l'angle.</div>
-${mk(P, { V: 'A', R: 'B', W: 'C' }, { segs: [['V', 'R'], ['R', 'W'], ['V', 'W']], right: [['R', 'V', 'W']], angs: [{ v: 'V', a: 'R', b: 'W', t: ang('B', 'A', 'C') }], lens: [{ a: 'V', b: 'R', t: 'adjacent' }, { a: 'R', b: 'W', t: 'opposé' }, { a: 'V', b: 'W', t: 'hypoténuse' }], aria: 'vocabulaire' })}
-<div class="ex">Triangle ABC rectangle en B, angle ${ang('B', 'A', 'C')} : hypoténuse [AC], adjacent [AB], opposé [BC].<br>Pour l'autre angle ${ang('B', 'C', 'A')} : l'adjacent devient [BC] et l'opposé [AB] !</div>
-<div class="warn">⚠️ « Adjacent » et « opposé » dépendent de l'angle choisi ; l'hypoténuse, elle, ne change jamais.</div>`;
+<p class="intro">La trigonométrie relie un angle aigu d'un triangle rectangle à ses côtés. Il faut d'abord savoir nommer chaque côté <b>par rapport à l'angle étudié</b>.</p>
+<div class="def">Dans un triangle <b>rectangle</b>, pour un angle aigu donné :<br>• l'<b>hypoténuse</b> est en face de l'angle droit (c'est le plus long côté) ;<br>• le <b>côté adjacent</b> touche le sommet de l'angle (et n'est pas l'hypoténuse) ;<br>• le <b>côté opposé</b> est en face de l'angle : il ne touche pas son sommet.</div>
+<div class="cols">${f1}${f2}</div>
+<div class="methode"><b>Méthode</b><ol><li>Repère l'angle droit : l'hypoténuse est en face.</li><li>Repère le sommet de l'angle étudié.</li><li>Le côté qui part de ce sommet, autre que l'hypoténuse, est le côté adjacent.</li><li>Le côté restant, qui ne touche pas ce sommet, est le côté opposé.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : ABC rectangle en B, angle ${ang('B', 'A', 'C')}.</span><br>Hypoténuse [AC] ; côté adjacent [AB] (il part de A) ; côté opposé [BC].</div>
+<div class="ex"><span class="q">Exemple 2 : même triangle, mais pour l'angle ${ang('B', 'C', 'A')}.</span><br>L'hypoténuse reste [AC]. Mais le côté adjacent devient [BC] (il part de C) et le côté opposé devient [AB].</div>
+<div class="warn">⚠️ « Adjacent » et « opposé » dépendent de l'angle choisi ; l'hypoténuse, elle, ne change jamais.<br>⚠️ L'hypoténuse touche aussi le sommet de l'angle, mais ce n'est jamais le côté adjacent.<br>⚠️ La figure peut être tournée et les lettres changées : pars toujours du codage de l'angle droit.</div>
+<div class="retenir">À retenir : adjacent = touche l'angle, opposé = en face de l'angle, hypoténuse = en face de l'angle droit.</div>`;
 }
 
 /* ---------- 9. choisir cos, sin ou tan ---------- */
@@ -511,11 +550,17 @@ function L9(d) {
   };
 }
 function C9() {
+  const f1 = mk(trigPts(40, 'hyp', 9), { V: 'A', R: 'B', W: 'C' }, { segs: [['V', 'R'], ['R', 'W'], ['V', 'W']], right: [['R', 'V', 'W']], angs: [{ v: 'V', a: 'R', b: 'W', t: '40°' }], lens: [{ a: 'V', b: 'W', t: '9 cm' }, { a: 'V', b: 'R', ask: true }], aria: 'exemple 1 : cosinus' });
+  const f2 = mk(trigPts(50, 'opp', 5), { V: 'A', R: 'B', W: 'C' }, { segs: [['V', 'R'], ['R', 'W'], ['V', 'W']], right: [['R', 'V', 'W']], angs: [{ v: 'V', a: 'R', b: 'W', t: '50°' }], lens: [{ a: 'R', b: 'W', t: '5 cm' }, { a: 'V', b: 'R', ask: true }], aria: 'exemple 2 : tangente' });
   return `<h2>9. Cosinus, sinus, tangente</h2>
+<p class="intro">Trois formules relient un angle aigu à deux côtés du triangle rectangle. Le tout est de choisir celle qui contient les deux côtés de l'exercice.</p>
 <div class="def">Dans un triangle rectangle, pour un angle aigu :${big('cos = <span class="frac"><span>adjacent</span><span>hypoténuse</span></span> &nbsp; sin = <span class="frac"><span>opposé</span><span>hypoténuse</span></span> &nbsp; tan = <span class="frac"><span>opposé</span><span>adjacent</span></span>')}Moyen mnémotechnique : <b>SOH-CAH-TOA</b> (Sin Opp/Hyp, Cos Adj/Hyp, Tan Opp/Adj).</div>
-${mk(trigPts(40, 'hyp', 9), { V: 'A', R: 'B', W: 'C' }, { segs: [['V', 'R'], ['R', 'W'], ['V', 'W']], right: [['R', 'V', 'W']], angs: [{ v: 'V', a: 'R', b: 'W', t: '40°' }], lens: [{ a: 'V', b: 'W', t: '9 cm' }, { a: 'V', b: 'R', ask: true }], aria: 'exemple' })}
-<div class="ex">On connaît l'hypoténuse AC et on cherche AB, le côté adjacent à l'angle ${ang('B', 'A', 'C')} : la formule qui relie adjacent et hypoténuse est le <b>cosinus</b>.</div>
-<div class="warn">⚠️ SOH-CAH-TOA mal appliqué : avant de choisir, écris le rôle de <b>chaque</b> côté pour l'angle étudié.</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Écris le rôle des deux côtés utiles pour l'angle étudié (celui qu'on connaît et celui qu'on cherche, ou les deux connus si on cherche l'angle).</li><li>adjacent + hypoténuse : <b>cos</b> ; opposé + hypoténuse : <b>sin</b> ; opposé + adjacent : <b>tan</b>.</li><li>Écris la formule avec les lettres du triangle.</li></ol></div>
+<div class="cols">${f1}<div class="ex"><span class="q">Exemple 1 : on connaît AC = 9 cm et on cherche AB.</span><br>Pour l'angle ${ang('B', 'A', 'C')} : [AC] est l'hypoténuse, [AB] le côté adjacent.<br>Adjacent + hypoténuse : <b>cos ${ang('B', 'A', 'C')} = ${F('AB', 'AC')}</b>.</div></div>
+<div class="cols">${f2}<div class="ex"><span class="q">Exemple 2 : on connaît BC = 5 cm et on cherche AB.</span><br>[BC] est opposé à l'angle en A, [AB] est adjacent. Pas d'hypoténuse !<br>Opposé + adjacent : <b>tan ${ang('B', 'A', 'C')} = ${F('BC', 'AB')}</b>.</div></div>
+<div class="ex"><span class="q">Exemple 3 : on connaît BC (opposé) et AC (hypoténuse), on cherche l'angle ${ang('B', 'A', 'C')}.</span><br>Opposé + hypoténuse : <b>sin ${ang('B', 'A', 'C')} = ${F('BC', 'AC')}</b>.</div>
+<div class="warn">⚠️ SOH-CAH-TOA mal appliqué : avant de choisir, écris le rôle de <b>chaque</b> côté pour l'angle étudié.<br>⚠️ Le côté qui n'intervient pas dans l'exercice ne compte pas : regarde seulement les deux côtés utiles.<br>⚠️ Si l'angle étudié change, les rôles adjacent / opposé s'échangent.</div>
+<div class="retenir">À retenir : SOH-CAH-TOA, choisi d'après les deux côtés de l'exercice.</div>`;
 }
 
 /* ---------- 10. calculer une longueur ---------- */
@@ -552,12 +597,17 @@ function L10(d) {
   }
 }
 function C10() {
+  const f1 = mk(trigPts(35, 'hyp', 8), { V: 'A', R: 'B', W: 'C' }, { segs: [['V', 'R'], ['R', 'W'], ['V', 'W']], right: [['R', 'V', 'W']], angs: [{ v: 'V', a: 'R', b: 'W', t: '35°' }], lens: [{ a: 'V', b: 'W', t: '8 cm' }, { a: 'R', b: 'W', ask: true }], aria: 'exemple 1 : sinus' });
+  const f3 = mk(trigPts(40, 'adj', 6), { V: 'A', R: 'B', W: 'C' }, { segs: [['V', 'R'], ['R', 'W'], ['V', 'W']], right: [['R', 'V', 'W']], angs: [{ v: 'V', a: 'R', b: 'W', t: '40°' }], lens: [{ a: 'V', b: 'R', t: '6 cm' }, { a: 'V', b: 'W', ask: true }], aria: 'exemple 3 : longueur au dénominateur' });
   return `<h2>10. Calculer une longueur</h2>
-<div class="def">1. Repérer le rôle des deux côtés (celui qu'on connaît, celui qu'on cherche).<br>2. Choisir cos, sin ou tan (SOH-CAH-TOA) et écrire la formule.<br>3. Produit en croix, calculatrice en mode <b>degrés</b>, puis arrondir.</div>
-${mk(trigPts(35, 'hyp', 8), { V: 'A', R: 'B', W: 'C' }, { segs: [['V', 'R'], ['R', 'W'], ['V', 'W']], right: [['R', 'V', 'W']], angs: [{ v: 'V', a: 'R', b: 'W', t: '35°' }], lens: [{ a: 'V', b: 'W', t: '8 cm' }, { a: 'R', b: 'W', ask: true }], aria: 'exemple' })}
-<div class="ex">ABC rectangle en B, ${ang('B', 'A', 'C')} = 35°, AC = 8 cm. BC est opposé, AC l'hypoténuse : sin ${ang('B', 'A', 'C')} = ${F('BC', 'AC')}.<br>BC = 8 × sin(35°) ≈ 4,588… ≈ <b>4,6 cm</b>.</div>
-<div class="ex">Si la longueur cherchée est en bas : cos(40°) = ${F('6', 'AC')} donc AC = 6 ÷ cos(40°) ≈ <b>7,8 cm</b>.</div>
-<div class="warn">⚠️ Calculatrice en <b>radians</b> : sin(35) ≈ −0,43 au lieu de 0,57 ! Vérifie le mode DEG.<br>⚠️ Arrondir n'est pas tronquer : 4,588 → 4,6 (et pas 4,5).</div>`;
+<p class="intro">Avec un angle et une longueur, la trigonométrie donne n'importe quel autre côté du triangle rectangle.</p>
+<div class="def">On écrit la formule (cos, sin ou tan) avec les lettres, on remplace ce qu'on connaît, puis on isole la longueur cherchée :<br>• si elle est <b>en haut</b> de la fraction, on <b>multiplie</b> : BC = AC × sin(35°) ;<br>• si elle est <b>en bas</b>, on <b>divise</b> : AC = AB ÷ cos(40°).</div>
+<div class="methode"><b>Méthode</b><ol><li>Repère le rôle des deux côtés (celui qu'on connaît, celui qu'on cherche).</li><li>Choisis cos, sin ou tan (SOH-CAH-TOA) et écris la formule.</li><li>Remplace, puis produit en croix.</li><li>Calculatrice en mode <b>degrés</b>, puis arrondis au dixième.</li></ol></div>
+<div class="cols">${f1}<div class="ex"><span class="q">Exemple 1 : ${ang('B', 'A', 'C')} = 35°, AC = 8 cm. Calcule BC.</span><br>BC est opposé, AC l'hypoténuse : sin ${ang('B', 'A', 'C')} = ${F('BC', 'AC')}.<br>sin(35°) = ${F('BC', '8')}, donc BC = 8 × sin(35°) ≈ 4,588… ≈ <b>4,6 cm</b>.</div></div>
+<div class="ex"><span class="q">Exemple 2 : ${ang('B', 'A', 'C')} = 40°, AB = 6 cm. Calcule BC.</span><br>BC est opposé, AB adjacent : tan ${ang('B', 'A', 'C')} = ${F('BC', 'AB')}.<br>BC = 6 × tan(40°) ≈ 5,034… ≈ <b>5,0 cm</b>.</div>
+<div class="cols">${f3}<div class="ex"><span class="q">Exemple 3 : la longueur cherchée est en bas. ${ang('B', 'A', 'C')} = 40°, AB = 6 cm. Calcule AC.</span><br>cos(40°) = ${F('6', 'AC')}, donc AC = 6 ÷ cos(40°) ≈ 7,832… ≈ <b>7,8 cm</b>.<br>Contrôle : l'hypoténuse est bien plus longue que AB.</div></div>
+<div class="warn">⚠️ Calculatrice en <b>radians</b> : sin(35) ≈ −0,43 au lieu de 0,57 ! Vérifie le mode DEG.<br>⚠️ Arrondir n'est pas tronquer : 4,588 → 4,6 (et pas 4,5).<br>⚠️ Longueur au dénominateur : on divise par le cosinus (ou sinus, tangente), on ne multiplie pas.</div>
+<div class="retenir">À retenir : en haut on multiplie, en bas on divise ; toujours en degrés.</div>`;
 }
 
 /* ---------- 11. calculer un angle ---------- */
@@ -595,11 +645,17 @@ function L11(d) {
   }
 }
 function C11() {
+  const fc = mk({ V: [0, 0], R: [4, 0], W: [4, Math.sqrt(33)] }, { V: 'A', R: 'B', W: 'C' }, { segs: [['V', 'R'], ['R', 'W'], ['V', 'W']], right: [['R', 'V', 'W']], angs: [{ v: 'V', a: 'R', b: 'W', ask: true }], lens: [{ a: 'V', b: 'R', t: '4 cm' }, { a: 'V', b: 'W', t: '7 cm' }], aria: 'exemple 1 : cosinus' });
+  const ft = mk({ V: [0, 0], R: [5, 0], W: [5, 6] }, { V: 'A', R: 'B', W: 'C' }, { segs: [['V', 'R'], ['R', 'W'], ['V', 'W']], right: [['R', 'V', 'W']], angs: [{ v: 'V', a: 'R', b: 'W', ask: true }], lens: [{ a: 'V', b: 'R', t: '5 cm' }, { a: 'R', b: 'W', t: '6 cm' }], aria: 'exemple 2 : tangente' });
   return `<h2>11. Calculer un angle</h2>
-<div class="def">Quand on connaît <b>deux côtés</b>, on calcule le cosinus (ou sinus, ou tangente) de l'angle, puis on retrouve l'angle avec la touche <b>cos<sup>−1</sup></b> (ou sin<sup>−1</sup>, tan<sup>−1</sup>), parfois notée « arccos » ou « Acs ».</div>
-${mk({ V: [0, 0], R: [5, 0], W: [5, 6] }, { V: 'A', R: 'B', W: 'C' }, { segs: [['V', 'R'], ['R', 'W'], ['V', 'W']], right: [['R', 'V', 'W']], angs: [{ v: 'V', a: 'R', b: 'W', ask: true }], lens: [{ a: 'V', b: 'R', t: '5 cm' }, { a: 'R', b: 'W', t: '6 cm' }], aria: 'exemple' })}
-<div class="ex">AB = 5 cm (adjacent), BC = 6 cm (opposé) : tan ${ang('B', 'A', 'C')} = ${F('6', '5')} = 1,2.<br>${ang('B', 'A', 'C')} = tan<sup>−1</sup>(1,2) ≈ 50,19° ≈ <b>50°</b>.</div>
-<div class="warn">⚠️ En mode radians, tan<sup>−1</sup>(1,2) ≈ 0,876 : ce n'est pas un angle en degrés ! Passe en DEG.<br>⚠️ Un angle aigu est entre 0° et 90° ; un cosinus ou un sinus est toujours entre 0 et 1.</div>`;
+<p class="intro">Quand on connaît deux côtés d'un triangle rectangle, on peut retrouver la mesure d'un angle aigu grâce aux touches « inverses » de la calculatrice.</p>
+<div class="def">On calcule le cosinus (ou sinus, ou tangente) de l'angle, puis on retrouve l'angle avec la touche <b>cos<sup>−1</sup></b> (ou sin<sup>−1</sup>, tan<sup>−1</sup>), parfois notée « arccos » ou « Acs ».</div>
+<div class="methode"><b>Méthode</b><ol><li>Repère le rôle des deux côtés connus pour l'angle cherché.</li><li>Choisis cos, sin ou tan, et écris le rapport des deux longueurs.</li><li>Calculatrice en degrés : angle = cos<sup>−1</sup>(rapport) (ou sin<sup>−1</sup>, tan<sup>−1</sup>).</li><li>Arrondis au degré.</li></ol></div>
+<div class="cols">${fc}<div class="ex"><span class="q">Exemple 1 : AB = 4 cm (adjacent), AC = 7 cm (hypoténuse).</span><br>cos ${ang('B', 'A', 'C')} = ${F('4', '7')}.<br>${ang('B', 'A', 'C')} = cos<sup>−1</sup>(4 ÷ 7) ≈ 55,15° ≈ <b>55°</b>.</div></div>
+<div class="cols">${ft}<div class="ex"><span class="q">Exemple 2 : AB = 5 cm (adjacent), BC = 6 cm (opposé).</span><br>tan ${ang('B', 'A', 'C')} = ${F('6', '5')} = 1,2.<br>${ang('B', 'A', 'C')} = tan<sup>−1</sup>(1,2) ≈ 50,19° ≈ <b>50°</b>.</div></div>
+<div class="ex"><span class="q">Exemple 3 : BC = 3 cm (opposé), AC = 8 cm (hypoténuse).</span><br>sin ${ang('B', 'A', 'C')} = ${F('3', '8')} = 0,375, donc ${ang('B', 'A', 'C')} = sin<sup>−1</sup>(0,375) ≈ 22,02° ≈ <b>22°</b>.</div>
+<div class="warn">⚠️ En mode radians, tan<sup>−1</sup>(1,2) ≈ 0,876 : ce n'est pas un angle en degrés ! Passe en DEG.<br>⚠️ Si tu trouves 90° moins la bonne réponse, tu as calculé l'autre angle aigu : revois adjacent et opposé.<br>⚠️ Un angle aigu est entre 0° et 90° ; un cosinus ou un sinus est toujours entre 0 et 1.</div>
+<div class="retenir">À retenir : rapport des deux côtés, puis touche cos<sup>−1</sup>, sin<sup>−1</sup> ou tan<sup>−1</sup> en degrés.</div>`;
 }
 
 /* ---------- 12. défis : problèmes ---------- */
@@ -704,13 +760,21 @@ function L12(d) {
   }
 }
 function C12() {
-  const P = { S: [0, 0], B: [1.5, 0], H: [1.5, 1.2], T: [6, 0], A: [6, 4.8] };
+  const P = { S: [0, 0], B: [2, 0], H: [2, 1.6], T: [6, 0], A: [6, 4.8] };
+  const ombre = figure({ P, segs: [['S', 'B'], ['B', 'T'], ['B', 'H', 'par'], ['T', 'A', 'par'], ['S', 'A', 'dash']], par: [['H', 'B'], ['A', 'T']], right: [['B', 'S', 'H'], ['T', 'S', 'A']], lens: [{ a: 'B', b: 'H', t: '1,6 m' }, { a: 'S', b: 'B', t: '2 m', side: 'in' }, { a: 'S', b: 'T', t: '6 m', dim: true }, { a: 'T', b: 'A', ask: true }], W: 320, H: 170, aria: 'ombres' });
+  const top = 10 * Math.tan(35 * DEG);
+  const Q = { F: [0, 0], O: [0, 1.5], H: [10, 1.5], S: [10, 1.5 + top], G: [10, 0] };
+  const arbre = figure({ P: Q, segs: [['F', 'G', 'thin'], ['F', 'O', 'thin'], ['O', 'H', 'dash'], ['G', 'H'], ['H', 'S'], ['O', 'S', 'dash']], right: [['H', 'O', 'S']], angs: [{ v: 'O', a: 'H', b: 'S', t: '35°' }], lens: [{ a: 'O', b: 'H', t: '10 m' }, { a: 'G', b: 'H', t: '1,5 m' }, { a: 'G', b: 'S', ask: true, dim: true }], hide: ['F'], W: 300, H: 180, aria: 'hauteur d\'un arbre' });
   return `<h2>12. Défis : problèmes</h2>
-<div class="def">Méthode : 1. faire un schéma et repérer un <b>triangle rectangle</b> (trigonométrie) ou des <b>droites parallèles</b> (Thalès) ;<br>2. écrire la formule avec les lettres ; 3. calculer ; 4. vérifier que le résultat est réaliste et répondre par une phrase.</div>
-${figure({ P, segs: [['S', 'B'], ['B', 'T'], ['B', 'H', 'par'], ['T', 'A', 'par'], ['S', 'A', 'dash']], par: [['H', 'B'], ['A', 'T']], right: [['B', 'S', 'H'], ['T', 'S', 'A']], lens: [{ a: 'B', b: 'H', t: '1,2 m' }, { a: 'S', b: 'B', t: '1,5 m', side: 'in' }, { a: 'S', b: 'T', t: '6 m', dim: true }, { a: 'T', b: 'A', ask: true }], W: 320, H: 150, aria: 'ombres' })}
-<div class="ex">Ombres : ${F('SB', 'ST')} = ${F('BH', 'TA')}, donc ${F('1,5', '6')} = ${F('1,2', 'TA')} et TA = 6 × 1,2 ÷ 1,5 = <b>4,8 m</b>.</div>
-<div class="ex">Échelle de 5 m, angle 70° avec le sol : hauteur = 5 × sin(70°) ≈ <b>4,7 m</b>.</div>
-<div class="warn">⚠️ Un « angle avec le sol » est mesuré depuis le sol : repère bien son sommet.<br>⚠️ Calculatrice en degrés ; arrondir seulement à la fin.</div>`;
+<p class="intro">Ombres, échelles, arbres, rampes, cerfs-volants : dans chaque situation se cache un triangle rectangle ou des droites parallèles.</p>
+<div class="def"><b>Thalès</b> : deux droites parallèles (par exemple deux objets verticaux et les rayons du soleil).<br><b>Trigonométrie</b> : un triangle rectangle avec un angle connu ou cherché (« angle avec le sol », « avec l'horizontale »).</div>
+<div class="methode"><b>Méthode</b><ol><li>Fais un schéma et repère un <b>triangle rectangle</b> (trigonométrie) ou des <b>droites parallèles</b> (Thalès).</li><li>Écris la formule avec les lettres.</li><li>Calcule (calculatrice en degrés), arrondis à la fin.</li><li>Vérifie que le résultat est réaliste et réponds par une phrase.</li></ol></div>
+<div class="cols">${ombre}<div class="ex"><span class="q">Exemple 1 (ombres, Thalès) : bâton de 1,6 m, ombre 2 m ; ombre de l'arbre 6 m.</span><br>(BH) // (TA) : ${F('SB', 'ST')} = ${F('BH', 'TA')}, donc ${F('2', '6')} = ${F('1,6', 'TA')} et TA = 6 × 1,6 ÷ 2 = <b>4,8 m</b>.</div></div>
+<div class="cols">${arbre}<div class="ex"><span class="q">Exemple 2 (arbre, deux étapes) : yeux à 1,5 m du sol, à 10 m de l'arbre, angle 35°.</span><br>tan 35° = ${F('HS', '10')}, donc HS = 10 × tan(35°) ≈ 7,00 m.<br>GS = GH + HS ≈ 1,5 + 7,00 ≈ <b>8,5 m</b>.</div></div>
+<div class="ex"><span class="q">Exemple 3 (échelle) : échelle de 5 m, angle 70° avec le sol.</span><br>La hauteur est opposée à l'angle, l'échelle est l'hypoténuse : hauteur = 5 × sin(70°) ≈ <b>4,7 m</b>.</div>
+<div class="ex"><span class="q">Exemple 4 (cerf-volant) : hauteur 20 m, fil incliné à 50°.</span><br>sin 50° = ${F('20', 'fil')}, donc fil = 20 ÷ sin(50°) ≈ <b>26,1 m</b> (le fil est au dénominateur : on divise).</div>
+<div class="warn">⚠️ Un « angle avec le sol » est mesuré depuis le sol : repère bien son sommet.<br>⚠️ Avec la hauteur des yeux, n'oublie pas de l'ajouter à la fin.<br>⚠️ Calculatrice en degrés ; arrondir seulement à la fin.</div>
+<div class="retenir">À retenir : parallèles → Thalès ; triangle rectangle et angle → trigonométrie.</div>`;
 }
 
 export const LEVELS = [
