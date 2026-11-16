@@ -439,11 +439,12 @@ function L8(d) {
       hint: `Compte les cubes d'une couche (${L} × ${l}), puis multiplie par le nombre de couches (${h}).`,
       solution: `Une couche : ${L} × ${l} = ${L * l} cubes. Il y a ${h} couches : ${L * l} × ${h} = ${L * h * l} cubes, soit ${L * h * l} cm³.` });
   }
-  const u = 'cm', cube = chance(0.35);
-  let L, h, l, txt, tx, unconv = NaN;
+  const u = 'cm';
+  let cube = chance(0.35), L, h, l, txt, tx, unconv = NaN;
   if (d < 2) { L = ri(2, 12); h = cube ? L : ri(2, 12); l = cube ? L : ri(2, 12); }
   else if (d < 3 || chance(0.5)) { L = dec(2, 9, 0.5); h = cube ? L : dec(2, 12, 0.5); l = cube ? L : ri(2, 10); }
-  else { // une dimension dans une autre unité
+  else { // une dimension dans une autre unité : toujours un pavé (trois dimensions différentes)
+    cube = false;
     L = ri(2, 9) * 10; h = ri(2, 15); l = ri(2, 12);
     if (chance(0.5)) { txt = `une longueur de ${U(L / 10, 'dm')}, une hauteur de ${U(h, u)} et une profondeur de ${U(l, u)}`; unconv = r6(L / 10 * h * l); tx = { L: U(L / 10, 'dm'), h: U(h, u), l: U(l, u) }; }
     else { const hmm = h * 10; txt = `une longueur de ${U(L, u)}, une hauteur de ${U(hmm, 'mm')} et une profondeur de ${U(l, u)}`; unconv = r6(L * hmm * l); tx = { L: U(L, u), h: U(hmm, 'mm'), l: U(l, u) }; }
