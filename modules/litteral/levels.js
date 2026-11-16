@@ -298,14 +298,17 @@ function L4(d) {
     do {
       if (d < 1) { a1 = ri(1, 7); a2 = ri(1, 7); b1 = ri(1, 9); b2 = ri(1, 9); }
       else { a1 = nz(-8, 8); a2 = nz(-8, 8); b1 = nz(-9, 9); b2 = nz(-9, 9); }
-    } while (a1 + a2 === 0);
+    } while (a1 + a2 === 0 || b1 + b2 === 0); // aucune famille ne s'annule (« 9 − 9 »)
     t = [[a1, 1], [b1, 0], [a2, 1], [b2, 0]];
     if (d >= 1) shuffle(t);
   } else {
     deg = 3;
-    t = [[nz(-5, 5), 2], [nz(-5, 5), 2], [nz(-8, 8), 1], [nz(-8, 8), 1], [nz(-9, 9), 0]];
-    if (d >= 3) t.push(pick([[nz(-3, 3), 1], [nz(-9, 9), 0], [nz(-2, 2), 2]]));
-    if (t.filter(u => u[1] === 2).reduce((s, u) => s + u[0], 0) === 0) t[0][0] += t[0][0] > 0 ? 1 : -1;
+    // chaque famille (x², x, nombres) garde un coefficient non nul : pas de « 7 − 7 » qui disparaît
+    const fam0 = q => t.filter(u => u[1] === q).reduce((s, u) => s + u[0], 0);
+    do {
+      t = [[nz(-5, 5), 2], [nz(-5, 5), 2], [nz(-8, 8), 1], [nz(-8, 8), 1], [nz(-9, 9), 0]];
+      if (d >= 3) t.push(pick([[nz(-3, 3), 1], [nz(-9, 9), 0], [nz(-2, 2), 2]]));
+    } while ([0, 1, 2].some(q => fam0(q) === 0));
     shuffle(t);
   }
   const p = [0, 0, 0];
@@ -401,19 +404,19 @@ function L6(d) {
     A = [0, 0, c]; B = [0, a, b]; Bterms = linTerms(a, b);
   } else if (v === 1) {
     let m, c, a, b;
-    do { m = nz(-6, 6); c = ri(-9, 9); a = nz(-5, 5); b = nz(-9, 9); } while (m === a);
+    do { m = nz(-6, 6); c = ri(-9, 9); a = nz(-5, 5); b = nz(-9, 9); } while (m === a || c === b); // pas « 3 − 3 » une fois la parenthèse ôtée
     ast = S(Mo(m, 1), N(c), Ng(L(a, b))); A = [0, m, c]; B = [0, a, b]; Bterms = linTerms(a, b);
   } else if (v === 2) {
-    let a, b, c, e; do { a = nz(-6, 6); b = nz(-9, 9); c = nz(-6, 6); e = nz(-9, 9); } while (a === c);
+    let a, b, c, e; do { a = nz(-6, 6); b = nz(-9, 9); c = nz(-6, 6); e = nz(-9, 9); } while (a === c || b === e);
     ast = S(L(a, b), Ng(L(c, e))); A = [0, a, b]; B = [0, c, e]; Bterms = linTerms(c, e);
   } else if (v === 3) {
     deg = 3;
-    let a1, a2; do { a1 = nz(-4, 5); a2 = nz(-4, 5); } while (a1 === a2);
-    const b1 = ri(-7, 7), b2 = nz(-7, 7), c1 = nz(-9, 9), c2 = nz(-9, 9);
+    let a1, a2, b1, b2, c1, c2;
+    do { a1 = nz(-4, 5); a2 = nz(-4, 5); b1 = ri(-7, 7); b2 = nz(-7, 7); c1 = nz(-9, 9); c2 = nz(-9, 9); } while (a1 === a2 || b1 === b2 || c1 === c2);
     ast = S(Pa(S(Mo(a1, 2), Mo(b1, 1), N(c1))), Ng(Pa(S(Mo(a2, 2), Mo(b2, 1), N(c2)))));
     A = [a1, b1, c1]; B = [a2, b2, c2]; Bterms = [[a2, 2], [b2, 1], [c2, 0]].filter(t => t[0]);
   } else {
-    let k, a, b, c, e; do { k = ri(2, 6); a = ri(1, 4); b = nz(-9, 9); c = nz(-6, 6); e = nz(-9, 9); } while (k * a === c);
+    let k, a, b, c, e; do { k = ri(2, 6); a = ri(1, 4); b = nz(-9, 9); c = nz(-6, 6); e = nz(-9, 9); } while (k * a === c || k * b === e);
     ast = S(Pr(Mo(k, 0), L(a, b)), Ng(L(c, e))); A = [0, k * a, k * b]; B = [0, c, e]; Bterms = linTerms(c, e);
   }
   const p = sub(A, B);
@@ -554,7 +557,8 @@ function L9(d) {
     const k = ri(2, 6), m = ri(2, 6), a = ri(1, 9), b = ri(1, 9);
     ast = S(Pr(Mo(k, 0), L(1, a)), Pr(Mo(m, 0), L(1, b))); A = [0, k, k * a]; B = [0, m, m * b]; deg = 2;
   } else if (v === 1) {
-    const k = ri(2, 6), m = ri(2, 6), a = ri(1, 4), b = nz(-9, 9), c = ri(1, 4), e = nz(-9, 9);
+    let k, m, a, b, c, e; // les termes en x ou les nombres ne s'annulent pas
+    do { k = ri(2, 6); m = ri(2, 6); a = ri(1, 4); b = nz(-9, 9); c = ri(1, 4); e = nz(-9, 9); } while (k * a === m * c || k * b === m * e);
     ast = S(Pr(Mo(k, 0), L(a, b)), Pr(Mo(-m, 0), L(c, e))); A = [0, k * a, k * b]; B = [0, m * c, m * e]; minus = true; deg = 2;
   } else if (v === 2) {
     const a = nz(-7, 7), b = nz(-7, 7), k = nz(-5, 6), c = nz(-8, 8);
@@ -817,7 +821,7 @@ function L12(d) {
     };
   }
   // v === 5 : facteur commun caché dans un carré
-  let a, b, e, f; do { a = ri(2, 3); b = nz(-5, 5); e = nz(-3, 3); f = nz(-6, 6); } while (a - e === 0 || gcd(a, Math.abs(b)) !== 1);
+  let a, b, e, f; do { a = ri(2, 3); b = nz(-5, 5); e = nz(-3, 3); f = nz(-6, 6); } while (a - e === 0 || b === f || gcd(a, Math.abs(b)) !== 1);
   const com = L(a, b), ast = S(Sq(com), Pr(Mo(-1, 0), com, L(e, f)));
   const E = [a - e, b - f], form = u => x => (a * x + b) * (u[0] * x + u[1]);
   return {
