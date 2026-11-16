@@ -8,7 +8,7 @@ export const FICHES = [
   // ---
   { id: 'cercle', titre: 'Le cercle', emoji: '⭕', classes: '6e – 1re', couleur: '#86198f', couleur2: '#fbeefc', resume: 'Vocabulaire, périmètre et aire, angles, tangente, cercle et triangle rectangle, cercle trigonométrique.', etat: 'bientot' },
   // ---
-  { id: 'triangle-rectangle', titre: 'Le triangle rectangle', emoji: '📐', classes: '4e – 2de', couleur: '#c2255c', couleur2: '#fff0f6', resume: 'Pythagore, trigonométrie, cercle circonscrit : quel outil choisir selon ce que l\'on connaît.', etat: 'bientot' },
+  { id: 'triangle-rectangle', titre: 'Le triangle rectangle', emoji: '📐', classes: '4e – 2de', couleur: '#c2255c', couleur2: '#fff0f6', resume: 'Pythagore, trigonométrie, cercle circonscrit : quel outil choisir selon ce que l\'on connaît.' },
   // ---
 ];
 /** fiches publiées */
