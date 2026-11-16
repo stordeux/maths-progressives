@@ -95,8 +95,20 @@ export function repere(o) {
   xl.forEach(t => { s += `<text x="${r1(X(t.x))}" y="${r1(Math.min(T + ph + 22, oy + 19))}" font-size="15" font-weight="700" text-anchor="middle" fill="${C_ACC}" ${HALO}>${t.l}</text>`; });
   if (o.h && o.h.l) s += `<text x="${r1(L + pw - 4)}" y="${r1(Y(o.h.y) - 7)}" font-size="15" font-weight="700" text-anchor="end" fill="#e8590c" ${HALO}>${o.h.l}</text>`;
   (o.pts || []).forEach(p => { s += `<circle cx="${r1(X(p.x))}" cy="${r1(Y(p.y))}" r="5.5" fill="${p.c || '#e8590c'}"/>` + (p.l ? `<text x="${r1(X(p.x) + 9)}" y="${r1(Y(p.y) - 9)}" font-size="15" font-weight="700" fill="${p.c || '#e8590c'}" ${HALO}>${p.l}</text>` : ''); });
-  // légendes des courbes (en haut à gauche, sans chevaucher la courbe)
+  // légendes des courbes : dans le coin du cadre où elles touchent le moins les courbes, les droites, les points
+  // et les graduations (en haut à gauche à égalité)
   const leg = (o.fs || []).filter(F => F.l);
-  leg.forEach((F, k) => { s += `<text x="${L + 6}" y="${T + 18 + 20 * k}" font-size="16" font-weight="700" fill="${F.c || C_F}" ${HALO}>${F.l}</text>`; });
+  if (leg.length) {
+    const lw = 10 + 9.2 * Math.max(...leg.map(F => F.l.length)), lh = 8 + 20 * leg.length;
+    const busy = [];
+    (o.fs || []).forEach(F => { const [a, b] = F.dom ? [Math.max(F.dom[0], xmin), Math.min(F.dom[1], xmax)] : [xmin, xmax]; for (let i = 0; i <= 200; i++) { const x = a + (b - a) * i / 200, y = F.f(x); if (isFinite(y)) busy.push([X(x), Y(y)]); } });
+    if (o.h) for (let i = 0; i <= 40; i++) busy.push([L + pw * i / 40, Y(o.h.y)]);
+    (o.pts || []).forEach(p => { for (let k = 0; k < 8; k++) busy.push([X(p.x), Y(p.y)]); });
+    for (let i = 0; i <= 40; i++) busy.push([L + pw * i / 40, oy], [L + pw * i / 40, oy + 12], [ox, T + ph * i / 40], [ox - 12, T + ph * i / 40]); // axes et graduations
+    const corners = [[L + 2, T + 2], [L + pw - lw - 2, T + 2], [L + 2, T + ph - lh - 2], [L + pw - lw - 2, T + ph - lh - 2]];
+    const score = ([cx, cy]) => busy.filter(([px, py]) => px > cx - 6 && px < cx + lw + 6 && py > cy - 6 && py < cy + lh + 6).length;
+    const [cx, cy] = corners.reduce((b, c) => (score(c) < score(b) ? c : b));
+    leg.forEach((F, k) => { s += `<text x="${r1(cx + 4)}" y="${r1(cy + 20 + 20 * k)}" font-size="16" font-weight="700" fill="${F.c || C_F}" ${HALO}>${F.l}</text>`; });
+  }
   return s + '</svg>';
 }

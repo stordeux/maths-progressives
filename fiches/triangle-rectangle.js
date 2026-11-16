@@ -5,8 +5,10 @@
 const HY = '#c2255c', ADJ = '#1864ab', OPP = '#2b8a3e', ANG = '#e8590c', GR = '#868e96', INK = '#1f2328', SUB = '#3d434d';
 const FONT = 'font-family="system-ui,sans-serif"';
 
-/** angle BÂC : lettre du sommet coiffée d'un accent circonflexe (caractère combinant), comme dans les modules */
-const ang = (a, v, b) => `${a}${v}̂${b}`;
+/** angle BAC dans le texte : chapeau dessiné sur les trois lettres (classe .ang de fiche.css) */
+const ang = (a, v, b) => `<span class="ang">${a}${v}${b}</span>`;
+/** même angle dans les figures SVG (pas de CSS possible) : sommet coiffé d'un accent circonflexe combinant */
+const angS = (a, v, b) => `${a}${v}̂${b}`;
 /** fraction écrite comme dans les cours (classe .frac de base.css) */
 const fr = (n, d) => `<span class="frac"><span>${n}</span><span>${d}</span></span>`;
 
@@ -46,15 +48,15 @@ function figureVocabulaire() {
 <polygon points="${pt(A)} ${pt(B)} ${pt(C)}" fill="${HY}" fill-opacity=".06"/>
 ${seg(A, B, ADJ, 4)}${seg(B, C, OPP, 4)}${seg(A, C, HY, 5)}
 ${droit(B, A, C)}${arc(A, B, C, 46)}
-${txt(r1(lab[0]), r1(lab[1] + 5), ang('B', 'A', 'C'), `text-anchor="middle" font-size="16" font-weight="700" fill="${ANG}"`)}
+${txt(r1(lab[0]), r1(lab[1] + 5), angS('B', 'A', 'C'), `text-anchor="middle" font-size="16" font-weight="700" fill="${ANG}"`)}
 ${txt(398, 260, 'angle droit', `text-anchor="end" font-size="14" fill="${INK}"`)}
 ${txt(44, 290, 'A', 'font-size="18" font-weight="700"')}${txt(428, 292, 'B', 'font-size="18" font-weight="700"')}${txt(428, 56, 'C', 'font-size="18" font-weight="700"')}
 ${long(A, C, 16, 'hypoténuse [AC]', `font-size="17" font-weight="700" fill="${HY}"`)}
 ${long(A, C, 38, 'côté le plus long, en face de l\'angle droit', `font-size="14" fill="${HY}"`)}
-${txt(240, 296, `côté adjacent à ${ang('B', 'A', 'C')} : [AB]`, `text-anchor="middle" font-size="16" font-weight="700" fill="${ADJ}"`)}
+${txt(240, 296, `côté adjacent à ${angS('B', 'A', 'C')} : [AB]`, `text-anchor="middle" font-size="16" font-weight="700" fill="${ADJ}"`)}
 ${txt(240, 316, 'c\'est un côté de l\'angle droit', `text-anchor="middle" font-size="14" fill="${SUB}"`)}
 ${txt(436, 150, 'côté opposé', `font-size="16" font-weight="700" fill="${OPP}"`)}
-${txt(436, 170, `à ${ang('B', 'A', 'C')} : [BC]`, `font-size="16" font-weight="700" fill="${OPP}"`)}
+${txt(436, 170, `à ${angS('B', 'A', 'C')} : [BC]`, `font-size="16" font-weight="700" fill="${OPP}"`)}
 ${txt(436, 194, 'c\'est l\'autre côté', `font-size="14" fill="${SUB}"`)}
 ${txt(436, 212, 'de l\'angle droit', `font-size="14" fill="${SUB}"`)}
 </svg>`;
@@ -66,7 +68,7 @@ function figureRoles(en) {
   const enA = en === 'A';
   const V = enA ? A : C, P = B, Q = enA ? C : A;
   const lab = bissec(V, P, Q, enA ? 60 : 52);
-  const nom = enA ? ang('B', 'A', 'C') : ang('B', 'C', 'A');
+  const nom = enA ? angS('B', 'A', 'C') : angS('B', 'C', 'A');
   const cAB = enA ? ADJ : OPP, cBC = enA ? OPP : ADJ;
   return `<svg viewBox="0 0 340 240" role="img" aria-label="Rôles des côtés pour l'angle ${enA ? 'en A' : 'en C'} : ${enA ? 'AB adjacent, BC opposé' : 'BC adjacent, AB opposé'}, AC hypoténuse" ${FONT}>
 ${seg(A, B, cAB, 4)}${seg(B, C, cBC, 4)}${seg(A, C, HY, 4)}${droit(B, A, C, 14)}${arc(V, P, Q, 34)}

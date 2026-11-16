@@ -61,10 +61,16 @@ export function cercle(o = {}) {
     for (let k = 1; k < 8; k += 2) { const t = k * Math.PI / 4; s += `<circle cx="${r1(X(Math.cos(t)))}" cy="${r1(Y(Math.sin(t)))}" r="3" fill="${COL.soft}"/>`; }
   }
   // graduations 1 et −1 (sauf si o.noGrad : figure du cours déjà chargée d'étiquettes)
-  if (!o.noGrad) s += `<text x="${cx + R + 5}" y="${cy + 19}" font-size="15" fill="#555" ${HALO}>1</text>`
-    + `<text x="${cx - R - 5}" y="${cy + 19}" font-size="15" fill="#555" text-anchor="end" ${HALO}>−1</text>`
-    + `<text x="${cx - 7}" y="${cy - R - 6}" font-size="15" fill="#555" text-anchor="end" ${HALO}>1</text>`
-    + `<text x="${cx - 7}" y="${cy + R + 19}" font-size="15" fill="#555" text-anchor="end" ${HALO}>−1</text>`;
+  // Une valeur de cos (ou de sin) proche de ±1 s'écrit juste à côté de la graduation : la graduation passe alors de
+  // l'autre côté de l'axe (au-dessus de l'axe horizontal si la valeur est écrite dessous, à droite de l'axe vertical
+  // si elle est écrite à gauche).
+  const proche = (cos, sgn) => (o.pts || []).find(p => p.proj && (cos ? p.lc : p.ls) && sgn * (cos ? Math.cos(p.t) : Math.sin(p.t)) > 0.75);
+  const gx = sgn => { const p = proche(true, sgn); return p && Math.sin(p.t) > 0.05 ? cy - 8 : cy + 19; };
+  const gy = sgn => { const p = proche(false, sgn); return p && Math.cos(p.t) > 0.05 ? `x="${cx + 7}" text-anchor="start"` : `x="${cx - 7}" text-anchor="end"`; };
+  if (!o.noGrad) s += `<text x="${cx + R + 5}" y="${gx(1)}" font-size="15" fill="#555" ${HALO}>1</text>`
+    + `<text x="${cx - R - 5}" y="${gx(-1)}" font-size="15" fill="#555" text-anchor="end" ${HALO}>−1</text>`
+    + `<text ${gy(1)} y="${cy - R - 6}" font-size="15" fill="#555" ${HALO}>1</text>`
+    + `<text ${gy(-1)} y="${cy + R + 19}" font-size="15" fill="#555" ${HALO}>−1</text>`;
   s += `<text x="${cx - 7}" y="${cy + 19}" font-size="15" fill="#555" text-anchor="end" ${HALO}>O</text>`;
   // angle orienté (arc fléché, en spirale s'il y a plusieurs tours)
   if (o.arc && Math.abs(o.arc.t) > 1e-9 && Math.abs(o.arc.t) <= 6.5 * Math.PI) {
@@ -85,8 +91,15 @@ export function cercle(o = {}) {
         + `<line x1="${r1(px)}" y1="${r1(py)}" x2="${cx}" y2="${r1(py)}" stroke="${COL.sin}" stroke-width="2" stroke-dasharray="5 4"/>`
         + `<line x1="${cx}" y1="${cy}" x2="${r1(px)}" y2="${cy}" stroke="${COL.cos}" stroke-width="5" opacity=".75"/>`
         + `<line x1="${cx}" y1="${cy}" x2="${cx}" y2="${r1(py)}" stroke="${COL.sin}" stroke-width="5" opacity=".75"/>`;
-      if (p.lc) s += `<text x="${r1(px)}" y="${y > 0.05 ? cy + 22 : cy - 9}" font-size="16" font-weight="700" fill="${COL.cos}" text-anchor="middle" ${HALO}>${p.lc}</text>`;
-      if (p.ls) s += `<text x="${x > 0.05 ? cx - 8 : cx + 8}" y="${r1(py + 5)}" font-size="16" font-weight="700" fill="${COL.sin}" text-anchor="${x > 0.05 ? 'end' : 'start'}" ${HALO}>${p.ls}</text>`;
+      // valeur du cosinus sous (ou sur) l'axe ; près de ±1, elle est poussée vers l'intérieur du cercle, loin de la graduation
+      const alc = x > 0.75 ? ['end', px + 4] : x < -0.75 ? ['start', px - 4] : ['middle', px];
+      if (p.lc) s += `<text x="${r1(alc[1])}" y="${y > 0.05 ? cy + 22 : cy - 9}" font-size="16" font-weight="700" fill="${COL.cos}" text-anchor="${alc[0]}" ${HALO}>${p.lc}</text>`;
+      // valeur du sinus à côté de l'axe vertical ; si un autre point du cercle tombe dessus (N symétrique de M par
+      // rapport à l'axe vertical), elle descend (ou monte) vers l'intérieur du cercle, sous la ligne pointillée
+      const wl = 9.5 * String(p.ls).length, xl0 = x > 0.05 ? cx - 8 - wl : cx + 8, xl1 = xl0 + wl;
+      const gene = (o.pts || []).some(q => q !== p && Math.abs(Y(Math.sin(q.t)) - py) < 16 && X(Math.cos(q.t)) > xl0 - 8 && X(Math.cos(q.t)) < xl1 + 8);
+      const yls = gene ? py + (y > 0 ? 24 : -14) : py + 5;
+      if (p.ls) s += `<text x="${x > 0.05 ? cx - 8 : cx + 8}" y="${r1(yls)}" font-size="16" font-weight="700" fill="${COL.sin}" text-anchor="${x > 0.05 ? 'end' : 'start'}" ${HALO}>${p.ls}</text>`;
     }
   });
   (o.ends || []).forEach(e => { s += `<circle cx="${r1(X(Math.cos(e.t)))}" cy="${r1(Y(Math.sin(e.t)))}" r="6.5" fill="${e.open ? '#fff' : COL.arc}" stroke="${COL.arc}" stroke-width="2.6"/>`; });
@@ -107,7 +120,8 @@ export function cercle(o = {}) {
 /**
  * Courbes de cos / sin (ou d'une autre fonction) en abscisse graduée en multiples de π/2.
  * o.fs = [{ f, c?, l? }], o.xr = [a, b] en radians (multiples de π/2), o.yr = [ymin, ymax],
- * o.h = { y, l } droite horizontale, o.pts = [{ x, y, l?, c? }], o.xl = [{ x, l }] graduations en π écrites
+ * o.h = { y, l } droite horizontale, o.pts = [{ x, y, l?, c? }], o.xl = [{ x, l }] graduations en π écrites,
+ * o.band = { x: [a, b], l? } intervalle d'étude mis en évidence (bande, crochets sur l'axe, nom en bas)
  */
 export function courbe(o) {
   const [xa, xb] = o.xr, [ya, yb] = o.yr || [-1.5, 1.5], pad = (xb - xa) * 0.04;
@@ -118,7 +132,20 @@ export function courbe(o) {
   for (let k = Math.ceil(xa / h - 1e-9); k * h <= xb + 1e-9; k++) s += `<line x1="${r1(X(k * h))}" y1="${T}" x2="${r1(X(k * h))}" y2="${T + ph}" stroke="${k % 2 ? '#f1efe9' : '#e2dfd7'}"/>`;
   const gy = yb - ya > 8 ? 2 : yb - ya > 4 ? 1 : 0.5, ly = gy < 1 ? 1 : 2 * gy;
   for (let y = Math.ceil(ya / gy) * gy; y <= yb + 1e-9; y += gy) s += `<line x1="${L}" y1="${r1(Y(y))}" x2="${L + pw}" y2="${r1(Y(y))}" stroke="${Math.abs(y / ly - Math.round(y / ly)) < 1e-9 ? '#e2dfd7' : '#f1efe9'}"/>`;
+  // intervalle d'étude mis en évidence : bande colorée, crochets sur l'axe et nom de l'intervalle en bas de la bande
+  if (o.band) {
+    const [a, b] = o.band.x, xa1 = X(a), xb1 = X(b), c = COL.cos;
+    s += `<rect x="${r1(xa1)}" y="${T}" width="${r1(xb1 - xa1)}" height="${ph}" fill="${c}" opacity=".09"/>`
+      + `<line x1="${r1(xa1)}" y1="${T}" x2="${r1(xa1)}" y2="${T + ph}" stroke="${c}" stroke-width="1.5" stroke-dasharray="4 4" opacity=".7"/>`
+      + `<line x1="${r1(xb1)}" y1="${T}" x2="${r1(xb1)}" y2="${T + ph}" stroke="${c}" stroke-width="1.5" stroke-dasharray="4 4" opacity=".7"/>`;
+  }
   s += `<line x1="${L}" y1="${r1(Y(0))}" x2="${L + pw}" y2="${r1(Y(0))}" stroke="#333" stroke-width="1.6"/><line x1="${r1(X(0))}" y1="${T}" x2="${r1(X(0))}" y2="${T + ph}" stroke="#333" stroke-width="1.6"/>`;
+  if (o.band) {
+    const [a, b] = o.band.x, xa1 = X(a), xb1 = X(b), y0 = Y(0), c = COL.cos;
+    s += `<line x1="${r1(xa1)}" y1="${r1(y0)}" x2="${r1(xb1)}" y2="${r1(y0)}" stroke="${c}" stroke-width="5" opacity=".8"/>`
+      + `<path d="M${r1(xa1 + 6)},${r1(y0 - 9)} H${r1(xa1)} V${r1(y0 + 9)} H${r1(xa1 + 6)} M${r1(xb1 - 6)},${r1(y0 - 9)} H${r1(xb1)} V${r1(y0 + 9)} H${r1(xb1 - 6)}" fill="none" stroke="${c}" stroke-width="2.6"/>`;
+    if (o.band.l) s += `<text x="${r1((xa1 + xb1) / 2)}" y="${T + ph - 6}" font-size="15" font-weight="700" text-anchor="middle" fill="${c}" ${HALO}>${o.band.l}</text>`;
+  }
   for (let y = Math.ceil(ya / ly) * ly; y <= yb + 1e-9; y += ly) if (y) {
     s += `<text x="${L - 5}" y="${r1(Y(y) + 5)}" font-size="14" text-anchor="end" fill="#555">${M(y)}</text>`;
   }

@@ -25,6 +25,17 @@ const cw = ch => (ch === ' ' ? 4.8 : /[ijlI′'.,;()]/.test(ch) ? 5.5 : /[A-Z]/.
 /** largeur (en px) d'une étiquette */
 export const lwidth = (lab, fs = 18) => [...lab.replace(/[{}]/g, '')].reduce((s, ch) => s + cw(ch), 0) * fs / 17;
 
+/** début de l'étiquette (abscisse) et sa largeur, comme les calcule vlabel */
+function lpos(x, lab, anchor, fs, box) {
+  const pos = lwidth(lab, fs);
+  let x0 = anchor === 'middle' ? x - pos / 2 : anchor === 'end' ? x - pos : x;
+  if (box) x0 = Math.max(box[0], Math.min(box[1] - pos, x0));
+  return [x0, pos];
+}
+/** rectangle [x1, y1, x2, y2] occupé par une étiquette (flèche comprise) ; marge m */
+const lrect = (x, y, lab, anchor, fs, box, m = 0) => { const [x0, w] = lpos(x, lab, anchor, fs, box); return [x0 - m, y - fs * 1.05 - m, x0 + w + m, y + fs * 0.25 + m]; };
+const meets = (a, b) => a[0] < b[2] && b[0] < a[2] && a[1] < b[3] && b[1] < a[3];
+
 /** box = [xmin, xmax] : l'étiquette est gardée entre ces abscisses */
 export function vlabel(x, y, lab, c, anchor = 'middle', fs = 18, box) {
   const k = fs / 17, marks = [];
@@ -97,9 +108,17 @@ export function grille(o) {
   const ox = X(0), oy = Y(0);
   g += `<line x1="${L}" y1="${r1(oy)}" x2="${r1(L + pw + 14)}" y2="${r1(oy)}" stroke="#333" stroke-width="1.6" marker-end="url(#${id}a)"/>`
     + `<line x1="${r1(ox)}" y1="${r1(T + ph)}" x2="${r1(ox)}" y2="${r1(T - 14)}" stroke="#333" stroke-width="1.6" marker-end="url(#${id}a)"/>`;
-  for (let x = Math.ceil(xmin / st) * st; x <= xmax; x += st) if (x && x > xmin) g += `<text x="${r1(X(x))}" y="${r1(oy + 18)}" font-size="14" text-anchor="middle" fill="#555" ${HALO}>${M(x)}</text>`;
-  for (let y = Math.ceil(ymin / st) * st; y <= ymax; y += st) if (y && y > ymin && y < ymax) g += `<text x="${r1(ox - 6)}" y="${r1(Y(y) + 5)}" font-size="14" text-anchor="end" fill="#555" ${HALO}>${M(y)}</text>`;
-  g += `<text x="${r1(ox - 6)}" y="${r1(oy + 18)}" font-size="14" text-anchor="end" fill="#555" ${HALO}>0</text>`;
+  // graduations : écrites à la fin (à leur place dans le dessin), sauf celles qu'une étiquette recouvrirait
+  const grads = [], GRAD = '<!--graduations-->';
+  const grad = (x, y, t, an) => grads.push({ s: `<text x="${r1(x)}" y="${r1(y)}" font-size="14" text-anchor="${an}" fill="#555" ${HALO}>${t}</text>`, r: lrect(x, y, t, an, 14, null, 2) });
+  for (let x = Math.ceil(xmin / st) * st; x <= xmax; x += st) if (x && x > xmin) grad(X(x), oy + 18, M(x), 'middle');
+  for (let y = Math.ceil(ymin / st) * st; y <= ymax; y += st) if (y && y > ymin && y < ymax) grad(ox - 6, Y(y) + 5, M(y), 'end');
+  grad(ox - 6, oy + 18, '0', 'end');
+  g += GRAD;
+  // places déjà prises par les étiquettes (pour écarter les suivantes et effacer les graduations recouvertes)
+  // et par les points (disques)
+  const taken = [], dots = (o.pts || []).map(p => [X(p.x) - 7, Y(p.y) - 7, X(p.x) + 7, Y(p.y) + 7]);
+  const libre = r => !taken.some(t => meets(r, t)) && !dots.some(t => meets(r, t)) && !grads.some(t => meets(r, t.r));
   // polygone
   if (o.poly) {
     const c = o.poly.c || C.p;
@@ -131,6 +150,7 @@ export function grille(o) {
         pos = [0.12, 0.25, 0.4, 0.6, 0.75, 0.88].map(at).reduce((b, c2) => (score(c2) > score(b) + 1 ? c2 : b));
       }
       placed.push(pos);
+      taken.push(lrect(pos[0], pos[1], D.l, anchor, 17, [L + 2, L + pw - 2]));
       labs.push(vlabel(pos[0], pos[1], D.l, c, anchor, 17, [L + 2, L + pw - 2]));
     }
   });
@@ -140,22 +160,39 @@ export function grille(o) {
     const c = S.c || C.g, x1 = X(S.x), y1 = Y(S.y), x2 = X(S.x + S.dx), y2 = Y(S.y + S.dy);
     g += `<path d="M${r1(x1)},${r1(y1)}H${r1(x2)}V${r1(y2)}" fill="none" stroke="${c}" stroke-width="2.6" stroke-dasharray="6 4"/>`;
     const sg = v => (v > 0 ? '+' : '') + M(v);
-    if (S.dx) labs.push(`<text x="${r1((x1 + x2) / 2)}" y="${r1(y1 + (S.dy > 0 ? 21 : -9))}" font-size="17" font-weight="700" text-anchor="middle" fill="${c}" ${HALO}>${sg(S.dx)}</text>`);
-    if (S.dy) labs.push(`<text x="${r1(x2 + (S.dx >= 0 ? 7 : -7))}" y="${r1((y1 + y2) / 2 + 6)}" font-size="17" font-weight="700" text-anchor="${S.dx >= 0 ? 'start' : 'end'}" fill="${c}" ${HALO}>${sg(S.dy)}</text>`);
+    if (S.dx) {
+      const [x, y] = [(x1 + x2) / 2, y1 + (S.dy > 0 ? 21 : -9)];
+      taken.push(lrect(x, y, sg(S.dx), 'middle', 17));
+      labs.push(`<text x="${r1(x)}" y="${r1(y)}" font-size="17" font-weight="700" text-anchor="middle" fill="${c}" ${HALO}>${sg(S.dx)}</text>`);
+    }
+    if (S.dy) {
+      const [x, y, an] = [x2 + (S.dx >= 0 ? 7 : -7), (y1 + y2) / 2 + 6, S.dx >= 0 ? 'start' : 'end'];
+      taken.push(lrect(x, y, sg(S.dy), an, 17));
+      labs.push(`<text x="${r1(x)}" y="${r1(y)}" font-size="17" font-weight="700" text-anchor="${an}" fill="${c}" ${HALO}>${sg(S.dy)}</text>`);
+    }
   });
   // vecteurs
   (o.vecs || []).forEach(V => {
     const c = V.c || C.u, x1 = X(V.x), y1 = Y(V.y), x2 = X(V.x + V.dx), y2 = Y(V.y + V.dy);
     g += arrow(x1, y1, x2, y2, c, V.w || 3.4, V.dash);
     if (V.l) {
-      const n = Math.hypot(x2 - x1, y2 - y1) || 1, sd = V.side || 1;
-      const nx = (y2 - y1) / n * sd, ny = -(x2 - x1) / n * sd;
-      const lp = t => [x1 + (x2 - x1) * t + nx * 17, y1 + (y2 - y1) * t + ny * 19];
+      const n = Math.hypot(x2 - x1, y2 - y1) || 1, sd0 = V.side || 1;
+      const lp = (t, sd) => {
+        const nx = (y2 - y1) / n * sd, ny = -(x2 - x1) / n * sd;
+        return [x1 + (x2 - x1) * t + nx * 17, Math.max(T + 20, Math.min(T + ph + 4, y1 + (y2 - y1) * t + ny * 19 + 6))];
+      };
       // loin de l'origine (graduations) et des points
-      const far = q => Math.hypot(q[0] - ox, q[1] - oy) > 24 && (o.pts || []).every(b => Math.hypot(q[0] - X(b.x), q[1] - Y(b.y)) > 20);
-      const t = V.at !== undefined ? V.at : [0.5, 0.36, 0.64, 0.28, 0.72].find(z => far(lp(z))) || 0.5;
-      const [tx, ty] = lp(t);
-      labs.push(vlabel(tx, Math.max(T + 20, Math.min(T + ph + 4, ty + 6)), V.l, c, 'middle', 18, [4, W - 4]));
+      const far = q => Math.hypot(q[0] - ox, q[1] - oy + 6) > 24 && (o.pts || []).every(b => Math.hypot(q[0] - X(b.x), q[1] - 6 - Y(b.y)) > 20);
+      const ts = V.at !== undefined ? [V.at] : [0.5, 0.36, 0.64, 0.28, 0.72];
+      // 1er choix : du côté demandé, sans toucher une autre étiquette ni une graduation (vecteurs presque
+      // colinéaires : la 2e étiquette se décale le long du vecteur, ou passe de l'autre côté) ; sinon comme avant
+      const cands = [...ts.map(t => lp(t, sd0)), ...ts.map(t => lp(t, -sd0))];
+      // points des autres flèches : une étiquette ne se pose pas sur une flèche voisine (vecteurs presque colinéaires)
+      const autres = (o.vecs || []).filter(U => U !== V).flatMap(U => Array.from({ length: 21 }, (_, i) => [X(U.x + U.dx * i / 20), Y(U.y + U.dy * i / 20)]));
+      const ok = q => { const r = lrect(q[0], q[1], V.l, 'middle', 18, [4, W - 4], 2); return far(q) && libre(r) && !autres.some(([a, b]) => a > r[0] && a < r[2] && b > r[1] && b < r[3]); };
+      const [tx, ty] = cands.find(ok) || cands.find(q => far(q) && !taken.some(r => meets(lrect(q[0], q[1], V.l, 'middle', 18, [4, W - 4], 2), r))) || lp(ts.find(z => far(lp(z, sd0))) ?? ts[0], sd0);
+      taken.push(lrect(tx, ty, V.l, 'middle', 18, [4, W - 4]));
+      labs.push(vlabel(tx, ty, V.l, c, 'middle', 18, [4, W - 4]));
     }
   });
   // points
@@ -173,8 +210,18 @@ export function grille(o) {
       if (px > L + pw - 50 && pos.endsWith('e')) pos = pos.length > 1 ? pos[0] + 'w' : 'w';
       if (px < L + 50 && pos.endsWith('w')) pos = pos.length > 1 ? pos[0] + 'e' : 'e';
       if (py < T + 24 && pos[0] === 'n') pos = 's' + pos.slice(1);
-      const [ddx, ddy, an] = OFF[pos];
-      labs.push(vlabel(px + ddx, Math.max(T + 16, Math.min(T + ph + 6, py + ddy)), p.l, c, an, 18, [4, W - 4]));
+      // point posé sur un axe (ou près d'une autre étiquette) : on essaie le côté opposé (gauche ↔ droite, haut ↔ bas)
+      // avant d'écrire le nom sur une graduation
+      const fh = q => q.replace(/[ew]/, m => (m === 'e' ? 'w' : 'e')), fv = q => q.replace(/[ns]/, m => (m === 'n' ? 's' : 'n'));
+      const at = q => { const [ddx, ddy, an] = OFF[q]; return [px + ddx, Math.max(T + 16, Math.min(T + ph + 6, py + ddy)), an]; };
+      const inside = q => { const [x, , an] = at(q), [x0, w] = lpos(x, p.l, an, 18); return x0 >= L - 26 && x0 + w <= L + pw + 22; };
+      const cands = [...new Set([pos, fh(pos), fv(pos), fh(fv(pos)), 'ne', 'nw', 'se', 'sw', 'e', 'w', 'n', 's'])].filter(inside);
+      const mine = dots.filter(r => !(Math.abs(r[0] + 7 - px) < 0.5 && Math.abs(r[1] + 7 - py) < 0.5));
+      const free = q => { const [x, y, an] = at(q), r = lrect(x, y, p.l, an, 18, [4, W - 4], 1); return !taken.some(t => meets(r, t)) && !mine.some(t => meets(r, t)) && !grads.some(t => meets(r, t.r)); };
+      pos = cands.find(free) || pos;
+      const [lx, ly, an] = at(pos);
+      taken.push(lrect(lx, ly, p.l, an, 18, [4, W - 4]));
+      labs.push(vlabel(lx, ly, p.l, c, an, 18, [4, W - 4]));
     }
   });
   // cartouche des longues étiquettes de droites, dans le coin le moins encombré
@@ -186,8 +233,11 @@ export function grille(o) {
     const corners = [[L + 4, T + 4], [L + pw - lw - 4, T + 4], [L + 4, T + ph - lh - 4], [L + pw - lw - 4, T + ph - lh - 4]];
     const score = ([cx, cy]) => busy.filter(([px, py]) => px > cx - 6 && px < cx + lw + 6 && py > cy - 6 && py < cy + lh + 6).length;
     const [cx, cy] = corners.reduce((b, c2) => (score(c2) < score(b) ? c2 : b));
+    taken.push([cx, cy, cx + lw, cy + lh]);
     leg = `<rect x="${r1(cx)}" y="${r1(cy)}" width="${r1(lw)}" height="${lh}" rx="8" fill="#fff" fill-opacity=".93" stroke="#d9d6cd"/>`;
     legend.forEach((e, i) => { leg += vlabel(cx + 9, cy + 25 + 24 * i, e.l, e.c, 'start', 17); });
   }
+  // graduations : on retire celles qu'une étiquette recouvre (ses voisines suffisent à lire l'échelle)
+  g = g.replace(GRAD, grads.filter(t => !taken.some(r => meets(r, t.r))).map(t => t.s).join(''));
   return g + labs.join('') + leg + '</svg>';
 }

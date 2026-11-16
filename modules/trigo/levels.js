@@ -764,7 +764,7 @@ function L12(d) {
     return {
       type: 'nums', keys: { comma: false, neg: false },
       html: `Combien l'équation <b>${fn} x = ${M(a)}</b> a-t-elle de solutions dans <b>${ivl}</b> ?`,
-      visual: courbe({ xr: [-2 * PI, 3 * PI], fs: [{ f, l: `y = ${fn} x` }], h: { y: a, l: `y = ${M(a)}` }, xl: [-2, -1, 1, 2, 3].map(k => ({ x: k * PI, l: piT(k, 1) })) }),
+      visual: courbe({ xr: [-2 * PI, 3 * PI], fs: [{ f, l: `y = ${fn} x` }], h: { y: a, l: `y = ${M(a)}` }, band: { x: [lo, hi], l: ivl }, xl: [-2, -1, 1, 2, 3].map(k => ({ x: k * PI, l: piT(k, 1) })) }),
       tpl: 'nombre de solutions : {0}',
       check: chk(E, v => (v === E + 1 || v === E - 1 ? 'Presque : vérifie les bords de l\'intervalle et compte chaque croisement une seule fois.' : '')),
       value: cnt,

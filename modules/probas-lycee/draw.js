@@ -65,7 +65,9 @@ export function ptree(kids, { hl = [], leaf = 'cap', vals = {} } = {}) {
     }
   });
   draw(kids, 0, y0);
-  return `<svg viewBox="0 0 ${W} ${H}" class="vis" style="width:${W}px${depth >= 3 ? ";max-height:400px" : ""}" role="img" aria-label="arbre pondéré" ${FONT}>${lines}<circle cx="20" cy="${f1(y0)}" r="5" fill="#212529"/>${labs}</svg>`;
+  // arbre à 3 étages : hauteur bornée aussi par celle de l'écran (tablette en largeur : 800 px de haut), pour que
+  // la zone de réponse reste visible sous la figure sans faire défiler
+  return `<svg viewBox="0 0 ${W} ${H}" class="vis" style="width:${W}px${depth >= 3 ? ";max-height:min(400px,44vh)" : ""}" role="img" aria-label="arbre pondéré" ${FONT}>${lines}<circle cx="20" cy="${f1(y0)}" r="5" fill="#212529"/>${labs}</svg>`;
 }
 const leafText = (n, mode) => (mode === 'seq' ? n._e.join(' ') : n._e.join(' ∩ ')).replace(/!/g, '');
 const leafSvg = (n, mode) => n._e.map(svgEv).join(mode === 'seq' ? ' ' : ' ∩ ');
