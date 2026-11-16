@@ -200,12 +200,12 @@ function C2() {
 <li>Repère le point A de la courbe et la tangente T qui passe par A.</li>
 <li>Pars de A et avance vers la droite en suivant T, jusqu'à un point de T placé sur un nœud du quadrillage (1, 2 ou 4 carreaux).</li>
 <li>Compte de combien T monte (+) ou descend (−).</li>
-<li>f${PR}(a) = déplacement vertical ÷ déplacement horizontal.</li></ol></div>
+<li>f${PR}(a) = déplacement vertical ÷ déplacement horizontal. Le résultat peut être décimal : si T descend de 1 quand on avance de 4, f${PR}(a) = −1 ÷ 4 = −0,25.</li></ol></div>
 <div class="cols">
 <div><div class="ex"><span class="q">Exemple 1 : la tangente monte.</span><br>En A(2 ; 2), on avance de 1 : T monte de 2.<br><b>f${PR}(2) = 2 ÷ 1 = 2</b>.</div>
 ${graph({ xr: [-3, 5], yr: [-2, 7], fs: [{ f, l: 'y = f(x)' }], lines: [{ x: 2, y: 2, m: 2, l: 'tangente T', c: COL.T }], pts: [{ x: 2, y: 2, l: 'A', anchor: 'end' }], tri: { x: 2, y: 2, dx: 1, dy: 2 } })}</div>
 <div><div class="ex"><span class="q">Exemple 2 : la tangente descend.</span><br>En A(−2 ; 1), on avance de 1 : T descend de 1.<br><b>f${PR}(−2) = −1 ÷ 1 = −1</b>.</div>
-${graph({ xr: [-5, 3], yr: [-2, 6], fs: [{ f: g, l: 'y = g(x)' }], lines: [{ x: -2, y: 1, m: -1, l: 'tangente T', c: COL.T }], pts: [{ x: -2, y: 1, l: 'A', anchor: 'end' }], tri: { x: -2, y: 1, dx: 1, dy: -1 } })}</div>
+${graph({ xr: [-5, 3], yr: [-2, 6], fs: [{ f: g, l: 'y = f(x)' }], lines: [{ x: -2, y: 1, m: -1, l: 'tangente T', c: COL.T }], pts: [{ x: -2, y: 1, l: 'A', anchor: 'end' }], tri: { x: -2, y: 1, dx: 1, dy: -1 } })}</div>
 </div>
 <div class="ex"><span class="q">Cas particulier :</span> au sommet d'une parabole ou en haut d'une « bosse », la tangente est <b>horizontale</b> : f${PR}(a) = 0.</div>
 <div class="warn">⚠️ f(a) est la <b>hauteur</b> du point A ; f${PR}(a) est la <b>pente</b> de la tangente. Ce n'est pas la même chose !<br>⚠️ Tangente qui descend → f${PR}(a) &lt; 0. Tangente horizontale → f${PR}(a) = 0.<br>⚠️ Pente = vertical ÷ horizontal, pas l'inverse.</div>
@@ -955,7 +955,7 @@ function L12(d) {
 function C12() {
   return `<h2>12. Défi : la fonction exponentielle</h2>
 <p class="intro">L'exponentielle a une propriété unique : elle est sa propre dérivée. C'est pour cela qu'elle décrit les croissances « qui s'accélèrent ».</p>
-<div class="def">La fonction <b>exponentielle</b> x ↦ e<sup>x</sup> est la seule fonction égale à sa dérivée avec e<sup>0</sup> = 1 :<br><b>(e<sup>x</sup>)${PR} = e<sup>x</sup></b> &nbsp;&nbsp; et &nbsp;&nbsp; <b>(e<sup>ax + b</sup>)${PR} = a e<sup>ax + b</sup></b>.<br>e<sup>x</sup> &gt; 0 pour tout x, donc e<sup>x</sup> est croissante.</div>
+<div class="def">La fonction <b>exponentielle</b> x ↦ e<sup>x</sup> est la seule fonction égale à sa dérivée avec e<sup>0</sup> = 1 :<br><b>(e<sup>x</sup>)${PR} = e<sup>x</sup></b> &nbsp;&nbsp; et &nbsp;&nbsp; <b>(e<sup>ax + b</sup>)${PR} = a e<sup>ax + b</sup></b>.<br>e<sup>x</sup> &gt; 0 pour tout x : la dérivée de x ↦ e<sup>x</sup> est donc positive, et la fonction exponentielle est <b>strictement croissante</b> sur ℝ.</div>
 <div class="methode"><b>Méthode</b><ol>
 <li>Une constante ajoutée disparaît ; un coefficient k devant reste : (k e<sup>x</sup> + c)${PR} = k e<sup>x</sup>.</li>
 <li>Pour k e<sup>ax + b</sup> : multiplie k par a, et garde e<sup>ax + b</sup> tel quel.</li>
