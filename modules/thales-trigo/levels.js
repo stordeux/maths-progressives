@@ -306,7 +306,7 @@ function C5() {
   const f2 = mk(thalesPts(4, 5, 5, 1.5, true, 0), {}, { segs: thalesSegs(true), par: [['M', 'N'], ['B', 'C']], lens: [lenLab(true, ['A', 'M'], '6 cm'), lenLab(true, ['A', 'B'], '4 cm'), lenLab(true, ['B', 'C'], '5 cm'), lenLab(true, ['M', 'N'], '?', true)], aria: 'papillon, exemple 2' });
   return `<h2>5. La configuration « papillon »</h2>
 <p class="intro">Les deux triangles peuvent aussi être « tête-bêche », de part et d'autre du point A. Le théorème de Thalès s'applique de la même façon.</p>
-<div class="def">Les droites (MB) et (NC) se coupent en A, avec M et B <b>de part et d'autre</b> de A. Si <b>(MN) // (BC)</b> :${big(`${F('AM', 'AB')} = ${F('AN', 'AC')} = ${F('MN', 'BC')}`)}C'est la même égalité que pour les triangles emboîtés.</div>
+<div class="def">Les droites (MB) et (NC) se coupent en A, avec M et B <b>de part et d'autre</b> de A, et de même N et C. Si <b>(MN) // (BC)</b> :${big(`${F('AM', 'AB')} = ${F('AN', 'AC')} = ${F('MN', 'BC')}`)}C'est la même égalité que pour les triangles emboîtés.</div>
 <div class="methode"><b>Méthode</b><ol><li>Repère A, le point où se croisent les deux droites.</li><li>Associe les côtés : AM avec AB (même droite), AN avec AC (même droite), MN avec BC (parallèles).</li><li>Écris l'égalité des rapports, remplace, produit en croix.</li></ol></div>
 <div class="cols">${f1}<div class="ex"><span class="q">Exemple 1 : AM = 4 cm, AB = 8 cm, BC = 9 cm. Calcule MN.</span><br>${F('AM', 'AB')} = ${F('MN', 'BC')} : ${F('4', '8')} = ${F('MN', '9')}, donc MN = 9 × 4 ÷ 8 = <b>4,5 cm</b>.</div></div>
 <div class="cols">${f2}<div class="ex"><span class="q">Exemple 2 : ici le triangle AMN est le plus grand ! AM = 6 cm, AB = 4 cm, BC = 5 cm.</span><br>${F('AM', 'AB')} = ${F('MN', 'BC')} : ${F('6', '4')} = ${F('MN', '5')}, donc MN = 5 × 6 ÷ 4 = <b>7,5 cm</b>.<br>Le rapport est supérieur à 1 : c'est normal, AMN est plus grand.</div></div>
@@ -366,8 +366,8 @@ function C6() {
 <div class="cols">${f1}<div class="ex"><span class="q">Exemple 1 : AM = 4, AB = 10, AN = 6, AC = 15.</span><br>Produits en croix : 4 × 15 = 60 et 10 × 6 = 60.<br>Égaux : d'après la réciproque du théorème de Thalès, <b>(MN) // (BC)</b>.</div></div>
 <div class="cols">${f2}<div class="ex"><span class="q">Exemple 2 : AM = 4, AB = 10, AN = 5, AC = 13.</span><br>4 × 13 = 52 et 10 × 5 = 50.<br>Différents : <b>(MN) et (BC) ne sont pas parallèles</b>, même si ça y ressemble.</div></div>
 <div class="ex"><span class="q">Exemple 3 : on donne AM = 3, MB = 4,5, AN = 4, NC = 6.</span><br>AB = 3 + 4,5 = 7,5 et AC = 4 + 6 = 10.<br>3 × 10 = 30 et 7,5 × 4 = 30 : égaux, donc <b>(MN) // (BC)</b>.</div>
-<div class="warn">⚠️ Une figure « qui a l'air » parallèle ne prouve rien : on calcule. « On ne peut pas savoir » n'est jamais la bonne réponse ici.<br>⚠️ Compare des rapports écrits dans le même sens (petit ÷ grand des deux côtés).<br>⚠️ ${F('AM', 'MB')} et ${F('AN', 'NC')} ne servent pas : les rapports partent de A.</div>
-<div class="retenir">À retenir : rapports égaux ⟹ parallèles ; rapports différents ⟹ pas parallèles.</div>`;
+<div class="warn">⚠️ Une figure « qui a l'air » parallèle ne prouve rien : on calcule. « On ne peut pas savoir » n'est jamais la bonne réponse ici.<br>⚠️ Compare des rapports écrits dans le même sens : AM ÷ AB et AN ÷ AC (en haut, toujours les côtés du triangle AMN).<br>⚠️ Les points doivent aussi être dans le même ordre : M entre A et B et N entre A et C, ou bien A entre M et B et A entre N et C (papillon).<br>⚠️ ${F('AM', 'MB')} et ${F('AN', 'NC')} ne servent pas : les rapports partent de A.</div>
+<div class="retenir">À retenir : rapports égaux et points dans le même ordre ⟹ parallèles ; rapports différents ⟹ pas parallèles.</div>`;
 }
 
 /* ---------- 7. agrandissement et réduction ---------- */
@@ -442,7 +442,7 @@ function C7() {
 <div class="methode"><b>Méthode</b><ol><li>Trouver k : divise une longueur de l'image par la longueur correspondante de départ.</li><li>Longueur de l'image : multiplie par k.</li><li>Revenir à la figure de départ : divise par k.</li><li>Aire de l'image : multiplie l'aire de départ par k².</li></ol></div>
 <div class="ex"><span class="q">Exemple 1 : AB = 4 cm et A′B′ = 6 cm.</span><br>k = 6 ÷ 4 = <b>1,5</b> (k &gt; 1 : agrandissement).<br>Si l'aire de ABC est 5 cm², celle de A′B′C′ est 1,5² × 5 = 2,25 × 5 = <b>11,25 cm²</b>.</div>
 <div class="ex"><span class="q">Exemple 2 : réduction de rapport k = 0,75 avec B′C′ = 6 cm. Calcule BC.</span><br>B′C′ = 0,75 × BC, donc BC = 6 ÷ 0,75 = <b>8 cm</b>.<br>Contrôle : la figure de départ est plus grande que sa réduction (8 &gt; 6).</div>
-<div class="ex">Dans une configuration de Thalès, le triangle AMN est une réduction du triangle ABC, de rapport k = ${F('AM', 'AB')}.</div>
+<div class="ex">Dans une configuration de Thalès emboîtée (M ∈ [AB]), le triangle AMN est une réduction du triangle ABC, de rapport k = ${F('AM', 'AB')}.</div>
 <div class="warn">⚠️ k = longueur de l'<b>image</b> ÷ longueur de <b>départ</b> (pas l'inverse).<br>⚠️ Une aire n'est pas multipliée par k mais par k² : en doublant les côtés, l'aire est multipliée par 4.<br>⚠️ Pour revenir de l'image au départ, on <b>divise</b> par k.</div>
 <div class="retenir">À retenir : longueurs × k, aires × k².</div>`;
 }
