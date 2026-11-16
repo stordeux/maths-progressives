@@ -34,7 +34,17 @@ export const MODULES = [
   { id: 'inegalites', titre: 'Inégalités', emoji: '↔️', classes: '3e – 2de', groupe: 'Vers le lycée', couleur: '#0b7285', couleur2: '#e3fafc', resume: 'Intervalles, inéquations, valeur absolue, carrés, produits.' },
   // ---
   { id: 'poly2', titre: 'Second degré', emoji: '📈', classes: '2de – 1re', groupe: 'Vers le lycée', couleur: '#5f3dc4', couleur2: '#efe9ff', resume: 'Développer, forme canonique, sommet, racines, signe, discriminant.' },
+  // ---
+  { id: 'vecteurs', titre: 'Vecteurs et droites', emoji: '➡️', classes: '2de', groupe: 'Vers le lycée', couleur: '#1e40af', couleur2: '#e8eefc', resume: 'Coordonnées, somme de vecteurs, colinéarité, équations de droites.', etat: 'bientot' },
   // --- lycée (1re – Tle)
+  { id: 'suites', titre: 'Suites', emoji: '🔢', classes: '1re', groupe: 'Lycée (1re – Tle)', couleur: '#155e75', couleur2: '#e3f4f8', resume: 'Termes, récurrence, suites arithmétiques et géométriques, sommes, seuils.', etat: 'bientot' },
+  // ---
+  { id: 'trigo', titre: 'Trigonométrie', emoji: '⭕', classes: '1re', groupe: 'Lycée (1re – Tle)', couleur: '#86198f', couleur2: '#fbeefc', resume: 'Radians, cercle trigonométrique, cosinus et sinus des angles associés, équations.', etat: 'bientot' },
+  // ---
+  { id: 'probas-lycee', titre: 'Probabilités conditionnelles', emoji: '🌳', classes: '1re – Tle', groupe: 'Lycée (1re – Tle)', couleur: '#166534', couleur2: '#e9f7ee', resume: 'Arbres pondérés, probabilités totales, indépendance, loi binomiale.', etat: 'bientot' },
+  // ---
+  { id: 'exp-ln', titre: 'Exponentielle et logarithme', emoji: '🌱', classes: '1re – Tle', groupe: 'Lycée (1re – Tle)', couleur: '#9a3412', couleur2: '#fdf1e7', resume: 'Propriétés de eˣ et ln, équations, inéquations, croissance et décroissance exponentielles.', etat: 'bientot' },
+  // ---
   { id: 'derivees', titre: 'Dérivées', emoji: '📉', classes: '1re', groupe: 'Lycée (1re – Tle)', couleur: '#0f5132', couleur2: '#e6f4ea', resume: 'Nombre dérivé, tangente, dérivées usuelles, produit et quotient, variations, extremums.' },
   // ---
   { id: 'integrales', titre: 'Intégrales', emoji: '∫', classes: 'Terminale', groupe: 'Lycée (1re – Tle)', couleur: '#7c2d12', couleur2: '#fdf0e6', resume: 'Primitives, aire sous une courbe, calcul d’intégrales, valeur moyenne.' },
