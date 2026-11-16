@@ -205,12 +205,36 @@ function L1(d) {
     solution: `${why[0].toUpperCase() + why.slice(1)}, donc ${Lh} <b>${REL[X]}</b> ${Rh}.`,
   };
 }
+/* ================= cours : briques communes ================= */
+const meth = steps => `<div class="methode"><b>Méthode</b><ol>${steps.map(s => `<li>${s}</li>`).join('')}</ol></div>`;
+const exq = (t, body) => `<div class="ex"><span class="q">${t}</span><br>${body}</div>`;
+const warn = list => `<div class="warn">${list.map(s => `⚠️ ${s}`).join('<br>')}</div>`;
+const retenir = s => `<div class="retenir">À retenir : ${s}</div>`;
+
 function C1() {
   return `<h2>1. La fonction exponentielle</h2>
-<div class="def">La fonction <b>exponentielle</b> x ↦ e<sup>x</sup> est définie sur ℝ, avec <b>e<sup>0</sup> = 1</b> et e<sup>1</sup> = e ≈ 2,718.<br>• e<sup>x</sup> &gt; 0 pour <b>tout</b> x : la courbe est toujours au-dessus de l'axe des abscisses ;<br>• elle est <b>strictement croissante</b> : a &lt; b ⟺ e<sup>a</sup> &lt; e<sup>b</sup>.</div>
-<div class="ex">3e<sup>0</sup> − 5 = 3 × 1 − 5 = <b>−2</b>.<br>e<sup>−4</sup> &gt; 0 (même si l'exposant est négatif). &nbsp; e<sup>−1</sup> &lt; e<sup>0,5</sup> car −1 &lt; 0,5.</div>
-<div class="warn">⚠️ e<sup>0</sup> = 1, pas 0.<br>⚠️ e<sup>−3</sup> n'est pas négatif : c'est un petit nombre positif (≈ 0,05).</div>
-${graph({ xr: [-3, 3], yr: [-1, 8], fs: [EXPF], pts: [{ x: 0, y: 1, l: '(0 ; 1)', c: COL.G }, { x: 1, y: Math.E, l: '(1 ; e)', px: true, py: true }] })}`;
+<p class="intro">L'exponentielle décrit ce qui grandit « de plus en plus vite » : populations, placements, épidémies. Sa courbe est à connaître par cœur, elle répond à presque toutes les questions de ce niveau.</p>
+<div class="def">La fonction <b>exponentielle</b> x ↦ e<sup>x</sup> est définie sur ℝ, avec <b>e<sup>0</sup> = 1</b> et e<sup>1</sup> = e ≈ 2,718.<br>• e<sup>x</sup> &gt; 0 pour <b>tout</b> x : la courbe est toujours au-dessus de l'axe des abscisses ;<br>• elle est <b>strictement croissante</b> : a &lt; b ⟺ e<sup>a</sup> &lt; e<sup>b</sup> ;<br>• e<sup>x</sup> &gt; 1 quand x &gt; 0, et 0 &lt; e<sup>x</sup> &lt; 1 quand x &lt; 0.</div>
+${meth([
+    'Tu vois e<sup>0</sup> ? Remplace-le par <b>1</b>.',
+    'Un signe à trouver ? e<sup>…</sup> est toujours <b>strictement positif</b>. Pour e<sup>a</sup> − 1, compare a à 0 (car 1 = e<sup>0</sup>).',
+    'Comparer e<sup>a</sup> et e<sup>b</sup> : compare a et b, l\'ordre est <b>le même</b>.',
+    'Lire e<sup>a</sup> : pars de l\'abscisse a, monte jusqu\'à la courbe, puis lis la hauteur. Pour e<sup>x</sup> = k, fais le chemin inverse : on lit une <b>abscisse</b>.',
+  ])}
+<div class="cols">
+${graph({ xr: [-3, 3], yr: [-1, 8], fs: [EXPF], pts: [{ x: 0, y: 1, l: '(0 ; 1)', c: COL.G, anchor: 'end' }, { x: 1, y: Math.E, l: '(1 ; e)', px: true, py: true, anchor: 'end' }, { x: Math.log(5), y: 5, l: 'eˣ = 5 pour x ≈ 1,6', px: true, py: true, c: COL.T, anchor: 'end', ly: -12 }] })}
+<div>
+${exq('Exemple 1 : calculer avec e<sup>0</sup>', `4e<sup>0</sup> − 9 = 4 × 1 − 9 = <b>−5</b>.`)}
+${exq('Exemple 2 : un signe (piège)', `1 − e<sup>−2</sup> : comme −2 &lt; 0, e<sup>−2</sup> &lt; e<sup>0</sup> = 1, donc 1 − e<sup>−2</sup> est <b>strictement positif</b>.<br>−3e<sup>2</sup> : e<sup>2</sup> &gt; 0, donc −3e<sup>2</sup> est <b>strictement négatif</b>.`)}
+</div>
+</div>
+${exq('Exemple 3 : comparer', `e<sup>−1,5</sup> ? e<sup>0,5</sup> : −1,5 &lt; 0,5 donc <b>e<sup>−1,5</sup> &lt; e<sup>0,5</sup></b>.<br>e<sup>−10</sup> ? 0 : <b>e<sup>−10</sup> &gt; 0</b>, même avec un exposant très négatif.`)}
+${warn([
+    'e<sup>0</sup> = 1, pas 0 : la courbe coupe l\'axe des ordonnées à la hauteur 1.',
+    'Ne confonds pas e<sup>0</sup> = 1 et e<sup>1</sup> = e ≈ 2,72.',
+    'e<sup>−3</sup> n\'est pas négatif : c\'est un petit nombre positif (≈ 0,05).',
+  ])}
+${retenir('e<sup>0</sup> = 1, e<sup>x</sup> &gt; 0 pour tout x, et exp range les nombres dans le même ordre.')}`;
 }
 
 /* =====================================================================
@@ -265,10 +289,27 @@ function L2(d) {
 }
 function C2() {
   return `<h2>2. Règles de calcul</h2>
+<p class="intro">Avec ces règles, on transforme un calcul compliqué en une seule exponentielle e<sup>n</sup> : tout se joue sur les exposants.</p>
 <div class="def">Pour tous réels a et b, et tout entier n :<br><b>e<sup>a</sup> × e<sup>b</sup> = e<sup>a + b</sup></b> &nbsp;;&nbsp; <b>${F('e<sup>a</sup>', 'e<sup>b</sup>')} = e<sup>a − b</sup></b> &nbsp;;&nbsp; <b>${F(1, 'e<sup>a</sup>')} = e<sup>−a</sup></b> &nbsp;;&nbsp; <b>(e<sup>a</sup>)<sup>n</sup> = e<sup>na</sup></b>.<br>Ce sont les règles des puissances.</div>
-<div class="ex">e<sup>3</sup> × e<sup>−5</sup> = e<sup>3 + (−5)</sup> = <b>e<sup>−2</sup></b> &nbsp;;&nbsp; ${F('e<sup>4</sup>', 'e<sup>−2</sup>')} = e<sup>4 − (−2)</sup> = <b>e<sup>6</sup></b> &nbsp;;&nbsp; (e<sup>−3</sup>)<sup>2</sup> = <b>e<sup>−6</sup></b>.</div>
-<div class="warn">⚠️ e<sup>3</sup> × e<sup>5</sup> = e<sup>8</sup>, pas e<sup>15</sup> : on <b>ajoute</b> les exposants.<br>⚠️ Avec un quotient, attention aux exposants négatifs : 4 − (−2) = 6.</div>
-${graph({ xr: [-2, 3], yr: [-1, 9], fs: [EXPF], pts: [{ x: 1, y: Math.E, l: 'e¹ = e', px: true, py: true }, { x: 2, y: Math.E ** 2, l: 'e² = e × e', px: true, py: true }] })}`;
+${meth([
+    `Repère l'opération : <b>produit</b> → on ajoute les exposants ; <b>quotient</b> → haut moins bas ; <b>puissance</b> → on multiplie ; <b>inverse</b> ${F(1, 'e<sup>a</sup>')} → l'exposant change de signe ; <b>racine carrée</b> → on divise par 2.`,
+    'Écris le calcul sur les exposants, avec des parenthèses autour des nombres négatifs.',
+    'S\'il y a plusieurs opérations, traite d\'abord les puissances, puis le numérateur, puis la division.',
+    'Donne n : le résultat est e<sup>n</sup>.',
+  ])}
+<div class="cols">
+${realLine(null, [{ x: 4, l: '4' }, { x: -3, l: '−3' }], { arc: [4, -3, '+ (−7)'], h: 110 })}
+${graph({ xr: [-2, 3], yr: [-1, 9], fs: [EXPF], pts: [{ x: 1, y: Math.E, l: 'e¹ = e', px: true, py: true }, { x: 2, y: Math.E ** 2, l: 'e² = e × e', px: true, py: true, anchor: 'end' }] })}
+</div>
+${exq('Exemple 1 : un produit', `e<sup>4</sup> × e<sup>−7</sup> = e<sup>4 + (−7)</sup> = <b>e<sup>−3</sup></b> : n = −3 (on « avance » de −7 sur la droite des exposants).`)}
+${exq('Exemple 2 : quotient avec exposants négatifs', `${F('e<sup>3</sup> × e<sup>−5</sup>', 'e<sup>−4</sup>')} : numérateur e<sup>3 + (−5)</sup> = e<sup>−2</sup>, puis e<sup>−2 − (−4)</sup> = <b>e<sup>2</sup></b>.`)}
+${exq('Exemple 3 : puissance, inverse, racine', `(e<sup>−2</sup>)<sup>3</sup> × e<sup>5</sup> = e<sup>−6</sup> × e<sup>5</sup> = <b>e<sup>−1</sup></b>.<br>${F(1, '(e<sup>2</sup>)<sup>3</sup>')} = ${F(1, 'e<sup>6</sup>')} = <b>e<sup>−6</sup></b> &nbsp;;&nbsp; ${R('e<sup>6</sup>')} = <b>e<sup>3</sup></b> car (e<sup>3</sup>)<sup>2</sup> = e<sup>6</sup>.`)}
+${warn([
+    'e<sup>3</sup> × e<sup>5</sup> = e<sup>8</sup>, pas e<sup>15</sup> : pour un produit, on <b>ajoute</b> les exposants.',
+    'Quotient : exposant du <b>haut</b> moins exposant du <b>bas</b>, et 4 − (−2) = 6.',
+    `(e<sup>a</sup>)<sup>n</sup> = e<sup>na</sup> : on ne calcule pas a + n ni a<sup>n</sup>. Et ${R('e<sup>a</sup>')} = e<sup>a/2</sup> : on ne prend pas la racine de a.`,
+  ])}
+${retenir('les règles de e<sup>a</sup> sont celles des puissances : produit → +, quotient → −, puissance → ×.')}`;
 }
 
 /* =====================================================================
@@ -321,10 +362,28 @@ function L3(d) {
 }
 function C3() {
   return `<h2>3. Simplifier des expressions</h2>
-<div class="def">Les règles s'appliquent aussi quand l'exposant contient x :<br>e<sup>u</sup> × e<sup>v</sup> = e<sup>u + v</sup> &nbsp;;&nbsp; ${F('e<sup>u</sup>', 'e<sup>v</sup>')} = e<sup>u − v</sup> &nbsp;;&nbsp; (e<sup>u</sup>)<sup>n</sup> = e<sup>nu</sup>.<br>On regroupe tout en <b>une seule exponentielle</b> e<sup>ax + b</sup>.</div>
-<div class="ex">e<sup>2x + 1</sup> × e<sup>x − 3</sup> = e<sup>3x − 2</sup>.<br>${F('e<sup>3x + 1</sup>', 'e<sup>x − 2</sup>')} = e<sup>(3x + 1) − (x − 2)</sup> = e<sup>2x + 3</sup>.<br>(e<sup>x + 1</sup>)<sup>2</sup> = e<sup>2x + 2</sup>.</div>
-<div class="warn">⚠️ e<sup>x</sup> × e<sup>x</sup> = e<sup>2x</sup> (et pas e<sup>x²</sup>).<br>⚠️ Dans un quotient, on soustrait <b>tout</b> l'exposant du bas : −(x − 2) = −x + 2.</div>
-${graph({ xr: [-3, 2], yr: [-1, 8], fs: [EXPF, { f: x => Math.exp(2 * x), c: COL.T, l: 'y = eˣ × eˣ = e²ˣ', dash: true }] })}`;
+<p class="intro">Même travail qu'au niveau 2, mais les exposants contiennent x. Le but : tout regrouper en <b>une seule exponentielle</b> e<sup>ax + b</sup>, plus facile à dériver ou à utiliser dans une équation.</p>
+<div class="def">Pour tous réels u et v (qui peuvent dépendre de x) et tout entier n :<br>e<sup>u</sup> × e<sup>v</sup> = e<sup>u + v</sup> &nbsp;;&nbsp; ${F('e<sup>u</sup>', 'e<sup>v</sup>')} = e<sup>u − v</sup> &nbsp;;&nbsp; ${F(1, 'e<sup>u</sup>')} = e<sup>−u</sup> &nbsp;;&nbsp; (e<sup>u</sup>)<sup>n</sup> = e<sup>nu</sup>.</div>
+${meth([
+    'Mets chaque exposant entre <b>parenthèses</b>.',
+    'Applique la règle : produit → on ajoute ; quotient → on soustrait <b>tout</b> l\'exposant du bas ; puissance → on multiplie <b>tout</b> l\'exposant ; inverse → tout l\'exposant change de signe.',
+    'Développe, puis regroupe les termes en x (ils donnent a) et les constantes (elles donnent b).',
+    'Lis a et b avec leur signe : e<sup>2x − 11</sup> donne a = 2 et b = −11.',
+  ])}
+<div class="cols">
+${graph({ xr: [-3, 2], yr: [-1, 8], fs: [EXPF, { f: x => Math.exp(2 * x), c: COL.T, l: 'y = eˣ × eˣ = e²ˣ', dash: true }] })}
+<div>
+${exq('Exemple 1 : un produit', `e<sup>2x + 1</sup> × e<sup>−x + 4</sup> = e<sup>(2x + 1) + (−x + 4)</sup> = <b>e<sup>x + 5</sup></b> : a = 1, b = 5.`)}
+${exq('Exemple 2 : un quotient', `${F('e<sup>3x − 1</sup>', 'e<sup>x − 4</sup>')} = e<sup>(3x − 1) − (x − 4)</sup> = e<sup>3x − 1 − x + 4</sup> = <b>e<sup>2x + 3</sup></b>.`)}
+</div>
+</div>
+${exq('Exemple 3 : tout à la fois', `${F('(e<sup>x − 2</sup>)<sup>3</sup> × e<sup>−x</sup>', 'e<sup>5</sup>')} : (e<sup>x − 2</sup>)<sup>3</sup> = e<sup>3x − 6</sup> ; au numérateur e<sup>3x − 6 − x</sup> = e<sup>2x − 6</sup> ; on divise : <b>e<sup>2x − 11</sup></b>.<br>e<sup>x</sup> × e<sup>x</sup> × e<sup>x</sup> × e<sup>2</sup> = e<sup>x + x + x + 2</sup> = <b>e<sup>3x + 2</sup></b>.`)}
+${warn([
+    'e<sup>x</sup> × e<sup>x</sup> = e<sup>2x</sup> (et pas e<sup>x²</sup>) : les x s\'ajoutent.',
+    'Dans un quotient, on soustrait <b>tout</b> l\'exposant du bas : −(x − 4) = −x + 4, le signe de la constante change aussi.',
+    'La puissance multiplie <b>tout</b> l\'exposant : (e<sup>x − 2</sup>)<sup>3</sup> = e<sup>3x − 6</sup>, pas e<sup>3x − 2</sup>.',
+  ])}
+${retenir('on travaille uniquement sur les exposants, entre parenthèses, puis on regroupe en ax + b.')}`;
 }
 
 /* =====================================================================
@@ -392,10 +451,28 @@ function L4(d) {
 }
 function C4() {
   return `<h2>4. Équations e<sup>u</sup> = e<sup>v</sup></h2>
+<p class="intro">Une équation avec des exponentielles des deux côtés se ramène à une équation sur les exposants, que tu sais déjà résoudre.</p>
 <div class="def">La fonction exponentielle est strictement croissante : deux nombres différents ont des exponentielles différentes. Donc<br><b>e<sup>u</sup> = e<sup>v</sup> ⟺ u = v</b>.<br>On commence par écrire chaque membre sous la forme e<sup>…</sup> : 1 = e<sup>0</sup>, e = e<sup>1</sup>, ${F(1, 'e<sup>a</sup>')} = e<sup>−a</sup>.</div>
-<div class="ex">e<sup>3x − 1</sup> = e<sup>x + 5</sup> ⟺ 3x − 1 = x + 5 ⟺ 2x = 6 ⟺ <b>x = 3</b>.<br>e<sup>2x + 4</sup> = 1 ⟺ e<sup>2x + 4</sup> = e<sup>0</sup> ⟺ 2x + 4 = 0 ⟺ <b>x = −2</b>.</div>
-<div class="warn">⚠️ 1 = e<sup>0</sup> : l'exposant vaut 0 (pas 1).<br>⚠️ e = e<sup>1</sup>.</div>
-${graph({ xr: [-3, 3], yr: [-1, 8], fs: [EXPF], lines: [{ x: 0, y: Math.E, m: 0, c: COL.T, l: 'y = e' }], pts: [{ x: 1, y: Math.E, l: 'un seul point : x = 1', px: true, anchor: 'end', ly: -14 }] })}`;
+${meth([
+    'Si un membre est un produit ou un quotient d\'exponentielles, regroupe-le en <b>une seule</b> exponentielle (niveaux 2 et 3).',
+    `Écris le nombre seul sous la forme e<sup>…</sup> : 1 = e<sup>0</sup>, e = e<sup>1</sup>, ${F(1, 'e<sup>3</sup>')} = e<sup>−3</sup>.`,
+    'Écris l\'égalité des exposants : u = v.',
+    'Résous : retranche, puis divise. Avec x<sup>2</sup>, passe tout du même côté et factorise (ou discriminant) : il peut y avoir <b>deux</b> solutions.',
+    'Contrôle en remplaçant x dans les deux exposants.',
+  ])}
+<div class="cols">
+${graph({ xr: [-3, 3], yr: [-1, 8], fs: [EXPF], lines: [{ x: 0, y: Math.E, m: 0, c: COL.T, l: 'y = e' }], pts: [{ x: 1, y: Math.E, l: 'un seul point : x = 1', px: true, anchor: 'end', ly: -14 }] })}
+${graph({ xr: [-4, 5], yr: [-2, 12], fs: [{ f: x => x * x, l: 'y = x²' }], lines: [{ x: 0, y: 6, m: 1, c: COL.T, l: 'y = x + 6' }], pts: [{ x: -2, y: 4, px: true, l: 'x = −2', anchor: 'end' }, { x: 3, y: 9, px: true, l: 'x = 3', anchor: 'end' }] })}
+</div>
+${exq('Exemple 1 : deux exposants affines', `e<sup>3x − 1</sup> = e<sup>x + 5</sup> ⟺ 3x − 1 = x + 5 ⟺ 2x = 6 ⟺ <b>x = 3</b>.`)}
+${exq('Exemple 2 : un nombre à droite', `e<sup>−2x + 1</sup> = ${F(1, 'e<sup>3</sup>')} ⟺ e<sup>−2x + 1</sup> = e<sup>−3</sup> ⟺ −2x + 1 = −3 ⟺ −2x = −4 ⟺ <b>x = 2</b>.<br>e<sup>2x + 4</sup> = 1 ⟺ e<sup>2x + 4</sup> = e<sup>0</sup> ⟺ 2x + 4 = 0 ⟺ <b>x = −2</b>.`)}
+${exq('Exemple 3 : avec x<sup>2</sup> (deux solutions)', `e<sup>x<sup>2</sup></sup> = e<sup>x + 6</sup> ⟺ x<sup>2</sup> = x + 6 ⟺ x<sup>2</sup> − x − 6 = 0 ⟺ (x − 3)(x + 2) = 0.<br>Solutions : <b>x = 3</b> et <b>x = −2</b> (les deux points du graphique de droite).`)}
+${warn([
+    '1 = e<sup>0</sup> : l\'exposant doit valoir <b>0</b>, pas 1. Et e = e<sup>1</sup>.',
+    'Pour isoler x, on <b>retranche</b> la constante (on ne l\'ajoute pas), puis on n\'oublie pas de <b>diviser</b> par le coefficient de x.',
+    'Une équation du second degré peut avoir deux solutions : cherche la deuxième.',
+  ])}
+${retenir('e<sup>u</sup> = e<sup>v</sup> ⟺ u = v : on égalise les exposants.')}`;
 }
 
 /* =====================================================================
@@ -447,10 +524,30 @@ function L5(d) {
 }
 function C5() {
   return `<h2>5. Inéquations e<sup>u</sup> &lt; e<sup>v</sup></h2>
-<div class="def">exp est strictement croissante, elle <b>conserve l'ordre</b> :<br><b>e<sup>u</sup> &lt; e<sup>v</sup> ⟺ u &lt; v</b> (de même avec ≤, &gt;, ≥).<br>On résout ensuite une inéquation du 1<sup>er</sup> degré sur les exposants.</div>
-<div class="ex">e<sup>−2x + 1</sup> ≤ e<sup>7</sup> ⟺ −2x + 1 ≤ 7 ⟺ −2x ≤ 6 ⟺ x ≥ −3 (on divise par −2 : le sens change).<br><b>S = [−3 ; +∞[</b>.</div>
-<div class="warn">⚠️ Diviser par un nombre <b>négatif</b> change le sens de l'inégalité.<br>⚠️ e<sup>x</sup> &gt; −2 est vraie pour tout x (S = ℝ) ; e<sup>x</sup> &lt; 0 n'a aucune solution (S = ∅).</div>
-${graph({ xr: [-4, 3], yr: [-1, 8], band: [-4, 1], fs: [EXPF], lines: [{ x: 0, y: Math.E, m: 0, c: COL.T, l: 'y = e' }], pts: [{ x: 1, y: Math.E, l: 'eˣ < e ⟺ x < 1', px: true, anchor: 'end', ly: -14 }] })}`;
+<p class="intro">Comme pour les équations, on passe aux exposants. La seule question délicate : le sens de l'inégalité.</p>
+<div class="def">exp est strictement croissante, elle <b>conserve l'ordre</b> :<br><b>e<sup>u</sup> &lt; e<sup>v</sup> ⟺ u &lt; v</b> (de même avec ≤, &gt;, ≥).<br>On résout ensuite une inéquation du 1<sup>er</sup> degré sur les exposants, et on donne l'ensemble S des solutions sous forme d'<b>intervalle</b>.</div>
+${meth([
+    'Le membre de droite est un nombre <b>négatif ou nul</b> ? Comme e<sup>u</sup> &gt; 0, la réponse est S = ℝ (pour &gt; ou ≥) ou S = ∅ (pour &lt; ou ≤).',
+    'Sinon, écris l\'inégalité entre les exposants, <b>dans le même sens</b>.',
+    'Résous : regroupe les x d\'un côté. Si tu divises par un nombre <b>négatif</b>, le sens change.',
+    'Écris S : crochet fermé pour ≤ et ≥, ouvert pour &lt; et &gt;, toujours ouvert en ±∞.',
+    'Avec x<sup>2</sup> : passe tout du même côté ; le trinôme (a &gt; 0) est négatif <b>entre</b> ses racines.',
+  ])}
+<div class="cols">
+${graph({ xr: [-4, 3], yr: [-1, 8], band: [-4, 1], fs: [EXPF], lines: [{ x: 0, y: Math.E, m: 0, c: COL.T, l: 'y = e' }], pts: [{ x: 1, y: Math.E, l: 'eˣ < e ⟺ x < 1', px: true, anchor: 'end', ly: -14 }] })}
+<div>
+${exq('Exemple 1 : coefficient positif', `e<sup>3x − 2</sup> &gt; e<sup>4</sup> ⟺ 3x − 2 &gt; 4 ⟺ 3x &gt; 6 ⟺ x &gt; 2.<br><b>S = ]2 ; +∞[</b>.`)}
+${exq('Exemple 2 : coefficient négatif', `e<sup>−2x + 1</sup> ≤ e<sup>7</sup> ⟺ −2x + 1 ≤ 7 ⟺ −2x ≤ 6 ⟺ x ≥ −3 (on divise par −2 : le sens change).<br><b>S = [−3 ; +∞[</b>.`)}
+${realLine([I(-3, 1, INF, 0)], [], { h: 70 })}
+</div>
+</div>
+${exq('Exemple 3 : les pièges', `e<sup>x + 1</sup> &lt; −2 : une exponentielle n'est jamais négative, <b>S = ∅</b>.<br>e<sup>2x</sup> ≥ −5 : c'est vrai pour tout x, <b>S = ℝ</b>.`)}
+${warn([
+    'Diviser par un nombre <b>négatif</b> change le sens de l\'inégalité.',
+    'L\'exponentielle, elle, ne change <b>pas</b> le sens : elle est croissante.',
+    'e<sup>x</sup> &gt; −2 est vraie pour tout x (S = ℝ) ; e<sup>x</sup> &lt; 0 n\'a aucune solution (S = ∅).',
+  ])}
+${retenir('e<sup>u</sup> &lt; e<sup>v</sup> ⟺ u &lt; v (même sens) ; seul un coefficient négatif retourne l\'inégalité.')}`;
 }
 
 /* =====================================================================
@@ -521,10 +618,28 @@ function L6(d) {
 function C6() {
   const vals = [1000]; for (let i = 0; i < 10; i++) vals.push(vals[i] * 1.1);
   return `<h2>6. Croissance et décroissance exponentielles</h2>
+<p class="intro">Quand une quantité est multipliée par le même nombre à chaque étape, elle évolue de façon <b>exponentielle</b> : c'est le cas des intérêts composés, des populations, des médicaments dans le sang.</p>
 <div class="def">Une quantité qui est <b>multipliée par le même nombre q</b> à chaque étape suit une <b>suite géométrique</b> : u<sub>n</sub> = u<sub>0</sub> × q<sup>n</sup>.<br>• hausse de t % : q = 1 + t/100 ; baisse de t % : q = 1 − t/100 ;<br>• en temps continu : N(t) = N<sub>0</sub> e<sup>kt</sup> (croissance si k &gt; 0, décroissance si k &lt; 0) ;<br>• <b>demi-vie</b> : durée au bout de laquelle la quantité est divisée par 2.</div>
-<div class="ex">1 000 € placés à 10&nbsp;% par an : après 10 ans, 1 000 × 1,1<sup>10</sup> ≈ <b>2 594 €</b> (et pas 2 000 €).</div>
-<div class="warn">⚠️ Les pourcentages ne s'additionnent pas : +10&nbsp;% pendant 10 ans, ce n'est pas +100&nbsp;%.<br>⚠️ u<sub>n</sub> = u<sub>0</sub> × q<sup>n</sup> : après n étapes, on a multiplié n fois.</div>
-${barres(vals, { hl: 10, hlL: '≈ 2 594', xl: 'années' })}`;
+${meth([
+    'Trouve le <b>coefficient multiplicateur</b> q : « × 2 » donne q = 2 ; +4 % donne q = 1,04 ; −15 % donne q = 0,85.',
+    'Compte le nombre n d\'étapes (années, heures, demi-vies).',
+    'Calcule u<sub>0</sub> × q<sup>n</sup> à la calculatrice, et arrondis seulement à la fin.',
+    'Modèle continu N(t) = N<sub>0</sub>e<sup>kt</sup> : remplace t <b>dans l\'exposant</b>, calcule e<sup>kt</sup>, puis multiplie par N<sub>0</sub>.',
+    'Coefficient global sur n années : c\'est q<sup>n</sup> (pas 1 + n × t/100).',
+  ])}
+<div class="cols">
+${barres(vals, { hl: 10, hlL: '≈ 2&nbsp;594', xl: 'années' })}
+${barres([96, 48, 24, 12], { hl: 3, hlL: '12 mg', xl: 'demi-vies (× 4 h)' })}
+</div>
+${exq('Exemple 1 : doublement', `300 bactéries, effectif multiplié par 2 chaque heure. Après 5 h : 300 × 2<sup>5</sup> = 300 × 32 = <b>9&nbsp;600</b> bactéries.`)}
+${exq('Exemple 2 : une baisse en pourcentage', `Une voiture de 20&nbsp;000 € perd 15 % par an : q = 0,85. Après 3 ans : 20&nbsp;000 × 0,85<sup>3</sup> = 12&nbsp;282,5, soit <b>12&nbsp;283 €</b> environ.<br>À 10 % par an, 1&nbsp;000 € deviennent 1&nbsp;000 × 1,1<sup>10</sup> ≈ <b>2&nbsp;594 €</b> en 10 ans (et pas 2&nbsp;000 €).`)}
+${exq('Exemple 3 : demi-vie et modèle continu', `Demi-vie 4 h, 96 mg injectés. 12 h = 3 demi-vies : 96 ÷ 2<sup>3</sup> = <b>12 mg</b>.<br>N(t) = 500e<sup>0,2t</sup> : N(5) = 500 × e<sup>0,2 × 5</sup> = 500e<sup>1</sup> ≈ <b>1&nbsp;359</b>.`)}
+${warn([
+    'Les pourcentages ne s\'additionnent pas : +10 % pendant 10 ans, ce n\'est pas +100 %. On <b>multiplie</b> par 1,1 chaque année.',
+    'Une hausse de t % donne 1 + t/100 ; une baisse donne 1 − t/100 : ne les échange pas.',
+    'Demi-vie : on <b>divise par 2</b> à chaque fois, on ne retire pas la même quantité.',
+  ])}
+${retenir('multiplier n fois par q, c\'est multiplier par q<sup>n</sup> : u<sub>n</sub> = u<sub>0</sub> × q<sup>n</sup>.')}`;
 }
 
 /* =====================================================================
@@ -570,11 +685,27 @@ function L7(d) {
 }
 function C7() {
   return `<h2>7. Le logarithme népérien</h2>
+<p class="intro">ln « défait » ce que fait exp : c'est l'outil qui permet de retrouver un exposant. Ici, on apprend à calculer de tête avec ln et e.</p>
 <div class="def">Pour tout a &gt; 0, l'équation e<sup>x</sup> = a a une unique solution, notée <b>ln a</b>.<br>La fonction <b>ln</b> est définie sur ]0 ; +∞[ ; c'est la <b>réciproque</b> de exp :<br><b>e<sup>ln a</sup> = a</b> (a &gt; 0) &nbsp;et&nbsp; <b>ln(e<sup>b</sup>) = b</b> (b réel).<br>Valeurs à connaître : <b>ln 1 = 0</b>, <b>ln e = 1</b>.</div>
-<div class="ex">ln(e<sup>−4</sup>) = −4 &nbsp;;&nbsp; e<sup>ln 7</sup> = 7 &nbsp;;&nbsp; 2 ln e − e<sup>ln 3</sup> = 2 − 3 = <b>−1</b>.</div>
-<div class="warn">⚠️ ln 1 = 0 et ln e = 1 (pas l'inverse).<br>⚠️ ln a n'existe que pour a &gt; 0 : ln 0 et ln(−2) n'existent pas.</div>
-<p>Les courbes de exp et de ln sont <b>symétriques</b> par rapport à la droite y = x.</p>
-${recip([{ x: 1, y: 0, l: '(1 ; 0)', c: COL.G, ly: 22 }, { x: Math.E, y: 1, l: '(e ; 1)', c: COL.G, ly: 22 }, { x: 0, y: 1, l: '(0 ; 1)', anchor: 'end' }, { x: 1, y: Math.E, l: '(1 ; e)', anchor: 'end' }])}`;
+${meth([
+    `Écris ce qui est dans ln sous la forme e<sup>b</sup> : ${F(1, 'e<sup>3</sup>')} = e<sup>−3</sup>, ${R('e')} = e<sup>0,5</sup>, e<sup>2</sup> × e<sup>−5</sup> = e<sup>−3</sup>. Alors ln(e<sup>b</sup>) = b.`,
+    'Pour e<sup>ln a</sup>, la réponse est a. Avec un coefficient : e<sup>2 ln 3</sup> = (e<sup>ln 3</sup>)<sup>2</sup> = 3<sup>2</sup> ; e<sup>−ln 4</sup> = 1 ÷ e<sup>ln 4</sup> = 1 ÷ 4.',
+    'Calcule chaque morceau séparément, puis combine avec les coefficients et les signes.',
+  ])}
+<div class="cols">
+<div>
+${exq('Exemple 1 : les bases', `ln(e<sup>−4</sup>) = <b>−4</b> &nbsp;;&nbsp; e<sup>ln 7</sup> = <b>7</b> &nbsp;;&nbsp; 2 ln e − e<sup>ln 3</sup> = 2 × 1 − 3 = <b>−1</b>.`)}
+${exq('Exemple 2 : avec une transformation', `ln(${F(1, 'e<sup>3</sup>')}) = ln(e<sup>−3</sup>) = <b>−3</b> &nbsp;;&nbsp; ln ${R('e')} = ln(e<sup>0,5</sup>) = <b>0,5</b>.<br>e<sup>2 ln 3</sup> = 3<sup>2</sup> = <b>9</b> &nbsp;;&nbsp; e<sup>−ln 4</sup> = ${F(1, 4)} = <b>0,25</b>.`)}
+</div>
+${recip([{ x: 1, y: 0, l: '(1 ; 0)', c: COL.G, ly: 22 }, { x: Math.E, y: 1, l: '(e ; 1)', c: COL.G, ly: 22 }, { x: 0, y: 1, l: '(0 ; 1)', anchor: 'end' }, { x: 1, y: Math.E, l: '(1 ; e)', anchor: 'end' }])}
+</div>
+<p>Les courbes de exp et de ln sont <b>symétriques</b> par rapport à la droite y = x : le point (0 ; 1) de exp devient le point (1 ; 0) de ln.</p>
+${warn([
+    'ln 1 = 0 et ln e = 1 (pas l\'inverse) : c\'est e<sup>0</sup> qui vaut 1.',
+    'Attention aux signes : ln(e<sup>−4</sup>) = −4, et 1/e<sup>3</sup> donne un exposant <b>négatif</b>.',
+    'ln a n\'existe que pour a &gt; 0 : ln 0 et ln(−2) n\'existent pas.',
+  ])}
+${retenir('ln(e<sup>b</sup>) = b et e<sup>ln a</sup> = a : ln et exp s\'annulent l\'une l\'autre.')}`;
 }
 
 /* =====================================================================
@@ -653,10 +784,28 @@ function L8(d) {
 }
 function C8() {
   return `<h2>8. Propriétés de ln</h2>
-<div class="def">Pour a &gt; 0, b &gt; 0 et n entier :<br><b>ln(ab) = ln a + ln b</b> &nbsp;;&nbsp; <b>ln(${F('a', 'b')}) = ln a − ln b</b> &nbsp;;&nbsp; <b>ln(${F(1, 'b')}) = −ln b</b> &nbsp;;&nbsp; <b>ln(a<sup>n</sup>) = n ln a</b> &nbsp;;&nbsp; <b>ln ${R('a')} = ${F(1, 2)} ln a</b>.<br>ln transforme les <b>produits en sommes</b>.</div>
-<div class="ex">ln 12 = ln(2<sup>2</sup> × 3) = <b>2 ln 2 + ln 3</b>.<br>ln(${F(8, 9)}) = ln 8 − ln 9 = <b>3 ln 2 − 2 ln 3</b>.<br>ln 8 + ln 5 − ln 4 = ln(${F('8 × 5', 4)}) = <b>ln 10</b>.</div>
-<div class="warn">⚠️ ln(a + b) ≠ ln a + ln b : la règle marche pour un <b>produit</b>.<br>⚠️ ln(a<sup>2</sup>) = 2 ln a, mais (ln a)<sup>2</sup> ≠ 2 ln a.</div>
-${graph({ xr: [-1, 9], yr: [-3, 3], fs: [lnF(9)], pts: [{ x: 2, y: Math.LN2, l: 'ln 2', px: true, anchor: 'end', ly: -10 }, { x: 4, y: 2 * Math.LN2, l: 'ln 4 = 2 ln 2', px: true, ly: 26 }, { x: 8, y: 3 * Math.LN2, l: 'ln 8 = 3 ln 2', px: true, anchor: 'end', ly: -14 }] })}`;
+<p class="intro">ln transforme les <b>produits en sommes</b> : c'est ce qui le rend si utile. Grâce à ces règles, on exprime beaucoup de logarithmes avec seulement ln 2 et ln 3.</p>
+<div class="def">Pour a &gt; 0, b &gt; 0 et n entier :<br><b>ln(ab) = ln a + ln b</b> &nbsp;;&nbsp; <b>ln(${F('a', 'b')}) = ln a − ln b</b> &nbsp;;&nbsp; <b>ln(${F(1, 'b')}) = −ln b</b> &nbsp;;&nbsp; <b>ln(a<sup>n</sup>) = n ln a</b> &nbsp;;&nbsp; <b>ln ${R('a')} = ${F(1, 2)} ln a</b>.</div>
+${meth([
+    'Décompose chaque nombre en produit de 2 et de 3 : 12 = 2<sup>2</sup> × 3, 18 = 2 × 3<sup>2</sup>, 27 = 3<sup>3</sup>.',
+    `Applique les règles : un produit devient une somme, un exposant devient un coefficient, le <b>dénominateur</b> est retranché, une racine donne ${F(1, 2)}.`,
+    'Regroupe les ln 2 ensemble et les ln 3 ensemble : lis les deux coefficients.',
+    `Pour écrire « ln A » : fais le chemin inverse, ln a + ln b − ln c = ln(${F('ab', 'c')}) et k ln a = ln(a<sup>k</sup>).`,
+  ])}
+<div class="cols">
+${graph({ xr: [-1, 9], yr: [-3, 3], fs: [lnF(9)], pts: [{ x: 2, y: Math.LN2, l: 'ln 2', px: true, anchor: 'end', ly: -10 }, { x: 4, y: 2 * Math.LN2, l: 'ln 4 = 2 ln 2', px: true, ly: 26 }, { x: 8, y: 3 * Math.LN2, l: 'ln 8 = 3 ln 2', px: true, anchor: 'end', ly: -14 }] })}
+<div>
+${exq('Exemple 1 : décomposer', `ln 24 = ln(2<sup>3</sup> × 3) = <b>3 ln 2 + ln 3</b>.`)}
+${exq('Exemple 2 : quotient et racine', `ln(${F(4, 9)}) = ln 4 − ln 9 = <b>2 ln 2 − 2 ln 3</b> (le dénominateur donne des coefficients négatifs).<br>ln ${R(12)} = ${F(1, 2)} ln 12 = ${F(1, 2)}(2 ln 2 + ln 3) = <b>ln 2 + ${F(1, 2)} ln 3</b>.`)}
+</div>
+</div>
+${exq('Exemple 3 : une somme de logarithmes', `2 ln 3 − ln 6 + ln 4 = 2 ln 3 − (ln 2 + ln 3) + 2 ln 2 = <b>ln 2 + ln 3</b>.<br>En un seul ln : ln 6 + ln 5 − ln 3 = ln(${F('6 × 5', 3)}) = <b>ln 10</b> ; 3 ln 2 − ln 4 = ln(${F(8, 4)}) = <b>ln 2</b>.`)}
+${warn([
+    'ln a + ln b = ln(a × b) : on <b>multiplie</b> les nombres, on ne les ajoute pas. Et ln(a + b) ≠ ln a + ln b.',
+    'k ln a = ln(a<sup>k</sup>) : c\'est une puissance, pas un produit par k. Et (ln a)<sup>2</sup> ≠ 2 ln a.',
+    `ln ${R('a')} = ${F(1, 2)} ln a, pas ln a : divise les coefficients par 2.`,
+  ])}
+${retenir('ln(ab) = ln a + ln b : les produits deviennent des sommes, les puissances des coefficients.')}`;
 }
 
 /* =====================================================================
@@ -734,11 +883,34 @@ function L9(d) {
   };
 }
 function C9() {
+  const q = x => Math.exp(2 * x) - Math.exp(x) - 6;
   return `<h2>9. Résoudre e<sup>x</sup> = a</h2>
-<div class="def">Pour a &gt; 0 : <b>e<sup>x</sup> = a ⟺ x = ln a</b>.<br>Pour a ≤ 0 : <b>aucune solution</b> (e<sup>x</sup> &gt; 0).<br>Méthode : on <b>isole</b> l'exponentielle, puis on applique ln.</div>
-<div class="ex">3e<sup>2x</sup> − 1 = 14 ⟺ e<sup>2x</sup> = 5 ⟺ 2x = ln 5 ⟺ x = ${F('ln 5', 2)} ≈ <b>0,80</b>.<br>e<sup>x</sup> + 4 = 1 ⟺ e<sup>x</sup> = −3 : <b>aucune solution</b>.</div>
-<div class="warn">⚠️ Sur la calculatrice : touche <b>ln</b>, pas log.<br>⚠️ On arrondit seulement à la fin du calcul.</div>
-${graph({ xr: [-3, 3], yr: [-1, 8], fs: [EXPF], lines: [{ x: 0, y: 5, m: 0, c: COL.T, l: 'y = 5' }], pts: [{ x: Math.log(5), y: 5, l: 'x = ln 5 ≈ 1,61', px: true, anchor: 'end', ly: -12 }] })}`;
+<p class="intro">Quand l'exposant est inconnu et que l'autre membre n'est pas une exponentielle, c'est ln qui donne la réponse. Résultat souvent arrondi : la calculatrice sert ici.</p>
+<div class="def">Pour a &gt; 0 : <b>e<sup>x</sup> = a ⟺ x = ln a</b>.<br>Pour a ≤ 0 : <b>aucune solution</b> (e<sup>x</sup> &gt; 0).<br>Plus généralement, pour a &gt; 0 : e<sup>X</sup> = a ⟺ X = ln a, quel que soit l'exposant X.</div>
+${meth([
+    '<b>Isole</b> l\'exponentielle : retranche la constante, puis divise par le coefficient.',
+    'Le nombre obtenu est négatif ou nul ? <b>Aucune solution.</b>',
+    'Sinon, applique ln : e<sup>X</sup> = a ⟺ X = ln a.',
+    'Résous pour x (retranche b <b>avant</b> de diviser par a), calcule avec la touche <b>ln</b>, arrondis à la fin.',
+    'Avec e<sup>2x</sup> et e<sup>x</sup> : pose X = e<sup>x</sup> (donc e<sup>2x</sup> = X<sup>2</sup>), résous en X, puis résous e<sup>x</sup> = X pour chaque X &gt; 0.',
+  ])}
+<div class="cols">
+${graph({ xr: [-3, 3], yr: [-1, 8], fs: [EXPF], lines: [{ x: 0, y: 5, m: 0, c: COL.T, l: 'y = 5' }], pts: [{ x: Math.log(5), y: 5, l: 'x = ln 5 ≈ 1,61', px: true, anchor: 'end', ly: -12 }] })}
+<div>
+${exq('Exemple 1 : la forme de base', `e<sup>x</sup> = 7 ⟺ x = ln 7 ≈ <b>1,95</b>.<br>e<sup>2x + 3</sup> = 10 ⟺ 2x + 3 = ln 10 ⟺ x = ${F('ln 10 − 3', 2)} ≈ <b>−0,35</b>.`)}
+${exq('Exemple 2 : isoler d\'abord', `3e<sup>2x</sup> − 1 = 14 ⟺ 3e<sup>2x</sup> = 15 ⟺ e<sup>2x</sup> = 5 ⟺ 2x = ln 5 ⟺ x = ${F('ln 5', 2)} ≈ <b>0,80</b>.<br>e<sup>x</sup> + 4 = 1 ⟺ e<sup>x</sup> = −3 : <b>aucune solution</b>.`)}
+</div>
+</div>
+<div class="cols">
+${exq('Exemple 3 : changement d\'inconnue', `e<sup>2x</sup> − e<sup>x</sup> − 6 = 0. Avec X = e<sup>x</sup> : X<sup>2</sup> − X − 6 = 0, soit (X − 3)(X + 2) = 0.<br>e<sup>x</sup> = 3 ⟺ x = ln 3 ≈ 1,10 ; e<sup>x</sup> = −2 est impossible.<br>Une seule solution : <b>x ≈ 1,10</b>.`)}
+${graph({ xr: [-3, 3], yr: [-7, 8], fs: [{ f: q }], pts: [{ x: Math.log(3), y: 0, l: 'x = ln 3 ≈ 1,10', anchor: 'start', ly: 26 }] })}
+</div>
+${warn([
+    'Divise d\'abord pour isoler e<sup>x</sup> : 2e<sup>x</sup> = 10 donne e<sup>x</sup> = 5, puis x = ln 5 (et non ln 10).',
+    'Sur la calculatrice : touche <b>ln</b>, pas log (logarithme décimal). On arrondit seulement à la fin.',
+    'Avec X = e<sup>x</sup>, les valeurs trouvées pour X ne sont pas encore les solutions : il reste à résoudre e<sup>x</sup> = X.',
+  ])}
+${retenir('pour a &gt; 0, e<sup>x</sup> = a ⟺ x = ln a ; pour a ≤ 0, pas de solution.')}`;
 }
 
 /* =====================================================================
@@ -813,10 +985,29 @@ function L10(d) {
 function C10() {
   const f = x => (x > 1 ? Math.log(x - 1) : NaN);
   return `<h2>10. Équations avec ln</h2>
+<p class="intro">On résout maintenant des équations où l'inconnue est <b>dans</b> un logarithme. La nouveauté : il faut toujours vérifier que ln existe.</p>
 <div class="def">ln u n'existe que si <b>u &gt; 0</b> : on cherche d'abord l'<b>ensemble de définition</b>.<br>Ensuite : <b>ln X = c ⟺ X = e<sup>c</sup></b> &nbsp;;&nbsp; <b>ln u = ln v ⟺ u = v</b> (u &gt; 0, v &gt; 0).<br>On <b>vérifie</b> enfin que chaque solution trouvée est dans l'ensemble de définition.</div>
-<div class="ex">ln(x − 1) = 2 : il faut x &gt; 1. x − 1 = e<sup>2</sup>, donc x = e<sup>2</sup> + 1 ≈ <b>8,39</b> &gt; 1 ✔.<br>ln x + ln(x + 1) = ln 6 : il faut x &gt; 0 ; x(x + 1) = 6 ⟺ x = 2 ou x = −3. On rejette −3 : <b>x = 2</b>.</div>
-<div class="warn">⚠️ ln X = 0 ⟺ X = 1 (pas X = 0).<br>⚠️ Une valeur trouvée par le calcul peut être hors de l'ensemble de définition : il faut la <b>rejeter</b>.</div>
-${graph({ xr: [-1, 10], yr: [-3, 3], band: [1, 10], vs: [{ x: 1 }], fs: [{ f, dom: [1.001, 10], l: 'y = ln(x − 1)' }], lines: [{ x: 0, y: 2, m: 0, c: COL.T, l: 'y = 2' }], pts: [{ x: Math.E ** 2 + 1, y: 2, l: 'x ≈ 8,39', px: true, anchor: 'end', ly: -12 }] })}`;
+${meth([
+    'Écris les conditions : tout ce qui est dans un ln doit être <b>strictement positif</b> (zone orange sur le graphique).',
+    'Regroupe si besoin : ln a + ln b = ln(ab).',
+    'ln X = ln k ⟺ X = k (pas besoin de calculatrice) ; ln X = c ⟺ X = e<sup>c</sup>, en particulier ln X = 0 ⟺ X = 1.',
+    'Résous l\'équation obtenue (1<sup>er</sup> ou 2<sup>d</sup> degré).',
+    'Contrôle chaque valeur : si ce qui est dans un ln est ≤ 0, la valeur est <b>rejetée</b>.',
+  ])}
+<div class="cols">
+${graph({ xr: [-1, 10], yr: [-3, 3], band: [1, 10], vs: [{ x: 1 }], fs: [{ f, dom: [1.001, 10], l: 'y = ln(x − 1)' }], lines: [{ x: 0, y: 2, m: 0, c: COL.T, l: 'y = 2' }], pts: [{ x: Math.E ** 2 + 1, y: 2, l: 'x ≈ 8,39', px: true, anchor: 'end', ly: -12 }] })}
+<div>
+${exq('Exemple 1 : ln u = ln k ou ln X = 0', `ln(2x + 1) = ln 9 ⟺ 2x + 1 = 9 ⟺ <b>x = 4</b> ; contrôle : 2 × 4 + 1 = 9 &gt; 0 ✔.<br>ln(x + 3) = 0 ⟺ x + 3 = 1 ⟺ <b>x = −2</b> ; contrôle : −2 + 3 = 1 &gt; 0 ✔.`)}
+${exq('Exemple 2 : ln X = c', `ln(x − 1) = 2 : il faut x &gt; 1. x − 1 = e<sup>2</sup>, donc x = e<sup>2</sup> + 1 ≈ <b>8,39</b> &gt; 1 ✔.`)}
+</div>
+</div>
+${exq('Exemple 3 : une valeur à rejeter', `ln(x − 5) = ln(2x − 3) : x − 5 = 2x − 3 ⟺ x = −2. Mais pour x = −2, x − 5 = −7 ≤ 0 : ln(−7) n'existe pas. <b>Aucune solution.</b><br>ln x + ln(x + 1) = ln 6 : il faut x &gt; 0 ; x(x + 1) = 6 ⟺ x<sup>2</sup> + x − 6 = 0 ⟺ x = 2 ou x = −3. On rejette −3 : <b>x = 2</b>.`)}
+${warn([
+    'ln X = 0 ⟺ X = 1 (pas X = 0), car ln 1 = 0.',
+    'ln X = c ⟺ X = <b>e<sup>c</sup></b> (et non X = c) : on applique exp aux deux membres.',
+    'Une valeur trouvée par le calcul peut être hors de l\'ensemble de définition : il faut la <b>rejeter</b>.',
+  ])}
+${retenir('d\'abord les conditions (ce qui est dans ln est &gt; 0), ensuite le calcul, enfin le contrôle.')}`;
 }
 
 /* =====================================================================
@@ -873,11 +1064,29 @@ function L11(d) {
 }
 function C11() {
   const vals = []; for (let i = 0, w = 1; i <= 13; i++, w *= 0.8) vals.push(w);
+  const cap = []; for (let i = 0, w = 1000; i <= 20; i++, w *= 1.04) cap.push(w);
   return `<h2>11. Seuils : résoudre q<sup>n</sup> &lt; s</h2>
-<div class="def">Pour trouver le plus petit entier n tel que q<sup>n</sup> &gt; s (ou &lt; s), on applique <b>ln</b>, qui est croissante :<br>q<sup>n</sup> &gt; s ⟺ n ln q &gt; ln s.<br>• si q &gt; 1, ln q &gt; 0 : n &gt; ${F('ln s', 'ln q')} ;<br>• si 0 &lt; q &lt; 1, <b>ln q &lt; 0</b> : en divisant, <b>le sens change</b>.</div>
-<div class="ex">0,8<sup>n</sup> &lt; 0,1 ⟺ n ln 0,8 &lt; ln 0,1 ⟺ n &gt; ${F('ln 0,1', 'ln 0,8')} ≈ 10,32 (sens changé). Donc <b>n = 11</b>.</div>
-<div class="warn">⚠️ ln q &lt; 0 quand q &lt; 1 : diviser par ln q change le sens.<br>⚠️ La réponse est un <b>entier</b> : on prend l'entier juste au-dessus de la valeur trouvée.</div>
-${barres(vals, { seuil: 0.1, seuilL: 'seuil 0,1', hl: 11, hlL: 'n = 11', xl: 'n', up: false })}`;
+<p class="intro">« Au bout de combien d'années ? », « combien de lancers faut-il ? » : ces questions de seuil se résolvent avec ln, sans tester les valeurs une par une.</p>
+<div class="def">Pour trouver le plus petit entier n tel que q<sup>n</sup> &gt; s (ou &lt; s), on applique <b>ln</b>, qui est croissante :<br>q<sup>n</sup> &gt; s ⟺ ln(q<sup>n</sup>) &gt; ln s ⟺ n ln q &gt; ln s.<br>• si q &gt; 1, ln q &gt; 0 : n &gt; ${F('ln s', 'ln q')} ;<br>• si 0 &lt; q &lt; 1, <b>ln q &lt; 0</b> : en divisant, <b>le sens change</b>.</div>
+${meth([
+    'Ramène-toi à q<sup>n</sup> ? s : divise par la valeur de départ (1&nbsp;000 × 1,04<sup>n</sup> ≥ 2&nbsp;000 ⟺ 1,04<sup>n</sup> ≥ 2). Pour une probabilité : 1 − q<sup>n</sup> ≥ p ⟺ q<sup>n</sup> ≤ 1 − p.',
+    'Applique ln aux deux membres : n ln q ? ln s (même sens).',
+    `Divise par ln q : si q &lt; 1, ln q est <b>négatif</b> et le sens change.`,
+    'Calcule le quotient, puis prends le plus petit <b>entier</b> qui convient : l\'entier juste au-dessus.',
+  ])}
+<div class="cols">
+${barres(vals, { seuil: 0.1, seuilL: 'seuil 0,1', hl: 11, hlL: 'n = 11', xl: 'n', up: false })}
+${barres(cap, { seuil: 2000, seuilL: 'seuil 2&nbsp;000 €', hl: 18, hlL: 'n = 18', xl: 'années', up: true })}
+</div>
+${exq('Exemple 1 : q &gt; 1', `2<sup>n</sup> &gt; 1&nbsp;000 ⟺ n ln 2 &gt; ln 1&nbsp;000 ⟺ n &gt; ${F('ln 1&nbsp;000', 'ln 2')} ≈ 9,97. Donc <b>n = 10</b> (2<sup>10</sup> = 1&nbsp;024).`)}
+${exq('Exemple 2 : q &lt; 1, le sens change', `0,8<sup>n</sup> &lt; 0,1 ⟺ n ln 0,8 &lt; ln 0,1 ⟺ n &gt; ${F('ln 0,1', 'ln 0,8')} ≈ 10,32 (on divise par ln 0,8 &lt; 0). Donc <b>n = 11</b>.`)}
+${exq('Exemple 3 : en situation', `1&nbsp;000 € à 4 % par an : 1,04<sup>n</sup> ≥ 2 ⟺ n ≥ ${F('ln 2', 'ln 1,04')} ≈ 17,67 : le capital double au bout de <b>18 ans</b>.<br>Au moins un succès avec probabilité ≥ 0,99 quand l'échec a la probabilité 0,9 : 0,9<sup>n</sup> ≤ 0,01 ⟺ n ≥ ${F('ln 0,01', 'ln 0,9')} ≈ 43,7 : <b>n = 44</b>.`)}
+${warn([
+    'ln q &lt; 0 quand q &lt; 1 : diviser par ln q <b>change le sens</b>.',
+    'La réponse est un <b>entier</b> : on prend l\'entier juste au-dessus de la valeur trouvée (10,32 donne 11, pas 10).',
+    'Le seuil porte sur q<sup>n</sup> : pense à diviser d\'abord par la valeur de départ.',
+  ])}
+${retenir('on applique ln, on divise par ln q (attention au signe), puis on prend l\'entier juste au-dessus.')}`;
 }
 
 /* =====================================================================
@@ -1001,11 +1210,32 @@ function L12(d) {
   };
 }
 function C12() {
+  const g = x => (x - 1) * Math.exp(x);
   return `<h2>12. Dérivées et variations</h2>
+<p class="intro">Pour étudier une fonction qui contient e<sup>x</sup> ou ln x, on la dérive, puis on étudie le signe de la dérivée. Les deux fonctions ont des dérivées très simples.</p>
 <div class="def">Si u est dérivable (et u &gt; 0 pour ln) :<br><b>(e<sup>u</sup>)${PR} = u${PR} e<sup>u</sup></b> &nbsp;;&nbsp; <b>(ln x)${PR} = ${F(1, 'x')}</b> &nbsp;;&nbsp; <b>(ln u)${PR} = ${F(`u${PR}`, 'u')}</b>.<br>Comme e<sup>u</sup> &gt; 0, le signe de u${PR}e<sup>u</sup> est celui de u${PR}.</div>
-<div class="ex">f(x) = e<sup>x<sup>2</sup> − 3x</sup> : f${PR}(x) = (2x − 3)e<sup>x<sup>2</sup> − 3x</sup>.<br>f(x) = ln(x<sup>2</sup> + 1) : f${PR}(x) = ${F('2x', 'x<sup>2</sup> + 1')}.<br>f(x) = x − 2 ln x sur ]0 ; +∞[ : f${PR}(x) = 1 − ${F(2, 'x')} = ${F('x − 2', 'x')} : f décroît sur ]0 ; 2], croît sur [2 ; +∞[.</div>
-<div class="warn">⚠️ (e<sup>u</sup>)${PR} ≠ e<sup>u</sup> : il faut le facteur u${PR}.<br>⚠️ Avec ln, l'étude se fait sur l'ensemble de définition (x &gt; 0 pour ln x).</div>
-${graph({ xr: [-1, 6], yr: [-3, 3], fs: [lnF(6)], lines: [{ x: 1, y: 0, m: 1, c: COL.T, l: 'T : y = x − 1' }], pts: [{ x: 1, y: 0, l: '(1 ; 0)', ly: 22 }] })}`;
+${meth([
+    `Repère u (ce qui est dans l'exponentielle ou dans ln) et calcule u${PR}.`,
+    `Applique la formule : (e<sup>u</sup>)${PR} = u${PR}e<sup>u</sup> ; (ln u)${PR} = ${F(`u${PR}`, 'u')} ; (k ln x)${PR} = ${F('k', 'x')}.`,
+    `Pour un produit comme (ax + b)e<sup>x</sup> : (uv)${PR} = u${PR}v + uv${PR}, puis <b>factorise par e<sup>x</sup></b>. Comme e<sup>x</sup> &gt; 0, f${PR} a le signe du facteur affine.`,
+    `Avec ln x : mets f${PR}(x) au même dénominateur x ; sur ]0 ; +∞[, x &gt; 0, donc f${PR} a le signe du numérateur.`,
+    `Tangente en a : y = f${PR}(a)(x − a) + f(a), et ln 1 = 0 simplifie f(1).`,
+    `f est croissante où f${PR} ≥ 0, décroissante où f${PR} ≤ 0 ; crochet <b>ouvert</b> en 0 quand ln x est en jeu.`,
+  ])}
+<div class="cols">
+${graph({ xr: [-4, 2], yr: [-2, 3], fs: [{ f: g, l: 'y = (x − 1)eˣ' }], lines: [{ x: 0, y: -1, m: 0, c: COL.T }], pts: [{ x: 0, y: g(0), l: 'minimum (0 ; −1)', anchor: 'start', ly: 24 }] })}
+${graph({ xr: [-1, 6], yr: [-3, 3], fs: [lnF(6)], lines: [{ x: 1, y: 0, m: 1, c: COL.T, l: 'T : y = x − 1' }], pts: [{ x: 1, y: 0, l: '(1 ; 0)', ly: 22 }] })}
+</div>
+${exq('Exemple 1 : dériver', `f(x) = e<sup>x<sup>2</sup> − 3x</sup> : u = x<sup>2</sup> − 3x, u${PR} = 2x − 3, donc f${PR}(x) = <b>(2x − 3)e<sup>x<sup>2</sup> − 3x</sup></b>.<br>f(x) = 3 ln(x<sup>2</sup> + 2) : u${PR} = 2x, donc f${PR}(x) = 3 × ${F('2x', 'x<sup>2</sup> + 2')} = <b>${F('6x', 'x<sup>2</sup> + 2')}</b>.`)}
+${exq('Exemple 2 : variations avec e<sup>x</sup>', `f(x) = (x − 1)e<sup>x</sup> : f${PR}(x) = 1 × e<sup>x</sup> + (x − 1)e<sup>x</sup> = xe<sup>x</sup>.<br>e<sup>x</sup> &gt; 0, donc f${PR}(x) a le signe de x : f est <b>décroissante sur ]−∞ ; 0]</b> et <b>croissante sur [0 ; +∞[</b>, avec un minimum f(0) = −1.`)}
+${signTableHTML(['0'], [[`f${PR}(x)`, ['−', '0', '+']], ['f', ['↘', '', '↗']]])}
+${exq('Exemple 3 : avec ln x', `f(x) = x − 2 ln x sur ]0 ; +∞[ : f${PR}(x) = 1 − ${F(2, 'x')} = ${F('x − 2', 'x')} : f décroît sur <b>]0 ; 2]</b>, croît sur <b>[2 ; +∞[</b>.<br>Tangente en 1 à f(x) = 3 ln x − x : f(1) = 3 × 0 − 1 = −1 ; f${PR}(x) = ${F(3, 'x')} − 1, f${PR}(1) = 2 ; y = 2(x − 1) − 1, soit <b>y = 2x − 3</b>.`)}
+${warn([
+    `(e<sup>u</sup>)${PR} ≠ e<sup>u</sup> : il faut multiplier par u${PR}. Et (ln u)${PR} a pour numérateur u${PR}, pas 1.`,
+    `(k ln x)${PR} = ${F('k', 'x')} : garde le coefficient k.`,
+    'Avec ln, l\'étude se fait sur l\'ensemble de définition : f n\'est pas définie en 0, le crochet en 0 est <b>ouvert</b>.',
+  ])}
+${retenir(`(e<sup>u</sup>)${PR} = u${PR}e<sup>u</sup> et (ln u)${PR} = ${F(`u${PR}`, 'u')} ; e<sup>x</sup> &gt; 0 ne change jamais un signe.`)}`;
 }
 
 /* ================= niveaux ================= */

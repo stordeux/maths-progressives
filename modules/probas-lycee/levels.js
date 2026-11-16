@@ -10,7 +10,7 @@ import { ri, pick, chance } from '../../engine/util/rand.js';
 import { numsCheck, choiceCheck } from '../../engine/answers/checks.js';
 import { M } from '../../engine/util/fmt.js';
 import { r6 } from '../../engine/util/arith.js';
-import { crossTable, ptree, lawChart } from './draw.js';
+import { crossTable, ptree, lawChart, mosaic, venn, pascal } from './draw.js';
 
 /* ================= écriture ================= */
 const bar = s => `<span style="text-decoration:overline">${s}</span>`;
@@ -139,14 +139,23 @@ function L1(d) {
     solution: `Effectif de ${ev(X.t)} : ${parts.join(' + ')} = ${X.n}.<br>${Pr(ev(X.t))} = ${X.n} ÷ ${T.N} = <b>${M(ans)}</b>.`,
   };
 }
+/* exemple commun aux encarts 1 à 3 : 200 élèves, S « sport en club », F « fille » */
+const TEX = { N: 200, R: [80, 120], C: [90, 110], cells: [[30, 50], [60, 60]], nc: 2 };
+const MOS = o => mosaic({ rows: ['S', '!S'], cols: ['F', '!F'], cells: TEX.cells, ...o });
 function C1() {
-  const T = { N: 200, R: [80, 120], C: [90, 110], cells: [[30, 50], [60, 60]], nc: 2 };
   return `<h2>1. Tableau croisé d'effectifs</h2>
-<div class="def">On choisit <b>au hasard</b> un individu dans une population de N individus : toutes les issues sont équiprobables.<br>Pour un événement A : <b>P(A) = (effectif de A) ÷ N</b>.<br>Le <b>contraire</b> de A se note ${bar('A')} (« non A ») : P(${bar('A')}) = 1 − P(A).</div>
-${tableOf(TCTX[0], T, { hl: [[0, 2], [2, 2]] })}
-<div class="ex">200 élèves ; S : « pratique un sport en club » ; F : « est une fille ».<br>P(S) = 80 ÷ 200 = <b>0,4</b> (total de la ligne S).<br>P(${bar('F')}) = 110 ÷ 200 = <b>0,55</b> (total de la colonne ${bar('F')}).</div>
-<div class="warn">⚠️ On divise par l'effectif <b>total</b>, et on prend <b>toute la ligne</b> (ou toute la colonne) de l'événement, pas une seule case.</div>
-<div class="warn">⚠️ Une probabilité est toujours comprise entre 0 et 1.</div>`;
+<p class="intro">Un tableau croisé range une population selon deux critères. Il permet de calculer des probabilités en <b>comptant</b>.</p>
+<div class="def">On choisit <b>au hasard</b> un individu parmi N : toutes les issues sont <b>équiprobables</b>.<br>Pour un événement A : <b>P(A) = (effectif de A) ÷ N</b>.<br>Le <b>contraire</b> de A se note ${bar('A')} (« non A ») : P(${bar('A')}) = 1 − P(A).</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Repère la <b>ligne</b> ou la <b>colonne</b> de l'événement (S, ${bar('S')}, F, ${bar('F')}… ; avec trois colonnes, même chose).</li>
+<li>Si les totaux manquent, <b>additionne</b> toutes les cases de cette ligne (ou colonne).</li>
+<li>Divise par l'effectif <b>total</b> N (la case en bas à droite).</li>
+<li>Vérifie : le résultat est entre 0 et 1.</li></ol></div>
+<div class="cols">${tableOf(TCTX[0], TEX, { hl: [[0, 2], [2, 2]] })}${MOS({ hlRow: 0 })}</div>
+<div class="ex"><span class="q">Exemple 1 : 200 élèves ; S : « pratique un sport en club » ; F : « est une fille ». Calcule P(S).</span><br>Total de la ligne S : 80.<br>P(S) = 80 ÷ 200 = <b>0,4</b>. Sur le carré, la bande S occupe 40 % de l'aire.</div>
+<div class="ex"><span class="q">Exemple 2 : sans la ligne Total, calcule P(${bar('F')}).</span><br>Colonne ${bar('F')} : 50 + 60 = 110.<br>P(${bar('F')}) = 110 ÷ 200 = <b>0,55</b>.<br>Contrôle : P(F) = 90 ÷ 200 = 0,45 et 1 − 0,45 = 0,55. ✔</div>
+<div class="warn">⚠️ Une seule case ne suffit pas : l'événement regroupe <b>toute la ligne</b> (ou toute la colonne).<br>⚠️ On divise par l'effectif <b>total</b>, pas par un autre total.<br>⚠️ Un résultat plus grand que 1 signale une division oubliée ou à l'envers.</div>
+<div class="retenir">À retenir : P(A) = effectif de A ÷ effectif total, toujours entre 0 et 1.</div>`;
 }
 
 /* ===================================================================== 2. intersection et réunion */
@@ -179,13 +188,20 @@ function L2(d) {
   };
 }
 function C2() {
-  const T = { N: 200, R: [80, 120], C: [90, 110], cells: [[30, 50], [60, 60]], nc: 2 };
   return `<h2>2. Intersection et réunion</h2>
-<div class="def"><b>A ∩ B</b> (« A et B ») : les deux à la fois. Dans le tableau, c'est <b>une case</b>.<br><b>A ∪ B</b> (« A ou B ») : au moins l'un des deux.<br><b>P(A ∪ B) = P(A) + P(B) − P(A ∩ B)</b>.</div>
-${tableOf(TCTX[0], T, { hl: [[0, 0]] })}
-<div class="ex">P(S ∩ F) = 30 ÷ 200 = <b>0,15</b>.<br>P(S ∪ F) = 0,4 + 0,45 − 0,15 = <b>0,7</b> (effectif : 80 + 90 − 30 = 140).</div>
-<div class="warn">⚠️ Dans P(A) + P(B), la case A ∩ B est comptée deux fois : on la retire une fois.</div>
-<div class="warn">⚠️ « ou » en mathématiques n'est pas exclusif : A ∪ B contient aussi ceux qui sont dans A et dans B.</div>`;
+<p class="intro">« Et », « ou » : deux petits mots qui changent tout. Le tableau et le diagramme de Venn montrent quels individus compter.</p>
+<div class="def"><b>A ∩ B</b> (« A <b>et</b> B ») : les individus qui sont dans A et dans B à la fois. Dans le tableau, c'est <b>une case</b>.<br><b>A ∪ B</b> (« A <b>ou</b> B ») : ceux qui sont dans au moins l'un des deux.<br><b>P(A ∪ B) = P(A) + P(B) − P(A ∩ B)</b>.</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>« Et » (∩) : lis la case au croisement de la ligne et de la colonne, puis divise par N.</li>
+<li>« Ou » (∪) : calcule P(A) et P(B) (totaux de ligne et de colonne).</li>
+<li>Additionne-les, puis <b>retire</b> P(A ∩ B), comptée deux fois.</li>
+<li>Contrôle avec les effectifs : (effectif de A + effectif de B − case commune) ÷ N.</li></ol></div>
+<div class="cols">${venn({ la: 'S', lb: 'F', a: 50, b: 60, ab: 30, out: 60, shade: 'inter', cap: 'S ∩ F : 30 élèves' })}${venn({ la: 'S', lb: 'F', a: 50, b: 60, ab: 30, out: 60, shade: 'union', cap: 'S ∪ F : 50 + 30 + 60 = 140' })}</div>
+${tableOf(TCTX[0], TEX, { hl: [[0, 0]] })}
+<div class="ex"><span class="q">Exemple 1 : calcule P(S ∩ F).</span><br>Case S, F : 30 élèves.<br>P(S ∩ F) = 30 ÷ 200 = <b>0,15</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : calcule P(S ∪ F), puis P(${bar('S')} ∪ F).</span><br>P(S ∪ F) = 0,4 + 0,45 − 0,15 = <b>0,7</b> (effectif : 80 + 90 − 30 = 140).<br>P(${bar('S')} ∪ F) = 120 ÷ 200 + 90 ÷ 200 − 60 ÷ 200 = 0,6 + 0,45 − 0,3 = <b>0,75</b>.</div>
+<div class="warn">⚠️ Dans P(A) + P(B), la case A ∩ B est comptée <b>deux fois</b> : on la retire une fois.<br>⚠️ « Ou » n'est pas exclusif : A ∪ B contient aussi ceux qui sont dans A <b>et</b> dans B.<br>⚠️ Pour A ∩ B, on divise par l'effectif <b>total</b>, pas par celui d'une ligne ou d'une colonne.</div>
+<div class="retenir">À retenir : « et » = une case ; « ou » = P(A) + P(B) − P(A ∩ B).</div>`;
 }
 
 /* ===================================================================== 3. probabilité conditionnelle dans un tableau */
@@ -216,13 +232,19 @@ function L3(d) {
   };
 }
 function C3() {
-  const T = { N: 200, R: [80, 120], C: [90, 110], cells: [[30, 50], [60, 60]], nc: 2 };
   return `<h2>3. Probabilité conditionnelle</h2>
-<div class="def">Si P(A) ≠ 0, la probabilité de B <b>sachant</b> A est<br><b>${Pc('A', 'B')} = P(A ∩ B) ÷ P(A)</b>.<br>Dans un tableau : on se place <b>dans la ligne (ou la colonne) de A</b>, et on divise par son effectif.</div>
-${tableOf(TCTX[0], T, { hl: [[0, 0], [0, 2]] })}
-<div class="ex">Parmi les 80 élèves de S, 30 sont des filles : ${Pc('S', 'F')} = 30 ÷ 80 = <b>0,375</b>.<br>Parmi les 90 filles, 30 font du sport : ${Pc('F', 'S')} = 30 ÷ 90 ≈ 0,333. Ce n'est pas la même chose !</div>
-<div class="warn">⚠️ ${Pc('A', 'B')} ≠ ${Pc('B', 'A')} en général : la lettre en indice dit <b>par quel effectif on divise</b>.</div>
-<div class="warn">⚠️ ${Pc('A', 'B')} ≠ P(A ∩ B) : on ne divise pas par l'effectif total.</div>`;
+<p class="intro">Parfois, on sait déjà quelque chose sur l'individu choisi. La population se <b>réduit</b> : on ne regarde plus que ceux qui vérifient cette information.</p>
+<div class="def">Si P(A) ≠ 0, la probabilité de B <b>sachant</b> A est<br><b>${Pc('A', 'B')} = P(A ∩ B) ÷ P(A)</b>.<br>Dans un tableau : ${Pc('A', 'B')} = (effectif de A ∩ B) ÷ (effectif de A).</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Lis l'événement en <b>indice</b> : c'est la nouvelle population (« sachant A »).</li>
+<li>Trouve son effectif : le total de sa ligne ou de sa colonne (additionne si le total manque).</li>
+<li>Dans cette ligne (ou colonne), lis la case de l'autre événement.</li>
+<li>Divise la case par l'effectif de l'indice.</li></ol></div>
+<div class="cols">${tableOf(TCTX[0], TEX, { hl: [[0, 0], [0, 2]] })}${MOS({ frame: 0, hl: [[0, 0]] })}</div>
+<div class="ex"><span class="q">Exemple 1 : calcule ${Pc('S', 'F')}.</span><br>« Sachant S » : on ne garde que les 80 élèves de la ligne S (cadre en pointillés).<br>Parmi eux, 30 sont des filles : ${Pc('S', 'F')} = 30 ÷ 80 = <b>0,375</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : calcule ${Pc('!S', 'F')}, puis compare ${Pc('S', 'F')} et ${Pc('F', 'S')}.</span><br>Ligne ${bar('S')} : 120 élèves, dont 60 filles : ${Pc('!S', 'F')} = 60 ÷ 120 = <b>0,5</b>.<br>Colonne F : 90 filles, dont 30 sportives : ${Pc('F', 'S')} = 30 ÷ 90 ≈ 0,333. Ce n'est pas ${Pc('S', 'F')} = 0,375&nbsp;!</div>
+<div class="warn">⚠️ ${Pc('A', 'B')} ≠ P(A ∩ B) : on ne divise <b>pas</b> par l'effectif total.<br>⚠️ ${Pc('A', 'B')} ≠ ${Pc('B', 'A')} en général : la lettre en indice dit <b>par quel effectif on divise</b>.</div>
+<div class="retenir">À retenir : « sachant A » : on divise par l'effectif de A, pas par N.</div>`;
 }
 
 /* ================= arbres pondérés ================= */
@@ -297,10 +319,18 @@ function L4(d) {
 function C4() {
   const T = { a: 3, b: 80, c: 10 };
   return `<h2>4. Arbre pondéré</h2>
-<div class="def">Un <b>arbre pondéré</b> résume deux épreuves. Sur les branches du 1<sup>er</sup> niveau : P(A) et P(${bar('A')}). Sur celles du 2<sup>e</sup> niveau : des probabilités <b>conditionnelles</b> ${Pc('A', 'B')}, ${Pc('!A', 'B')}…<br><b>Règle des nœuds</b> : la somme des probabilités des branches issues d'un même nœud vaut <b>1</b>.</div>
-${mkTree({ A: 'A', B: 'B' }, T)}
-<div class="ex">P(A) = 0,3 donc P(${bar('A')}) = 1 − 0,3 = <b>0,7</b>.<br>${Pc('A', 'B')} = 0,8 donc ${Pc('A', '!B')} = 1 − 0,8 = <b>0,2</b>.</div>
-<div class="warn">⚠️ ${Pc('A', 'B')} et ${Pc('!A', 'B')} ne partent pas du même nœud : leur somme ne vaut pas 1 en général.</div>`;
+<p class="intro">Un arbre pondéré résume une situation en deux étapes : d'abord A ou ${bar('A')}, ensuite B ou ${bar('B')}. Bien le remplir, c'est la moitié du travail.</p>
+<div class="def">Sur les branches du 1<sup>er</sup> niveau : P(A) et P(${bar('A')}).<br>Sur celles du 2<sup>e</sup> niveau : des probabilités <b>conditionnelles</b> ${Pc('A', 'B')}, ${Pc('A', '!B')}, ${Pc('!A', 'B')}, ${Pc('!A', '!B')}.<br><b>Règle des nœuds</b> : la somme des probabilités des branches issues d'un <b>même nœud</b> vaut <b>1</b>.</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Repère le nœud d'où part la branche « ? ».</li>
+<li>Trouve sa <b>branche voisine</b> (même nœud, événement contraire).</li>
+<li>Calcule : ? = 1 − (branche voisine).</li>
+<li>Recommence pour chaque « ? » : chaque nœud se traite à part.</li></ol></div>
+${mkTree({ A: 'A', B: 'B' }, T, { hide: ['!A', 'A.!B'] })}
+<div class="ex"><span class="q">Exemple 1 : complète les deux « ? » de l'arbre.</span><br>Nœud de départ : P(${bar('A')}) = 1 − P(A) = 1 − 0,3 = <b>0,7</b>.<br>Nœud A : ${Pc('A', '!B')} = 1 − ${Pc('A', 'B')} = 1 − 0,8 = <b>0,2</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : on donne P(${bar('A')}) = 0,65, ${Pc('A', '!B')} = 0,12 et ${Pc('!A', 'B')} = 0,35. Complète l'arbre.</span><br>P(A) = 1 − 0,65 = <b>0,35</b> ; ${Pc('A', 'B')} = 1 − 0,12 = <b>0,88</b> ; ${Pc('!A', '!B')} = 1 − 0,35 = <b>0,65</b>.</div>
+<div class="warn">⚠️ Ne recopie pas la branche voisine : on fait <b>1 − voisine</b>.<br>⚠️ ${Pc('A', 'B')} et ${Pc('!A', 'B')} ne partent <b>pas</b> du même nœud : leur somme ne vaut pas 1 en général.</div>
+<div class="retenir">À retenir : à chaque nœud, les branches qui partent ont une somme égale à 1.</div>`;
 }
 
 /* ===================================================================== 5. probabilité d'un chemin */
@@ -328,11 +358,17 @@ function L5(d) {
 function C5() {
   const T = { a: 3, b: 80, c: 10 };
   return `<h2>5. Probabilité d'un chemin</h2>
-<div class="def">La probabilité d'un chemin est le <b>produit</b> des probabilités de ses branches :<br><b>P(A ∩ B) = P(A) × ${Pc('A', 'B')}</b>.<br>C'est la définition de ${Pc('A', 'B')} = P(A ∩ B) ÷ P(A), «&nbsp;retournée&nbsp;».</div>
-${mkTree({ A: 'A', B: 'B' }, T, { hl: ['10'], vals: { 10: '= 0,07' } })}
-<div class="ex">P(${bar('A')} ∩ B) = P(${bar('A')}) × ${Pc('!A', 'B')} = 0,7 × 0,1 = <b>0,07</b>.</div>
-<div class="warn">⚠️ ${Pc('A', 'B')} (sur la branche) n'est pas P(A ∩ B) (le chemin entier) : il faut multiplier par P(A).</div>
-<div class="warn">⚠️ Sur un chemin on multiplie ; on n'additionne pas.</div>`;
+<p class="intro">Chaque chemin de l'arbre (de la racine à une feuille) correspond à une intersection, comme A ∩ B ou ${bar('A')} ∩ ${bar('B')}.</p>
+<div class="def">La probabilité d'un chemin est le <b>produit</b> des probabilités de ses branches :<br><b>P(A ∩ B) = P(A) × ${Pc('A', 'B')}</b>.<br>C'est la définition ${Pc('A', 'B')} = P(A ∩ B) ÷ P(A), «&nbsp;retournée&nbsp;».</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Repère le chemin : 1<sup>re</sup> lettre de l'intersection, puis la 2<sup>e</sup>.</li>
+<li>S'il y a des « ? » sur ce chemin, complète-les d'abord (1 − branche voisine).</li>
+<li><b>Multiplie</b> les deux probabilités rencontrées.</li></ol></div>
+${mkTree({ A: 'A', B: 'B' }, T, { hl: ['00', '11'], vals: { '00': '= 0,24', 11: '= 0,63' } })}
+<div class="ex"><span class="q">Exemple 1 : calcule P(A ∩ B).</span><br>Chemin A puis B : P(A ∩ B) = P(A) × ${Pc('A', 'B')} = 0,3 × 0,8 = <b>0,24</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : on ne connaît que P(A) = 0,3 et ${Pc('!A', 'B')} = 0,1. Calcule P(${bar('A')} ∩ ${bar('B')}).</span><br>D'abord les branches manquantes : P(${bar('A')}) = 1 − 0,3 = 0,7 et ${Pc('!A', '!B')} = 1 − 0,1 = 0,9.<br>P(${bar('A')} ∩ ${bar('B')}) = 0,7 × 0,9 = <b>0,63</b>.</div>
+<div class="warn">⚠️ Sur un chemin, on <b>multiplie</b> : on n'additionne pas.<br>⚠️ ${Pc('A', 'B')} (une branche) n'est pas P(A ∩ B) (le chemin entier) : multiplie par P(A).<br>⚠️ Pour un « ? », prends 1 − voisine, pas la branche voisine elle-même.</div>
+<div class="retenir">À retenir : probabilité d'un chemin = produit des probabilités de ses branches.</div>`;
 }
 
 /* ===================================================================== 6. probabilités totales */
@@ -366,10 +402,18 @@ function L6(d) {
 function C6() {
   const T = { a: 3, b: 80, c: 10 };
   return `<h2>6. Formule des probabilités totales</h2>
-<div class="def">A et ${bar('A')} partagent toutes les issues en deux. Donc :<br><b>P(B) = P(A ∩ B) + P(${bar('A')} ∩ B)</b><br><b>= P(A) × ${Pc('A', 'B')} + P(${bar('A')}) × ${Pc('!A', 'B')}</b>.<br>Sur l'arbre : on additionne les probabilités de <b>tous les chemins</b> qui mènent à B.</div>
+<p class="intro">B peut arriver de deux façons : avec A, ou avec ${bar('A')}. Pour avoir P(B), on rassemble les deux.</p>
+<div class="def">A et ${bar('A')} partagent toutes les issues en deux (on dit qu'ils forment une <b>partition</b>). Donc :<br><b>P(B) = P(A ∩ B) + P(${bar('A')} ∩ B)</b><br><b>= P(A) × ${Pc('A', 'B')} + P(${bar('A')}) × ${Pc('!A', 'B')}</b>.<br>Sur l'arbre : on additionne les probabilités de <b>tous les chemins</b> qui mènent à B.</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Complète les « ? » éventuels (règle des nœuds).</li>
+<li>Repère les <b>deux chemins</b> qui finissent par B (ou par ${bar('B')} si on demande P(${bar('B')})).</li>
+<li>Calcule chaque chemin : un <b>produit</b>.</li>
+<li><b>Additionne</b> les deux résultats.</li></ol></div>
 ${mkTree({ A: 'A', B: 'B' }, T, { hl: ['00', '10'], vals: { '00': '= 0,24', 10: '= 0,07' } })}
-<div class="ex">P(B) = 0,3 × 0,8 + 0,7 × 0,1 = 0,24 + 0,07 = <b>0,31</b>.</div>
-<div class="warn">⚠️ P(B) n'est pas ${Pc('A', 'B')} + ${Pc('!A', 'B')} : chaque chemin est d'abord un <b>produit</b>.</div>`;
+<div class="ex"><span class="q">Exemple 1 : calcule P(B).</span><br>P(A ∩ B) = 0,3 × 0,8 = 0,24 ; P(${bar('A')} ∩ B) = 0,7 × 0,1 = 0,07.<br>P(B) = 0,24 + 0,07 = <b>0,31</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : calcule P(${bar('B')}).</span><br>Chemins A → ${bar('B')} et ${bar('A')} → ${bar('B')} : P(${bar('B')}) = 0,3 × 0,2 + 0,7 × 0,9 = 0,06 + 0,63 = <b>0,69</b>.<br>Contrôle : 1 − P(B) = 1 − 0,31 = 0,69. ✔</div>
+<div class="warn">⚠️ P(B) n'est pas ${Pc('A', 'B')} + ${Pc('!A', 'B')} : chaque chemin est d'abord un <b>produit</b>.<br>⚠️ Un seul chemin ne suffit pas : <b>deux chemins</b> mènent à B.</div>
+<div class="retenir">À retenir : P(B) = somme des probabilités de tous les chemins qui mènent à B.</div>`;
 }
 
 /* ===================================================================== 7. inverser le conditionnement */
@@ -412,10 +456,18 @@ function L7(d) {
 function C7() {
   const T = { a: 2, b: 90, c: 5 };
   return `<h2>7. Inverser le conditionnement</h2>
-<div class="def">L'arbre donne ${Pc('A', 'B')}. Pour «&nbsp;remonter&nbsp;» et obtenir ${Pc('B', 'A')}, on revient à la définition, en <b>deux temps</b> :<br>1) P(A ∩ B) (un chemin) et P(B) (probabilités totales) ;<br>2) <b>${Pc('B', 'A')} = P(A ∩ B) ÷ P(B)</b>.</div>
+<p class="intro">L'arbre donne ${Pc('A', 'B')} : « d'abord A, ensuite B ». Mais on demande souvent l'inverse : sachant que B s'est produit, quelle est la probabilité de A ?</p>
+<div class="def">On revient à la définition : <b>${Pc('B', 'A')} = P(A ∩ B) ÷ P(B)</b>.<br>• P(A ∩ B) : un <b>chemin</b> (produit) ;<br>• P(B) : <b>probabilités totales</b> (somme de deux chemins).</div>
+<div class="methode"><b>Méthode</b> (trois cases à remplir)<ol>
+<li>P(A ∩ B) : produit sur le chemin A → B.</li>
+<li>P(B) : ce chemin + l'autre chemin qui mène à B.</li>
+<li>${Pc('B', 'A')} = (étape 1) ÷ (étape 2). Le chemin est au <b>numérateur</b>.</li></ol>
+Même méthode si on demande ${Pc('B', '!A')} ou ${Pc('!B', 'A')} : remplace les lettres.</div>
 ${mkTree({ A: 'M', B: 'T' }, T, { hl: ['00', '10'], vals: { '00': '= 0,18', 10: '= 0,04' } })}
-<div class="ex">Dépistage : P(M) = 0,2, ${Pc('M', 'T')} = 0,9, ${Pc('!M', 'T')} = 0,05.<br>P(M ∩ T) = 0,2 × 0,9 = 0,18 ; P(T) = 0,18 + 0,8 × 0,05 = 0,22.<br>${Pc('T', 'M')} = 0,18 ÷ 0,22 ≈ 0,818 : un test positif ne veut pas dire « malade à coup sûr ».</div>
-<div class="warn">⚠️ ${Pc('T', 'M')} n'est pas ${Pc('M', 'T')} : ce ne sont pas les mêmes personnes au dénominateur.</div>`;
+<div class="ex"><span class="q">Exemple 1 : dépistage, P(M) = 0,2, ${Pc('M', 'T')} = 0,9, ${Pc('!M', 'T')} = 0,05. Calcule ${Pc('T', 'M')}.</span><br>P(M ∩ T) = 0,2 × 0,9 = 0,18 ; P(T) = 0,18 + 0,8 × 0,05 = 0,22.<br>${Pc('T', 'M')} = 0,18 ÷ 0,22 ≈ <b>0,818</b> : un test positif ne veut pas dire « malade à coup sûr ».</div>
+<div class="ex"><span class="q">Exemple 2 : le test est négatif. Calcule ${Pc('!T', 'M')}.</span><br>P(M ∩ ${bar('T')}) = 0,2 × 0,1 = 0,02 ; P(${bar('T')}) = 0,02 + 0,8 × 0,95 = 0,78.<br>${Pc('!T', 'M')} = 0,02 ÷ 0,78 ≈ <b>0,026</b> : un test négatif rassure beaucoup.</div>
+<div class="warn">⚠️ ${Pc('T', 'M')} n'est pas ${Pc('M', 'T')} (lu sur l'arbre) : ce ne sont pas les mêmes personnes au dénominateur.<br>⚠️ Ne divise pas à l'envers : P(A ∩ B) ÷ P(B), et le résultat reste entre 0 et 1.</div>
+<div class="retenir">À retenir : ${Pc('B', 'A')} = P(A ∩ B) ÷ P(B), avec P(B) par les probabilités totales.</div>`;
 }
 
 /* ===================================================================== 8. indépendance */
@@ -487,11 +539,21 @@ function L8(d) {
 }
 function C8() {
   return `<h2>8. Indépendance</h2>
-<div class="def">A et B sont <b>indépendants</b> quand savoir que A est réalisé ne change pas la probabilité de B :<br>${Pc('A', 'B')} = P(B), ce qui revient à <b>P(A ∩ B) = P(A) × P(B)</b>.</div>
+<p class="intro">Deux événements sont indépendants quand l'un n'apporte <b>aucune information</b> sur l'autre : le savoir ne change rien.</p>
+<div class="def">A et B (avec P(A) ≠ 0) sont <b>indépendants</b> quand ${Pc('A', 'B')} = P(B).<br>Cela revient à : <b>P(A ∩ B) = P(A) × P(B)</b>.</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>On sait qu'ils sont indépendants : P(A ∩ B) = P(A) × P(B) (on <b>multiplie</b>).</li>
+<li>Tableau : calcule P(A), P(B), P(A ∩ B), puis compare P(A) × P(B) et P(A ∩ B).</li>
+<li>Arbre : calcule P(B) par les probabilités totales et compare-la à ${Pc('A', 'B')}.</li>
+<li>Égalité : indépendants. Sinon : pas indépendants.</li></ol></div>
+${mosaic({ rows: ['S', '!S'], cols: ['F', '!F'], cells: [[20, 60], [30, 90]], hl: [[0, 0], [1, 0]] })}
+<p>Dans ce carré, F occupe <b>25 %</b> de chaque bande : savoir S ou ${bar('S')} ne change pas la part de F. Même idée sur l'arbre : ${Pc('A', 'B')} = ${Pc('!A', 'B')} = 0,3, donc P(B) = 0,3.</p>
 ${mkTree({ A: 'A', B: 'B' }, { a: 4, b: 30, c: 30 })}
-<div class="ex">Sur cet arbre, ${Pc('A', 'B')} = ${Pc('!A', 'B')} = 0,3 : donc P(B) = 0,3 et A, B sont indépendants.<br>P(A ∩ B) = 0,4 × 0,3 = <b>0,12</b> = P(A) × P(B).</div>
-<div class="ex">Tableau : 200 élèves, 80 dans S, 50 dans F, 20 dans S ∩ F. P(S) × P(F) = 0,4 × 0,25 = 0,1 = 20 ÷ 200 : indépendants.</div>
-<div class="warn">⚠️ Indépendants ne veut pas dire incompatibles (A ∩ B vide) ! Deux événements incompatibles de probabilités non nulles ne sont jamais indépendants.</div>`;
+<div class="ex"><span class="q">Exemple 1 : A et B sont indépendants, P(A) = 0,4 et P(B) = 0,3. Calcule P(A ∩ B).</span><br>P(A ∩ B) = P(A) × P(B) = 0,4 × 0,3 = <b>0,12</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : 200 élèves, 80 dans S, 50 dans F, 20 dans S ∩ F. Indépendants&nbsp;?</span><br>P(S) × P(F) = 0,4 × 0,25 = 0,1 et P(S ∩ F) = 20 ÷ 200 = 0,1 : égalité, <b>oui</b>.</div>
+<div class="ex"><span class="q">Exemple 3 : P(A) = 0,4, ${Pc('A', 'B')} = 0,3, ${Pc('!A', 'B')} = 0,5. Indépendants&nbsp;?</span><br>P(B) = 0,4 × 0,3 + 0,6 × 0,5 = 0,42 ≠ 0,3 = ${Pc('A', 'B')} : <b>non</b>.</div>
+<div class="warn">⚠️ Indépendants : on <b>multiplie</b> P(A) et P(B) : P(A) + P(B) n'est pas P(A ∩ B).<br>⚠️ Indépendants ne veut pas dire incompatibles (A ∩ B vide) ! Deux événements incompatibles de probabilités non nulles ne sont jamais indépendants.</div>
+<div class="retenir">À retenir : A et B indépendants ⟺ P(A ∩ B) = P(A) × P(B).</div>`;
 }
 
 /* ===================================================================== 9. variable aléatoire : loi, espérance */
@@ -580,13 +642,18 @@ function L9(d) {
 function C9() {
   const xs = [0, 1, 2, 3], ps = [0.1, 0.3, 0.4, 0.2];
   return `<h2>9. Variable aléatoire : loi et espérance</h2>
-<div class="def">Une <b>variable aléatoire</b> X associe un nombre à chaque issue. Sa <b>loi</b> donne P(X = x<sub>i</sub>) pour chaque valeur x<sub>i</sub> ; la somme de ces probabilités vaut <b>1</b>.<br><b>Espérance</b> : E(X) = x<sub>1</sub>P(X = x<sub>1</sub>) + … + x<sub>n</sub>P(X = x<sub>n</sub>) : la valeur moyenne de X sur un grand nombre d'expériences.</div>
-${lawTable(xs, ps.map(M))}
-${lawChart({ xs, ps, show: true, xTitle: 'valeur de X' })}
-<div class="ex">P(X ≥ 2) = 0,4 + 0,2 = 0,6.<br>E(X) = 0 × 0,1 + 1 × 0,3 + 2 × 0,4 + 3 × 0,2 = <b>1,7</b>.</div>
-<div class="ex">Jeu : on paie 2 € ; G = lot − 2. Si E(G) &lt; 0, le jeu est défavorable au joueur.</div>
-<div class="warn">⚠️ E(X) n'est pas la moyenne simple des valeurs : chaque valeur compte selon sa probabilité.</div>
-<div class="warn">⚠️ X &gt; 2 exclut 2 ; X ≥ 2 l'inclut.</div>`;
+<p class="intro">Une variable aléatoire transforme le hasard en <b>nombres</b> : nombre d'enfants, de buts, gain d'un jeu… Sa loi dit avec quelle probabilité elle prend chaque valeur.</p>
+<div class="def">Une <b>variable aléatoire</b> X associe un nombre à chaque issue. Sa <b>loi</b> donne P(X = x<sub>i</sub>) pour chaque valeur x<sub>i</sub> ; la somme de ces probabilités vaut <b>1</b>.<br><b>Espérance</b> : E(X) = x<sub>1</sub> × P(X = x<sub>1</sub>) + … + x<sub>n</sub> × P(X = x<sub>n</sub>) : la valeur moyenne de X sur un grand nombre d'expériences.</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Probabilité manquante : 1 − (somme des autres).</li>
+<li>P(X ≥ a), P(X &lt; a)… : liste les valeurs qui conviennent, puis additionne leurs probabilités.</li>
+<li>Espérance : multiplie chaque valeur par sa probabilité, puis additionne.</li>
+<li>Jeu payant : gain G = lot − mise (valeurs parfois négatives), puis E(G).</li></ol></div>
+<div class="cols">${lawTable(xs, ps.map(M))}${lawChart({ xs, ps, hl: [2, 3], show: true, xTitle: 'valeur de X' })}</div>
+<div class="ex"><span class="q">Exemple 1 : avec la loi ci-dessus, calcule P(X ≥ 2), P(X &gt; 2) et E(X).</span><br>P(X ≥ 2) = 0,4 + 0,2 = <b>0,6</b> (bâtons orange) ; P(X &gt; 2) = P(X = 3) = <b>0,2</b>.<br>E(X) = 0 × 0,1 + 1 × 0,3 + 2 × 0,4 + 3 × 0,2 = <b>1,7</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : on paie 2 € ; on gagne 0 €, 5 € ou 10 € avec les probabilités 0,75 ; 0,2 ; 0,05. Calcule E(G).</span><br>G = lot − 2 prend les valeurs −2, 3 et 8.<br>E(G) = (−2) × 0,75 + 3 × 0,2 + 8 × 0,05 = −1,5 + 0,6 + 0,4 = <b>−0,5 €</b>.<br>Espérance négative : en moyenne, le joueur perd 0,50 € par partie.</div>
+<div class="warn">⚠️ E(X) n'est pas la moyenne simple des valeurs : chaque valeur est <b>pondérée</b> par sa probabilité.<br>⚠️ X &gt; 2 <b>exclut</b> 2 ; X ≥ 2 l'<b>inclut</b>.<br>⚠️ Dans un jeu, n'oublie pas de retirer la mise : G = lot − mise.</div>
+<div class="retenir">À retenir : somme des probabilités = 1 ; E(X) = somme des « valeur × probabilité ».</div>`;
 }
 
 /* ================= épreuves de Bernoulli ================= */
@@ -654,11 +721,17 @@ function L10(d) {
 }
 function C10() {
   return `<h2>10. Épreuve et schéma de Bernoulli</h2>
+<p class="intro">Tirer à l'arc, lancer une pièce, semer une graine : une même expérience à deux issues, répétée plusieurs fois. L'arbre permet de tout calculer.</p>
 <div class="def">Une <b>épreuve de Bernoulli</b> n'a que deux issues : <b>succès</b> S (probabilité p) et <b>échec</b> ${bar('S')} (probabilité 1 − p).<br>Un <b>schéma de Bernoulli</b> : on répète n fois la même épreuve, de façon <b>indépendante</b>. Sur l'arbre, toutes les branches S portent p et toutes les branches ${bar('S')} portent 1 − p.</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Un résultat dans un ordre donné (S ${bar('S')} S) : <b>un</b> chemin, on multiplie ses branches.</li>
+<li>« Exactement k succès » : repère <b>tous</b> les chemins avec k succès (dans tous les ordres) et additionne.</li>
+<li>« Au moins un succès » : passe par le contraire, « aucun succès » : P = 1 − (1 − p)<sup>n</sup>.</li></ol></div>
 ${bTree(3, 7, { hl: ['001', '010', '100'], vals: { '001': '= 0,147', '010': '= 0,147', 100: '= 0,147' } })}
-<div class="ex">p = 0,7, n = 3. P(S ${bar('S')} S) = 0,7 × 0,3 × 0,7 = 0,147.<br>Exactement 2 succès : 3 chemins, chacun de probabilité 0,147 : P = 3 × 0,147 = <b>0,441</b>.</div>
-<div class="ex">Au moins un succès : 1 − P(aucun) = 1 − 0,3<sup>3</sup> = 1 − 0,027 = <b>0,973</b>.</div>
-<div class="warn">⚠️ « Exactement 2 succès » : il y a plusieurs chemins, selon <b>l'ordre</b> des succès. N'en oublie pas.</div>`;
+<div class="ex"><span class="q">Exemple 1 : n = 2, p = 0,7. Probabilité d'exactement un succès&nbsp;?</span><br>Deux chemins : S ${bar('S')} (0,7 × 0,3 = 0,21) et ${bar('S')} S (0,3 × 0,7 = 0,21).<br>P = 0,21 + 0,21 = <b>0,42</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : n = 3, p = 0,7. Exactement 2 succès&nbsp;? Au moins un succès&nbsp;?</span><br>3 chemins (en orange), chacun de probabilité 0,7 × 0,7 × 0,3 = 0,147 : P = 3 × 0,147 = <b>0,441</b>.<br>Au moins un succès : 1 − P(${bar('S')} ${bar('S')} ${bar('S')}) = 1 − 0,3<sup>3</sup> = 1 − 0,027 = <b>0,973</b>.</div>
+<div class="warn">⚠️ « Exactement 2 succès » : il y a plusieurs chemins, selon <b>l'ordre</b> des succès. N'en oublie pas.<br>⚠️ Le long d'un chemin, on <b>multiplie</b> ; entre chemins différents, on <b>additionne</b>.<br>⚠️ « Au moins un » : 1 − P(aucun), et non P(aucun).</div>
+<div class="retenir">À retenir : un chemin = un produit ; plusieurs chemins = une somme.</div>`;
 }
 
 /* ================= loi binomiale ================= */
@@ -716,12 +789,19 @@ function L11(d) {
 function C11() {
   const law = convLaw(4, 0.6);
   return `<h2>11. Loi binomiale : P(X = k)</h2>
-<div class="def">Dans un schéma de Bernoulli de n épreuves (succès de probabilité p), le nombre X de succès suit la <b>loi binomiale B(n ; p)</b> :<br><b>P(X = k) = ${binom('n', 'k')} p<sup>k</sup> (1 − p)<sup>n − k</sup></b>.<br>${binom('n', 'k')} (« k parmi n ») est le nombre de chemins de l'arbre qui ont exactement k succès.</div>
-<div class="ex">B(4 ; 0,6) : P(X = 3) = ${binom(4, 3)} × 0,6<sup>3</sup> × 0,4 = 4 × 0,216 × 0,4 = <b>0,3456</b> ≈ 0,346.</div>
-${lawChart({ xs: [0, 1, 2, 3, 4], ps: law, hl: [3], show: true, xTitle: 'X' })}
-<div class="ex">Triangle de Pascal : ${binom(4, 0)} = 1, ${binom(4, 1)} = 4, ${binom(4, 2)} = 6, ${binom(4, 3)} = 4, ${binom(4, 4)} = 1.</div>
-<div class="warn">⚠️ Ne pas oublier le coefficient ${binom('n', 'k')} : p<sup>k</sup>(1 − p)<sup>n − k</sup> n'est la probabilité que d'<b>un</b> chemin.</div>
-<div class="warn">⚠️ Arrondi au millième : 0,3456 → 0,346 (le 4<sup>e</sup> chiffre est 6, on arrondit au-dessus).</div>`;
+<p class="intro">Quand n devient grand, l'arbre a trop de branches. La loi binomiale donne directement la probabilité d'obtenir k succès.</p>
+<div class="def">Dans un schéma de Bernoulli de n épreuves (succès de probabilité p), le nombre X de succès suit la <b>loi binomiale B(n ; p)</b> :<br><b>P(X = k) = ${binom('n', 'k')} p<sup>k</sup> (1 − p)<sup>n − k</sup></b>.<br>Le coefficient binomial ${binom('n', 'k')} (« k parmi n ») est le <b>nombre de chemins</b> de l'arbre qui ont exactement k succès.</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Repère n (nombre d'épreuves), p (succès) et k (succès voulus).</li>
+<li>Calcule ${binom('n', 'k')} : triangle de Pascal ou calculatrice.</li>
+<li>Multiplie par p<sup>k</sup> (les k succès) et par (1 − p)<sup>n − k</sup> (les n − k échecs).</li>
+<li>Arrondis au millième si demandé : regarde le 4<sup>e</sup> chiffre après la virgule.</li></ol></div>
+<div class="cols">${pascal(5, [4, 3])}${lawChart({ xs: [0, 1, 2, 3, 4], ps: law, hl: [3], show: true, xTitle: 'X' })}</div>
+<p>Dans le triangle, chaque nombre est la somme des deux nombres au-dessus : <span style="white-space:nowrap">${binom(4, 3)} = 3 + 1 = 4</span> (cercles).</p>
+<div class="ex"><span class="q">Exemple 1 : X suit B(4 ; 0,6). Calcule P(X = 3).</span><br>${binom(4, 3)} = 4 chemins.<br>P(X = 3) = 4 × 0,6<sup>3</sup> × 0,4<sup>1</sup> = 4 × 0,216 × 0,4 = 0,3456 ≈ <b>0,346</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : X suit B(5 ; 0,3). Calcule P(X = 2) au millième.</span><br>${binom(5, 2)} = 10 ; 2 succès et 3 échecs.<br>P(X = 2) = 10 × 0,3<sup>2</sup> × 0,7<sup>3</sup> = 10 × 0,09 × 0,343 = 0,3087 ≈ <b>0,309</b>.</div>
+<div class="warn">⚠️ N'oublie pas le coefficient ${binom('n', 'k')} : p<sup>k</sup>(1 − p)<sup>n − k</sup> n'est la probabilité que d'<b>un</b> chemin.<br>⚠️ Exposants : p<sup>k</sup> pour les <b>succès</b>, (1 − p)<sup>n − k</sup> pour les <b>échecs</b>, pas l'inverse.<br>⚠️ Arrondi au millième : 0,3087 → 0,309 (4<sup>e</sup> chiffre 7 ≥ 5 : on arrondit au-dessus), ne tronque pas.</div>
+<div class="retenir">À retenir : P(X = k) = (nombre de chemins) × p<sup>k</sup> × (1 − p)<sup>n − k</sup>.</div>`;
 }
 
 /* ===================================================================== 12. loi binomiale : cumuls, au moins un, espérance */
@@ -781,12 +861,18 @@ function L12(d) {
 function C12() {
   const law = convLaw(5, 0.3);
   return `<h2>12. Loi binomiale : cumuls et espérance</h2>
-<div class="def">Si X suit B(n ; p) :<br>• <b>P(X ≤ k)</b> = P(X = 0) + P(X = 1) + … + P(X = k) ;<br>• <b>P(X ≥ 1) = 1 − P(X = 0) = 1 − (1 − p)<sup>n</sup></b> (contraire de « aucun succès ») ;<br>• <b>E(X) = n × p</b>.</div>
+<p class="intro">« Au plus 1 », « au moins 2 », « en moyenne combien ? » : on additionne des bâtons du diagramme, ou on passe par le contraire.</p>
+<div class="def">Si X suit B(n ; p) :<br>• <b>P(X ≤ k)</b> = P(X = 0) + P(X = 1) + … + P(X = k) ;<br>• <b>P(X ≥ 1) = 1 − P(X = 0) = 1 − (1 − p)<sup>n</sup></b> (contraire de « aucun succès ») ;<br>• <b>P(X ≥ 2) = 1 − P(X = 0) − P(X = 1)</b> ;<br>• <b>E(X) = n × p</b> : le nombre moyen de succès.</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Espérance : E(X) = n × p, directement.</li>
+<li>Peu de valeurs à additionner (X ≤ 1, X ≤ 2…) : additionne les P(X = k).</li>
+<li>Beaucoup de valeurs (X ≥ 1, X ≥ 2) : passe par le <b>contraire</b>, 1 − P(X ≤ …).</li>
+<li>Arrondis le résultat final au millième (garde les valeurs exactes pendant le calcul).</li></ol></div>
 ${lawChart({ xs: [0, 1, 2, 3, 4, 5], ps: law, hl: [0, 1], show: true, xTitle: 'X' })}
-<div class="ex">B(5 ; 0,3) : P(X ≤ 1) = 0,7<sup>5</sup> + 5 × 0,3 × 0,7<sup>4</sup> = 0,16807 + 0,36015 = 0,52822 ≈ <b>0,528</b>.</div>
-<div class="ex">P(X ≥ 1) = 1 − 0,7<sup>5</sup> = 1 − 0,16807 ≈ <b>0,832</b>. E(X) = 5 × 0,3 = <b>1,5</b>.</div>
-<div class="warn">⚠️ « X ≤ 1 » contient X = 0 ; « X &lt; 2 » est le même événement que « X ≤ 1 ».</div>
-<div class="warn">⚠️ Contraire de « au moins un succès » : « aucun succès », de probabilité (1 − p)<sup>n</sup>, et non 1 − p<sup>n</sup>.</div>`;
+<div class="ex"><span class="q">Exemple 1 : X suit B(5 ; 0,3). Calcule E(X), P(X ≤ 1) et P(X ≥ 2).</span><br>E(X) = 5 × 0,3 = <b>1,5</b>.<br>P(X ≤ 1) = 0,7<sup>5</sup> + 5 × 0,3 × 0,7<sup>4</sup> = 0,16807 + 0,36015 = 0,52822 ≈ <b>0,528</b> (bâtons orange).<br>P(X ≥ 2) = 1 − 0,52822 = 0,47178 ≈ <b>0,472</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : toujours B(5 ; 0,3). Calcule P(X ≥ 1).</span><br>Contraire : X = 0 (aucun succès), P(X = 0) = 0,7<sup>5</sup> = 0,16807.<br>P(X ≥ 1) = 1 − 0,16807 = 0,83193 ≈ <b>0,832</b>.</div>
+<div class="warn">⚠️ « X ≤ 1 » contient X = 0 ; « X &lt; 2 » est le même événement que « X ≤ 1 ».<br>⚠️ Contraire de « au moins un succès » : « aucun succès », de probabilité (1 − p)<sup>n</sup>, et non 1 − p<sup>n</sup>.<br>⚠️ E(X) = n × p, et non p seul ni n × (1 − p) (nombre moyen d'échecs).</div>
+<div class="retenir">À retenir : P(X ≥ 1) = 1 − (1 − p)<sup>n</sup> et E(X) = n × p.</div>`;
 }
 
 export const LEVELS = [
