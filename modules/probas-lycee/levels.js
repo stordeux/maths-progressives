@@ -552,7 +552,7 @@ ${mkTree({ A: 'A', B: 'B' }, { a: 4, b: 30, c: 30 })}
 <div class="ex"><span class="q">Exemple 1 : A et B sont indépendants, P(A) = 0,4 et P(B) = 0,3. Calcule P(A ∩ B).</span><br>P(A ∩ B) = P(A) × P(B) = 0,4 × 0,3 = <b>0,12</b>.</div>
 <div class="ex"><span class="q">Exemple 2 : 200 élèves, 80 dans S, 50 dans F, 20 dans S ∩ F. Indépendants&nbsp;?</span><br>P(S) × P(F) = 0,4 × 0,25 = 0,1 et P(S ∩ F) = 20 ÷ 200 = 0,1 : égalité, <b>oui</b>.</div>
 <div class="ex"><span class="q">Exemple 3 : P(A) = 0,4, ${Pc('A', 'B')} = 0,3, ${Pc('!A', 'B')} = 0,5. Indépendants&nbsp;?</span><br>P(B) = 0,4 × 0,3 + 0,6 × 0,5 = 0,42 ≠ 0,3 = ${Pc('A', 'B')} : <b>non</b>.</div>
-<div class="warn">⚠️ Indépendants : on <b>multiplie</b> P(A) et P(B) : P(A) + P(B) n'est pas P(A ∩ B).<br>⚠️ Indépendants ne veut pas dire incompatibles (A ∩ B vide) ! Deux événements incompatibles de probabilités non nulles ne sont jamais indépendants.</div>
+<div class="warn">⚠️ Indépendants : on <b>multiplie</b> P(A) et P(B). La somme P(A) + P(B) n'est pas P(A ∩ B).<br>⚠️ Indépendants ne veut pas dire incompatibles (A ∩ B vide) ! Deux événements incompatibles de probabilités non nulles ne sont jamais indépendants.</div>
 <div class="retenir">À retenir : A et B indépendants ⟺ P(A ∩ B) = P(A) × P(B).</div>`;
 }
 
