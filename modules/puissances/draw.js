@@ -39,10 +39,10 @@ export function bulles(rows, { bar = false, caption = '' } = {}) {
 
 /**
  * Chaîne de multiplications répétées : items = [{ top, val }], ops = libellés des flèches (« × 2 »).
- * Retour à la ligne toutes les 5 cases.
+ * Retour à la ligne toutes les « per » cases (5 par défaut).
  */
-export function chaine(items, ops, caption = '') {
-  const per = 5, bw = 78, bh = 56, gap = 46, n = items.length, nr = Math.ceil(n / per);
+export function chaine(items, ops, caption = '', per = 5) {
+  const bw = 78, bh = 56, gap = 46, n = items.length, nr = Math.ceil(n / per);
   const W = Math.min(n, per) * bw + (Math.min(n, per) - 1) * gap + 20, H = nr * (bh + 40) + (caption ? 26 : 0);
   let s = `<svg viewBox="0 0 ${W} ${H}" class="vis" style="width:${Math.min(W, 520)}px" role="img" aria-label="${esc(caption || 'multiplications répétées')}">`;
   const pos = i => ({ x: 10 + (i % per) * (bw + gap), y: 22 + Math.floor(i / per) * (bh + 40) });
@@ -138,5 +138,24 @@ export function piege(a, n) {
   s += `<text x="40" y="128" font-size="17" font-weight="700" fill="#212529">= −(${as}${U(n)}) = ${M(-pa)}</text>`;
   s += `<text x="300" y="128" font-size="17" font-weight="700" fill="#212529">= ${M(Math.pow(-a, n))}</text>`;
   s += `<line x1="260" y1="16" x2="260" y2="136" stroke="#dee2e6" stroke-width="2"/>`;
+  return s + '</svg>';
+}
+
+/**
+ * Échelle des préfixes : items = [{ t: 'kilo', v: '10³' }] régulièrement espacés sur une flèche,
+ * avec le facteur « step » écrit entre deux graduations.
+ */
+export function echelle(items, step = '× 10³', caption = '') {
+  const n = items.length, gap = 64, W = (n - 1) * gap + 60, y = 58, H = caption ? 118 : 94;
+  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis" style="width:${W}px" role="img" aria-label="${esc(caption || 'échelle des préfixes')}">`;
+  s += `<line x1="8" y1="${y}" x2="${W - 12}" y2="${y}" stroke="#495057" stroke-width="2.5"/><path d="M${W - 4},${y} l-11,-6 v12 z" fill="#495057"/>`;
+  items.forEach((it, i) => {
+    const x = 26 + i * gap;
+    s += `<line x1="${x}" y1="${y - 8}" x2="${x}" y2="${y + 8}" stroke="#495057" stroke-width="2.5"/>`;
+    s += `<text x="${x}" y="${y - 13}" text-anchor="middle" font-size="15" fill="#5f3dc4">${esc(it.t)}</text>`;
+    s += `<text x="${x}" y="${y + 28}" text-anchor="middle" font-size="16" font-weight="700" fill="#212529">${esc(it.v)}</text>`;
+    if (i < n - 1) s += `<text x="${x + gap / 2}" y="${y - 36}" text-anchor="middle" font-size="12" font-weight="700" fill="#c2255c">${esc(step)}</text>`;
+  });
+  if (caption) s += `<text x="${W / 2}" y="${H - 8}" text-anchor="middle" font-size="15" fill="#495057">${esc(caption)}</text>`;
   return s + '</svg>';
 }
