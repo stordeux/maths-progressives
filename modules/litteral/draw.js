@@ -109,7 +109,7 @@ export function carreDiff() {
   s += `<text x="${10 + a / 2}" y="14" text-anchor="middle" font-size="17" font-weight="700">a</text><text x="${10 + a - b / 2}" y="${20 + a + 18}" text-anchor="middle" font-size="17" font-weight="700" fill="#c92a2a">b</text>`;
   s += `<text x="${10 + a / 2}" y="${20 + a + 40}" text-anchor="middle" font-size="18" font-weight="700">a² − b²</text>`;
   s += `<path d="M172,95 h40" stroke="#495057" stroke-width="2.5"/><path d="M222,95 l-12,-6 v12 z" fill="#495057"/><text x="195" y="84" text-anchor="middle" font-size="15">=</text>`;
-  const rw = 190, rh = 94, rx = 300, ry = 48;
+  const rw = a + b, rh = a - b, rx = 290, ry = 48; // côtés à l'échelle : même aire que la forme en L
   s += `<rect x="${rx}" y="${ry}" width="${rw}" height="${rh}" fill="#a5d8ff" stroke="#1864ab" stroke-width="2"/><line x1="${rx + Math.round(rw * a / (a + b))}" y1="${ry}" x2="${rx + Math.round(rw * a / (a + b))}" y2="${ry + rh}" stroke="#1864ab" stroke-dasharray="4 3"/>`;
   s += `<text x="${rx + rw / 2}" y="${ry - 8}" text-anchor="middle" font-size="17" font-weight="700">a + b</text><text x="${rx - 6}" y="${ry + rh / 2 + 6}" text-anchor="end" font-size="17" font-weight="700">a − b</text>`;
   s += `<text x="${rx + rw / 2}" y="${20 + a + 40}" text-anchor="middle" font-size="18" font-weight="700">(a + b)(a − b)</text>`;

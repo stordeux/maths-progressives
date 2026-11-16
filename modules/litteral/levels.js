@@ -225,13 +225,13 @@ function C2() {
   return `<h2>2. Calculer la valeur d'une expression</h2>
 <p class="intro">Une expression donne un résultat différent pour chaque valeur de x. Pour le trouver, on remplace x par cette valeur.</p>
 <div class="cols">
-<div class="def">Pour calculer une expression pour une valeur de x, on <b>remplace chaque x par cette valeur</b>, puis on applique les <b>priorités</b> : puissances, puis × et ÷, puis + et −.</div>
+<div class="def">Pour calculer une expression pour une valeur de x, on <b>remplace chaque x par cette valeur</b>, puis on applique les <b>priorités</b> : parenthèses, puis puissances, puis × et ÷, enfin + et −.</div>
 <div>${programme(['× 3', '− 5'], '−2', '−11')}</div>
 </div>
 <div class="methode"><b>Méthode</b><ol>
 <li>Recopie l'expression en remplaçant <b>chaque</b> x par la valeur, <b>entre parenthèses</b> si elle est négative.</li>
 <li>Remets les signes × cachés : 3x devient 3 × x.</li>
-<li>Calcule d'abord les carrés, puis les produits, enfin les sommes.</li></ol></div>
+<li>Calcule d'abord l'intérieur des parenthèses, puis les carrés, puis les produits, enfin les sommes.</li></ol></div>
 <div class="ex"><span class="q">Exemple 1 : A = 3x − 5 pour x = −2.</span><br>A = 3 × (−2) − 5 = −6 − 5 = <b>−11</b></div>
 <div class="ex"><span class="q">Exemple 2 : B = 2x<sup>2</sup> − x + 1 et C = 2(x − 1)<sup>2</sup> pour x = −3.</span><br>• B = 2 × (−3)<sup>2</sup> − (−3) + 1 = 2 × 9 + 3 + 1 = <b>22</b>.<br>• C = 2 × (−3 − 1)<sup>2</sup> = 2 × (−4)<sup>2</sup> = 2 × 16 = <b>32</b> : le carré d'abord, la multiplication ensuite.</div>
 <div class="warn">⚠️ Mets les nombres négatifs <b>entre parenthèses</b> : (−3)<sup>2</sup> = (−3) × (−3) = 9, positif.<br>⚠️ 2x<sup>2</sup> = 2 × x<sup>2</sup> : seul x est au carré. Pour x = 3 : 2 × 9 = 18, et pas 6<sup>2</sup> = 36.<br>⚠️ Pour x = 4, 3x vaut 3 × 4 = 12, pas « 34 » !</div>
@@ -681,8 +681,8 @@ function C10() {
 <li>Mets le facteur devant, et ce qui reste dans la parenthèse.</li>
 <li>Si le facteur commun est une parenthèse, recopie-la, puis réduis le crochet.</li></ol></div>
 <div class="ex"><span class="q">Exemple 1 : factorise 6x + 9, x<sup>2</sup> − 5x et 6x<sup>2</sup> + 4x.</span><br>• 6x + 9 = 3 × 2x + 3 × 3 = <b>3(2x + 3)</b>.<br>• x<sup>2</sup> − 5x = x × x − x × 5 = <b>x(x − 5)</b>.<br>• 6x<sup>2</sup> + 4x = 2x × 3x + 2x × 2 = <b>2x(3x + 2)</b>.</div>
-<div class="ex"><span class="q">Exemple 2 : factorise (x − 2)(3x + 1) − (x − 2)(x + 5).</span><br>Le facteur commun est (x − 2) :<br>(x − 2)[(3x + 1) − (x + 5)] = (x − 2)(3x + 1 − x − 5) = <b>(x − 2)(2x − 4)</b>.</div>
-<div class="warn">⚠️ Prends le <b>plus grand</b> facteur commun : 12x + 8 = 2(6x + 4) est juste mais pas fini ; on écrit <b>4(3x + 2)</b>.<br>⚠️ Après un −, garde la seconde parenthèse entière dans le crochet : −(x + 5) = −x − 5.<br>⚠️ Vérifie toujours en développant ta réponse : tu dois retrouver l'expression de départ.</div>
+<div class="ex"><span class="q">Exemple 2 : factorise (x − 2)(3x + 1) − (x − 2)(x + 4), puis (x + 3)<sup>2</sup> + 5(x + 3).</span><br>• Le facteur commun est (x − 2) :<br>(x − 2)[(3x + 1) − (x + 4)] = (x − 2)(3x + 1 − x − 4) = <b>(x − 2)(2x − 3)</b>.<br>• Un carré cache le facteur : (x + 3)<sup>2</sup> = (x + 3)(x + 3). Donc (x + 3)[(x + 3) + 5] = <b>(x + 3)(x + 8)</b>.</div>
+<div class="warn">⚠️ Prends le <b>plus grand</b> facteur commun : 12x + 8 = 2(6x + 4) est juste mais pas fini ; on écrit <b>4(3x + 2)</b>.<br>⚠️ Après un −, garde la seconde parenthèse entière dans le crochet : −(x + 4) = −x − 4.<br>⚠️ Vérifie toujours en développant ta réponse : tu dois retrouver l'expression de départ.</div>
 <div class="retenir">À retenir : ka + kb = k(a + b), avec le plus grand facteur commun k.</div>`;
 }
 
@@ -743,7 +743,7 @@ ${carreDiff()}
 <li>Trois termes ? Trouve A et B (racines carrées des deux carrés) et <b>vérifie</b> que le terme en x vaut 2AB.</li>
 <li>Le signe du terme en x donne (A + B)<sup>2</sup> ou (A − B)<sup>2</sup>.</li></ol></div>
 <div class="ex"><span class="q">Exemple 1 : factorise x<sup>2</sup> − 25 et x<sup>2</sup> + 8x + 16.</span><br>• x<sup>2</sup> − 25 = x<sup>2</sup> − 5<sup>2</sup> = <b>(x + 5)(x − 5)</b>.<br>• A = x, B = 4 (car 16 = 4<sup>2</sup>) et 2AB = 2 × x × 4 = 8x ✓, donc <b>(x + 4)<sup>2</sup></b>.</div>
-<div class="ex"><span class="q">Exemple 2 : factorise 4x<sup>2</sup> − 49 et 4 − 12x + 9x<sup>2</sup>.</span><br>• 4x<sup>2</sup> − 49 = (2x)<sup>2</sup> − 7<sup>2</sup> = <b>(2x + 7)(2x − 7)</b>.<br>• On range : 9x<sup>2</sup> − 12x + 4 = (3x)<sup>2</sup> − 2 × 3x × 2 + 2<sup>2</sup> = <b>(3x − 2)<sup>2</sup></b>. Dans la case, tape −2 pour (3x − 2)<sup>2</sup>.</div>
+<div class="ex"><span class="q">Exemple 2 : factorise 4x<sup>2</sup> − 49 et 4 − 12x + 9x<sup>2</sup>.</span><br>• 4x<sup>2</sup> − 49 = (2x)<sup>2</sup> − 7<sup>2</sup> = <b>(2x + 7)(2x − 7)</b>.<br>• On range : 9x<sup>2</sup> − 12x + 4 = (3x)<sup>2</sup> − 2 × 3x × 2 + 2<sup>2</sup> = <b>(3x − 2)<sup>2</sup></b>. Si la case suit un « + », tape −2 ; si le « − » est déjà écrit avant la case, tape 2.</div>
 <div class="warn">⚠️ x<sup>2</sup> + 25 ne se factorise pas avec A<sup>2</sup> − B<sup>2</sup> : il faut un <b>moins</b> entre les deux carrés.<br>⚠️ On écrit B, pas B<sup>2</sup> : x<sup>2</sup> − 25 = (x + 5)(x − 5), pas (x + 25)(x − 25).<br>⚠️ Vérifie le double produit : x<sup>2</sup> + 6x + 16 n'est <b>pas</b> un carré (il faudrait 9).</div>
 <div class="retenir">À retenir : A<sup>2</sup> − B<sup>2</sup> = (A + B)(A − B), et A<sup>2</sup> ± 2AB + B<sup>2</sup> = (A ± B)<sup>2</sup>.</div>`;
 }
