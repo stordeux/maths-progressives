@@ -245,7 +245,7 @@ function L3(d) {
 function C3() {
   return `<h2>3. Le cercle trigonométrique</h2>
 <p class="intro">Le cercle trigonométrique transforme chaque nombre réel en un point : c'est la base de tout le chapitre. Il faut savoir placer un réel, et retrouver le réel d'un point.</p>
-<div class="def">C'est le cercle de centre O et de <b>rayon 1</b>, orienté dans le <b>sens direct</b> (inverse des aiguilles d'une montre).<br>À chaque réel x on associe un point M : on part de I(1 ; 0) et on parcourt un arc de longueur x (dans l'autre sens si x &lt; 0).<br>Repères : quart de tour = ${H2}, demi-tour = π, un tour = 2π. ${F('π', 6)} = un tiers de quart de tour, ${F('π', 4)} = la moitié, ${F('π', 3)} = deux tiers.</div>
+<div class="def">C'est le cercle de centre O et de <b>rayon 1</b>, orienté dans le <b>sens direct</b> (inverse des aiguilles d'une montre).<br>À chaque réel x on associe un point M : on part de I(1 ; 0) et on parcourt sur le cercle un arc de longueur x dans le sens direct (si x &lt; 0 : un arc de longueur −x, dans l'autre sens).<br>Repères : quart de tour = ${H2}, demi-tour = π, un tour = 2π. ${F('π', 6)} = un tiers de quart de tour, ${F('π', 4)} = la moitié, ${F('π', 3)} = deux tiers.</div>
 ${meth(['Si le réel dépasse un tour, enlève ou ajoute des tours de 2π : x et x + 2π donnent le <b>même point</b>.', 'Regarde le signe : positif → sens inverse des aiguilles d\'une montre ; négatif → sens des aiguilles.', `Compte les quarts de tour (${H2}), puis la fraction de quart qui reste (${F('π', 6)}, ${F('π', 4)} ou ${F('π', 3)}).`, 'Pour retrouver le réel d\'un point M : fais le chemin inverse depuis I(1 ; 0), puis ajoute des tours si l\'énoncé le demande.'])}
 <div class="cols"><div>
 ${exq(`Exemple 1 : placer ${F('13π', 6)}`, `${F('13π', 6)} = ${F('π', 6)} + ${F('12π', 6)} = ${F('π', 6)} + 2π.<br>Même point que ${F('π', 6)} : un tiers de quart de tour, près de l'axe horizontal.`)}
@@ -293,10 +293,10 @@ function C4() {
 <div class="def">Les réels x, x + 2π, x − 2π, x + 4π… donnent tous le <b>même point</b> du cercle.<br>Parmi eux, un seul est dans <b>]−π ; π]</b> : c'est la <b>mesure principale</b> de x.</div>
 ${meth([`Écris un tour, 2π, avec le même dénominateur : par exemple ${nw(`2π = ${F('12π', 6)} = ${F('8π', 4)} = ${F('6π', 3)}.`)}`, 'Enlève (si x est positif) ou ajoute (si x est négatif) des tours, jusqu\'à arriver entre −π et π.', 'Astuce pour les grands nombres : divise le numérateur par 2 × dénominateur ; le reste te donne presque la réponse.', 'Vérifie que le résultat est dans ]−π ; π] : sinon, enlève ou ajoute encore un tour.'])}
 <div class="cols"><div>
-${exq(`Exemple 1 : ${F('17π', 6)}`, `Un tour vaut ${F('12π', 6)}. ${F('17π', 6)} − ${F('12π', 6)} = <b>${F('5π', 6)}</b>, qui est bien dans ]−π ; π].`)}
+${exq(`Exemple 1 : ${F('17π', 6)}`, `Un tour vaut ${F('12π', 6)}. ${nw(`${F('17π', 6)} − ${F('12π', 6)} = <b>${F('5π', 6)}</b>`)}, qui est bien dans ${nw(']−π ; π]')}.`)}
 ${exq(`Exemple 2 : ${F('43π', 6)}`, `Un tour = ${F('12π', 6)} et 43 = 3 × 12 + 7 : on enlève 3 tours, il reste ${F('7π', 6)}.<br>Piège : ${F('7π', 6)} &gt; π ! On enlève encore un tour : ${F('7π', 6)} − ${F('12π', 6)} = <b>−${F('5π', 6)}</b>.`)}
-${exq(`Exemple 3 : −${F('11π', 3)}`, `Négatif : on ajoute 2 tours, ${F('12π', 3)}.<br>−${F('11π', 3)} + ${F('12π', 3)} = <b>${F('π', 3)}</b>.`)}
-</div>${cercle({ marks: true, arc: { t: 17 * PI / 6 }, pts: [{ t: 17 * PI / 6, l: '5π/6' }], tl: [{ t: -PI / 2, l: '17π/6 → 5π/6 (un tour en moins)', c: COL.P }] })}</div>
+${exq(`Exemple 3 : −${F('11π', 3)}`, `Négatif : on ajoute 2 tours, soit 4π = ${F('12π', 3)}.<br>−${F('11π', 3)} + ${F('12π', 3)} = <b>${F('π', 3)}</b>.`)}
+</div>${cercle({ marks: true, noGrad: true, arc: { t: 17 * PI / 6 }, pts: [{ t: 17 * PI / 6, l: '5π/6' }], tl: [{ t: -PI / 2, l: '17π/6 → 5π/6 (un tour en moins)', c: COL.P }] })}</div>
 <div class="warn">⚠️ La mesure principale peut être <b>négative</b> : ${F('7π', 4)} a pour mesure principale −${F('π', 4)}.<br>⚠️ π est dans ]−π ; π] mais −π n'y est pas : la mesure principale de −π (ou de 5π) est π.<br>⚠️ Retirer un tour, c'est retirer 2π, pas π.</div>
 ${ret('la mesure principale est l\'unique réel de ]−π ; π] associé au même point ; on l\'obtient en enlevant ou ajoutant des tours de 2π.')}`;
 }
@@ -687,7 +687,7 @@ function C11() {
   return `<h2>11. Signes et inéquations sur le cercle</h2>
 <p class="intro">Le cercle permet de voir d'un coup d'œil le signe de cos x et de sin x, et de résoudre des inéquations : on colorie l'arc des points qui conviennent.</p>
 <div class="def"><b>cos x &gt; 0</b> quand le point est à <b>droite</b> de l'axe vertical, <b>sin x &gt; 0</b> quand il est <b>au-dessus</b> de l'axe horizontal.<br>Pour <b>cos x ≥ a</b> : on garde l'arc du cercle à droite de la droite verticale x = a (à gauche pour ≤). Pour <b>sin x ≥ a</b> : l'arc au-dessus de la droite y = a (en dessous pour ≤).</div>
-<div class="cols">${exq('Exemple 1 : signes pour x = −' + F('3π', 4), `−${F('3π', 4)} : on tourne dans le sens des aiguilles d'une montre, le point est en bas à gauche.<br>Donc <b>cos x &lt; 0 et sin x &lt; 0</b>.`)}
+<div class="cols">${exq('Exemple 1 : signes pour x = −' + F('3π', 4), `−${F('3π', 4)} : on tourne dans le sens des aiguilles d'une montre, le point est en bas à gauche.<br>Donc <b>cos x &lt; 0 et sin x &lt; 0</b>.<br>Sur la figure, chaque quart porte (signe de cos x ; signe de sin x).`)}
 ${cercle({ marks: true, noGrad: true, pts: [{ t: -3 * PI / 4, l: '−3π/4', proj: true }], tl: [{ t: PI / 4, l: '(+ ; +)', c: COL.sin }, { t: 3 * PI / 4, l: '(− ; +)', c: COL.sin }, { t: 5 * PI / 4, l: '(− ; −)', c: COL.sin }, { t: 7 * PI / 4, l: '(+ ; −)', c: COL.sin }] })}</div>
 ${meth(['Résous d\'abord l\'équation : trouve les deux réels où cos x (ou sin x) vaut exactement a.', 'Trace la droite (verticale pour cos, horizontale pour sin) et colorie l\'arc du bon côté.', 'Lis l\'arc dans le sens direct, en restant dans l\'intervalle demandé : ]−π ; π] ou [0 ; 2π[. S\'il passe par la borne de l\'intervalle, il se coupe en deux morceaux (∪).', 'Crochets : inégalité large (≤, ≥) → bornes comprises ; stricte (&lt;, &gt;) → bornes exclues.'])}
 <div class="cols"><div>
