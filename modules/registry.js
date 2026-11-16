@@ -37,7 +37,7 @@ export const MODULES = [
   // --- lycée (1re – Tle)
   { id: 'derivees', titre: 'Dérivées', emoji: '📉', classes: '1re', groupe: 'Lycée (1re – Tle)', couleur: '#0f5132', couleur2: '#e6f4ea', resume: 'Nombre dérivé, tangente, dérivées usuelles, produit et quotient, variations, extremums.', etat: 'bientot' },
   // ---
-  { id: 'integrales', titre: 'Intégrales', emoji: '∫', classes: 'Terminale', groupe: 'Lycée (1re – Tle)', couleur: '#7c2d12', couleur2: '#fdf0e6', resume: 'Primitives, aire sous une courbe, calcul d’intégrales, valeur moyenne.', etat: 'bientot' },
+  { id: 'integrales', titre: 'Intégrales', emoji: '∫', classes: 'Terminale', groupe: 'Lycée (1re – Tle)', couleur: '#7c2d12', couleur2: '#fdf0e6', resume: 'Primitives, aire sous une courbe, calcul d’intégrales, valeur moyenne.' },
   // --- transversal
   { id: 'revision', titre: 'Révision brevet', emoji: '🎓', classes: '3e', groupe: 'Transversal', couleur: '#a61e4d', couleur2: '#fff0f6', resume: 'Des exercices de tous les modules du collège, chronométrés, avec un bilan.' },
   // ---
