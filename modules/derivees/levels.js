@@ -7,7 +7,7 @@
 import { ri, pick, nz, shuffle, chance } from '../../engine/util/rand.js';
 import { numsCheck, choiceCheck, tableCheck } from '../../engine/answers/checks.js';
 import { M, P, F, R, big, terms, sgn, xm, INF } from '../../engine/util/fmt.js';
-import { r6 } from '../../engine/util/arith.js';
+import { r6, red } from '../../engine/util/arith.js';
 import { I, fmtSet } from '../../engine/draw/realLine.js';
 import { signTableHTML } from '../../engine/draw/plot.js';
 import { graph, span, COL, rectangle, enclos, boite } from './draw.js';
@@ -32,6 +32,8 @@ const pv = c => x => { let s = 0; for (let i = c.length - 1; i >= 0; i--) s = s 
 const pd = c => c.slice(1).map((k, i) => r6(k * (i + 1)));
 const lin = (a, b) => terms([[a, 'x'], [b, '']]);
 const sq = s => `(${s})<sup>2</sup>`;
+/** nombre rationnel n/d écrit exactement : entier, ou fraction irréductible (pas « −0,666667 ») */
+const qx = (n, d) => { const [p, q] = red(n, d); return q === 1 ? M(p) : (p < 0 ? '−' : '') + F(Math.abs(p), q); };
 const EX = s => `e<sup>${s}</sup>`;
 /** « + 3 » / « − 3 » dans une somme, rien si 0 */
 const plus = n => (n === 0 ? '' : ' ' + sgn(n));
@@ -559,7 +561,7 @@ ${graph({ xr: [-3, 3], yr: [-3, 5], fs: [{ f, l: 'y = f(x)' }], lines: [{ x: 1, 
    ===================================================================== */
 function L8(d) {
   const kind = d < 1 ? 'invq' : d < 3 ? 'hom' : pick(['hom', 'lq', 'invq']);
-  let f, tex, tpl, E, g, sol, xs = PTS, poles = [], msg;
+  let f, tex, tpl, E, g, sol, xs = PTS, poles = [], msg, pole;
   if (kind === 'invq') {
     const k = nz(-6, 6), c = ri(1, 4);
     f = x => k / (x * x + c); tex = F(M(k), `x<sup>2</sup> + ${c}`);
@@ -569,7 +571,7 @@ function L8(d) {
   } else if (kind === 'hom') {
     let a, b, c, e;
     do { a = d < 2 ? ri(1, 4) : nz(-4, 4); b = d < 2 ? ri(0, 5) : ri(-5, 5); c = d < 2 ? 1 : nz(-3, 3); e = d < 2 ? ri(1, 5) : nz(-5, 5); } while (a * e - b * c === 0);
-    f = x => (a * x + b) / (c * x + e); tex = F(lin(a, b), lin(c, e)); poles = [-e / c];
+    f = x => (a * x + b) / (c * x + e); tex = F(lin(a, b), lin(c, e)); poles = [-e / c]; pole = qx(-e, c);
     tpl = `f${PR}(x) = ${F('{0}', sq(lin(c, e)))}`; E = [a * e - b * c]; g = Ev => x => Ev[0] / (c * x + e) ** 2;
     xs = PTS.filter(x => Math.abs(c * x + e) > 0.3);
     msg = v => (near(v[0], -E[0]) ? `Presque : c'est <b>u${PR}v − uv${PR}</b>, dans cet ordre (et pas uv${PR} − u${PR}v).` : '');
@@ -593,7 +595,7 @@ function L8(d) {
   const sc = { f, ...W, poles, a: x0, m: m0, lab: false };
   return {
     type: 'nums', f, tpl,
-    html: `Soit f(x) = ${tex}${poles.length ? ` pour x ≠ ${M(r6(poles[0]))}` : ''}.<br>Calcule f${PR}(x) et complète${tpl.includes('{1}') ? ' le numérateur' : ''}.`,
+    html: `Soit f(x) = ${tex}${poles.length ? ` pour x ≠ ${pole}` : ''}.<br>Calcule f${PR}(x) et complète${tpl.includes('{1}') ? ' le numérateur' : ''}.`,
     visual: scene(sc), afterVisual: scene({ ...sc, tan: true, tri: true, lab: 'A' }), replaceVisual: true,
     check: chk(E, msg),
     verify: Ev => sameDer(f, g(Ev), xs),
@@ -652,7 +654,7 @@ function L9(d) {
   const sc = { f: fd, ...W, poles, from, a: x0, m: m0, lab: false };
   return {
     type: 'nums', f, tpl,
-    html: `Soit f(x) = ${tex}${kind === 'inv' ? ` pour x ≠ ${M(r6(-b / a))}` : ''}.<br>Calcule f${PR}(x).`,
+    html: `Soit f(x) = ${tex}${kind === 'inv' ? ` pour x ≠ ${qx(-b, a)}` : ''}.<br>Calcule f${PR}(x).`,
     visual: scene(sc), afterVisual: scene({ ...sc, tan: true, tri: Math.abs(m0) <= 6, lab: 'A' }), replaceVisual: true,
     check: chk(E, v => (near(v[0], forgot) && forgot !== E[0] ? `⚠️ Tu as oublié le facteur <b>a = ${M(a)}</b> : (g(ax + b))${PR} = <b>a</b> × g${PR}(ax + b).` : kind === 'inv' && near(v[0], a) ? '⚠️ (1/X)' + PR + ' = −1/X<sup>2</sup> : attention au signe.' : '')),
     verify: Ev => sameDer(f, g(Ev), xs),
@@ -821,7 +823,7 @@ function L11(d) {
   const kind = d < 2 ? 'q' : d < 3 ? 'c' : d < 4 ? pick(['rect', 'enclos']) : pick(['rect', 'enclos', 'boite', 'cout', 'c']);
   let f, html, tpl, E, dom, max, sol, visual = '', fl = 'y = f(x)', W;
   if (kind === 'q') {
-    const al = d < 1 ? pick([1, 2, 3]) : pick([1, 2, -1, -2, 3, -3]), h = ri(-4, 4), k = ri(-6, 6), c = [al * h * h + k, -2 * al * h, al];
+    const al = d < 1 ? pick([1, 2, 3]) : pick([1, 2, -1, -2, 3, -3]), h = nz(-4, 4), k = ri(-6, 6), c = [al * h * h + k, -2 * al * h, al]; // h ≠ 0 : sinon l'extremum f(0) se lit dans l'énoncé
     f = pv(c); max = al < 0; E = [h, k]; dom = [h - 10, h + 10];
     html = `Soit f(x) = ${ptex(c)}.<br>${d < 1 ? 'f admet un <b>minimum</b>' : 'f admet un <b>extremum</b> (maximum ou minimum)'}. Où est-il atteint, et que vaut-il ?`;
     tpl = `x = {0} &nbsp;&nbsp; f(x) = {1}`;
@@ -829,6 +831,7 @@ function L11(d) {
   } else if (kind === 'c') {
     const C = cubic(d); f = C.f; const { r1, r2, k } = C;
     max = chance(0.5); const x0 = (k > 0) === max ? r1 : r2; E = [x0, f(x0)]; dom = null;
+    if (x0 === 0) return L11(d); // extremum en 0 : f(0) serait la constante écrite dans l'énoncé
     html = `Soit f(x) = ${ptex(C.c)}.<br>On admet que f${PR}(x) = ${facD(k, r1, r2)}.<br>Où f atteint-elle son <b>${max ? 'maximum' : 'minimum'} local</b>, et que vaut-il ?`;
     tpl = `x = {0} &nbsp;&nbsp; f(x) = {1}`;
     sol = `f${PR} s'annule en ${M(r1)} et ${M(r2)} ; signes : ${(k > 0 ? ['+', '−', '+'] : ['−', '+', '−']).join(' | 0 | ')}.<br>f${PR} passe de ${max ? '+ à −' : '− à +'} en x = ${M(x0)} : ${max ? 'maximum' : 'minimum'} local f(${M(x0)}) = <b>${M(E[1])}</b>.`;

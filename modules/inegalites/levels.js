@@ -187,7 +187,7 @@ ${realLine([I(-4,1,-1,0)])}
 /* ---------- 7 ---------- */
 function L7(d){
   const v=Math.min(3,ri(Math.max(0,d-1),d));
-  if(v===0){const a=ri(-9,9),b=ri(-9,9),w=pick([0,1,1]);
+  if(v===0){const a=nz(-9,9),w=pick([0,1,1]);let b;do{b=nz(-9,9)}while(b===a); // pas « |−1 − 0| » ni « |1 − 1| »
     if(w===0){const n=nz(-12,12);return{type:'nums',html:`Calcule :${big(`|${M(n)}|`)}`,tpl:'{0}',check:numsCheck([Math.abs(n)]),hint:`|a| est la distance entre a et 0 : c'est a sans son signe.`,solution:`|${M(n)}| = <b>${Math.abs(n)}</b>`,afterVisual:realLine(null,[{x:0,l:'0'},{x:n,l:M(n)}],{arc:[0,n,String(Math.abs(n))]})}}
     return{type:'nums',html:`Calcule :${big(`|${M(a)} − ${P(b)}|`)}`,tpl:'{0}',check:numsCheck([Math.abs(a-b)]),hint:`Calcule d'abord l'intérieur ${M(a)} − ${P(b)}, puis prends la valeur absolue.`,
       solution:`${M(a)} − ${P(b)} = ${M(a-b)}, donc |${M(a-b)}| = <b>${Math.abs(a-b)}</b>`,afterVisual:''}}
@@ -302,7 +302,7 @@ function L11(d){
   if(v===0)expr=`${f(r1)}${f(r2)}`;
   else if(v===1){r1=0;r2=nz(-7,7);if(r1>r2)[r1,r2]=[r2,r1];expr=random()<.5?`${f(r1)}${f(r2)}`:`${f(r2)}${f(r1)}`}
   else if(v===2){if(random()<.5){const n=ri(1,9);r1=-n;r2=n;expr=`x<sup>2</sup> − ${n*n}`;T=x=>CMP[rel](x*x-n*n,0)}else{const k=nz(-7,7);r1=Math.min(0,k);r2=Math.max(0,k);
-    return mk(`x<sup>2</sup> ${REL[rel]} ${M(k)}x`,`On passe tout à gauche et on factorise : x<sup>2</sup> − ${P(k)}x = x(${xm(k)}).`,1,r1,r2,`x(${xm(k)}) ${REL[rel]} 0`,x=>CMP[rel](x*x,k*x))}}
+    return mk(`x<sup>2</sup> ${REL[rel]} ${lin(k,0)}`,`On passe tout à gauche et on factorise : ${terms([[1,'x<sup>2</sup>'],[-k,'x']])} = x(${xm(k)}).`,1,r1,r2,`x(${xm(k)}) ${REL[rel]} 0`,x=>CMP[rel](x*x,k*x))}}
   else{sg=-1;T=x=>CMP[rel]((r1-x)*(x-r2),0);expr=`(${r1<0?M(r1)+' − x':r1+' − x'})${f(r2)}`;expr=`(${r1===0?'−x':M(r1)+' − x'})${f(r2)}`}
   return mk(`${expr} ${REL[rel]} 0`,v===2?`x<sup>2</sup> − ${r2*r2} = (x − ${r2})(x + ${r2}) (identité remarquable).`:sg<0?`Attention : (${M(r1)} − x) est positif <b>avant</b> ${M(r1)} et négatif après.`:'',sg,r1,r2,null,T);
   function mk(html,extra,sg,r1,r2,fact,T){const S=prodSet(sg,r1,r2,rel);

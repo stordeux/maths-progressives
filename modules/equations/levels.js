@@ -170,7 +170,7 @@ function L1(d) {
   let q, s;
   if (v === 0) { s = ri(1, 9); const a = ri(1, 9); q = chance(.5) ? { L: [ax(1), nb(a)], R: [nb(s + a)] } : (a2 => ({ L: [ax(a2)], R: [nb(a2 * s)] }))(ri(2, 5)); }
   else if (v === 1) { s = ri(1, 6); const a = ri(2, 5), b = ri(1, 9); q = { L: [ax(a), nb(b)], R: [nb(a * s + b)] }; }
-  else { s = nz(-6, 8); let a, c; do { a = nz(-5, 6); c = nz(-5, 6); } while (a === c); const b = nz(-9, 9); q = { L: [ax(a), nb(b)], R: [ax(c), nb((a - c) * s + b)] }; }
+  else { s = nz(-6, 8); let a, c, b; do { a = nz(-5, 6); c = nz(-5, 6); b = nz(-9, 9); } while (a === c || (a - c) * s + b === 0); q = { L: [ax(a), nb(b)], R: [ax(c), nb((a - c) * s + b)] }; } // pas « −x + 0 »
   const L = side(q.L), R = side(q.R);
   if (v === 3) {
     const cand = new Set([s]);
@@ -312,7 +312,7 @@ function C4() {
 function L5(d) {
   const v = variant(d, 3);
   let q, a, s;
-  if (v === 0) { a = ri(3, 12); const b = ri(0, a - 1); s = b - a; q = chance(.5) ? { L: [ax(1), nb(a)], R: [nb(b)] } : { L: [ax(1), nb(-b)], R: [nb(-a)] }; if (q.L[1][1] === 0) q.L.pop(); }
+  if (v === 0) { a = ri(3, 12); const b = ri(0, a - 1); s = b - a; q = b && chance(.5) ? { L: [ax(1), nb(-b)], R: [nb(-a)] } : { L: [ax(1), nb(a)], R: [nb(b)] }; } // b = 0 : « x + a = 0 », jamais « x = −a » (déjà résolue)
   else if (v === 1) { a = ri(2, 6); s = -ri(1, 7); const b = ri(1, 15); q = { L: [ax(a), nb(b)], R: [nb(a * s + b)] }; }
   else if (v === 2) { a = -ri(1, 6); s = chance(.75) ? -ri(1, 8) : ri(1, 8); const b = chance(.5) ? 0 : nz(-9, 9); q = { L: b ? [nb(b), ax(a)] : [ax(a)], R: [nb(a * s + b)] }; }
   else { a = nz(-8, 8); s = chance(.75) ? -ri(1, 9) : ri(1, 9); const b = nz(-15, 15); q = { L: [ax(a), nb(b)], R: [nb(a * s + b)] }; if (chance(.3)) q = { L: q.R, R: q.L }; }

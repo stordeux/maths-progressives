@@ -20,6 +20,8 @@ const sgd = n => (r6(n) < 0 ? '− ' + M(-n) : '+ ' + M(n));
 const sg = n => (n < 0 ? -1 : 1);
 const dz = Math.abs; // distance à zéro
 const isDec = (...xs) => xs.some(x => !Number.isInteger(r6(x)));
+/** entier non nul de distance à zéro au moins 2 (pas de facteur 1 ou −1, qui rendrait le calcul trivial) */
+const nz2 = (lo, hi) => { let v; do { v = ri(lo, hi); } while (v > -2 && v < 2); return v; };
 const dec1 = (lo, hi) => { let x; do { x = r6(ri(lo * 10, hi * 10) / 10); } while (x === 0 || Number.isInteger(x)); return x; };
 
 /** règle d'addition du cours (signes, distances à zéro) */
@@ -266,7 +268,7 @@ function L5(d) {
     b = dec ? dec1(-R, R) : nz(-R, R);
     if (same) { if (sg(a) !== sg(b)) b = -b; if (d < 1 && a > 0) { a = -a; b = -b; } }
     else if (sg(a) === sg(b)) b = -b;
-  } while (word && a < 0 && b < 0);
+  } while ((word && a < 0 && b < 0) || a === -b); // pas deux opposés : la somme 0 serait immédiate
   const E = addRule(a, b);
   const txt = d < 2 ? `${S(a)} + ${S(b)}` : `${M(a)} + ${P(b)}`;
   const more = w => {
@@ -306,7 +308,8 @@ ${wide(chain([-3, 5]))}
 /* ================= 6. soustraire, c'est ajouter l'opposé ================= */
 function L6(d) {
   const R = d < 2 ? 10 : 20, dec = d >= 5 && chance(.3);
-  const a = dec ? dec1(-R, R) : nz(-R, R), b = dec ? dec1(-R, R) : nz(-R, R);
+  const a = dec ? dec1(-R, R) : nz(-R, R);
+  let b; do { b = dec ? dec1(-R, R) : nz(-R, R); } while (b === a); // pas « 7 − 7 »
   const E = addRule(a, -b);
   const more = w => (approx(w[0], b) && w.length === 2 ? `Pour soustraire ${S(b)}, on ajoute son <b>opposé</b> : change le signe !` : approx(w[w.length - 1], addRule(a, b)) && addRule(a, b) !== E ? 'Tu as <b>ajouté</b> le deuxième nombre. Soustraire, c\'est ajouter son <b>opposé</b>.' : '');
   const vis = line([a, E], { arrows: [{ from: 0, to: a, l: M(a), c: '#1971c2' }, { from: a, to: E, l: sgd(-b), c: '#e8590c' }], marks: [{ x: E }] });
@@ -349,7 +352,8 @@ function L7(d) {
   const nT = d < 1 ? 3 : d < 2 ? 4 : d < 4 ? ri(4, 5) : ri(5, 6), R = d < 3 ? 9 : 15;
   const paren = d >= 2 && chance(.5);
   let eff;
-  do { eff = Array.from({ length: nT }, () => nz(-R, R)); } while (!eff.some(x => x > 0) || !eff.some(x => x < 0));
+  // deux termes voisins opposés (« 4 + 5 − 5 ») s'annuleraient sans calcul
+  do { eff = Array.from({ length: nT }, () => nz(-R, R)); } while (!eff.some(x => x > 0) || !eff.some(x => x < 0) || eff.some((x, i) => i && x === -eff[i - 1]));
   // écriture simplifiée
   const simp = M(eff[0]) + eff.slice(1).map(x => (x < 0 ? ' − ' : ' + ') + dz(x)).join('');
   let txt = simp;
@@ -384,9 +388,9 @@ function L8(d) {
   const T = d < 2 ? 5 : 10, dec = d >= 4 && chance(.3);
   let a, b;
   if (dec) { a = pick([-0.5, 0.5, -1.5, 1.5, -2.5, 0.1, -0.1, 0.2, -0.2]); b = nz(-10, 10) * 2; if (chance(.5)) [a, b] = [b, a]; }
-  else if (d >= 3 && chance(.2)) { a = pick([0, -1, 1, -10, 10]); b = nz(-15, 15); if (chance(.5)) [a, b] = [b, a]; }
+  else if (d >= 3 && chance(.2)) { a = pick([-10, 10, -100]); b = nz2(-15, 15); if (chance(.5)) [a, b] = [b, a]; }
   else {
-    a = nz(-T, T); b = nz(-T, T);
+    a = nz2(-T, T); b = nz2(-T, T); // pas de facteur 1 ni −1 : « 1 × (−6) » ne demande aucun calcul
     if (d < 1) { if (sg(a) === sg(b)) b = -b; }
     else if (a > 0 && b > 0) { if (chance(.5)) a = -a; else b = -b; if (chance(.5)) { a = -dz(a); b = -dz(b); } }
   }
@@ -420,9 +424,9 @@ const SIGN_OPTS = [{ v: 'pos', l: 'Positif' }, { v: 'neg', l: 'Négatif' }, { v:
 function L9(d) {
   const asChoice = d < 2 || chance(.3);
   const nf = asChoice ? (d < 1 ? 3 : ri(3, 5)) : (d < 4 ? 3 : 4), R = asChoice ? 12 : (nf === 3 ? 6 : 5);
-  const f = Array.from({ length: nf }, () => (chance(.5) ? -1 : 1) * ri(1, R));
+  // facteurs de distance à zéro au moins 2 : un facteur 1 ou 0 rendrait le produit trivial
+  const f = Array.from({ length: nf }, () => (chance(.5) ? -1 : 1) * ri(2, R));
   if (!f.some(x => x < 0)) f[ri(0, nf - 1)] *= -1;
-  if (asChoice && d >= 1 && chance(.15)) f[ri(0, nf - 1)] = 0;
   const txt = f.map((x, i) => (i ? P(x) : M(x))).join(' × ');
   const nNeg = f.filter(x => x < 0).length, zero = f.includes(0);
   if (asChoice) {
@@ -458,7 +462,7 @@ function L10(d) {
   const v = d < 1 ? 0 : d < 2 ? ri(0, 1) : ri(Math.max(0, d - 3), Math.min(4, d));
   let b, q;
   if (v === 4 && chance(.5)) { b = pick([2, 4]) * (chance(.5) ? -1 : 1); q = r6(nz(-19, 19) / 2); if (Number.isInteger(q)) q += q > 0 ? 0.5 : -0.5; }
-  else if (v === 4) { b = (chance(.5) ? -1 : 1) * ri(11, 15); q = nz(-12, 12); }
+  else if (v === 4) { b = (chance(.5) ? -1 : 1) * ri(11, 15); q = nz2(-12, 12); } // q ≠ ±1 : pas « (−13) ÷ (−13) »
   else { b = (chance(.5) ? -1 : 1) * ri(2, 9); q = (chance(.5) ? -1 : 1) * ri(2, 10); }
   if (v === 0 && sg(b) === sg(q)) q = -q; // un dividende ou un diviseur négatif, pas les deux
   if (v === 1) { b = -dz(b); q = dz(q); } // deux négatifs
@@ -496,24 +500,24 @@ ${wide(chain([-3, -3, -3, -3]))}
 /* ================= 11. calculs enchaînés et priorités ================= */
 function L11(d) {
   const top = Math.min(d, 5), k = d < 1 ? 0 : chance(.5) ? top : ri(0, top);
-  const a = nz(-15, 15), b = nz(-9, 9), c = nz(-9, 9), e = nz(-9, 9), f = nz(-6, 6);
-  let txt, steps, E;
+  const a = nz(-15, 15), b = nz2(-9, 9), c = nz2(-9, 9), e = nz2(-9, 9), f = nz2(-6, 6);
+  let txt, steps, E, par = []; // par : valeurs des parenthèses
   if (k === 0) {
     const op = chance(.5) ? '+' : '−', m = mulRule(b, c);
     txt = `${M(a)} ${op} ${P(b)} × ${P(c)}`;
     E = addRule(a, op === '+' ? m : -m);
     steps = [`${M(a)} ${op} ${P(m)}`];
   } else if (k === 1) {
-    const m1 = mulRule(a > 9 || a < -9 ? sg(a) * 3 : a, b), a2 = a > 9 || a < -9 ? sg(a) * 3 : a, m2 = mulRule(c, e), op = chance(.5) ? '+' : '−';
+    const a2 = a > 9 || a < -9 ? sg(a) * 3 : dz(a) < 2 ? sg(a) * 2 : a, m1 = mulRule(a2, b), m2 = mulRule(c, e), op = chance(.5) ? '+' : '−';
     txt = `${M(a2)} × ${P(b)} ${op} ${P(c)} × ${P(e)}`;
     E = addRule(m1, op === '+' ? m2 : -m2);
     steps = [`${M(m1)} ${op} ${P(m2)}`];
   } else if (k === 2) {
-    const op = chance(.5) ? '+' : '−', inner = addRule(b, op === '+' ? c : -c);
+    const op = chance(.5) ? '+' : '−', inner = addRule(b, op === '+' ? c : -c); par = [inner];
     if (chance(.5)) { txt = `(${M(b)} ${op} ${P(c)}) × ${P(e)}`; E = mulRule(inner, e); steps = [`${P(inner)} × ${P(e)}`]; }
     else { txt = `${M(e)} × (${M(b)} ${op} ${P(c)})`; E = mulRule(e, inner); steps = [`${M(e)} × ${P(inner)}`]; }
   } else if (k === 3) {
-    const op = chance(.5) ? '+' : '−', inner = addRule(c, op === '+' ? e : -e), m = mulRule(b, inner);
+    const op = chance(.5) ? '+' : '−', inner = addRule(c, op === '+' ? e : -e), m = mulRule(b, inner); par = [inner];
     txt = `${M(a)} − ${P(b)} × (${M(c)} ${op} ${P(e)})`;
     E = addRule(a, -m);
     steps = [`${M(a)} − ${P(b)} × ${P(inner)}`, `${M(a)} − ${P(m)}`];
@@ -523,12 +527,14 @@ function L11(d) {
     E = addRule(b, -m);
     steps = [`${M(b)} − ${P(m)}`];
   } else {
-    const i1 = addRule(a > 9 || a < -9 ? sg(a) * 4 : a, b), a2 = a > 9 || a < -9 ? sg(a) * 4 : a, i2 = addRule(c, -e);
+    const i1 = addRule(a > 9 || a < -9 ? sg(a) * 4 : a, b), a2 = a > 9 || a < -9 ? sg(a) * 4 : a, i2 = addRule(c, -e); par = [i1, i2];
     txt = `(${M(a2)} + ${P(b)}) × (${M(c)} − ${P(e)})`;
     E = mulRule(i1, i2);
     steps = [`${P(i1)} × ${P(i2)}`];
   }
   if (!txt.includes('−')) return L11(d); // toujours au moins un nombre négatif
+  // une parenthèse qui vaut 0, 1 ou −1 cacherait un produit par 0 ou par ±1 (« −2 × (1 − 1) »)
+  if (par.some(x => dz(x) < 2)) return L11(d);
   const naive = ev(txt, true);
   return { ...numQ([E], ev(txt), { more: w => (approx(w[0], naive) && !approx(naive, E) ? 'Attention aux <b>priorités</b> : les calculs entre parenthèses d\'abord, puis × et ÷, puis + et −.' : '') }),
     html: `Calcule en respectant les priorités :${big(txt)}`,
@@ -552,8 +558,8 @@ ${wide(intLine({ min: -20, max: 2, arrows: [{ from: 0, to: -5, l: '−5', c: '#1
 function L12(d) {
   const v = ri(0, Math.min(4, d + 1));
   if (v === 0) {
-    const a = nz(-9, 9), b = nz(-15, 15), x = nz(-9, 9);
-    const two = d >= 3 && chance(.5), c = nz(-6, 6), y = nz(-6, 6);
+    const a = nz2(-9, 9), b = nz(-15, 15), x = nz2(-9, 9); // coefficient et valeur ≠ ±1 : pas « 1 × (−3) »
+    const two = d >= 3 && chance(.5), c = nz2(-6, 6), y = nz2(-6, 6);
     const fx = (k, name) => (k === 1 ? '' : k === -1 ? '−' : M(k)) + name;
     const expr = two ? `${fx(a, 'x')} ${c < 0 ? '−' : '+'} ${fx(dz(c), 'y')}` : `${fx(a, 'x')} ${b < 0 ? '−' : '+'} ${dz(b)}`;
     const txt = two ? `${M(a)} × ${P(x)} ${c < 0 ? '−' : '+'} ${dz(c)} × ${P(y)}` : `${M(a)} × ${P(x)} ${b < 0 ? '−' : '+'} ${dz(b)}`;
@@ -594,8 +600,9 @@ function L12(d) {
       solution: `Somme : ${t.map((x, i) => (i ? P(x) : M(x))).join(' + ')} = ${M(sum)}.<br>Moyenne : ${M(sum)} ÷ ${n} = <b>${M(E)}</b> °C.` };
   }
   // v === 4 : parenthèses imbriquées
-  const a = nz(-12, 12), b = nz(-9, 9), c = nz(-6, 6), e = nz(-6, 6);
+  const a = nz(-12, 12), b = nz(-9, 9), c = nz2(-6, 6), e = nz2(-6, 6);
   const m = mulRule(c, e), in1 = addRule(b, -m), E = addRule(a, -in1);
+  if (in1 === 0) return L12(d); // « a − (0) » : la réponse serait le premier nombre
   const txt = `${M(a)} − (${M(b)} − ${P(c)} × ${P(e)})`;
   const naive = ev(txt, true);
   return { ...numQ([E], ev(txt), { more: w => (approx(w[0], addRule(a, in1)) && addRule(a, in1) !== E ? 'Attention au « − » devant la parenthèse : on <b>soustrait</b> le résultat de la parenthèse.' : approx(w[0], naive) && naive !== E ? 'Attention aux <b>priorités</b>.' : '') }),

@@ -47,7 +47,7 @@ const LEVELS_=[
 
 /* ---------- 1. image ---------- */
 function L1(d){
-  const a=d<2?1:pick([1,-1,2]),b=ri(-6,6),c=ri(-8,8),x0=d<1?ri(0,4):nz(-4,4),Y=a*x0*x0+b*x0+c;
+  const a=d<2?1:pick([1,-1,2]),b=ri(-6,6),c=ri(-8,8),x0=d<1?ri(1,4):nz(-4,4),Y=a*x0*x0+b*x0+c;
   return{type:'nums',a,b,c,go:{x0},gs:{x0,show:true},
     html:`Soit f(x) = ${poly(a,b,c)}.<br>Calcule f(${M(x0)}).`,
     tpl:`f(${M(x0)}) = {0}`,check:numsCheck([Y]),
@@ -88,10 +88,10 @@ function C2(){return `<h2>2. La forme réduite</h2>
 function L3(d){
   const a1=nz(-3,4),a2=ri(-3,3),b1=ri(-6,6),b2=nz(-6,6),c1=ri(-8,8),c2=nz(-8,8);
   let a,b,c,html;
-  if(d<2){a=a1+a2;b=b1+b2;c=c1+c2;if(a===0)return L3(d);
+  if(d<2){a=a1+a2;b=b1+b2;c=c1+c2;if(!a||!b||!c)return L3(d); // aucune famille ne disparaît (« + 7 − 7 »)
     let t=[[a1,X2],[b1,'x'],[c1,''],[a2,X2],[b2,'x'],[c2,'']];if(d===1)shuffle(t);
     html=`Réduis (forme ax<sup>2</sup> + bx + c) :${big('f(x) = '+terms(t))}`}
-  else{a=a1-a2;b=b1-b2;c=c1-c2;if(a===0)return L3(d);
+  else{a=a1-a2;b=b1-b2;c=c1-c2;if(!a||!b||!c)return L3(d);
     html=`Réduis (attention au signe − devant la parenthèse) :${big(`f(x) = (${poly(a1,b1,c1)}) − (${poly(a2,b2,c2)})`)}`}
   return{type:'nums',a,b,c,go:{},gs:{},html,tpl:`{0} ${X2} + {1} x + {2}`,check:numsCheck([a,b,c]),
     hint:d<2?`Regroupe les termes de la même famille : les x<sup>2</sup> ensemble, les x ensemble, les nombres seuls ensemble.`:`Un « − » devant une parenthèse change le signe de <b>tous</b> les termes de la parenthèse. Ensuite regroupe les x<sup>2</sup>, les x et les nombres.`,
@@ -283,7 +283,7 @@ function L10(d){
   if(d<1){html=`Résous l'équation :${big(`${fact(1,r1,r2)} = 0`)}`}
   else if(d<2){r1=0;html=`Trouve les racines de :${big(`f(x) = ${fact(1,0,r2)}`)}`}
   else{const m=pick([2,3,-1,-2]);if(random()<.5){a=m;html=`Trouve les racines de :${big(`f(x) = ${fact(m,r1,r2)}`)}`}
-    else{a=m;const q=-m*r1;html=`Trouve les racines de :${big(`f(x) = (${m===1?'':m===-1?'−':m}x ${q<0?'− '+(-q):'+ '+q})(${lmin(r2)})`)}`}}
+    else{a=m;const q=-m*r1,f1=q===0?coefA(m)+'x':`(${coefA(m)}x ${q<0?'− '+(-q):'+ '+q})`;html=`Trouve les racines de :${big(`f(x) = ${f1}(${lmin(r2)})`)}`}} // pas « (3x + 0) »
   const b=-a*(r1+r2),c=a*r1*r2;
   return{type:'roots',a,b,c,go:{},gs:{roots:true},html,check:rootsCheck([r1,r2]),
     hint:`Un produit est nul si et seulement si <b>l'un des facteurs</b> est nul. Écris « facteur 1 = 0 ou facteur 2 = 0 » et résous chaque petite équation.`,
@@ -335,7 +335,7 @@ function L12(d){
   const v=Math.min(3,ri(Math.max(0,d-1),d)),kind=pick(['two','two','two','one','none']);
   let a=pick(d<2?[1,1,-1,2]:[1,-1,2,-2,3]),b,c,roots;
   if(kind==='two'){let r1=ri(-5,5),r2;do{r2=ri(-5,5)}while(r2===r1);b=-a*(r1+r2);c=a*r1*r2;roots=[r1,r2]}
-  else if(kind==='one'){const h=ri(-4,4);b=-2*a*h;c=a*h*h;roots=[h]}
+  else if(kind==='one'){const h=nz(-4,4);/* h = 0 donnerait f(x) = ax², racine 0 évidente */b=-2*a*h;c=a*h*h;roots=[h]}
   else{const h=ri(-3,3),k=Math.sign(a)*ri(1,6);b=-2*a*h;c=a*h*h+k;roots=[]}
   const D=b*b-4*a*c,F=`f(x) = ${poly(a,b,c)}`,abc=`a = ${M(a)}, b = ${M(b)}, c = ${M(c)}`;
   const calc=`Δ = b<sup>2</sup> − 4ac = ${P(b)}<sup>2</sup> − 4 × ${P(a)} × ${P(c)} = ${b*b} ${-4*a*c<0?'− '+(4*a*c):'+ '+(-4*a*c)} = <b>${M(D)}</b>`;
