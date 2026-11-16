@@ -730,13 +730,13 @@ function L11(d) {
 function C11() {
   return `<h2>11. Programme de calcul → expression</h2>
 <p class="intro">Un programme de calcul donne des instructions l'une après l'autre. Pour l'écrire en une seule ligne, il faut parfois ajouter des parenthèses.</p>
-<div class="def">Un <b>programme de calcul</b> applique chaque instruction à <b>tout le résultat précédent</b>. Pour l'écrire en une seule expression, on met des <b>parenthèses</b> dès qu'une instruction ×, ÷ ou « au carré » suit un + ou un −.</div>
-<div class="methode"><b>Méthode</b><ol><li>Écris le nombre choisi.</li><li>Pour chaque instruction, applique-la à <b>tout</b> ce que tu as écrit.</li><li>Si c'est ×, ÷ ou un carré et que l'expression contient un + ou un −, mets-la entre parenthèses.</li><li>Vérifie en suivant le programme étape par étape.</li></ol></div>
+<div class="def">Un <b>programme de calcul</b> applique chaque instruction à <b>tout le résultat précédent</b>. Pour l'écrire en une seule expression, on met des <b>parenthèses</b> quand une instruction × ou ÷ suit un + ou un −, et avant « élève au carré » dès que l'expression n'est pas un nombre seul.</div>
+<div class="methode"><b>Méthode</b><ol><li>Écris le nombre choisi.</li><li>Pour chaque instruction, applique-la à <b>tout</b> ce que tu as écrit.</li><li>× ou ÷ : mets l'expression entre parenthèses si elle contient un + ou un − hors parenthèses. Carré : mets-la entre parenthèses si ce n'est pas un nombre seul.</li><li>Vérifie en suivant le programme étape par étape.</li></ol></div>
 <div class="ex"><span class="q">Exemple 1</span><ol class="prog"><li>Choisis 5.</li><li>Ajoute 3.</li><li>Multiplie par 4.</li></ol>→ (5 + 3) × 4. Sans parenthèses, 5 + 3 × 4 = 17 : ce n'est pas le programme !</div>
 ${demo(() => mul(P(add(N(5), N(3))), N(4)))}
 <div class="ex"><span class="q">Exemple 2</span><ol class="prog"><li>Choisis 4.</li><li>Soustrais 1.</li><li>Élève au carré.</li><li>Ajoute 5.</li></ol>→ (4 − 1)<sup>2</sup> + 5.</div>
 ${demo(() => add(sq(P(sub(N(4), N(1)))), N(5)), '', false)}
-<div class="warn">⚠️ « Multiplie par 2, puis ajoute 7 » donne 5 × 2 + 7 : ici pas besoin de parenthèses, le × passe déjà en premier.<br>⚠️ « Soustrais 1, élève au carré » : 4 − 1<sup>2</sup> = 3, mais (4 − 1)<sup>2</sup> = 9.</div>
+<div class="warn">⚠️ « Choisis 5, multiplie par 2, puis ajoute 7 » donne 5 × 2 + 7 : ici pas besoin de parenthèses, le × passe déjà en premier.<br>⚠️ « Choisis 4, soustrais 1, élève au carré » : 4 − 1<sup>2</sup> = 3, mais (4 − 1)<sup>2</sup> = 9.<br>⚠️ « Choisis 5, multiplie par 2, élève au carré » : (5 × 2)<sup>2</sup> = 100, mais 5 × 2<sup>2</sup> = 20.</div>
 <div class="retenir">À retenir : chaque instruction porte sur tout le résultat d'avant → parenthèses si besoin.</div>`;
 }
 
