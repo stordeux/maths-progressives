@@ -39,7 +39,7 @@ export const MODULES = [
   // --- lycée (1re – Tle)
   { id: 'suites', titre: 'Suites', emoji: '🔢', classes: '1re', groupe: 'Lycée (1re – Tle)', couleur: '#155e75', couleur2: '#e3f4f8', resume: 'Termes, récurrence, suites arithmétiques et géométriques, sommes, seuils.', etat: 'bientot' },
   // ---
-  { id: 'trigo', titre: 'Trigonométrie', emoji: '⭕', classes: '1re', groupe: 'Lycée (1re – Tle)', couleur: '#86198f', couleur2: '#fbeefc', resume: 'Radians, cercle trigonométrique, cosinus et sinus des angles associés, équations.', etat: 'bientot' },
+  { id: 'trigo', titre: 'Trigonométrie', emoji: '⭕', classes: '1re', groupe: 'Lycée (1re – Tle)', couleur: '#86198f', couleur2: '#fbeefc', resume: 'Radians, cercle trigonométrique, cosinus et sinus des angles associés, équations.' },
   // ---
   { id: 'probas-lycee', titre: 'Probabilités conditionnelles', emoji: '🌳', classes: '1re – Tle', groupe: 'Lycée (1re – Tle)', couleur: '#166534', couleur2: '#e9f7ee', resume: 'Arbres pondérés, probabilités totales, indépendance, loi binomiale.', etat: 'bientot' },
   // ---

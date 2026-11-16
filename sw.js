@@ -1,6 +1,6 @@
 // Service worker : met tout le site en cache pour qu'il marche hors ligne.
 // La liste ASSETS et VERSION sont régénérées par « node tools/sw-assets.mjs » (vérifié par les tests).
-const VERSION = 'c33510fd8942';
+const VERSION = '4673d00852fe';
 const ASSETS = [
   './',
   './assets/css/base.css',
@@ -83,6 +83,9 @@ const ASSETS = [
   './modules/thales-trigo/draw.js',
   './modules/thales-trigo/index.html',
   './modules/thales-trigo/levels.js',
+  './modules/trigo/draw.js',
+  './modules/trigo/index.html',
+  './modules/trigo/levels.js',
   './modules/aires-volumes/',
   './modules/angles/',
   './modules/calcul/',
@@ -102,6 +105,7 @@ const ASSETS = [
   './modules/revision/',
   './modules/stats-probas/',
   './modules/thales-trigo/',
+  './modules/trigo/',
 ];
 const CACHE = 'maths-progressives-' + VERSION;
 
