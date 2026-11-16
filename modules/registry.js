@@ -41,7 +41,7 @@ export const MODULES = [
   // ---
   { id: 'trigo', titre: 'Trigonométrie', emoji: '⭕', classes: '1re', groupe: 'Lycée (1re – Tle)', couleur: '#86198f', couleur2: '#fbeefc', resume: 'Radians, cercle trigonométrique, cosinus et sinus des angles associés, équations.', etat: 'bientot' },
   // ---
-  { id: 'probas-lycee', titre: 'Probabilités conditionnelles', emoji: '🌳', classes: '1re – Tle', groupe: 'Lycée (1re – Tle)', couleur: '#166534', couleur2: '#e9f7ee', resume: 'Arbres pondérés, probabilités totales, indépendance, loi binomiale.', etat: 'bientot' },
+  { id: 'probas-lycee', titre: 'Probabilités conditionnelles', emoji: '🌳', classes: '1re – Tle', groupe: 'Lycée (1re – Tle)', couleur: '#166534', couleur2: '#e9f7ee', resume: 'Arbres pondérés, probabilités totales, indépendance, loi binomiale.' },
   // ---
   { id: 'exp-ln', titre: 'Exponentielle et logarithme', emoji: '🌱', classes: '1re – Tle', groupe: 'Lycée (1re – Tle)', couleur: '#9a3412', couleur2: '#fdf1e7', resume: 'Propriétés de eˣ et ln, équations, inéquations, croissance et décroissance exponentielles.', etat: 'bientot' },
   // ---
