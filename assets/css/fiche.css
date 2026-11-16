@@ -13,6 +13,9 @@
 /* vue d'ensemble : cartes de notions côte à côte */
 .fiche .apercu { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 10px; margin: 10px 0; }
 .fiche .nw { white-space: nowrap; }
+/* angle BAC : chapeau dessiné au-dessus des trois lettres (même dessin que .ang du module angles), au lieu d'un
+   accent combinant posé sur la seule lettre du milieu et décalé selon la police */
+.fiche .ang { display: inline-block; padding-top: .34em; line-height: 1.05; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10' preserveAspectRatio='none'%3E%3Cpolyline points='4,9 50,1.5 96,9' fill='none' stroke='%23333' stroke-width='1.8' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") top center / 100% .34em no-repeat; }
 .fiche .apercu > div { border: 2px solid var(--acc2); border-radius: 12px; padding: 10px 12px; }
 .fiche .apercu b.k { display: block; color: var(--acc); margin-bottom: 4px; }
 /* grande formule centrée */

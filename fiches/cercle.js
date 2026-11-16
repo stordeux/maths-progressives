@@ -12,7 +12,7 @@ const dot = (p, c = INK) => `<circle cx="${f(p[0])}" cy="${f(p[1])}" r="4" fill=
 const txt = (x, y, t, o = {}) => `<text x="${f(x)}" y="${f(y)}" text-anchor="${o.a || 'middle'}" font-size="${o.s || 15}"${o.b ? ' font-weight="700"' : ''}${o.i ? ' font-style="italic"' : ''} fill="${o.c || INK}">${t}</text>`;
 /** petit carré d'angle droit au point P, côtés le long des vecteurs unitaires u et v */
 const droit = (P, u, v, k = 12, c = INK) => `<path d="M${xy([P[0] + k * u[0], P[1] + k * u[1]])} L${xy([P[0] + k * (u[0] + v[0]), P[1] + k * (u[1] + v[1])])} L${xy([P[0] + k * v[0], P[1] + k * v[1]])}" fill="none" stroke="${c}" stroke-width="1.8"/>`;
-const ang = (a, v, b) => `${a}${v}̂${b}`; // angle AMB (accent circonflexe combinant), comme dans thales-trigo
+const ang = (a, v, b) => `<span class="ang">${a}${v}${b}</span>`; // angle AMB : chapeau sur les trois lettres (classe .ang de fiche.css)
 const nw = s => `<span class="nw">${s}</span>`;
 
 /** la grande figure : centre, rayon, diamètre, corde, arc, tangente, disque */
@@ -154,6 +154,34 @@ ${txt(186, 100, '1', { a: 'end', b: true })}${txt(208, 136, 'x', { i: true, b: t
 </svg>`;
 }
 
+/** dans un repère quadrillé : cercle de centre Ω(1 ; 2) passant par A(4 ; 6) (exemple 7), ΩA comme hypoténuse */
+function repere() {
+  const u = 24, X = x => 20 + (x + 5) * u, Y = y => 20 + (8 - y) * u; // x de −5 à 7, y de −4 à 8
+  const W = [X(1), Y(2)], A = [X(4), Y(6)], B = [X(-2), Y(-2)], Cp = [X(5), Y(6)], H = [X(4), Y(2)];
+  let grille = '';
+  for (let k = -5; k <= 7; k++) grille += `M${X(k)} ${Y(-4)} V${Y(8)} `;
+  for (let k = -4; k <= 8; k++) grille += `M${X(-5)} ${Y(k)} H${X(7)} `;
+  return `<svg viewBox="0 0 330 360" role="img" aria-label="Repère quadrillé : cercle de centre Oméga(1 ; 2) et de rayon 5 passant par A(4 ; 6) et B(−2 ; −2) ; ΩA est l'hypoténuse d'un triangle rectangle de côtés 3 et 4 ; C(5 ; 6) est à l'extérieur" ${FONT}>
+<defs><marker id="ceFlR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="${SOFT}"/></marker></defs>
+<path d="${grille}" stroke="#dee2e6" stroke-width="1" fill="none"/>
+<line x1="${X(-5)}" y1="${Y(0)}" x2="${X(7) + 6}" y2="${Y(0)}" stroke="${SOFT}" stroke-width="1.5" marker-end="url(#ceFlR)"/>
+<line x1="${X(0)}" y1="${Y(-4)}" x2="${X(0)}" y2="${Y(8) - 6}" stroke="${SOFT}" stroke-width="1.5" marker-end="url(#ceFlR)"/>
+<path d="M${X(1)} ${Y(0) - 4} v8 M${X(0) - 4} ${Y(1)} h8" stroke="${SOFT}" stroke-width="1.5"/>
+${txt(X(0) - 6, Y(0) + 16, 'O', { a: 'end', s: 13 })}${txt(X(1), Y(0) + 16, '1', { s: 13 })}${txt(X(0) - 7, Y(1) + 4, '1', { a: 'end', s: 13 })}
+<circle cx="${W[0]}" cy="${W[1]}" r="${5 * u}" fill="${C1}" fill-opacity=".06" stroke="${C1}" stroke-width="2.5"/>
+<path d="M${xy(W)} H${H[0]} V${A[1]}" fill="none" stroke="${C4}" stroke-width="2" stroke-dasharray="6 4"/>
+${droit(H, [-1, 0], [0, -1], 10, C4)}
+<line x1="${W[0]}" y1="${W[1]}" x2="${A[0]}" y2="${A[1]}" stroke="${C2}" stroke-width="3"/>
+<line x1="${W[0]}" y1="${W[1]}" x2="${Cp[0]}" y2="${Cp[1]}" stroke="${GR}" stroke-width="1.8" stroke-dasharray="3 4"/>
+${[W, A, B].map(p => dot(p)).join('')}${dot(Cp, C5)}
+${txt(W[0] - 8, W[1] - 8, 'Ω', { a: 'end', b: true, s: 17 })}
+${txt(A[0] - 8, A[1] - 8, 'A', { a: 'end', b: true })}${txt(B[0] - 8, B[1] + 6, 'B', { a: 'end', b: true })}${txt(Cp[0] + 8, Cp[1] - 6, 'C', { a: 'start', b: true, c: C5 })}
+${txt((W[0] + H[0]) / 2, W[1] + 18, '3', { c: C4, b: true })}${txt(H[0] + 8, (H[1] + A[1]) / 2 + 5, '4', { a: 'start', c: C4, b: true })}
+${txt((W[0] + A[0]) / 2 - 8, (W[1] + A[1]) / 2 - 4, 'r = 5', { a: 'end', c: C2, b: true })}
+${txt(165, 350, 'ΩA = √(3² + 4²) = 5', { b: true, c: C2 })}
+</svg>`;
+}
+
 /** schéma de décision : que cherches-tu ? */
 function arbre() {
   const W = 152, X = [4, 164, 324, 484];
@@ -258,7 +286,7 @@ ${arbre()}
 <li>Pythagore : ${nw('BC² = 5² + 12² = 25 + 144 = 169')}, donc ${nw('BC = 13 cm')}.</li>
 <li>Rayon : ${nw('13 ÷ 2 =')} <b>6,5 cm</b>.</li></ol></div>
 <div class="cols">
-  <div><div class="ex"><span class="q">Exemple 6 : tangente + trigonométrie. Le cercle a pour centre O et pour rayon 3 cm. OA = 5 cm et (AT) est tangente au cercle en T. Calcule AT et l'angle α = ${ang('O', 'A', 'T')}.</span><ol class="pas">
+  <div><div class="ex"><span class="q">Exemple 6 : tangente + trigonométrie. Le cercle a pour centre O et pour rayon 3 cm. OA = 5 cm et (AT) est tangente au cercle en T. Calcule AT et l'angle ${nw(`α = ${ang('O', 'A', 'T')}`)}.</span><ol class="pas">
   <li>Tangente en T : ${nw('(AT) ⟂ (OT)')}. OTA est rectangle en T, d'hypoténuse [OA].</li>
   <li>Pythagore : ${nw('AT² = 5² − 3² = 16')}, donc ${nw('AT = 4 cm')}.</li>
   <li>Trigonométrie : ${nw('sin α = OT/OA = 3/5 = 0,6')}.</li>
@@ -268,11 +296,14 @@ ${arbre()}
 
 <h2>Méthode : dans un repère (2de – 1re)</h2>
 <div class="def">M est sur le cercle de centre Ω et de rayon r <b>si et seulement si</b> ${nw('ΩM = r')}. Dans un repère orthonormé, avec Ω(a ; b) et M(x ; y) : ${nw('ΩM = √((x − a)² + (y − b)²)')}.</div>
-<div class="ex"><span class="q">Exemple 7 : Ω(1 ; 2) et A(4 ; 6). Le cercle de centre Ω passe par A. Les points B(−2 ; −2) et C(5 ; 6) sont-ils sur ce cercle ?</span><ol class="pas">
-<li>Rayon : ${nw('r = ΩA = √(3² + 4²) = √25 = 5')}.</li>
-<li>${nw('ΩB = √((−3)² + (−4)²) = √25 = 5')} : B est <b>sur</b> le cercle.</li>
-<li>${nw('ΩC = √(4² + 4²) = √32 ≈ 5,66')} : ${nw('ΩC ≠ 5')}, C n'est <b>pas</b> sur le cercle (il est à l'extérieur).</li>
-<li>En 1re spécialité seulement : une équation du cercle est ${nw('(x − 1)² + (y − 2)² = 25')}. Pour A : ${nw('3² + 4² = 25')}, cela marche.</li></ol></div>
+<div class="cols">
+  <div><div class="ex"><span class="q">Exemple 7 : Ω(1 ; 2) et A(4 ; 6). Le cercle de centre Ω passe par A. Les points B(−2 ; −2) et C(5 ; 6) sont-ils sur ce cercle ?</span><ol class="pas">
+  <li>Rayon : ${nw('r = ΩA = √(3² + 4²) = √25 = 5')}. Sur la figure, ΩA est l'hypoténuse d'un triangle rectangle de côtés 3 et 4.</li>
+  <li>${nw('ΩB = √((−3)² + (−4)²) = √25 = 5')} : B est <b>sur</b> le cercle.</li>
+  <li>${nw('ΩC = √(4² + 4²) = √32 ≈ 5,66')} : ${nw('ΩC ≠ 5')}, C n'est <b>pas</b> sur le cercle (il est à l'extérieur).</li>
+  <li>En 1re spécialité seulement : une équation du cercle est ${nw('(x − 1)² + (y − 2)² = 25')}. Pour A : ${nw('3² + 4² = 25')}, cela marche.</li></ol></div></div>
+  <div>${repere()}</div>
+</div>
 <p>L'équation de cercle n'est pas au programme de 2de : en 2de, on calcule une distance et on la compare au rayon. C'est la même idée, élevée au carré.</p>
 
 <h2>Méthode : le cercle trigonométrique (1re)</h2>
