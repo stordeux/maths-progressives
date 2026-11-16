@@ -165,13 +165,20 @@ function L1choix() {
 }
 function C1() {
   return `<h2>1. Écrire une expression</h2>
-<div class="def">Une <b>expression littérale</b> est un calcul où un nombre est remplacé par une lettre, souvent <b>x</b>.<br>Elle permet d'écrire un programme de calcul <b>pour tous les nombres à la fois</b>.</div>
-${programme(['× 3', '+ 5'])}
-<div class="ex">Choisir x ; multiplier par 3 ; ajouter 5.<br>x → 3x → <b>3x + 5</b></div>
-<div class="ex">Choisir x ; ajouter 2 ; multiplier le résultat par 4.<br>x → x + 2 → <b>4(x + 2)</b> : les parenthèses montrent que <b>tout</b> x + 2 est multiplié.</div>
-<div class="ex">Soustraire le triple de x à 20 : <b>20 − 3x</b>, qu'on peut écrire −3x + 20.</div>
-<div class="warn">⚠️ 4(x + 2) et 4x + 2, ce n'est pas pareil ! Teste avec x = 1 : 4 × 3 = 12, mais 4 + 2 = 6.</div>
-<div class="warn">⚠️ « Soustraire 7 » donne « − 7 » : dans la case du nombre seul, tape <b>−7</b>.</div>`;
+<p class="intro">Une lettre permet d'écrire un calcul <b>une seule fois pour tous les nombres</b>. C'est le point de départ de tout le calcul littéral.</p>
+<div class="cols">
+<div class="def">Une <b>expression littérale</b> est un calcul où un nombre est remplacé par une lettre, souvent <b>x</b>.<br>Un programme de calcul se traduit par une expression en x.</div>
+<div>${programme(['× 4', '− 7'])}</div>
+</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Pars de <b>x</b> et écris ce qu'il devient après chaque étape.</li>
+<li>« Multiplier x par 4 » s'écrit 4x (le nombre devant la lettre).</li>
+<li>Si une étape porte sur <b>tout</b> le résultat précédent, mets ce résultat entre parenthèses.</li>
+<li>Écris la réponse sous la forme ax + b : a multiplie x, b est le nombre seul (avec son signe).</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : choisir x ; multiplier par 4 ; soustraire 7.</span><br>x → 4x → <b>4x − 7</b>. Ici a = 4 et b = −7.</div>
+<div class="ex"><span class="q">Exemple 2 : deux programmes plus délicats.</span><br>• Choisir x ; ajouter 2 ; multiplier <b>le résultat</b> par 4 : x → x + 2 → <b>4(x + 2)</b>. Les parenthèses montrent que <b>tout</b> x + 2 est multiplié.<br>• Calculer le triple de x ; soustraire le résultat à 20 : x → 3x → <b>20 − 3x</b>, qu'on écrit aussi −3x + 20 (a = −3, b = 20).</div>
+<div class="warn">⚠️ 4(x + 2) et 4x + 2, ce n'est pas pareil ! Teste avec x = 1 : 4 × 3 = 12, mais 4 + 2 = 6.<br>⚠️ « Soustraire 7 » donne « − 7 » : dans la case du nombre seul, tape <b>−7</b>.<br>⚠️ N'inverse pas : le nombre qui <b>multiplie</b> x s'écrit devant x.</div>
+<div class="retenir">À retenir : on suit le programme pas à pas en partant de x, sans oublier les parenthèses.</div>`;
 }
 
 /* ======================================================================
@@ -216,13 +223,19 @@ function L2(d) {
 }
 function C2() {
   return `<h2>2. Calculer la valeur d'une expression</h2>
-<div class="def">Pour calculer une expression pour une valeur de x, on <b>remplace chaque x par cette valeur</b>, on remet les signes × qui étaient cachés, puis on applique les priorités : puissances, puis × et ÷, puis + et −.</div>
-${programme(['× 3', '− 5'], '−2', '−11')}
-<div class="ex">A = 3x − 5 pour x = −2 :<br>A = 3 × (−2) − 5 = −6 − 5 = <b>−11</b></div>
-<div class="ex">B = 2x<sup>2</sup> − x + 1 pour x = −3 :<br>B = 2 × (−3)<sup>2</sup> − (−3) + 1 = 2 × 9 + 3 + 1 = <b>22</b></div>
-<div class="warn">⚠️ Mets les nombres négatifs <b>entre parenthèses</b> : (−3)<sup>2</sup> = (−3) × (−3) = 9, positif.</div>
-<div class="warn">⚠️ 2x<sup>2</sup> = 2 × x<sup>2</sup> : seul x est au carré. Pour x = 3 : 2 × 9 = 18, et pas 6<sup>2</sup> = 36.</div>
-<div class="warn">⚠️ Pour x = 4, 3x vaut 3 × 4 = 12, pas « 34 » !</div>`;
+<p class="intro">Une expression donne un résultat différent pour chaque valeur de x. Pour le trouver, on remplace x par cette valeur.</p>
+<div class="cols">
+<div class="def">Pour calculer une expression pour une valeur de x, on <b>remplace chaque x par cette valeur</b>, puis on applique les <b>priorités</b> : puissances, puis × et ÷, puis + et −.</div>
+<div>${programme(['× 3', '− 5'], '−2', '−11')}</div>
+</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Recopie l'expression en remplaçant <b>chaque</b> x par la valeur, <b>entre parenthèses</b> si elle est négative.</li>
+<li>Remets les signes × cachés : 3x devient 3 × x.</li>
+<li>Calcule d'abord les carrés, puis les produits, enfin les sommes.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : A = 3x − 5 pour x = −2.</span><br>A = 3 × (−2) − 5 = −6 − 5 = <b>−11</b></div>
+<div class="ex"><span class="q">Exemple 2 : B = 2x<sup>2</sup> − x + 1 et C = 2(x − 1)<sup>2</sup> pour x = −3.</span><br>• B = 2 × (−3)<sup>2</sup> − (−3) + 1 = 2 × 9 + 3 + 1 = <b>22</b>.<br>• C = 2 × (−3 − 1)<sup>2</sup> = 2 × (−4)<sup>2</sup> = 2 × 16 = <b>32</b> : le carré d'abord, la multiplication ensuite.</div>
+<div class="warn">⚠️ Mets les nombres négatifs <b>entre parenthèses</b> : (−3)<sup>2</sup> = (−3) × (−3) = 9, positif.<br>⚠️ 2x<sup>2</sup> = 2 × x<sup>2</sup> : seul x est au carré. Pour x = 3 : 2 × 9 = 18, et pas 6<sup>2</sup> = 36.<br>⚠️ Pour x = 4, 3x vaut 3 × 4 = 12, pas « 34 » !</div>
+<div class="retenir">À retenir : on remplace x par sa valeur entre parenthèses, puis on respecte les priorités.</div>`;
 }
 
 /* ======================================================================
@@ -258,13 +271,20 @@ function L3(d) {
 }
 function C3() {
   return `<h2>3. Conventions d'écriture</h2>
+<p class="intro">Pour écrire plus vite, on simplifie l'écriture des produits. Ces règles reviennent dans tous les calculs qui suivent.</p>
 <div class="def">• On peut <b>supprimer le signe ×</b> devant une lettre ou une parenthèse : 3 × x = <b>3x</b> ; 5 × (x + 1) = 5(x + 1).<br>• Le nombre s'écrit <b>devant</b> la lettre : x × 4 = <b>4x</b>.<br>• x × x = <b>x<sup>2</sup></b> (« x au carré ») ; 1 × x = <b>x</b>.</div>
-${tuiles([[1, 2], [3, 1], [2, 0]])}
-<p class="note">Un x² est un carré de côté x, un x est une barre x × 1, et 1 est un petit carré unité.</p>
-<div class="ex">2 × x × 5 = 2 × 5 × x = <b>10x</b></div>
-<div class="ex">−3 × x × x = <b>−3x<sup>2</sup></b> ; &nbsp; 2x × 4x = 2 × 4 × x × x = <b>8x<sup>2</sup></b></div>
-<div class="warn">⚠️ x + x + x = <b>3x</b> (trois fois x), alors que x × x × x = x<sup>3</sup>. Ne confonds pas addition et multiplication !</div>
-<div class="warn">⚠️ x × x = x<sup>2</sup>, pas 2x : pour x = 5, x<sup>2</sup> = 25 alors que 2x = 10.</div>`;
+<div class="cols">
+<div>${tuiles([[1, 2], [3, 1], [2, 0]])}</div>
+<p class="note">Les tuiles de x<sup>2</sup> + 3x + 2 : un x<sup>2</sup> est un carré de côté x, un x est une barre x × 1, et 1 est un petit carré unité.</p>
+</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Regroupe les <b>nombres</b> et multiplie-les entre eux (attention aux signes).</li>
+<li>Compte les x <b>multipliés</b> : un seul x → x ; deux x → x<sup>2</sup>.</li>
+<li>Écris le nombre devant, puis la lettre. Pour une addition x + x + x, compte les x : 3x.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : simplifie 2 × x × 5 et x × 7.</span><br>2 × x × 5 = 2 × 5 × x = <b>10x</b> ; x × 7 = <b>7x</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : simplifie −3 × x × x, 2x × (−4x) et x × x + x × 3 − 5.</span><br>• −3 × x × x = <b>−3x<sup>2</sup></b>.<br>• 2x × (−4x) = 2 × (−4) × x × x = <b>−8x<sup>2</sup></b>.<br>• x × x + x × 3 − 5 = <b>x<sup>2</sup> + 3x − 5</b> (les x<sup>2</sup> et les x ne se regroupent pas).</div>
+<div class="warn">⚠️ x + x + x = <b>3x</b> (trois fois x), alors que x × x × x = x<sup>3</sup>. Ne confonds pas addition et multiplication !<br>⚠️ x × x = x<sup>2</sup>, pas 2x : pour x = 5, x<sup>2</sup> = 25 alors que 2x = 10.<br>⚠️ Dans 2 × x × 5, on <b>multiplie</b> 2 et 5 (10x), on ne les additionne pas.</div>
+<div class="retenir">À retenir : 3 × x = 3x, x × x = x<sup>2</sup>, mais x + x = 2x.</div>`;
 }
 
 /* ======================================================================
@@ -307,13 +327,22 @@ function L4(d) {
 }
 function C4() {
   return `<h2>4. Réduire une expression</h2>
-<div class="def"><b>Réduire</b>, c'est regrouper les <b>termes semblables</b> (de la même famille) : les x<sup>2</sup> avec les x<sup>2</sup>, les x avec les x, les nombres avec les nombres.</div>
-${tuiles([[2, 1], [3, 0], [1, 1], [-1, 0]])}
-<p class="note">2x + 3 + x − 1 : trois barres x et 3 − 1 = 2 unités, donc 3x + 2. Une tuile rouge (négative) annule une tuile jaune.</p>
-<div class="ex">5x + 3 − 2x + 4 = (5 − 2)x + (3 + 4) = <b>3x + 7</b></div>
-<div class="ex">x<sup>2</sup> + 4x − 3x<sup>2</sup> − x + 2 = (1 − 3)x<sup>2</sup> + (4 − 1)x + 2 = <b>−2x<sup>2</sup> + 3x + 2</b></div>
-<div class="warn">⚠️ 3x + 2 ne se réduit pas : un x et un nombre ne sont pas de la même famille. De même, x<sup>2</sup> + x n'est pas 2x<sup>2</sup>.</div>
-<div class="warn">⚠️ Le signe appartient au terme qui le suit : dans 7 − 2x, le terme en x est <b>−2x</b>.</div>`;
+<p class="intro">Une expression est plus facile à lire et à calculer quand elle est <b>réduite</b> : le moins de termes possible.</p>
+<div class="def"><b>Réduire</b>, c'est regrouper les <b>termes semblables</b> (de la même famille) : les x<sup>2</sup> avec les x<sup>2</sup>, les x avec les x, les nombres avec les nombres. On ajoute leurs coefficients.</div>
+<div class="cols">
+<div>${tuiles([[2, 1], [3, 0], [1, 1], [-1, 0]])}</div>
+<div>${tuiles([[3, 1], [2, 0]])}</div>
+</div>
+<p class="note">2x + 3 + x − 1 donne 3x + 2 : trois barres x, et 3 − 1 = 2 unités. Une tuile rouge (négative) annule une tuile jaune.</p>
+<div class="methode"><b>Méthode</b><ol>
+<li>Repère les familles : les x<sup>2</sup>, les x, les nombres seuls.</li>
+<li>Chaque terme garde le signe écrit <b>devant</b> lui.</li>
+<li>Pour chaque famille, ajoute les coefficients.</li>
+<li>Écris le résultat dans l'ordre : x<sup>2</sup>, puis x, puis le nombre.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : réduis A = 5x + 3 − 2x + 4.</span><br>Les x : 5 − 2 = 3. Les nombres : 3 + 4 = 7. Donc A = <b>3x + 7</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : réduis B = −4 + 3x − 7x + 9 et C = x<sup>2</sup> + 4x − 3x<sup>2</sup> − x + 2.</span><br>• Les x : 3 − 7 = −4 ; les nombres : −4 + 9 = 5. Donc B = <b>−4x + 5</b>.<br>• Les x<sup>2</sup> : 1 − 3 = −2 ; les x : 4 − 1 = 3 ; le nombre : 2. Donc C = <b>−2x<sup>2</sup> + 3x + 2</b>.</div>
+<div class="warn">⚠️ 3x + 2 ne se réduit pas : un x et un nombre ne sont pas de la même famille. De même, x<sup>2</sup> + x n'est pas 2x<sup>2</sup>.<br>⚠️ Le signe appartient au terme qui le suit : dans 7 − 2x, le terme en x est <b>−2x</b>.</div>
+<div class="retenir">À retenir : on n'ajoute que des termes de la même famille, chacun avec son signe.</div>`;
 }
 
 /* ======================================================================
@@ -344,14 +373,20 @@ function L5(d) {
 }
 function C5() {
   return `<h2>5. Simple distributivité</h2>
+<p class="intro">Développer permet de se débarrasser des parenthèses. C'est souvent la première étape pour résoudre une équation ou comparer deux expressions.</p>
 <div class="def"><b>Développer</b>, c'est transformer un produit en somme.<br><b>k(a + b) = k × a + k × b</b> &nbsp;&nbsp; et &nbsp;&nbsp; <b>k(a − b) = k × a − k × b</b></div>
-${grille({ left: ['3'], top: ['x', '4'], cells: [['3x', '12']], aire: true, legende: 'Aire : 3(x + 4) = 3x + 12' })}
-<p class="note">Un rectangle de largeur 3 et de longueur x + 4 se découpe en deux rectangles : 3 × x et 3 × 4.</p>
-<div class="ex">5(2x − 3) = 5 × 2x − 5 × 3 = <b>10x − 15</b></div>
-<div class="ex">−2(x − 6) = −2 × x + (−2) × (−6) = <b>−2x + 12</b></div>
-<div class="ex">x(x + 7) = x × x + x × 7 = <b>x<sup>2</sup> + 7x</b></div>
-<div class="warn">⚠️ k multiplie <b>tous</b> les termes : 3(x + 4) n'est pas 3x + 4.</div>
-<div class="warn">⚠️ Avec un k négatif, utilise la règle des signes : (−2) × (−6) = +12.</div>`;
+<div class="cols">
+<div>${grille({ left: ['3'], top: ['x', '4'], cells: [['3x', '12']], aire: true, legende: 'Aire : 3(x + 4) = 3x + 12' })}</div>
+<div>${grille({ left: ['−2'], top: ['x', '−6'], cells: [['−2x', '12']], legende: '−2(x − 6) = −2x + 12' })}</div>
+</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Repère le facteur k devant la parenthèse (avec son signe).</li>
+<li>Multiplie k par <b>chaque</b> terme de la parenthèse : le tableau t'aide.</li>
+<li>Applique la règle des signes, puis écris le résultat réduit.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : développe 5(2x − 3).</span><br>5(2x − 3) = 5 × 2x − 5 × 3 = <b>10x − 15</b></div>
+<div class="ex"><span class="q">Exemple 2 : développe −2(x − 6), 4(3 − 2x) et 3x(2x − 5).</span><br>• −2(x − 6) = −2 × x + (−2) × (−6) = <b>−2x + 12</b>.<br>• 4(3 − 2x) = 12 − 8x = <b>−8x + 12</b>.<br>• 3x(2x − 5) = 3x × 2x − 3x × 5 = <b>6x<sup>2</sup> − 15x</b> (x × x donne x<sup>2</sup>).</div>
+<div class="warn">⚠️ k multiplie <b>tous</b> les termes : 3(x + 4) n'est pas 3x + 4.<br>⚠️ Avec un k négatif, utilise la règle des signes : (−2) × (−6) = +12.<br>⚠️ 3x × 2x = 6x<sup>2</sup>, pas 6x.</div>
+<div class="retenir">À retenir : k(a + b) = ka + kb, le facteur k multiplie chaque terme.</div>`;
 }
 
 /* ======================================================================
@@ -396,12 +431,20 @@ function L6(d) {
 }
 function C6() {
   return `<h2>6. Un signe − devant une parenthèse</h2>
-<div class="def">• Un <b>+</b> devant une parenthèse : on l'enlève sans rien changer. &nbsp; a + (b − c) = a + b − c<br>• Un <b>−</b> devant une parenthèse : on l'enlève en <b>changeant le signe de chaque terme</b>. &nbsp; a − (b − c) = a − b + c</div>
-${grille({ left: ['−1'], top: ['2x', '−3'], cells: [['−2x', '3']], legende: '−(2x − 3) = (−1) × (2x − 3) = −2x + 3' })}
-<div class="ex">10 − (3x + 4) = 10 − 3x − 4 = <b>−3x + 6</b></div>
-<div class="ex">(5x − 2) − (x − 7) = 5x − 2 − x + 7 = <b>4x + 5</b></div>
-<div class="warn">⚠️ Erreur classique : 10 − (3x + 4) = 10 − 3x <b>+ 4</b>. Non ! Le − s'applique à <b>tous</b> les termes : − 3x <b>− 4</b>.</div>
-<div class="warn">⚠️ Le signe − devant la parenthèse disparaît avec elle : ne le compte pas deux fois.</div>`;
+<p class="intro">Un signe − devant une parenthèse est un piège fréquent. Il suffit de se rappeler qu'il veut dire « multiplier par −1 ».</p>
+<div class="cols">
+<div class="def">• Un <b>+</b> devant une parenthèse : on l'enlève sans rien changer.<br>a + (b − c) = a + b − c<br>• Un <b>−</b> devant une parenthèse : on l'enlève en <b>changeant le signe de chaque terme</b>.<br>a − (b − c) = a − b + c</div>
+<div>${grille({ left: ['−1'], top: ['2x', '−3'], cells: [['−2x', '3']], legende: '−(2x − 3) = −2x + 3' })}</div>
+</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Repère le signe juste devant la parenthèse.</li>
+<li>Si c'est un −, recopie chaque terme de la parenthèse avec le <b>signe contraire</b>, et le − disparaît.</li>
+<li>Si un produit est devant (3(x + 2)), développe-le d'abord.</li>
+<li>Réduis : les x avec les x, les nombres avec les nombres.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : réduis 10 − (3x + 4) et (5x − 2) − (x − 7).</span><br>• 10 − (3x + 4) = 10 − 3x − 4 = <b>−3x + 6</b>.<br>• (5x − 2) − (x − 7) = 5x − 2 − x + 7 = <b>4x + 5</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : réduis (x<sup>2</sup> − 3x + 1) − (2x<sup>2</sup> + x − 5), puis 3(x + 2) − (4x − 1).</span><br>• x<sup>2</sup> − 3x + 1 − 2x<sup>2</sup> − x + 5 = <b>−x<sup>2</sup> − 4x + 6</b> (les trois signes changent).<br>• 3x + 6 − 4x + 1 = <b>−x + 7</b>.</div>
+<div class="warn">⚠️ Erreur classique : 10 − (3x + 4) = 10 − 3x <b>+ 4</b>. Non ! Le − s'applique à <b>tous</b> les termes : − 3x <b>− 4</b>.<br>⚠️ Ne l'oublie pas non plus : enlever la parenthèse sans changer les signes est faux.<br>⚠️ Le signe − devant la parenthèse disparaît avec elle : ne le compte pas deux fois.</div>
+<div class="retenir">À retenir : −(a + b − c) = −a − b + c, tous les signes changent.</div>`;
 }
 
 /* ======================================================================
@@ -432,14 +475,20 @@ function L7(d) {
 }
 function C7() {
   return `<h2>7. Double distributivité</h2>
+<p class="intro">Pour développer le produit de deux parenthèses, on distribue deux fois. Un tableau évite d'oublier un produit.</p>
 <div class="def"><b>(a + b)(c + d) = ac + ad + bc + bd</b><br>Chaque terme de la première parenthèse multiplie chaque terme de la seconde : <b>4 produits</b>.</div>
-${grille({ left: ['x', '2'], top: ['x', '5'], cells: [['x²', '5x'], ['2x', '10']], aire: true, legende: '(x + 2)(x + 5) = x² + 5x + 2x + 10' })}
-<div class="ex">(x + 2)(x + 5) = x<sup>2</sup> + 5x + 2x + 10 = <b>x<sup>2</sup> + 7x + 10</b></div>
-<div class="ex">(2x − 3)(x + 4) = 2x<sup>2</sup> + 8x − 3x − 12 = <b>2x<sup>2</sup> + 5x − 12</b></div>
-<h3>Avec des signes −</h3>Le tableau de multiplication marche toujours :
-${grille({ left: ['2x', '−3'], top: ['x', '4'], cells: [['2x²', '8x'], ['−3x', '−12']] })}
-<div class="warn">⚠️ (x + 2)(x + 5) n'est pas x<sup>2</sup> + 10 : il manque les deux produits du milieu.</div>
-<div class="warn">⚠️ Le nombre seul est un <b>produit</b> : 2 × 5 = 10, pas 2 + 5.</div>`;
+<div class="cols">
+<div>${grille({ left: ['x', '2'], top: ['x', '5'], cells: [['x²', '5x'], ['2x', '10']], aire: true, legende: '(x + 2)(x + 5)' })}</div>
+<div>${grille({ left: ['2x', '−3'], top: ['x', '4'], cells: [['2x²', '8x'], ['−3x', '−12']], legende: '(2x − 3)(x + 4)' })}</div>
+</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Écris les termes de la 1<sup>re</sup> parenthèse à gauche, ceux de la 2<sup>e</sup> en haut, <b>avec leurs signes</b>.</li>
+<li>Remplis les 4 cases : chaque case est un produit.</li>
+<li>Additionne les 4 cases, puis réduis les deux termes en x.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : développe (x + 2)(x + 5).</span><br>(x + 2)(x + 5) = x<sup>2</sup> + 5x + 2x + 10 = <b>x<sup>2</sup> + 7x + 10</b></div>
+<div class="ex"><span class="q">Exemple 2 : développe (2x − 3)(x + 4) et (3 − x)(2x + 1).</span><br>• 2x<sup>2</sup> + 8x − 3x − 12 = <b>2x<sup>2</sup> + 5x − 12</b>.<br>• (3 − x)(2x + 1) = 6x + 3 − 2x<sup>2</sup> − x = <b>−2x<sup>2</sup> + 5x + 3</b> (les termes sont dans le désordre : range-les à la fin).</div>
+<div class="warn">⚠️ (x + 2)(x + 5) n'est pas x<sup>2</sup> + 10 : il manque les deux produits du milieu.<br>⚠️ Le nombre seul est un <b>produit</b> : 2 × 5 = 10, pas 2 + 5.<br>⚠️ Garde les signes dans le tableau : (−3) × 4 = −12.</div>
+<div class="retenir">À retenir : deux parenthèses de deux termes donnent 4 produits, puis on réduit.</div>`;
 }
 
 /* ======================================================================
@@ -479,14 +528,20 @@ function L8(d) {
 }
 function C8() {
   return `<h2>8. Les identités remarquables</h2>
+<p class="intro">Trois produits reviennent si souvent qu'on apprend leur développement par cœur. Ils font gagner du temps et servent aussi à factoriser.</p>
+<div class="cols">
 <div class="def">(A + B)<sup>2</sup> = A<sup>2</sup> + <b>2AB</b> + B<sup>2</sup><br>(A − B)<sup>2</sup> = A<sup>2</sup> − <b>2AB</b> + B<sup>2</sup><br>(A + B)(A − B) = A<sup>2</sup> − B<sup>2</sup></div>
-${grille({ left: ['x', '3'], top: ['x', '3'], cells: [['x²', '3x'], ['3x', '9']], aire: true, legende: '(x + 3)² = x² + 3x + 3x + 9 = x² + 6x + 9' })}
-<p class="note">Le carré de côté x + 3 contient <b>deux</b> rectangles 3x : c'est le double produit.</p>
-<div class="ex">(x + 3)<sup>2</sup> = x<sup>2</sup> + 2 × x × 3 + 3<sup>2</sup> = <b>x<sup>2</sup> + 6x + 9</b></div>
-<div class="ex">(2x − 5)<sup>2</sup> = (2x)<sup>2</sup> − 2 × 2x × 5 + 5<sup>2</sup> = <b>4x<sup>2</sup> − 20x + 25</b></div>
-<div class="ex">(x + 7)(x − 7) = x<sup>2</sup> − 7<sup>2</sup> = <b>x<sup>2</sup> − 49</b></div>
-<div class="warn">⚠️ Erreur classique : (x + 3)<sup>2</sup> = x<sup>2</sup> + 9. <b>Faux !</b> Il manque le double produit 6x. Vérifie avec x = 1 : 4<sup>2</sup> = 16, mais 1 + 9 = 10.</div>
-<div class="warn">⚠️ (2x)<sup>2</sup> = 4x<sup>2</sup>, pas 2x<sup>2</sup> ; et (−5)<sup>2</sup> = +25.</div>`;
+<div>${grille({ left: ['x', '3'], top: ['x', '3'], cells: [['x²', '3x'], ['3x', '9']], aire: true, legende: '(x + 3)² = x² + 6x + 9' })}</div>
+</div>
+<p class="note">Le carré de côté x + 3 contient <b>deux</b> rectangles 3x : c'est le double produit 2AB.</p>
+<div class="methode"><b>Méthode</b><ol>
+<li>Reconnais la forme : un carré d'une somme, d'une différence, ou (A + B)(A − B).</li>
+<li>Repère A et B : dans (2x − 5)<sup>2</sup>, A = 2x et B = 5.</li>
+<li>Applique la formule, en calculant (2x)<sup>2</sup> = 4x<sup>2</sup> et le double produit 2 × A × B.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : développe (x + 3)<sup>2</sup> et (x + 7)(x − 7).</span><br>• (x + 3)<sup>2</sup> = x<sup>2</sup> + 2 × x × 3 + 3<sup>2</sup> = <b>x<sup>2</sup> + 6x + 9</b>.<br>• (x + 7)(x − 7) = x<sup>2</sup> − 7<sup>2</sup> = <b>x<sup>2</sup> − 49</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : développe (2x − 5)<sup>2</sup>, (3x + 2)(3x − 2) et (5 − 2x)<sup>2</sup>.</span><br>• (2x)<sup>2</sup> − 2 × 2x × 5 + 5<sup>2</sup> = <b>4x<sup>2</sup> − 20x + 25</b>.<br>• (3x)<sup>2</sup> − 2<sup>2</sup> = <b>9x<sup>2</sup> − 4</b>.<br>• 5<sup>2</sup> − 2 × 5 × 2x + (2x)<sup>2</sup> = 25 − 20x + 4x<sup>2</sup> = <b>4x<sup>2</sup> − 20x + 25</b>.</div>
+<div class="warn">⚠️ Erreur classique : (x + 3)<sup>2</sup> = x<sup>2</sup> + 9. <b>Faux !</b> Il manque le double produit 6x. Vérifie avec x = 1 : 4<sup>2</sup> = 16, mais 1 + 9 = 10.<br>⚠️ (2x)<sup>2</sup> = 4x<sup>2</sup>, pas 2x<sup>2</sup> ; et B<sup>2</sup> est toujours positif : (−5)<sup>2</sup> = +25.<br>⚠️ (A + B)(A − B) = A<sup>2</sup> <b>−</b> B<sup>2</sup> : le nombre seul est négatif.</div>
+<div class="retenir">À retenir : (A ± B)<sup>2</sup> = A<sup>2</sup> ± 2AB + B<sup>2</sup>, sans oublier le double produit.</div>`;
 }
 
 /* ======================================================================
@@ -526,12 +581,21 @@ function L9(d) {
 }
 function C9() {
   return `<h2>9. Développer et réduire une somme de produits</h2>
-<div class="def">Méthode :<br>1. On développe <b>chaque</b> produit à part ;<br>2. si un produit est précédé d'un <b>−</b>, on garde son développement <b>entre parenthèses</b> ;<br>3. on enlève les parenthèses (en changeant les signes après un −) et on réduit.</div>
-<div class="ex">A = 3(x + 2) − 2(x − 5)<br>= 3x + 6 − (2x − 10)<br>= 3x + 6 − 2x + 10 = <b>x + 16</b></div>
-<div class="ex">B = (x + 3)<sup>2</sup> − (x + 1)(x + 4)<br>= x<sup>2</sup> + 6x + 9 − (x<sup>2</sup> + 5x + 4)<br>= x<sup>2</sup> + 6x + 9 − x<sup>2</sup> − 5x − 4 = <b>x + 5</b></div>
-${grille({ left: ['x', '1'], top: ['x', '4'], cells: [['x²', '4x'], ['x', '4']], legende: '(x + 1)(x + 4) = x² + 5x + 4, à mettre entre parenthèses' })}
-<div class="warn">⚠️ Erreur classique : − (x + 1)(x + 4) = − x<sup>2</sup> + 5x + 4. Non : le − change <b>tous</b> les signes : − x<sup>2</sup> <b>− 5x − 4</b>.</div>
-<div class="warn">⚠️ Les x<sup>2</sup> peuvent s'annuler : le résultat peut être de degré 1 (tape alors 0 devant x<sup>2</sup>).</div>`;
+<p class="intro">On combine tout ce qu'on a vu : distributivité, identités remarquables et signe − devant une parenthèse. L'ordre des étapes compte.</p>
+<div class="cols">
+<div class="def">Pour développer une somme de produits, on développe <b>chaque</b> produit à part, puis on réduit.<br>Un produit précédé d'un <b>−</b> se développe <b>entre parenthèses</b>.</div>
+<div>${grille({ left: ['x', '1'], top: ['x', '4'], cells: [['x²', '4x'], ['x', '4']], legende: '(x + 1)(x + 4) = x² + 5x + 4' })}</div>
+</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Souligne chaque produit et développe-le à part, au brouillon.</li>
+<li>S'il est précédé d'un −, écris son développement <b>entre parenthèses</b>.</li>
+<li>Enlève les parenthèses en changeant tous les signes après un −.</li>
+<li>Réduis : les x<sup>2</sup>, les x, puis les nombres.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : A = 3(x + 2) − 2(x − 5).</span><br>A = 3x + 6 − (2x − 10) = 3x + 6 − 2x + 10 = <b>x + 16</b></div>
+<div class="ex"><span class="q">Exemple 2 : B = (x + 3)<sup>2</sup> − (x + 1)(x + 4).</span><br>B = x<sup>2</sup> + 6x + 9 − (x<sup>2</sup> + 5x + 4)<br>= x<sup>2</sup> + 6x + 9 − x<sup>2</sup> − 5x − 4 = <b>x + 5</b> (les x<sup>2</sup> s'annulent).</div>
+<div class="ex"><span class="q">Exemple 3 : C = (2x + 1)(x − 3) − (x − 2)<sup>2</sup>.</span><br>C = (2x<sup>2</sup> − 5x − 3) − (x<sup>2</sup> − 4x + 4) = 2x<sup>2</sup> − 5x − 3 − x<sup>2</sup> + 4x − 4 = <b>x<sup>2</sup> − x − 7</b></div>
+<div class="warn">⚠️ Erreur classique : − (x + 1)(x + 4) = − x<sup>2</sup> + 5x + 4. Non : le − change <b>tous</b> les signes : − x<sup>2</sup> <b>− 5x − 4</b>.<br>⚠️ Les x<sup>2</sup> peuvent s'annuler : le résultat peut être de degré 1 (tape alors 0 devant x<sup>2</sup>).</div>
+<div class="retenir">À retenir : chaque produit d'abord, entre parenthèses s'il suit un −, puis on réduit.</div>`;
 }
 
 /* ======================================================================
@@ -601,14 +665,21 @@ function L10(d) {
 }
 function C10() {
   return `<h2>10. Factoriser par un facteur commun</h2>
-<div class="def"><b>Factoriser</b>, c'est transformer une somme en produit : c'est le développement <b>à l'envers</b>.<br><b>k × a + k × b = k(a + b)</b> &nbsp; (k est le <b>facteur commun</b>)</div>
-${grille({ left: ['?'], top: ['?', '?'], cells: [['6x', '9']], legende: 'Aires connues : 6x et 9. Côtés ?' })}
-<p class="note">On cherche la largeur commune : 3, car 6x = 3 × 2x et 9 = 3 × 3. Les longueurs sont 2x et 3.</p>
-<div class="ex">6x + 9 = 3 × 2x + 3 × 3 = <b>3(2x + 3)</b></div>
-<div class="ex">x<sup>2</sup> − 5x = x × x − x × 5 = <b>x(x − 5)</b></div>
-<div class="ex">(x + 1)(2x + 3) + (x + 1)(x − 4) = (x + 1)[(2x + 3) + (x − 4)] = <b>(x + 1)(3x − 1)</b></div>
-<div class="warn">⚠️ Prends le <b>plus grand</b> facteur commun : 12x + 8 = 2(6x + 4) est juste mais pas fini ; on écrit <b>4(3x + 2)</b>.</div>
-<div class="warn">⚠️ Vérifie toujours en développant ta réponse : tu dois retrouver l'expression de départ.</div>`;
+<p class="intro">Factoriser, c'est faire le chemin inverse du développement. Une expression factorisée est un produit : c'est très utile pour résoudre une équation.</p>
+<div class="def"><b>Factoriser</b>, c'est transformer une somme en produit.<br><b>k × a + k × b = k(a + b)</b> &nbsp; (k est le <b>facteur commun</b>)</div>
+<div class="cols">
+<div>${grille({ left: ['?'], top: ['?', '?'], cells: [['6x', '9']], legende: 'Aires connues : 6x et 9' })}</div>
+<div>${grille({ left: ['3'], top: ['2x', '3'], cells: [['6x', '9']], aire: true, legende: '6x + 9 = 3(2x + 3)' })}</div>
+</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Cherche le <b>plus grand</b> nombre qui divise tous les coefficients ; regarde aussi si x est dans tous les termes.</li>
+<li>Écris chaque terme comme un produit par ce facteur : 6x = 3 × 2x et 9 = 3 × 3.</li>
+<li>Mets le facteur devant, et ce qui reste dans la parenthèse.</li>
+<li>Si le facteur commun est une parenthèse, recopie-la, puis réduis le crochet.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : factorise 6x + 9, x<sup>2</sup> − 5x et 6x<sup>2</sup> + 4x.</span><br>• 6x + 9 = 3 × 2x + 3 × 3 = <b>3(2x + 3)</b>.<br>• x<sup>2</sup> − 5x = x × x − x × 5 = <b>x(x − 5)</b>.<br>• 6x<sup>2</sup> + 4x = 2x × 3x + 2x × 2 = <b>2x(3x + 2)</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : factorise (x − 2)(3x + 1) − (x − 2)(x + 5).</span><br>Le facteur commun est (x − 2) :<br>(x − 2)[(3x + 1) − (x + 5)] = (x − 2)(3x + 1 − x − 5) = <b>(x − 2)(2x − 4)</b>.</div>
+<div class="warn">⚠️ Prends le <b>plus grand</b> facteur commun : 12x + 8 = 2(6x + 4) est juste mais pas fini ; on écrit <b>4(3x + 2)</b>.<br>⚠️ Après un −, garde la seconde parenthèse entière dans le crochet : −(x + 5) = −x − 5.<br>⚠️ Vérifie toujours en développant ta réponse : tu dois retrouver l'expression de départ.</div>
+<div class="retenir">À retenir : ka + kb = k(a + b), avec le plus grand facteur commun k.</div>`;
 }
 
 /* ======================================================================
@@ -659,13 +730,18 @@ function L11(d) {
 }
 function C11() {
   return `<h2>11. Factoriser avec les identités remarquables</h2>
+<p class="intro">Quand il n'y a pas de facteur commun, on peut parfois reconnaître une identité remarquable déjà développée.</p>
 <div class="def">On lit les identités <b>de droite à gauche</b> :<br>A<sup>2</sup> + 2AB + B<sup>2</sup> = (A + B)<sup>2</sup><br>A<sup>2</sup> − 2AB + B<sup>2</sup> = (A − B)<sup>2</sup><br>A<sup>2</sup> − B<sup>2</sup> = (A + B)(A − B)</div>
 ${carreDiff()}
-<div class="ex">x<sup>2</sup> − 25 = x<sup>2</sup> − 5<sup>2</sup> = <b>(x + 5)(x − 5)</b></div>
-<div class="ex">x<sup>2</sup> + 8x + 16 : A = x, B = 4 (car 16 = 4<sup>2</sup>) et 2AB = 8x ✓ → <b>(x + 4)<sup>2</sup></b></div>
-<div class="ex">9x<sup>2</sup> − 12x + 4 = (3x)<sup>2</sup> − 2 × 3x × 2 + 2<sup>2</sup> = <b>(3x − 2)<sup>2</sup></b></div>
-<div class="warn">⚠️ x<sup>2</sup> + 25 ne se factorise pas avec A<sup>2</sup> − B<sup>2</sup> : il faut un <b>moins</b> entre les deux carrés.</div>
-<div class="warn">⚠️ Vérifie le double produit : x<sup>2</sup> + 6x + 16 n'est <b>pas</b> un carré (il faudrait 9).</div>`;
+<div class="methode"><b>Méthode</b><ol>
+<li>Range les termes : x<sup>2</sup>, puis x, puis le nombre.</li>
+<li>Deux termes séparés par un − et deux carrés ? C'est A<sup>2</sup> − B<sup>2</sup>.</li>
+<li>Trois termes ? Trouve A et B (racines carrées des deux carrés) et <b>vérifie</b> que le terme en x vaut 2AB.</li>
+<li>Le signe du terme en x donne (A + B)<sup>2</sup> ou (A − B)<sup>2</sup>.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : factorise x<sup>2</sup> − 25 et x<sup>2</sup> + 8x + 16.</span><br>• x<sup>2</sup> − 25 = x<sup>2</sup> − 5<sup>2</sup> = <b>(x + 5)(x − 5)</b>.<br>• A = x, B = 4 (car 16 = 4<sup>2</sup>) et 2AB = 2 × x × 4 = 8x ✓, donc <b>(x + 4)<sup>2</sup></b>.</div>
+<div class="ex"><span class="q">Exemple 2 : factorise 4x<sup>2</sup> − 49 et 4 − 12x + 9x<sup>2</sup>.</span><br>• 4x<sup>2</sup> − 49 = (2x)<sup>2</sup> − 7<sup>2</sup> = <b>(2x + 7)(2x − 7)</b>.<br>• On range : 9x<sup>2</sup> − 12x + 4 = (3x)<sup>2</sup> − 2 × 3x × 2 + 2<sup>2</sup> = <b>(3x − 2)<sup>2</sup></b>. Dans la case, tape −2 pour (3x − 2)<sup>2</sup>.</div>
+<div class="warn">⚠️ x<sup>2</sup> + 25 ne se factorise pas avec A<sup>2</sup> − B<sup>2</sup> : il faut un <b>moins</b> entre les deux carrés.<br>⚠️ On écrit B, pas B<sup>2</sup> : x<sup>2</sup> − 25 = (x + 5)(x − 5), pas (x + 25)(x − 25).<br>⚠️ Vérifie le double produit : x<sup>2</sup> + 6x + 16 n'est <b>pas</b> un carré (il faudrait 9).</div>
+<div class="retenir">À retenir : A<sup>2</sup> − B<sup>2</sup> = (A + B)(A − B), et A<sup>2</sup> ± 2AB + B<sup>2</sup> = (A ± B)<sup>2</sup>.</div>`;
 }
 
 /* ======================================================================
@@ -755,12 +831,21 @@ function L12(d) {
 }
 function C12() {
   return `<h2>12. Défis</h2>
+<p class="intro">On mélange tout ! Le plus important est de bien choisir l'outil avant de se lancer.</p>
 <div class="def">Pour chaque expression, demande-toi d'abord : <b>développer</b> (produit → somme) ou <b>factoriser</b> (somme → produit) ?<br>Puis choisis l'outil : distributivité, double distributivité, identité remarquable, facteur commun.</div>
-<div class="ex">Programme : choisir x, ajouter 3, élever au carré, soustraire x<sup>2</sup>.<br>(x + 3)<sup>2</sup> − x<sup>2</sup> = x<sup>2</sup> + 6x + 9 − x<sup>2</sup> = <b>6x + 9</b></div>
-<div class="ex">Calcul astucieux : 53<sup>2</sup> − 47<sup>2</sup> = (53 + 47)(53 − 47) = 100 × 6 = <b>600</b></div>
-<div class="ex">(x + 1)<sup>2</sup> − 9 = (x + 1)<sup>2</sup> − 3<sup>2</sup> = (x + 1 + 3)(x + 1 − 3) = <b>(x + 4)(x − 2)</b></div>
-${carreDiff()}
-<div class="warn">⚠️ Pour vérifier une factorisation, développe-la : tu dois retrouver l'expression de départ. Tu peux aussi tester avec x = 1.</div>
+<div class="cols">
+<div>${programme(['+ 3', 'au carré', '− x²'])}</div>
+<div>${carreDiff()}</div>
+</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Lis la consigne : développer, factoriser ou calculer.</li>
+<li>Cherche un facteur commun (même caché dans un carré : (2x + 1)<sup>2</sup> = (2x + 1)(2x + 1)).</li>
+<li>Sinon, cherche une identité remarquable (A<sup>2</sup> − B<sup>2</sup>, A est parfois une parenthèse).</li>
+<li>Vérifie en développant ou en testant avec x = 1.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : programme : choisir x, ajouter 3, élever au carré, soustraire x<sup>2</sup>.</span><br>(x + 3)<sup>2</sup> − x<sup>2</sup> = x<sup>2</sup> + 6x + 9 − x<sup>2</sup> = <b>6x + 9</b>.<br>Calcul astucieux : 53<sup>2</sup> − 47<sup>2</sup> = (53 + 47)(53 − 47) = 100 × 6 = <b>600</b> ; 31<sup>2</sup> = (30 + 1)<sup>2</sup> = 900 + 60 + 1 = <b>961</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : factorise (x + 1)<sup>2</sup> − 9 et (2x + 1)<sup>2</sup> − (2x + 1)(x − 3).</span><br>• (x + 1)<sup>2</sup> − 3<sup>2</sup> = (x + 1 + 3)(x + 1 − 3) = <b>(x + 4)(x − 2)</b>.<br>• Facteur commun (2x + 1) : (2x + 1)[(2x + 1) − (x − 3)] = <b>(2x + 1)(x + 4)</b>.</div>
+<div class="warn">⚠️ Un − devant un carré ou un produit change le signe de <b>tous</b> les termes de son développement.<br>⚠️ Pour vérifier une factorisation, développe-la : tu dois retrouver l'expression de départ.</div>
+<div class="retenir">À retenir : d'abord choisir (développer ou factoriser), ensuite l'outil, enfin vérifier.</div>
 <h3>Et après ?</h3><p>Le module <a href="../poly2/">📈 Second degré</a> réutilise tout ceci : développer (x + p)(x + q), reconnaître un carré, écrire x<sup>2</sup> + 2x − 8 = (x + 1)<sup>2</sup> − 9 (la <b>forme canonique</b>), puis factoriser avec A<sup>2</sup> − B<sup>2</sup> pour trouver les racines.</p>`;
 }
 
