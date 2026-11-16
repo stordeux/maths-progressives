@@ -79,6 +79,17 @@ function scene(o) {
 /** fenêtre autour du point a (en x) et des ordonnées données */
 const around = (xs, ys, mx = 2, my = 2, minx = 8, miny = 7) => ({ xr: span(xs, mx, minx), yr: span(ys, my, miny) });
 
+/**
+ * Fenêtre autour du point d'étude x0 quand la pente m peut être forte : plus la tangente est raide,
+ * plus la fenêtre est étroite en x, et les ordonnées de la courbe (et du triangle de pente) y tiennent.
+ */
+function fenetre(f, x0, m, xsPlus = []) {
+  const hw = Math.abs(m) > 2 ? Math.max(1, 6 / Math.abs(m)) : 3;
+  const ys = [f(x0) + m];
+  for (let i = 0; i <= 40; i++) { const v = f(x0 - hw + 2 * hw * i / 40); if (isFinite(v) && Math.abs(v) < 1e4) ys.push(v); }
+  return around([x0 - hw, x0 + Math.max(hw, 1), ...xsPlus], ys, 0, 1, 6, 7);
+}
+
 /* =====================================================================
    1. Taux de variation, pente d'une sécante
    ===================================================================== */
@@ -406,7 +417,7 @@ function L6(d) {
     sol = `On dérive terme à terme : ${parts.join(' ; ')}${c[0] ? ` ; (${M(c[0])})${PR} = 0` : ''}.<br><b>f${PR}(x) = ${ptex([...E].reverse())}</b>`;
   }
   const x0 = pick([-1, 1]), fx0 = f(x0), m0 = r6(nd(f, x0));
-  const W = around([x0 - 3, x0 + 3], [fx0 - 3, fx0 + 3], 0, 0, 8, 7);
+  const W = fenetre(f, x0, m0);
   const sc = { f, ...W, poles, a: x0, m: m0, lab: false };
   return {
     type: 'nums', f,
@@ -455,7 +466,7 @@ function L7(d) {
   }
   html = html || `Soit f(x) = ${tex}.<br>Calcule f${PR}(x) avec la formule du produit, puis réduis.`;
   const fx0 = f(x0), m0 = r6(nd(f, x0));
-  const W = around([x0 - 3, x0 + 3, kind === 'sq' ? 0 : x0], [fx0 - 3, fx0 + 3], 0, 0, 8, 7);
+  const W = fenetre(f, x0, m0, kind === 'sq' ? [0] : []);
   const sc = { f, ...W, poles, from, a: x0, m: m0, lab: kind === 'sq' ? 'A' : false };
   return {
     type: 'nums', f, html, tpl,
@@ -557,7 +568,7 @@ function L9(d) {
   }
   // point d'étude : une abscisse entière où la courbe est définie et pas trop raide
   let x0 = [0, 1, -1, 2, -2, 3, -3, 4, -4].find(x => isFinite(f(x)) && (kind !== 'sq' || a * x + b >= 1) && (kind !== 'inv' || Math.abs(a * x + b) >= 1) && Math.abs(nd(f, x)) <= 12) ?? 0;
-  const fx0 = f(x0), m0 = r6(nd(f, x0)), W = around([x0 - 3, x0 + 3], [fx0 - 3, fx0 + 3], 0, 0, 8, 7);
+  const fx0 = f(x0), m0 = r6(nd(f, x0)), W = fenetre(f, x0, m0);
   if (kind === 'sq' && a < 0) from = -INF;
   const fd = kind === 'sq' && a < 0 ? x => f(x) : f;
   const sc = { f: fd, ...W, poles, from, a: x0, m: m0, lab: false };
