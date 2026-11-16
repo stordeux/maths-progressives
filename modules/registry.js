@@ -37,7 +37,7 @@ export const MODULES = [
   // ---
   { id: 'vecteurs', titre: 'Vecteurs et droites', emoji: '➡️', classes: '2de', groupe: 'Vers le lycée', couleur: '#1e40af', couleur2: '#e8eefc', resume: 'Coordonnées, somme de vecteurs, colinéarité, équations de droites.' },
   // --- lycée (1re – Tle)
-  { id: 'suites', titre: 'Suites', emoji: '🔢', classes: '1re', groupe: 'Lycée (1re – Tle)', couleur: '#155e75', couleur2: '#e3f4f8', resume: 'Termes, récurrence, suites arithmétiques et géométriques, sommes, seuils.', etat: 'bientot' },
+  { id: 'suites', titre: 'Suites', emoji: '🔢', classes: '1re', groupe: 'Lycée (1re – Tle)', couleur: '#155e75', couleur2: '#e3f4f8', resume: 'Termes, récurrence, suites arithmétiques et géométriques, sommes, seuils.' },
   // ---
   { id: 'trigo', titre: 'Trigonométrie', emoji: '⭕', classes: '1re', groupe: 'Lycée (1re – Tle)', couleur: '#86198f', couleur2: '#fbeefc', resume: 'Radians, cercle trigonométrique, cosinus et sinus des angles associés, équations.' },
   // ---
