@@ -35,7 +35,7 @@ export const MODULES = [
   // ---
   { id: 'poly2', titre: 'Second degré', emoji: '📈', classes: '2de – 1re', groupe: 'Vers le lycée', couleur: '#5f3dc4', couleur2: '#efe9ff', resume: 'Développer, forme canonique, sommet, racines, signe, discriminant.' },
   // ---
-  { id: 'vecteurs', titre: 'Vecteurs et droites', emoji: '➡️', classes: '2de', groupe: 'Vers le lycée', couleur: '#1e40af', couleur2: '#e8eefc', resume: 'Coordonnées, somme de vecteurs, colinéarité, équations de droites.', etat: 'bientot' },
+  { id: 'vecteurs', titre: 'Vecteurs et droites', emoji: '➡️', classes: '2de', groupe: 'Vers le lycée', couleur: '#1e40af', couleur2: '#e8eefc', resume: 'Coordonnées, somme de vecteurs, colinéarité, équations de droites.' },
   // --- lycée (1re – Tle)
   { id: 'suites', titre: 'Suites', emoji: '🔢', classes: '1re', groupe: 'Lycée (1re – Tle)', couleur: '#155e75', couleur2: '#e3f4f8', resume: 'Termes, récurrence, suites arithmétiques et géométriques, sommes, seuils.', etat: 'bientot' },
   // ---
