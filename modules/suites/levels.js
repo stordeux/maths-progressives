@@ -9,7 +9,7 @@ import { ri, pick, nz, chance } from '../../engine/util/rand.js';
 import { numsCheck, choiceCheck } from '../../engine/answers/checks.js';
 import { M, P, F, big, terms, sgn } from '../../engine/util/fmt.js';
 import { r6 } from '../../engine/util/arith.js';
-import { nuage, lireNuage, escalier, gauss } from './draw.js';
+import { nuage, lireNuage, escalier, gauss, somme2 } from './draw.js';
 
 /* ================= écriture ================= */
 const U = (k, nom = 'u') => `${nom}<sub>${k}</sub>`;
@@ -42,6 +42,14 @@ function iterate(us, s, k, next) { const out = [us]; let u = us; for (let n = s;
 const pts = (s, vals) => vals.map((v, i) => [s + i, r6(v)]);
 /** nombre écrit exactement s'il a au plus 2 décimales, sinon arrondi au centième précédé de « ≈ » */
 const A2 = x => (Math.abs(r6(x * 100) - Math.round(x * 100)) < 1e-9 ? M(r6(x)) : '≈ ' + M(Math.round(x * 100) / 100));
+
+/* ================= encarts de cours ================= */
+/** exemple corrigé : énoncé en gras puis correction */
+const EXC = (q, body) => `<div class="ex"><span class="q">${q}</span><br>${body}</div>`;
+/** encadré « Méthode » */
+const METH = steps => `<div class="methode"><b>Méthode</b><ol>${steps.map(s => `<li>${s}</li>`).join('')}</ol></div>`;
+/** figure avec une légende courte en dessous */
+const FIG = (svg, cap) => `<div>${svg}<div style="text-align:center;font-size:.92em;margin-top:-4px">${cap}</div></div>`;
 
 /* =====================================================================
    1. Terme d'une suite explicite uₙ = f(n)
@@ -86,11 +94,15 @@ function L1(d) {
 function C1() {
   const f = n => n * n - 4 * n + 5;
   return `<h2>1. Suite définie par une formule</h2>
-<div class="def">Une <b>suite</b> (${UN}) associe à chaque entier naturel n un nombre ${UN}, le <b>terme de rang n</b>.<br>Quand on a une formule ${UN} = f(n), on dit que la suite est définie de façon <b>explicite</b> : on calcule directement n'importe quel terme.</div>
-<div class="ex">${UN} = n<sup>2</sup> − 4n + 5.<br>${U(0)} = 0 − 0 + 5 = 5 ; ${U(3)} = 3<sup>2</sup> − 4 × 3 + 5 = 9 − 12 + 5 = <b>2</b> ; ${U(6)} = 36 − 24 + 5 = <b>17</b>.</div>
-<div class="warn">⚠️ ${U(3)} n'est pas ${U('n')} + 3 : c'est le terme obtenu en remplaçant n par 3.<br>⚠️ ${N2} = n × n : pour n = 3, c'est 9 et pas 6.</div>
-<p>On représente une suite par les points (n ; ${UN}) : ce sont des points <b>isolés</b>, on ne les relie pas.</p>
-${nuage({ pts: pts(0, [0, 1, 2, 3, 4, 5, 6].map(f)), hl: [3], vals: true })}`;
+<p class="intro">Une suite, c'est une liste de nombres numérotés : ${U(0)}, ${U(1)}, ${U(2)}… Avec une formule, tu peux calculer directement le terme que tu veux, sans calculer les autres.</p>
+<div class="def">Une <b>suite</b> (${UN}) associe à chaque entier naturel n un nombre ${UN}, le <b>terme de rang n</b>.<br>Quand on a une formule ${UN} = f(n), la suite est définie de façon <b>explicite</b>.</div>
+${METH([`Repère le rang demandé : pour ${U(5)}, c'est n = 5.`, 'Remplace <b>chaque</b> n de la formule par ce nombre (avec des parenthèses s\'il le faut).', 'Calcule dans l\'ordre des priorités : puissances, puis multiplications, puis additions.', `Si on te donne f(x) et ${UN} = f(n), calcule simplement f(5).`])}
+${EXC(`Exemple 1 : ${UN} = n<sup>2</sup> − 4n + 5. Calcule ${U(3)} et ${U(6)}.`, `${U(3)} = 3<sup>2</sup> − 4 × 3 + 5 = 9 − 12 + 5 = <b>2</b>.<br>${U(6)} = 6<sup>2</sup> − 4 × 6 + 5 = 36 − 24 + 5 = <b>17</b>.`)}
+${EXC(`Exemple 2 : ${UN} = −2n<sup>2</sup> + 3n + 1. Calcule ${U(4)}.`, `${U(4)} = −2 × 4<sup>2</sup> + 3 × 4 + 1 = −2 × 16 + 12 + 1 = −32 + 13 = <b>−19</b>.<br>Le carré porte sur 4 seulement : on calcule 4<sup>2</sup> = 16 avant de multiplier par −2.`)}
+${EXC(`Exemple 3 : ${UN} = 3 × 2<sup>n</sup> − 5. Calcule ${U(4)}.`, `2<sup>4</sup> = 2 × 2 × 2 × 2 = 16, donc ${U(4)} = 3 × 16 − 5 = <b>43</b>.`)}
+<div class="cols"><div class="warn">⚠️ ${U(3)} n'est pas ${UN} + 3 : c'est le terme obtenu en remplaçant n par 3.<br>⚠️ ${N2} = n × n : pour n = 3, c'est 9 et pas 6.<br>⚠️ 2<sup>5</sup> = 32, pas 2 × 5 = 10.<br>⚠️ Ne te trompe pas de rang : ${U(4)} et ${U(5)} sont deux termes voisins, différents.</div>
+${FIG(nuage({ pts: pts(0, [0, 1, 2, 3, 4, 5, 6].map(f)), hl: [3], vals: true }), `Les points (n ; ${UN}) de l'exemple 1 : des points <b>isolés</b>, qu'on ne relie pas.`)}</div>
+<div class="retenir">À retenir : pour calculer ${UN} avec une formule explicite, on remplace n par le rang voulu.</div>`;
 }
 
 /* =====================================================================
@@ -136,11 +148,16 @@ function L2(d) {
 }
 function C2() {
   return `<h2>2. Suite définie par récurrence</h2>
-<div class="def">Une suite est définie <b>par récurrence</b> quand on donne son premier terme et une règle pour passer d'un terme au <b>suivant</b> :<br>${U(0)} donné et ${UN1} = f(${UN}).<br>Pour calculer ${U(3)}, il faut d'abord ${U(1)} puis ${U(2)}.</div>
-<div class="ex">${U(0)} = 1 et ${recAff(2, 3)}.<br>${U(1)} = 2 × 1 + 3 = 5 ; ${U(2)} = 2 × 5 + 3 = 13 ; ${U(3)} = 2 × 13 + 3 = <b>29</b>.</div>
-<div class="warn">⚠️ ${UN1} n'est pas ${UN} + 1 : c'est le terme <b>qui suit</b> ${UN}.<br>⚠️ Si la règle contient n (par exemple ${UN1} = ${UN} + 2n), pour calculer ${U(1)} on prend n = 0.</div>
-<p><b>L'escalier</b> : on part de ${U(0)} sur l'axe, on monte jusqu'à la courbe y = f(x) (hauteur ${U(1)}), on va à l'horizontale jusqu'à la droite y = x pour reporter ${U(1)} sur l'axe, et on recommence.</p>
-${escalier({ f: x => 0.5 * x + 4, u0: 0, k: 3, fl: 'y = 0,5x + 4' })}`;
+<p class="intro">Parfois, on ne connaît pas de formule directe : on sait seulement comment passer d'un terme au suivant. C'est comme une chaîne : chaque maillon se fabrique à partir du précédent.</p>
+<div class="def">Une suite est définie <b>par récurrence</b> quand on donne son <b>premier terme</b> et une règle pour passer d'un terme au <b>suivant</b> :<br>${U(0)} donné et ${UN1} = f(${UN}) pour tout n.<br>Pour calculer ${U(3)}, il faut d'abord ${U(1)}, puis ${U(2)}.</div>
+${METH([`Pars du terme donné (${U(0)}, ou ${U(1)} si la suite commence à 1).`, `Applique la règle à ce terme : tu obtiens le suivant. Mets les nombres négatifs entre parenthèses.`, `Recommence avec le terme que tu viens de trouver, autant de fois que nécessaire.`, `Si la règle contient aussi n, prends pour n le rang du terme <b>de départ</b> : ${U(1)} se calcule avec n = 0.`])}
+${EXC(`Exemple 1 : ${U(0)} = 1 et ${recAff(2, 3)}. Calcule ${U(1)}, ${U(2)}, ${U(3)}.`, `${U(1)} = 2 × 1 + 3 = <b>5</b> ; ${U(2)} = 2 × 5 + 3 = <b>13</b> ; ${U(3)} = 2 × 13 + 3 = <b>29</b>.`)}
+${EXC(`Exemple 2 : ${U(0)} = 2 et ${recAff(-3, 1)}.`, `${U(1)} = −3 × 2 + 1 = <b>−5</b> ; ${U(2)} = −3 × (−5) + 1 = 15 + 1 = <b>16</b> ; ${U(3)} = −3 × 16 + 1 = <b>−47</b>.<br>On multiplie d'abord, puis on ajoute.`)}
+${EXC(`Exemple 3 : ${U(0)} = 4 et ${UN1} = ${UN} + 2n − 1.`, `${U(1)} = ${U(0)} + 2 × 0 − 1 = <b>3</b> (n = 0) ; ${U(2)} = ${U(1)} + 2 × 1 − 1 = <b>4</b> (n = 1) ; ${U(3)} = ${U(2)} + 2 × 2 − 1 = <b>7</b> (n = 2).`)}
+<div class="warn">⚠️ ${UN1} n'est pas ${UN} + 1 : c'est le terme <b>qui suit</b> ${UN}.<br>⚠️ ${U(2)} se calcule à partir de ${U(1)}, pas à partir de ${U(0)}.<br>⚠️ Priorités : 2 × ${UN} + 3, c'est « fois 2 » <b>puis</b> « plus 3 ».</div>
+<div class="cols"><p><b>L'escalier</b> (ici ${U(0)} = 0 et ${UN1} = 0,5${UN} + 4) : on part de ${U(0)} sur l'axe, on monte jusqu'à la courbe y = f(x) (hauteur ${U(1)}), on va à l'horizontale jusqu'à la droite y = x pour reporter ${U(1)} sur l'axe, et on recommence.</p>
+${escalier({ f: x => 0.5 * x + 4, u0: 0, k: 3, fl: 'y = 0,5x + 4' })}</div>
+<div class="retenir">À retenir : par récurrence, on avance pas à pas ; chaque terme se calcule avec le précédent.</div>`;
 }
 
 /* =====================================================================
@@ -186,10 +203,14 @@ function L3(d) {
 }
 function C3() {
   return `<h2>3. Représentation graphique</h2>
-<div class="def">Dans un repère, la suite (${UN}) est représentée par les points de coordonnées <b>(n ; ${UN})</b> : un point au-dessus de chaque entier n.<br>L'abscisse est le <b>rang</b> n, l'ordonnée est la <b>valeur</b> ${UN}.</div>
-<div class="ex">Ci-dessous, le point d'abscisse 4 est à la hauteur 6 : <b>${U(4)} = 6</b>. Et ${UN} = 1 pour n = 2.</div>
-<div class="warn">⚠️ Le premier point est souvent n = 0 : ne te décale pas en comptant.<br>⚠️ On ne relie pas les points : la suite n'a pas de valeur entre deux entiers.</div>
-${nuage({ pts: pts(0, [3, 2, 1, 4, 6, 5, 8]), hl: [4], grid1: true })}`;
+<p class="intro">Un graphique permet de voir d'un coup d'œil comment évoluent les termes d'une suite. Il faut savoir y lire un terme, et retrouver un rang.</p>
+<div class="def">Dans un repère, la suite (${UN}) est représentée par le <b>nuage de points</b> de coordonnées <b>(n ; ${UN})</b> : un point au-dessus de chaque entier n.<br>L'abscisse est le <b>rang</b> n (axe horizontal), l'ordonnée est la <b>valeur</b> ${UN} (axe vertical).</div>
+${METH([`Pour lire ${U(4)} : pars de 4 sur l'axe <b>horizontal</b>, monte (ou descends) jusqu'au point, puis lis sa hauteur sur l'axe vertical.`, `Compte les rangs à partir de <b>0</b> : le premier point est en général celui de ${U(0)}.`, `Pour trouver le rang n tel que ${UN} = 8 : repère la hauteur 8 sur l'axe vertical, cherche le point à cette hauteur et lis son <b>abscisse</b>.`])}
+<div class="cols"><div>${EXC(`Exemple 1 : lis ${U(4)} et ${U(2)}.`, `Le point d'abscisse 4 est à la hauteur 6 : <b>${U(4)} = 6</b>.<br>Le point d'abscisse 2 est à la hauteur 1 : <b>${U(2)} = 1</b>.`)}
+${EXC(`Exemple 2 : pour quel n a-t-on ${UN} = 8 ?`, `Le seul point à la hauteur 8 est le point (6&nbsp;;&nbsp;8) : <b>n = 6</b>, c'est-à-dire ${U(6)} = 8.<br>On répond par le <b>rang</b> 6, pas par la valeur 8.`)}</div>
+${nuage({ pts: pts(0, [3, 2, 1, 4, 6, 5, 8]), hl: [2, 4, 6], grid1: true })}</div>
+<div class="warn">⚠️ Ne confonds pas le <b>rang</b> n (en bas) et la <b>valeur</b> ${UN} (la hauteur).<br>⚠️ Le premier point est souvent n = 0 : ne te décale pas en comptant.<br>⚠️ On ne relie pas les points : la suite n'a pas de valeur entre deux entiers.</div>
+<div class="retenir">À retenir : le point (n ; ${UN}) a pour abscisse le rang et pour ordonnée la valeur du terme.</div>`;
 }
 
 /* =====================================================================
@@ -222,12 +243,14 @@ function L4(d) {
 }
 function C4() {
   return `<h2>4. Suites arithmétiques</h2>
-<div class="def">Une suite est <b>arithmétique</b> quand on passe d'un terme au suivant en <b>ajoutant toujours le même nombre r</b>, appelé la <b>raison</b> :<br>${UN1} = ${UN} + r &nbsp; pour tout n.<br>Donc <b>r = ${UN1} − ${UN}</b>.</div>
-<div class="ex">5 ; 8 ; 11 ; 14 ; … : on ajoute 3 à chaque fois. r = 8 − 5 = <b>3</b> et le terme suivant est 14 + 3 = <b>17</b>.</div>
-<div class="ex">10 ; 7,5 ; 5 ; 2,5 ; … : r = 7,5 − 10 = <b>−2,5</b> ; terme suivant 2,5 − 2,5 = <b>0</b>.</div>
-<div class="warn">⚠️ r = (terme suivant) − (terme précédent), dans cet ordre : sinon on se trompe de signe.</div>
-<p>Les points d'une suite arithmétique sont <b>alignés</b> : on monte (ou descend) de r à chaque pas.</p>
-${nuage({ pts: pts(0, [5, 8, 11, 14, 17]), vals: true })}`;
+<p class="intro">Une quantité qui augmente (ou diminue) chaque fois de la même valeur, comme une tirelire où l'on met 3 € par semaine, se modélise par une suite arithmétique.</p>
+<div class="def">Une suite est <b>arithmétique</b> quand on passe d'un terme au suivant en <b>ajoutant toujours le même nombre r</b>, appelé la <b>raison</b> :<br>${UN1} = ${UN} + r &nbsp; pour tout n.<br>Donc <b>r = ${UN1} − ${UN}</b> (terme suivant moins terme précédent).</div>
+${METH(['Calcule l\'écart entre deux termes consécutifs : r = (terme suivant) − (terme précédent).', 'Vérifie sur un autre couple de termes que l\'écart est le même.', 'Pour le terme suivant, <b>ajoute</b> r au dernier terme connu (si r est négatif, cela fait diminuer).'])}
+${EXC('Exemple 1 : 5 ; 8 ; 11 ; 14 ; …', `On ajoute 3 à chaque fois : r = 8 − 5 = <b>3</b>.<br>Le terme suivant est 14 + 3 = <b>17</b>.`)}
+${EXC(`Exemple 2 : ${U(3)} = 10 ; ${U(4)} = 7,5 ; ${U(5)} = 5 ; ${U(6)} = 2,5.`, `r = ${U(4)} − ${U(3)} = 7,5 − 10 = <b>−2,5</b> (la suite diminue).<br>${U(7)} = 2,5 + (−2,5) = <b>0</b>.<br>Peu importe que la suite commence au rang 3 : la raison se calcule pareil.`)}
+<div class="warn">⚠️ r = (terme suivant) − (terme précédent), dans cet ordre : sinon on se trompe de signe.<br>⚠️ Si les termes diminuent, la raison est <b>négative</b>.<br>⚠️ Pour le terme suivant, on <b>ajoute</b> r : on ne le retranche pas.</div>
+<div class="cols">${FIG(nuage({ pts: pts(0, [5, 8, 11, 14, 17]), vals: true }), 'Exemple 1 : r = 3, les points montent.')}${FIG(nuage({ pts: pts(3, [10, 7.5, 5, 2.5, 0]), vals: true, hl: [7] }), 'Exemple 2 : r = −2,5, les points descendent.')}</div>
+<div class="retenir">À retenir : les points d'une suite arithmétique sont alignés ; à chaque pas on monte (ou on descend) de r.</div>`;
 }
 
 /* =====================================================================
@@ -275,11 +298,15 @@ function L5(d) {
 }
 function C5() {
   return `<h2>5. Formule explicite d'une suite arithmétique</h2>
+<p class="intro">Pour calculer ${U(50)}, pas question d'ajouter r cinquante fois à la main : la formule explicite donne n'importe quel terme d'un coup.</p>
 <div class="def">Si (${UN}) est arithmétique de raison r, pour aller de ${U(0)} à ${UN} on ajoute n fois r :<br><b>${UN} = ${U(0)} + n × r</b>.<br>Plus généralement, de ${U('p')} à ${UN} il y a n − p pas : <b>${UN} = ${U('p')} + (n − p) × r</b>.</div>
-<div class="ex">${U(0)} = 4 et r = 3 : ${U(20)} = 4 + 20 × 3 = <b>64</b>.</div>
-<div class="ex">${U(2)} = 10 et ${U(7)} = 25 : 5 pas font 25 − 10 = 15, donc r = 15 ÷ 5 = <b>3</b>, et ${U(0)} = 10 − 2 × 3 = <b>4</b>.</div>
-<div class="warn">⚠️ De ${U(3)} à ${U(10)}, il y a 10 − 3 = 7 pas, pas 10 : compte les sauts, pas les termes.</div>
-${nuage({ pts: pts(0, [4, 7, 10, 13, 16, 19]), vals: true, hl: [0, 5] })}`;
+${METH([`Repère le terme connu (${U(0)} ou ${U('p')}) et compte les <b>pas</b> jusqu'au terme cherché : n − p.`, 'Calcule : terme connu + (nombre de pas) × r.', `Pour la formule explicite, il faut ${U(0)} : recule de p pas en retirant r, p fois : ${U(0)} = ${U('p')} − p × r.`, `Si on donne deux termes ${U('p')} et ${U('q')} : ${U('q')} − ${U('p')} = (q − p) × r, donc on divise l'écart par le nombre de pas.`])}
+${EXC(`Exemple 1 : ${U(0)} = 4 et r = 3. Calcule ${U(20)}.`, `${U(20)} = ${U(0)} + 20 × r = 4 + 20 × 3 = <b>64</b>.`)}
+${EXC(`Exemple 2 : ${U(2)} = 10 et ${U(7)} = 25. Trouve r et ${U(0)}.`, `De ${U(2)} à ${U(7)}, il y a 7 − 2 = 5 pas, qui font 25 − 10 = 15. Donc r = 15 ÷ 5 = <b>3</b>.<br>${U(0)} = ${U(2)} − 2 × r = 10 − 6 = <b>4</b>, d'où ${UN} = 4 + 3n.`)}
+${EXC(`Exemple 3 : r = −4 et ${U(3)} = 5. Calcule ${U(20)} et donne la formule explicite.`, `${U(20)} = ${U(3)} + (20 − 3) × (−4) = 5 − 68 = <b>−63</b>.<br>${U(0)} = 5 − 3 × (−4) = 5 + 12 = 17, donc <b>${UN} = 17 − 4n</b>.`)}
+<div class="cols"><div class="warn">⚠️ De ${U(3)} à ${U(10)}, il y a 10 − 3 = 7 pas, pas 10 : compte les sauts, pas les termes.<br>⚠️ Pour reculer vers ${U(0)}, on <b>retire</b> r ; attention au signe quand r est négatif.<br>⚠️ Avec deux termes, divise l'écart par le nombre de pas (q − p), pas par 1.</div>
+${FIG(nuage({ pts: pts(0, [4, 7, 10, 13, 16, 19, 22, 25]), vals: true, hl: [2, 7] }), `Exemple 2 : 5 pas de 3 entre ${U(2)} et ${U(7)}.`)}</div>
+<div class="retenir">À retenir : ${UN} = ${U(0)} + n × r, et de ${U('p')} à ${UN} on fait n − p pas.</div>`;
 }
 
 /* =====================================================================
@@ -312,11 +339,15 @@ function L6(d) {
 }
 function C6() {
   return `<h2>6. Suites géométriques</h2>
+<p class="intro">Une quantité qui est multipliée chaque fois par le même nombre (une population qui double, un prix qui augmente de 5 % par an) se modélise par une suite géométrique.</p>
 <div class="def">Une suite est <b>géométrique</b> quand on passe d'un terme au suivant en <b>multipliant toujours par le même nombre q</b>, appelé la <b>raison</b> :<br>${UN1} = q × ${UN} &nbsp; pour tout n.<br>Si les termes ne sont pas nuls : <b>q = ${UN1} ÷ ${UN}</b>.</div>
-<div class="ex">3 ; 6 ; 12 ; 24 ; … : on multiplie par 2. q = 6 ÷ 3 = <b>2</b> et le terme suivant est 24 × 2 = <b>48</b>.</div>
-<div class="ex">Augmenter de 10 %, c'est multiplier par <b>1,1</b> ; baisser de 20 %, c'est multiplier par <b>0,8</b>.</div>
-<div class="warn">⚠️ On divise (q = suivant ÷ précédent), on ne soustrait pas.<br>⚠️ Si q &lt; 0, les signes alternent : 2 ; −4 ; 8 ; −16 …</div>
-${nuage({ pts: pts(0, [3, 6, 12, 24, 48]), vals: true })}`;
+${METH(['Calcule le quotient de deux termes consécutifs : q = (terme suivant) ÷ (terme précédent).', 'Vérifie avec un autre couple de termes que le quotient est le même.', 'Pour le terme suivant, <b>multiplie</b> le dernier terme par q (règle des signes si q &lt; 0).'])}
+${EXC('Exemple 1 : 3 ; 6 ; 12 ; 24 ; …', `q = 6 ÷ 3 = <b>2</b> (et 12 ÷ 6 = 2, 24 ÷ 12 = 2).<br>Le terme suivant est 24 × 2 = <b>48</b>.`)}
+${EXC('Exemple 2 : 16 ; −8 ; 4 ; −2 ; …', `q = −8 ÷ 16 = <b>−0,5</b>.<br>Le terme suivant est −2 × (−0,5) = <b>1</b>. Avec q &lt; 0, les signes alternent.`)}
+${EXC('Exemple 3 : pourcentages.', 'Augmenter de 10 %, c\'est multiplier par <b>1,1</b> ; baisser de 20 %, c\'est multiplier par <b>0,8</b>.<br>1 000 ; 1 100 ; 1 210 ; … : q = 1 100 ÷ 1 000 = <b>1,1</b>.')}
+<div class="warn">⚠️ On divise (q = suivant ÷ précédent), on ne soustrait pas : l'écart 6 − 3 = 3 n'est pas la raison.<br>⚠️ Dans le bon ordre : précédent ÷ suivant donne l'<b>inverse</b> de q.<br>⚠️ Pour le terme suivant, on <b>multiplie</b> par q, on n'ajoute pas.</div>
+<div class="cols">${FIG(nuage({ pts: pts(0, [3, 6, 12, 24, 48]), vals: true }), 'Exemple 1 : q = 2, ça monte de plus en plus vite.')}${FIG(nuage({ pts: pts(0, [16, -8, 4, -2, 1]), vals: true }), 'Exemple 2 : q = −0,5, les signes alternent.')}</div>
+<div class="retenir">À retenir : dans une suite géométrique, on multiplie toujours par q ; q = terme suivant ÷ terme précédent.</div>`;
 }
 
 /* =====================================================================
@@ -360,12 +391,15 @@ function L7(d) {
 }
 function C7() {
   return `<h2>7. Formule explicite d'une suite géométrique</h2>
-<div class="def">Si (${UN}) est géométrique de raison q, pour aller de ${U(0)} à ${UN} on multiplie n fois par q :<br><b>${UN} = ${U(0)} × q<sup>n</sup></b>.<br>Plus généralement : <b>${UN} = ${U('p')} × q<sup>n − p</sup></b>.</div>
-<div class="ex">${U(0)} = 3 et q = 2 : ${U(5)} = 3 × 2<sup>5</sup> = 3 × 32 = <b>96</b>.</div>
-<div class="ex">${U(0)} = 5 et q = −2 : ${U(3)} = 5 × (−2)<sup>3</sup> = 5 × (−8) = <b>−40</b>.</div>
-<div class="warn">⚠️ ${U(0)} × q<sup>n</sup> n'est pas (${U(0)} × q)<sup>n</sup> : seul q est à la puissance n.<br>⚠️ q<sup>5</sup> = q × q × q × q × q, pas 5 × q.</div>
-<p>Avec q &gt; 1 et ${U(0)} &gt; 0, les points montent de plus en plus vite : ils ne sont pas alignés.</p>
-${nuage({ pts: pts(0, [3, 6, 12, 24, 48, 96]), vals: true, hl: [5] })}`;
+<p class="intro">Comme pour les suites arithmétiques, une formule permet de sauter directement au terme voulu ; ici, les multiplications répétées deviennent une <b>puissance</b>.</p>
+<div class="def">Si (${UN}) est géométrique de raison q, pour aller de ${U(0)} à ${UN} on multiplie n fois par q :<br><b>${UN} = ${U(0)} × q<sup>n</sup></b>.<br>Plus généralement, de ${U('p')} à ${UN} il y a n − p pas : <b>${UN} = ${U('p')} × q<sup>n − p</sup></b>.</div>
+${METH([`Repère le terme connu (${U(0)} ou ${U('p')}) et compte les pas jusqu'au terme cherché.`, 'Calcule d\'abord la puissance de q (attention au signe si q &lt; 0 : puissance paire → positif, impaire → négatif).', 'Multiplie ensuite par le terme connu.', `Pour la formule explicite à partir de ${U('p')} et ${U('p+1')} : q = ${U('p+1')} ÷ ${U('p')}, puis ${U(0)} = ${U('p')} ÷ q<sup>p</sup>.`])}
+${EXC(`Exemple 1 : ${U(0)} = 3 et q = 2. Calcule ${U(5)}.`, `${U(5)} = 3 × 2<sup>5</sup> = 3 × 32 = <b>96</b>.`)}
+${EXC(`Exemple 2 : ${U(0)} = 5 et q = −2. Calcule ${U(3)}.`, `(−2)<sup>3</sup> = −8 (exposant impair : négatif), donc ${U(3)} = 5 × (−8) = <b>−40</b>.`)}
+${EXC(`Exemple 3 : ${U(2)} = −18 et ${U(3)} = −54. Formule explicite ? Puis ${U(6)} ?`, `q = −54 ÷ (−18) = <b>3</b> ; ${U(0)} = −18 ÷ 3<sup>2</sup> = −18 ÷ 9 = <b>−2</b>, donc <b>${UN} = −2 × 3<sup>n</sup></b>.<br>${U(6)} = ${U(2)} × 3<sup>4</sup> = −18 × 81 = <b>−1 458</b>.`)}
+<div class="cols"><div class="warn">⚠️ ${U(0)} × q<sup>n</sup> n'est pas (${U(0)} × q)<sup>n</sup> : seul q est à la puissance n.<br>⚠️ q<sup>5</sup> = q × q × q × q × q, pas 5 × q.<br>⚠️ De ${U(2)} à ${U(6)}, il y a 4 multiplications par q, pas 6.<br>⚠️ ${U(0)} + n × q, c'est la formule des suites <b>arithmétiques</b>.</div>
+${FIG(nuage({ pts: pts(0, [3, 6, 12, 24, 48, 96]), vals: true, hl: [5] }), `Exemple 1 : avec q &gt; 1 et ${U(0)} &gt; 0, les points montent de plus en plus vite ; ils ne sont pas alignés.`)}</div>
+<div class="retenir">À retenir : ${UN} = ${U(0)} × q<sup>n</sup>, et seul q est élevé à la puissance.</div>`;
 }
 
 /* =====================================================================
@@ -431,12 +465,15 @@ function L8(d) {
 }
 function C8() {
   return `<h2>8. Arithmétique ou géométrique ?</h2>
+<p class="intro">Avant d'utiliser une formule, il faut savoir à quel type de suite on a affaire. Deux tests suffisent : les écarts et les quotients.</p>
 <div class="def">Pour reconnaître une suite :<br>• si l'<b>écart</b> ${UN1} − ${UN} est toujours le même nombre r : suite <b>arithmétique</b> ;<br>• si le <b>quotient</b> ${UN1} ÷ ${UN} est toujours le même nombre q : suite <b>géométrique</b> ;<br>• sinon : <b>ni l'une ni l'autre</b>.</div>
-<div class="ex">${UN} = 3n − 1 : ${UN1} − ${UN} = 3(n + 1) − 1 − (3n − 1) = 3 : <b>arithmétique</b> de raison 3.</div>
-<div class="ex">${UN} = 5 × 2<sup>n</sup> : ${UN1} ÷ ${UN} = 2 : <b>géométrique</b> de raison 2.</div>
-<div class="ex">${UN} = n<sup>2</sup> : 0 ; 1 ; 4 ; 9 ; écarts 1 ; 3 ; 5 : <b>ni l'une ni l'autre</b>.</div>
-<div class="warn">⚠️ Deux écarts égaux ne suffisent pas : il faut que <b>tous</b> le soient.<br>⚠️ ${UN1} = 2${UN} + 1 n'est ni arithmétique ni géométrique : on multiplie <b>et</b> on ajoute.</div>
-${nuage({ pts: pts(0, [0, 1, 4, 9, 16]), vals: true })}`;
+${METH(['Si la suite est donnée par une formule ou une récurrence, calcule ses premiers termes (au moins 4).', `Calcule <b>tous</b> les écarts ${UN1} − ${UN} : s'ils sont tous égaux, la suite est arithmétique.`, `Sinon, calcule <b>tous</b> les quotients ${UN1} ÷ ${UN} : s'ils sont tous égaux, elle est géométrique.`, 'Sinon, elle n\'est ni l\'une ni l\'autre.', `Raccourcis : ${UN1} = ${UN} + c → arithmétique ; ${UN1} = c × ${UN} → géométrique ; ${UN} = an + b → arithmétique ; ${UN} = k × q<sup>n</sup> → géométrique.`])}
+${EXC(`Exemple 1 : ${UN} = 3n − 1.`, `${UN1} − ${UN} = 3(n + 1) − 1 − (3n − 1) = 3 : <b>arithmétique</b> de raison 3.`)}
+${EXC(`Exemple 2 : ${UN} = 5 × 2<sup>n</sup>.`, `${UN1} ÷ ${UN} = (5 × 2<sup>n+1</sup>) ÷ (5 × 2<sup>n</sup>) = 2 : <b>géométrique</b> de raison 2.`)}
+${EXC(`Exemple 3 : ${U(0)} = 2 et ${recAff(2, 1)}.`, `Termes : 2 ; 5 ; 11 ; 23. Écarts : 3 ; 6 ; 12 (pas égaux). Quotients : 2,5 ; 2,2 ; ≈ 2,09 (pas égaux).<br>Elle n'est <b>ni arithmétique, ni géométrique</b> : on multiplie <b>et</b> on ajoute.`)}
+<div class="warn">⚠️ Deux écarts égaux ne suffisent pas : il faut que <b>tous</b> le soient (1 ; 2 ; 4 ; 8 ; 17 n'est pas géométrique).<br>⚠️ 1 ; 4 ; 9 ; 16 (les carrés) n'est ni l'une ni l'autre : les écarts 3 ; 5 ; 7 changent.</div>
+<div class="cols">${FIG(nuage({ pts: pts(0, [1, 4, 7, 10, 13]), vals: true }), 'Arithmétique : points alignés.')}${FIG(nuage({ pts: pts(0, [1, 2, 4, 8, 16]), vals: true }), 'Géométrique : on multiplie par 2.')}${FIG(nuage({ pts: pts(0, [0, 1, 4, 9, 16]), vals: true }), 'Ni l\'une ni l\'autre : n<sup>2</sup>.')}</div>
+<div class="retenir">À retenir : écarts tous égaux → arithmétique ; quotients tous égaux → géométrique.</div>`;
 }
 
 /* =====================================================================
@@ -507,11 +544,15 @@ function L9(d) {
 }
 function C9() {
   return `<h2>9. Sens de variation</h2>
-<div class="def">(${UN}) est <b>croissante</b> si ${UN1} ≥ ${UN} pour tout n, <b>décroissante</b> si ${UN1} ≤ ${UN} pour tout n.<br>Méthode : étudier le <b>signe de ${UN1} − ${UN}</b>.<br>• Arithmétique : ${UN1} − ${UN} = r, donc croissante si r &gt; 0, décroissante si r &lt; 0.<br>• Géométrique avec ${U(0)} &gt; 0 : croissante si q &gt; 1, décroissante si 0 &lt; q &lt; 1. Si ${U(0)} &lt; 0, c'est l'inverse. Si q &lt; 0, ni l'une ni l'autre.</div>
-<div class="ex">${UN} = n<sup>2</sup> + 2n : ${UN1} − ${UN} = 2n + 3 &gt; 0, donc (${UN}) est <b>croissante</b>.</div>
-<div class="ex">${U(0)} = −4 et q = 2 : −4 ; −8 ; −16 … la suite est <b>décroissante</b>.</div>
-<div class="warn">⚠️ « q &gt; 1 donc croissante » n'est vrai que si ${U(0)} &gt; 0.<br>⚠️ Si ${UN1} − ${UN} change de signe, la suite n'est ni croissante ni décroissante.</div>
-${nuage({ pts: pts(0, [0, 3, 8, 15, 24]), vals: true })}`;
+<p class="intro">Savoir si une suite monte ou descend, c'est savoir si la quantité qu'elle décrit augmente ou diminue au fil du temps.</p>
+<div class="def">(${UN}) est <b>croissante</b> si ${UN1} ≥ ${UN} pour tout n, <b>décroissante</b> si ${UN1} ≤ ${UN} pour tout n.<br>Elle peut aussi n'être <b>ni croissante, ni décroissante</b> (elle monte puis descend, ou alterne).</div>
+${METH([`Calcule et simplifie la différence ${UN1} − ${UN}.`, 'Étudie son signe pour tout n ≥ 0 : toujours positif → croissante ; toujours négatif → décroissante ; change de signe → ni l\'une ni l\'autre.', `Arithmétique : ${UN1} − ${UN} = r. Croissante si r &gt; 0, décroissante si r &lt; 0.`, `Géométrique (q &gt; 0) : ${UN1} − ${UN} = ${UN} × (q − 1). Avec ${U(0)} &gt; 0 : croissante si q &gt; 1, décroissante si 0 &lt; q &lt; 1 ; avec ${U(0)} &lt; 0, c'est l'inverse. Si q &lt; 0 : ni l'une ni l'autre.`, 'En cas de doute, calcule les premiers termes pour contrôler.'])}
+${EXC(`Exemple 1 : ${UN} = n<sup>2</sup> + 2n.`, `${UN1} − ${UN} = (n + 1)<sup>2</sup> + 2(n + 1) − n<sup>2</sup> − 2n = 2n + 3 &gt; 0 : (${UN}) est <b>croissante</b>.`)}
+${EXC(`Exemple 2 : géométrique, ${U(0)} = −4 et q = 2.`, `−4 ; −8 ; −16 … : multiplier un nombre négatif par 2 le rend <b>plus</b> négatif. La suite est <b>décroissante</b>.`)}
+${EXC(`Exemple 3 : ${UN} = n<sup>2</sup> − 4n.`, `${UN1} − ${UN} = 2n − 3 : négatif pour n = 0 et n = 1, positif ensuite.<br>0 ; −3 ; −4 ; −3 ; 0 ; 5 : la suite descend puis remonte, elle n'est <b>ni croissante, ni décroissante</b>.`)}
+<div class="warn">⚠️ « q &gt; 1 donc croissante » n'est vrai que si ${U(0)} &gt; 0.<br>⚠️ Si ${UN1} − ${UN} change de signe, la suite n'est ni croissante ni décroissante.<br>⚠️ ${UN} = ${F(6, 'n + 1')} : le dénominateur augmente, donc la fraction <b>diminue</b> (décroissante).</div>
+<div class="cols">${FIG(nuage({ pts: pts(0, [0, 3, 8, 15, 24]), vals: true }), 'Exemple 1 : croissante.')}${FIG(nuage({ pts: pts(0, [0, -3, -4, -3, 0, 5]), vals: true }), 'Exemple 3 : ni croissante, ni décroissante.')}</div>
+<div class="retenir">À retenir : le sens de variation se lit sur le signe de ${UN1} − ${UN}.</div>`;
 }
 
 /* =====================================================================
@@ -561,12 +602,16 @@ function L10(d) {
 }
 function C10() {
   return `<h2>10. Sommes de termes arithmétiques</h2>
+<p class="intro">Ajouter 100 nombres un par un, c'est long ! Pour les termes d'une suite arithmétique, une formule donne la somme en une ligne.</p>
 <div class="def"><b>1 + 2 + 3 + … + n = ${F('n(n + 1)', 2)}</b>.<br>Plus généralement, pour des termes consécutifs d'une suite arithmétique :<br><b>S = (nombre de termes) × ${F('premier terme + dernier terme', 2)}</b>.</div>
-<div class="ex">1 + 2 + … + 100 = ${F('100 × 101', 2)} = <b>5 050</b>.</div>
-<div class="ex">3 + 7 + 11 + … + 43 : (43 − 3) ÷ 4 + 1 = 11 termes ; S = 11 × ${F('3 + 43', 2)} = <b>253</b>.</div>
-<div class="warn">⚠️ De ${U(0)} à ${U('n')} il y a <b>n + 1</b> termes ; de ${U('p')} à ${U('n')}, il y en a n − p + 1.</div>
-<p>Pourquoi ? On écrit la somme à l'endroit (bleu) et à l'envers (orange) : chaque colonne fait n + 1, et il y a n colonnes.</p>
-${gauss(5)}`;
+${METH(['Calcule le <b>premier</b> et le <b>dernier</b> terme de la somme.', `Compte les termes : de ${U('p')} à ${U('n')}, il y en a n − p + 1 ; pour une liste qui avance de r, (dernier − premier) ÷ r + 1.`, 'Applique : S = (nombre de termes) × (premier + dernier) ÷ 2.'])}
+${EXC('Exemple 1 : S = 1 + 2 + … + 100.', `S = ${F('100 × 101', 2)} = ${F('10 100', 2)} = <b>5 050</b>.`)}
+${EXC('Exemple 2 : S = 3 + 7 + 11 + … + 43.', `On ajoute 4 à chaque fois. Nombre de termes : (43 − 3) ÷ 4 + 1 = 10 + 1 = 11.<br>S = 11 × ${F('3 + 43', 2)} = 11 × 23 = <b>253</b>.`)}
+${EXC(`Exemple 3 : ${UN} = 2n + 1. Calcule S = ${U(3)} + ${U(4)} + … + ${U(12)}.`, `${U(3)} = 7 et ${U(12)} = 25. Nombre de termes : 12 − 3 + 1 = 10.<br>S = 10 × ${F('7 + 25', 2)} = 10 × 16 = <b>160</b>.`)}
+<div class="warn">⚠️ De ${U(0)} à ${U('n')} il y a <b>n + 1</b> termes ; de ${U('p')} à ${U('n')}, il y en a n − p + 1 (n'oublie pas le « + 1 »).<br>⚠️ N'oublie pas de <b>diviser par 2</b>.<br>⚠️ La formule de Gauss est n(n + 1) ÷ 2, pas n(n − 1) ÷ 2.</div>
+<div class="cols"><p>Pourquoi ça marche ? On écrit 1 + 2 + 3 + 4 + 5 à l'endroit (bleu) et à l'envers (orange) : chaque colonne fait 5 + 1 = 6 cases, et il y a 5 colonnes. Le rectangle contient 5 × 6 = 30 cases, donc la somme vaut 30 ÷ 2 = 15.</p>
+${gauss(5)}</div>
+<div class="retenir">À retenir : somme = nombre de termes × (premier + dernier) ÷ 2.</div>`;
 }
 
 /* =====================================================================
@@ -602,11 +647,16 @@ function L11(d) {
 }
 function C11() {
   return `<h2>11. Sommes de termes géométriques</h2>
+<p class="intro">Quand les termes sont multipliés à chaque fois par q, la somme grandit très vite. Une formule permet de la calculer sans additionner tous les termes.</p>
 <div class="def">Pour q ≠ 1 : <b>1 + q + q<sup>2</sup> + … + q<sup>n</sup> = ${F('1 − q<sup>n+1</sup>', '1 − q')}</b>.<br>Pour des termes consécutifs d'une suite géométrique de raison q :<br><b>S = (premier terme) × ${F('1 − q<sup>nombre de termes</sup>', '1 − q')}</b>.</div>
-<div class="ex">1 + 2 + 4 + … + 2<sup>9</sup> = ${F('1 − 2<sup>10</sup>', '1 − 2')} = ${F('1 − 1 024', '−1')} = <b>1 023</b>.</div>
-<div class="ex">${U(0)} = 3, q = 2 : ${U(0)} + … + ${U(4)} = 3 × ${F('1 − 2<sup>5</sup>', '1 − 2')} = 3 × 31 = <b>93</b> (3 + 6 + 12 + 24 + 48).</div>
-<div class="warn">⚠️ L'exposant est le <b>nombre de termes</b> : de 1 à q<sup>n</sup>, il y a n + 1 termes.<br>⚠️ Pour q = 1 la formule ne marche pas (on divise par 0) : la somme vaut simplement (n + 1) × ${U(0)}.</div>
-${nuage({ pts: pts(0, [1, 2, 4, 8, 16, 32]), vals: true })}`;
+${METH(['Repère le <b>premier terme</b> de la somme (ce n\'est pas forcément ' + U(0) + ') et la raison q.', `Compte les termes N : de 1 à q<sup>n</sup> il y en a n + 1 ; de ${U('p')} à ${U('n')}, n − p + 1.`, 'Applique S = (premier terme) × (1 − q<sup>N</sup>) ÷ (1 − q), en calculant la puissance d\'abord.', 'Contrôle le signe et l\'ordre de grandeur (par exemple en ajoutant les premiers termes).'])}
+${EXC('Exemple 1 : S = 1 + 2 + 4 + … + 2<sup>9</sup>.', `q = 2 et il y a 10 termes : S = ${F('1 − 2<sup>10</sup>', '1 − 2')} = ${F('1 − 1 024', '−1')} = <b>1 023</b>.`)}
+${EXC('Exemple 2 : S = 1 + (−2) + (−2)<sup>2</sup> + (−2)<sup>3</sup> + (−2)<sup>4</sup>.', `q = −2 et 5 termes : S = ${F('1 − (−2)<sup>5</sup>', '1 − (−2)')} = ${F('1 + 32', 3)} = <b>11</b>.<br>Contrôle : 1 − 2 + 4 − 8 + 16 = 11.`)}
+${EXC(`Exemple 3 : ${U(0)} = 1, q = 3. Calcule S = ${U(2)} + ${U(3)} + ${U(4)} + ${U(5)}.`, `Premier terme ${U(2)} = 3<sup>2</sup> = 9 ; nombre de termes 5 − 2 + 1 = 4.<br>S = 9 × ${F('1 − 3<sup>4</sup>', '1 − 3')} = 9 × ${F('−80', '−2')} = 9 × 40 = <b>360</b> (9 + 27 + 81 + 243).`)}
+<div class="warn">⚠️ L'exposant est le <b>nombre de termes</b> : de 1 à q<sup>n</sup>, il y a n + 1 termes.<br>⚠️ N'oublie pas le premier terme en facteur s'il n'est pas égal à 1.<br>⚠️ Pour q = 1 la formule ne marche pas (on divise par 0) : la somme vaut simplement (nombre de termes) × (premier terme).</div>
+<p>Pourquoi 1 + 2 + 4 + 8 + 16 = 2<sup>5</sup> − 1 ? Chaque bande est aussi longue que toutes les précédentes, plus la case grise. Avec la case grise, on obtient une barre de longueur 32 = 2<sup>5</sup>.</p>
+${somme2(4)}
+<div class="retenir">À retenir : somme = premier terme × (1 − q<sup>nombre de termes</sup>) ÷ (1 − q), pour q ≠ 1.</div>`;
 }
 
 /* =====================================================================
@@ -685,11 +735,15 @@ function L12(d) {
 }
 function C12() {
   return `<h2>12. Problèmes et algorithme de seuil</h2>
-<div class="def">Une évolution de <b>+ k chaque année</b> se modélise par une suite <b>arithmétique</b> ; une évolution de <b>+ t % chaque année</b> par une suite <b>géométrique</b> de raison 1 + t/100.<br>Chercher un <b>seuil</b>, c'est chercher le <b>plus petit n</b> tel que ${UN} dépasse une valeur donnée. On calcule les termes un par un jusqu'à franchir le seuil : c'est l'<b>algorithme de seuil</b>.</div>
-<div class="ex">On place 1 000 € à 5 % par an : ${UN} = 1 000 × 1,05<sup>n</sup>. Quand dépasse-t-on 1 500 € ?<br>${U(8)} ≈ 1 477,46 et ${U(9)} ≈ 1 551,33 : il faut <b>9 ans</b>.</div>
-${PY(['def seuil():', '    u = 1000', '    n = 0', '    while u &lt;= 1500:', '        u = 1.05 * u', '        n = n + 1', '    return n'])}
-<div class="warn">⚠️ La boucle continue <b>tant que</b> le seuil n'est pas franchi : la condition du « while » est le contraire de ce qu'on cherche.<br>⚠️ On répond avec le <b>premier</b> n qui convient, pas le dernier qui ne convient pas.</div>
-${nuage({ pts: pts(0, [...Array(11)].map((_, n) => 1000 * 1.05 ** n)), hl: [9], seuil: { y: 1500, l: '1 500 €' } })}`;
+<p class="intro">Un capital, une population, la valeur d'une voiture : les suites servent à prévoir. La question typique : « à partir de quand dépasse-t-on telle valeur ? ».</p>
+<div class="def">Une évolution de <b>+ k chaque année</b> se modélise par une suite <b>arithmétique</b> ; une évolution de <b>+ t % chaque année</b> par une suite <b>géométrique</b> de raison 1 + t/100 (et 1 − t/100 pour une baisse).<br>Chercher un <b>seuil</b>, c'est chercher le <b>plus petit n</b> tel que ${UN} dépasse (ou passe sous) une valeur donnée. On calcule les termes un par un jusqu'à franchir le seuil : c'est l'<b>algorithme de seuil</b>.</div>
+${METH([`Écris la suite : ${UN} = ${U(0)} + n × r, ou ${UN} = ${U(0)} × q<sup>n</sup>, ou la récurrence de l'énoncé.`, 'Calcule les termes un par un (calculatrice, tableau de valeurs) jusqu\'au <b>premier</b> qui franchit le seuil.', `Arithmétique : tu peux aussi résoudre l'inéquation, par exemple 30 + 4n &gt; 75 donne n &gt; 11,25, donc n = 12.`, `Vérifie : ${U('n−1')} ne convient pas encore et ${UN} convient.`, 'Avec Python : la boucle <b>while</b> tourne tant que le seuil n\'est <b>pas</b> franchi ; la fonction renvoie n.'])}
+<div class="cols"><div>${EXC('Exemple 1 : on place 1 000 € à 5 % par an. Quand dépasse-t-on 1 500 € ?', `${UN} = 1 000 × 1,05<sup>n</sup>.<br>${U(8)} ≈ 1 477,46 (pas encore) et ${U(9)} ≈ 1 551,33 &gt; 1 500 : il faut <b>9 ans</b>.`)}</div>
+<div style="text-align:center">${PY(['def seuil():', '    u = 1000', '    n = 0', '    while u &lt;= 1500:', '        u = 1.05 * u', '        n = n + 1', '    return n'])}</div></div>
+${EXC('Exemple 2 : une voiture de 20 000 € perd 15 % de sa valeur par an. Quand vaudra-t-elle moins de 10 000 € ?', `On multiplie par 0,85 chaque année : ${UN} = 20 000 × 0,85<sup>n</sup>.<br>${U(4)} ≈ 10 440,13 (pas encore) et ${U(5)} ≈ 8 874,11 &lt; 10 000 : il faut <b>5 ans</b>.<br>En Python : <code>while u &gt;= 10000:</code> (on continue tant qu'on n'est pas passé sous le seuil).`)}
+<div class="warn">⚠️ La boucle continue <b>tant que</b> le seuil n'est pas franchi : la condition du « while » est le contraire de ce qu'on cherche.<br>⚠️ On répond avec le <b>premier</b> n qui convient, pas le dernier qui ne convient pas.<br>⚠️ Une baisse de 15 %, c'est multiplier par 0,85, pas par 0,15.</div>
+${FIG(nuage({ pts: pts(0, [...Array(11)].map((_, n) => 1000 * 1.05 ** n)), hl: [9], seuil: { y: 1500, l: '1 500 €' } }), `Exemple 1 : ${U(9)} est le premier point au-dessus du seuil.`)}
+<div class="retenir">À retenir : le seuil est le premier rang n où la condition est vraie ; vérifie toujours le rang d'avant.</div>`;
 }
 
 /* ================= niveaux ================= */
