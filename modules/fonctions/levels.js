@@ -174,13 +174,16 @@ function L1(d) {
 }
 function C1() {
   return `<h2>1. Image et antécédent</h2>
+<p class="intro">Une fonction transforme un nombre en un autre. Deux mots servent à dire qui est le nombre de départ et qui est le résultat : c'est le vocabulaire de tout le chapitre.</p>
 <div class="def">Une <b>fonction</b> f est une « machine » : on y met un nombre x, elle en donne <b>un seul</b> en sortie, noté <b>f(x)</b>.<br>
 Si <b>f(3) = 5</b> : <b>5 est l'image de 3</b> par f, et <b>3 est un antécédent de 5</b> par f.</div>
 ${machine('3', '5')}
-<div class="ex">f(−2) = 7 : l'image de −2 est 7 ; −2 est un antécédent de 7.</div>
-<div class="ex">Si f(1) = 4 et f(−1) = 4, alors 4 a deux antécédents : 1 et −1.</div>
-<div class="warn">⚠️ Ne confonds pas : l'<b>image</b> est le résultat (après le =), l'<b>antécédent</b> est le nombre de départ (entre les parenthèses).</div>
-<div class="warn">⚠️ Un nombre a <b>une seule image</b>, mais il peut avoir 0, 1 ou plusieurs antécédents.<br>⚠️ f(3) ne veut pas dire « f × 3 ».</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Écris l'égalité sous la forme <b>f(départ) = résultat</b>.</li><li>Le nombre <b>entre les parenthèses</b> est l'<b>antécédent</b>.</li><li>Le nombre <b>après le signe =</b> est l'<b>image</b>.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : lire une égalité</span><br>f(−2) = 7 : l'image de −2 est 7 ; −2 est un antécédent de 7.<br>La phrase « par g, 4 a pour image 0 » s'écrit <b>g(4) = 0</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : plusieurs antécédents</span><br>Si f(1) = 4 et f(−1) = 4, alors 4 a <b>deux</b> antécédents : 1 et −1. Mais 1 n'a qu'une seule image : 4.</div>
+${machine('1 ; −1', '4', 'f', true, 'f(1) = f(−1) = 4')}
+<div class="warn">⚠️ Ne confonds pas : l'<b>image</b> est le résultat (après le =), l'<b>antécédent</b> est le nombre de départ (entre les parenthèses).<br>⚠️ Un nombre a <b>une seule image</b>, mais il peut avoir 0, 1 ou plusieurs antécédents.<br>⚠️ f(3) ne veut pas dire « f × 3 » : c'est l'image de 3 par f.</div>
+<div class="retenir">À retenir : f(antécédent) = image.</div>`;
 }
 
 /* ---------- 2. lire une image ---------- */
@@ -203,11 +206,14 @@ function L2(d) {
 function C2() {
   const C = mkCurve('P1', 1, 1, -4);
   return `<h2>2. Lire une image sur un graphique</h2>
-<div class="def">La <b>courbe</b> de f est formée des points de coordonnées <b>(x ; f(x))</b>.<br>Pour lire l'image de a : on part de <b>a sur l'axe des abscisses</b> (horizontal), on va jusqu'à la courbe, puis on lit l'<b>ordonnée</b> sur l'axe vertical.</div>
-<div class="ex">Sur la courbe ci-dessous, on part de x = 3, on monte jusqu'à la courbe, on lit y = 0 : <b>f(3) = 0</b>. De même f(−1) = 0 et f(1) = −4.</div>
-${cDraw(C, { pts: [{ x: 3, y: 0, px: true, py: true, l: '(3 ; 0)' }, { x: 1, y: -4, px: true, py: true, l: '(1 ; −4)', c: VIO }] })}
-<div class="warn">⚠️ Erreur classique : lire l'axe des abscisses au lieu de l'axe des ordonnées. L'image se lit toujours sur l'axe <b>vertical</b>.</div>
-<div class="warn">⚠️ Une image peut être négative : le point est alors <b>sous</b> l'axe des abscisses.</div>`;
+<p class="intro">La courbe d'une fonction est comme une photo de toutes ses images : on peut y lire f(x) sans aucun calcul.</p>
+<div class="def">La <b>courbe</b> de f est formée des points de coordonnées <b>(x ; f(x))</b> : l'abscisse est le nombre de départ, l'ordonnée est son image.</div>
+<div class="methode"><b>Méthode</b> pour lire l'image de a<ol><li>Place-toi sur <b>a</b> sur l'axe des abscisses (horizontal).</li><li>Monte ou descends <b>verticalement</b> jusqu'à la courbe.</li><li>Va <b>horizontalement</b> jusqu'à l'axe des ordonnées et lis la valeur : c'est f(a).</li></ol></div>
+${cDraw(C, { pts: [{ x: 3, y: 0, px: true, py: true, l: '(3 ; 0)' }, { x: 1, y: -4, px: true, py: true, l: '(1 ; −4)', c: VIO }, { x: -2, y: 5, px: true, py: true, l: '(−2 ; 5)', c: GRN }] })}
+<div class="ex"><span class="q">Exemple 1 :</span><br>On part de x = 3, on monte jusqu'à la courbe : le point est sur l'axe des abscisses, donc <b>f(3) = 0</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : abscisse ou image négative</span><br>On part de x = 1 et on <b>descend</b> jusqu'à la courbe : on lit y = −4, donc <b>f(1) = −4</b>.<br>On part de x = −2 (à gauche de 0) : on lit <b>f(−2) = 5</b>.</div>
+<div class="warn">⚠️ Erreur classique : recopier le nombre de départ. L'image se lit toujours sur l'axe <b>vertical</b>.<br>⚠️ Une image peut être négative : le point est alors <b>sous</b> l'axe des abscisses.</div>
+<div class="retenir">À retenir : on part de l'axe horizontal, on lit l'image sur l'axe vertical.</div>`;
 }
 
 /* ---------- 3. lire des antécédents ---------- */
@@ -243,12 +249,14 @@ function L3(d) {
 function C3() {
   const C = mkCurve('P1', 1, 1, -4);
   return `<h2>3. Lire des antécédents sur un graphique</h2>
-<div class="def">Pour trouver les antécédents de k : on trace la droite <b>horizontale y = k</b>, on repère les points où elle rencontre la courbe, et on lit leurs <b>abscisses</b>.</div>
-<div class="ex">Ci-dessous, la droite y = −3 coupe la courbe en deux points d'abscisses 0 et 2 : <b>−3 a deux antécédents, 0 et 2</b>.</div>
+<p class="intro">Ici on fait le chemin à l'envers : on connaît le résultat et on cherche <b>tous</b> les nombres de départ qui le donnent.</p>
+<div class="def">Les antécédents de k sont les abscisses des points de la courbe dont l'<b>ordonnée vaut k</b>. Il peut y en avoir 0, 1, 2 ou plus.</div>
+<div class="methode"><b>Méthode</b> pour les antécédents de k<ol><li>Trace (au doigt) la droite <b>horizontale y = k</b>.</li><li>Repère <b>tous</b> les points où elle coupe ou touche la courbe.</li><li>Lis l'<b>abscisse</b> de chacun sur l'axe horizontal.</li></ol></div>
 ${cDraw(C, { h: { y: -3, l: 'y = −3' }, pts: [{ x: 0, y: -3, px: true, c: RED }, { x: 2, y: -3, px: true, c: RED }], xl: [{ x: 0, l: '0', c: RED, below: false }, { x: 2, l: '2', c: RED, below: false }] })}
-<div class="ex">La droite y = −4 touche la courbe en un seul point : −4 a <b>un seul</b> antécédent, 1.<br>La droite y = −6 ne rencontre pas la courbe : −6 n'a <b>aucun</b> antécédent.</div>
-<div class="warn">⚠️ Ne confonds pas image et antécédent : l'antécédent se lit sur l'axe <b>horizontal</b>.</div>
-<div class="warn">⚠️ N'en oublie pas : un nombre peut avoir plusieurs antécédents. Suis toute la droite horizontale !</div>`;
+<div class="ex"><span class="q">Exemple 1 : deux antécédents</span><br>La droite y = −3 coupe la courbe en deux points, d'abscisses 0 et 2 : <b>−3 a deux antécédents, 0 et 2</b>. On vérifie : f(0) = −3 et f(2) = −3.</div>
+<div class="ex"><span class="q">Exemple 2 : un seul, ou aucun</span><br>La droite y = −4 touche la courbe en un seul point (le plus bas) : −4 a <b>un seul</b> antécédent, 1.<br>La droite y = −6 passe sous la courbe : −6 n'a <b>aucun</b> antécédent.</div>
+<div class="warn">⚠️ Ne confonds pas image et antécédent : l'antécédent se lit sur l'axe <b>horizontal</b>.<br>⚠️ N'en oublie pas : suis la droite horizontale <b>jusqu'au bout</b>, des deux côtés.</div>
+<div class="retenir">À retenir : antécédents de k → droite horizontale y = k → abscisses des points d'intersection.</div>`;
 }
 
 /* ---------- 4. calculer une image ---------- */
@@ -280,14 +288,16 @@ function L4(d) {
 }
 function C4() {
   return `<h2>4. Calculer une image avec une formule</h2>
-<div class="def">Si f est donnée par une formule, par exemple <b>f(x) = 3x − 2</b>, l'image de a s'obtient en <b>remplaçant x par a</b> dans la formule.</div>
-<div class="ex">f(x) = 3x − 2 : f(4) = 3 × 4 − 2 = 12 − 2 = <b>10</b></div>
-<div class="ex">f(x) = 3x − 2 : f(−5) = 3 × (−5) − 2 = −15 − 2 = <b>−17</b></div>
-<div class="ex">g(x) = x<sup>2</sup> + 2x − 1 : g(−3) = (−3)<sup>2</sup> + 2 × (−3) − 1 = 9 − 6 − 1 = <b>2</b></div>
-<div class="warn">⚠️ Mets les nombres négatifs <b>entre parenthèses</b> : (−3)<sup>2</sup> = 9, alors que −3<sup>2</sup> = −9.</div>
-<div class="warn">⚠️ 3x veut dire 3 × x : avec x = −5, on calcule 3 × (−5), pas 3 − 5 ni 35.</div>
+<p class="intro">Quand f est donnée par une formule, plus besoin de graphique : on calcule l'image exacte en remplaçant x par le nombre.</p>
+<div class="def">Si f est donnée par une formule, par exemple <b>f(x) = 3x − 2</b>, l'image de a s'obtient en <b>remplaçant chaque x par a</b> dans la formule.</div>
+<div class="methode"><b>Méthode</b><ol><li>Recopie la formule en remplaçant <b>chaque</b> x par le nombre, <b>entre parenthèses</b> s'il est négatif.</li><li>Calcule en respectant les priorités : <b>carrés</b>, puis <b>multiplications</b>, puis additions et soustractions.</li><li>Attention aux signes : (−) × (−) = (+).</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 :</span><br>f(x) = 3x − 2<br>f(4) = 3 × 4 − 2 = 12 − 2 = <b>10</b><br>f(−5) = 3 × (−5) − 2 = −15 − 2 = <b>−17</b></div>
+<div class="ex"><span class="q">Exemple 2 : avec un carré</span><br>g(x) = x<sup>2</sup> + 2x − 1<br>g(−3) = (−3)<sup>2</sup> + 2 × (−3) − 1<br>= 9 − 6 − 1 = <b>2</b></div>
+${graph({ xr: [-2, 6], yr: [-4, 12], fs: [{ f: x => 3 * x - 2, l: 'y = 3x − 2' }], pts: [{ x: 4, y: 10, px: true, py: true, l: '(4 ; 10)' }] })}
 <p>Le point (4 ; 10) est sur la courbe de f : sa hauteur est l'image de 4.</p>
-${graph({ xr: [-2, 6], yr: [-4, 12], fs: [{ f: x => 3 * x - 2, l: 'y = 3x − 2' }], pts: [{ x: 4, y: 10, px: true, py: true, l: '(4 ; 10)' }] })}`;
+<div class="ex"><span class="q">Exemple 3 : forme produit</span><br>h(x) = (x + 2)(x − 3) : h(−4) = (−4 + 2) × (−4 − 3) = (−2) × (−7) = <b>14</b>.</div>
+<div class="warn">⚠️ Mets les nombres négatifs <b>entre parenthèses</b> : (−3)<sup>2</sup> = 9, alors que −3<sup>2</sup> = −9. Un carré est toujours positif.<br>⚠️ 3x veut dire 3 × x : avec x = −5, on calcule 3 × (−5), pas 3 − 5 ni 35.</div>
+<div class="retenir">À retenir : remplacer chaque x par le nombre entre parenthèses, puis calculer avec les priorités.</div>`;
 }
 
 /* ---------- 5. tableau de valeurs ---------- */
@@ -337,12 +347,15 @@ function L5(d) {
 function C5() {
   const f = x => x * x - 2;
   return `<h2>5. Tableau de valeurs</h2>
+<p class="intro">Un tableau de valeurs range quelques images d'une fonction. On peut y lire des images, des antécédents, ou le compléter avec la formule.</p>
 <div class="def">Un <b>tableau de valeurs</b> d'une fonction f donne, pour quelques nombres x (1<sup>re</sup> ligne), leurs images f(x) (2<sup>e</sup> ligne).<br>Chaque colonne correspond à un <b>point (x ; f(x))</b> de la courbe.</div>
 ${tableHTML([-2, -1, 0, 1, 2], ['2', '−1', '−2', '−1', '2'])}
-<div class="ex">Avec f(x) = x<sup>2</sup> − 2 : f(−2) = (−2)<sup>2</sup> − 2 = 4 − 2 = 2.<br>L'image de 1 est −1 (on lit <b>sous</b> le 1). Les antécédents de −1 sont <b>−1 et 1</b> (on cherche −1 dans la 2<sup>e</sup> ligne).</div>
-<div class="warn">⚠️ L'image se lit dans la ligne f(x), sous le x ; l'antécédent se lit dans la ligne des x, au-dessus de la valeur cherchée.</div>
-<div class="warn">⚠️ Une valeur peut apparaître plusieurs fois dans la 2<sup>e</sup> ligne : elle a alors plusieurs antécédents.</div>
-${graph({ xr: [-3, 3], yr: [-3, 3], fs: [{ f, l: 'y = x² − 2' }], pts: [-2, -1, 0, 1, 2].map(x => ({ x, y: f(x), c: VIO })) })}`;
+<div class="methode"><b>Méthode</b><ol><li><b>Image</b> de a : cherche a dans la ligne des <b>x</b>, l'image est juste <b>en dessous</b>.</li><li><b>Antécédents</b> de k : cherche k dans la ligne des <b>f(x)</b> (peut-être plusieurs fois !), les antécédents sont <b>au-dessus</b>.</li><li><b>Compléter</b> : pour chaque case vide, calcule f(x) avec la formule.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : lire le tableau</span><br>Ici f(x) = x<sup>2</sup> − 2.<br>L'image de 1 est −1 (on lit <b>sous</b> le 1).<br>Les antécédents de −1 sont <b>−1 et 1</b> (−1 apparaît deux fois dans la 2<sup>e</sup> ligne).</div>
+<div class="ex"><span class="q">Exemple 2 : compléter</span><br>f(−2) = (−2)<sup>2</sup> − 2 = 4 − 2 = <b>2</b><br>f(0) = 0<sup>2</sup> − 2 = <b>−2</b></div>
+${graph({ xr: [-3, 3], yr: [-3, 3], fs: [{ f, l: 'y = x² − 2' }], pts: [-2, -1, 0, 1, 2].map(x => ({ x, y: f(x), c: VIO })) })}
+<div class="warn">⚠️ L'image se lit dans la ligne f(x), sous le x ; l'antécédent se lit dans la ligne des x, au-dessus de la valeur cherchée.<br>⚠️ Une valeur peut apparaître plusieurs fois dans la 2<sup>e</sup> ligne : elle a alors plusieurs antécédents.<br>⚠️ Le carré d'un nombre négatif est positif : (−2)<sup>2</sup> = 4.</div>
+<div class="retenir">À retenir : ligne du haut = antécédents, ligne du bas = images.</div>`;
 }
 
 /* ---------- 6. fonction linéaire ---------- */
@@ -386,14 +399,14 @@ function lineG(a, b, o = {}) {
 }
 function C6() {
   return `<h2>6. Fonction linéaire f(x) = ax</h2>
-<div class="def">Une fonction <b>linéaire</b> s'écrit <b>f(x) = ax</b>, où a est un nombre fixé : le <b>coefficient</b>.<br>Sa courbe est une <b>droite qui passe par l'origine</b>. Elle traduit une situation de <b>proportionnalité</b> : f(x) est proportionnel à x, a est le coefficient de proportionnalité.</div>
-<div class="ex">Si f est linéaire et f(4) = 12, alors 12 = a × 4, donc <b>a = 12 ÷ 4 = 3</b> : f(x) = 3x.</div>
-<div class="ex">Si f(−2) = 7 : a = 7 ÷ (−2) = <b>−3,5</b>.</div>
-<div class="ex">Sur le graphique : à partir de l'origine, quand on avance de 1, la droite monte de a.</div>
+<p class="intro">Les fonctions linéaires traduisent la <b>proportionnalité</b> : prix au kilo, vitesse constante, pourcentage…</p>
+<div class="def">Une fonction <b>linéaire</b> s'écrit <b>f(x) = ax</b>, où a est un nombre fixé : le <b>coefficient</b>.<br>Sa courbe est une <b>droite qui passe par l'origine</b>. f(x) est proportionnel à x, et a est le coefficient de proportionnalité.</div>
+<div class="methode"><b>Méthode</b> pour trouver a<ol><li>Avec une image connue : f(x) = a × x, donc <b>a = f(x) ÷ x</b>.</li><li>Avec un tableau : divise une image par son x (c'est le même nombre dans chaque colonne).</li><li>Sur le graphique : à partir de l'origine, avance de 1 vers la droite ; la droite <b>monte de a</b> (ou descend si a &lt; 0).</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 :</span><br>f est linéaire et f(4) = 12.<br>12 = a × 4, donc <b>a = 12 ÷ 4 = 3</b> : f(x) = 3x.<br>Puis f(10) = 3 × 10 = 30.</div>
+<div class="ex"><span class="q">Exemple 2 : a négatif ou décimal</span><br>f(−2) = 7 : a = 7 ÷ (−2) = <b>−3,5</b>.<br>Sur le graphique ci-dessous : on avance de 2, on monte de 3, donc a = 3 ÷ 2 = <b>1,5</b>.</div>
 ${graph({ xr: [-4, 5], yr: [-4, 8], fs: [{ f: x => 1.5 * x, l: 'y = 1,5x' }], pts: [{ x: 2, y: 3, px: true, py: true, l: '(2 ; 3)' }], tri: { x: 0, y: 0, dx: 2, dy: 3 } })}
-<p>Ici : on avance de 2, on monte de 3, donc a = 3 ÷ 2 = 1,5.</p>
-<div class="warn">⚠️ a = f(x) ÷ x, pas x ÷ f(x).</div>
-<div class="warn">⚠️ Une droite qui ne passe pas par l'origine ne représente pas une fonction linéaire.</div>`;
+<div class="warn">⚠️ a = f(x) ÷ x, pas x ÷ f(x), et pas f(x) − x.<br>⚠️ Une droite qui ne passe pas par l'origine ne représente pas une fonction linéaire.</div>
+<div class="retenir">À retenir : linéaire ⇔ f(x) = ax ⇔ droite par l'origine ⇔ proportionnalité.</div>`;
 }
 
 /* ---------- 7. fonction affine : a et b ---------- */
@@ -427,13 +440,14 @@ function L7(d) {
 }
 function C7() {
   return `<h2>7. Fonction affine f(x) = ax + b</h2>
+<p class="intro">Les fonctions affines ajoutent un « départ » b à la proportionnalité : un abonnement plus un prix par séance, par exemple.</p>
 <div class="def">Une fonction <b>affine</b> s'écrit <b>f(x) = ax + b</b>. a est le <b>coefficient directeur</b>, b l'<b>ordonnée à l'origine</b>.<br>Sa courbe est une <b>droite</b>. Cas particuliers : b = 0 → fonction linéaire ; a = 0 → fonction constante.</div>
-<div class="ex">f(x) = 2x − 3 : <b>a = 2, b = −3</b>.</div>
-<div class="ex">g(x) = 5 − 4x = −4x + 5 : <b>a = −4, b = 5</b> (on range les termes).</div>
-<div class="ex">h(x) = 2(x + 3) = 2x + 6 : a = 2, b = 6. &nbsp; k(x) = 7 : a = 0, b = 7.</div>
+<div class="methode"><b>Méthode</b> pour trouver a et b<ol><li>Si besoin, <b>développe</b> ou <b>range</b> pour écrire f(x) = ax + b.</li><li><b>a</b> = le nombre qui multiplie x, <b>avec son signe</b> (« x » seul → 1 ; « −x » → −1 ; pas de x → 0).</li><li><b>b</b> = le nombre seul (pas de nombre seul → 0).</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 :</span><br>f(x) = 2x − 3 : <b>a = 2, b = −3</b>.<br>g(x) = 5 − 4x = −4x + 5 : <b>a = −4, b = 5</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : à transformer d'abord</span><br>h(x) = 2(x + 3) = 2x + 6 : a = 2, b = 6.<br>k(x) = x/2 + 1 = 0,5x + 1 : a = 0,5, b = 1.<br>m(x) = 7 : a = 0, b = 7. &nbsp; n(x) = −x : a = −1, b = 0.</div>
 ${graph({ xr: [-4, 5], yr: [-5, 6], fs: [{ f: x => 2 * x - 3, l: 'y = 2x − 3' }], pts: [{ x: 0, y: -3, l: 'b = −3', c: VIO, anchor: 'end' }], tri: { x: 0, y: -3, dx: 1, dy: 2 } })}
-<div class="warn">⚠️ Erreur classique : <b>a et b inversés</b>. a est toujours le nombre qui multiplie x, même s'il est écrit en second.</div>
-<div class="warn">⚠️ Le signe fait partie du coefficient : dans 5 − 4x, a = −4.</div>`;
+<div class="warn">⚠️ Erreur classique : <b>a et b inversés</b>. a est toujours le nombre qui multiplie x, même s'il est écrit en second.<br>⚠️ Le signe fait partie du coefficient : dans 5 − 4x, a = −4.<br>⚠️ Dans 2(x + 3), b n'est pas 3 : on développe, b = 6.</div>
+<div class="retenir">À retenir : f(x) = ax + b, a multiplie x, b est seul ; b = f(0).</div>`;
 }
 
 /* ---------- 8. lire a et b sur le graphique ---------- */
@@ -453,12 +467,15 @@ function L8(d) {
 }
 function C8() {
   return `<h2>8. Lire a et b sur le graphique</h2>
+<p class="intro">Sur la droite d'une fonction affine, on peut lire directement ses deux coefficients, sans aucun calcul compliqué.</p>
 <div class="def">Pour la droite de f(x) = ax + b :<br>• <b>b</b> est l'ordonnée du point où la droite coupe l'<b>axe des ordonnées</b> (car f(0) = b) ;<br>• <b>a</b> : quand on avance de <b>1</b> vers la droite, la droite <b>monte de a</b> (ou descend si a &lt; 0).</div>
-${graph({ xr: [-4, 5], yr: [-4, 6], fs: [{ f: x => -2 * x + 4, l: 'y = −2x + 4' }], pts: [{ x: 0, y: 4, l: 'b = 4', c: VIO, anchor: 'end' }], tri: { x: 0, y: 4, dx: 1, dy: -2 } })}
-<div class="ex">Ci-dessus : la droite coupe l'axe vertical en 4, donc b = 4. On avance de 1, elle descend de 2 : a = −2. <b>f(x) = −2x + 4</b>.</div>
-<div class="ex">Si on avance de 2 et qu'on monte de 1 : a = 1 ÷ 2 = 0,5.</div>
-<div class="warn">⚠️ Ne pas inverser a et b. Ne pas lire b sur l'axe des abscisses : b est sur l'axe <b>vertical</b>.</div>
-<div class="warn">⚠️ Droite qui descend → a négatif. Droite horizontale → a = 0.</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Lis <b>b</b> : là où la droite coupe l'axe <b>vertical</b>.</li><li>À partir de ce point, avance de 1 carreau vers la droite (ou de 2 si ça tombe mieux).</li><li>Compte de combien la droite monte (+) ou descend (−). Si tu as avancé de 2, divise par 2 : c'est <b>a</b>.</li></ol></div>
+<div class="cols">${graph({ xr: [-4, 5], yr: [-4, 6], fs: [{ f: x => -2 * x + 4, l: 'y = −2x + 4' }], pts: [{ x: 0, y: 4, l: 'b = 4', c: VIO, anchor: 'end' }], tri: { x: 0, y: 4, dx: 1, dy: -2 } })}
+${graph({ xr: [-4, 5], yr: [-4, 6], fs: [{ f: x => 0.5 * x - 1, l: 'y = 0,5x − 1' }], pts: [{ x: 0, y: -1, l: 'b = −1', c: VIO, anchor: 'end' }], tri: { x: 0, y: -1, dx: 2, dy: 1 } })}</div>
+<div class="ex"><span class="q">Exemple 1 : droite qui descend</span><br>À gauche : la droite coupe l'axe vertical en 4, donc b = 4. On avance de 1, elle descend de 2 : a = −2. <b>f(x) = −2x + 4</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : pente « en demi »</span><br>À droite : b = −1. En avançant de 1, on ne tombe pas sur un nœud du quadrillage ; on avance de 2 et on monte de 1 : a = 1 ÷ 2 = <b>0,5</b>. <b>f(x) = 0,5x − 1</b>.</div>
+<div class="warn">⚠️ Ne pas inverser a et b. Ne pas lire b sur l'axe des abscisses : b est sur l'axe <b>vertical</b>.<br>⚠️ Droite qui descend → a négatif. Droite horizontale → a = 0.<br>⚠️ a se mesure en avançant <b>horizontalement</b> et en comptant la variation <b>verticale</b>, pas l'inverse.</div>
+<div class="retenir">À retenir : b sur l'axe vertical ; a = ce qu'on monte quand on avance de 1.</div>`;
 }
 
 /* ---------- 9. droite passant par deux points ---------- */
@@ -489,12 +506,15 @@ function L9(d) {
 }
 function C9() {
   return `<h2>9. La fonction affine passant par deux points</h2>
+<p class="intro">Deux points suffisent pour tracer une droite… et donc pour retrouver la formule de la fonction affine.</p>
 <div class="def">Si la droite de f(x) = ax + b passe par A(x<sub>A</sub> ; y<sub>A</sub>) et B(x<sub>B</sub> ; y<sub>B</sub>) :<br>
 <b>a = (y<sub>B</sub> − y<sub>A</sub>) ÷ (x<sub>B</sub> − x<sub>A</sub>)</b> &nbsp; (variation des y ÷ variation des x)<br>puis on trouve <b>b</b> en écrivant y<sub>A</sub> = a × x<sub>A</sub> + b.</div>
-<div class="ex">f(1) = 5 et f(3) = 9 : A(1 ; 5), B(3 ; 9).<br>a = (9 − 5) ÷ (3 − 1) = 4 ÷ 2 = <b>2</b>.<br>5 = 2 × 1 + b, donc b = 5 − 2 = <b>3</b>. &nbsp; f(x) = 2x + 3.<br>Vérification : f(3) = 2 × 3 + 3 = 9 ✓</div>
+<div class="methode"><b>Méthode</b><ol><li>Calcule <b>a</b> : (y<sub>B</sub> − y<sub>A</sub>) ÷ (x<sub>B</sub> − x<sub>A</sub>), dans le <b>même ordre</b> en haut et en bas.</li><li>Remplace x et y par les coordonnées de A dans y = ax + b, et calcule <b>b</b>.</li><li><b>Vérifie</b> avec le point B.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 :</span><br>f(1) = 5 et f(3) = 9 : A(1 ; 5), B(3 ; 9).<br>a = (9 − 5) ÷ (3 − 1) = 4 ÷ 2 = <b>2</b>.<br>5 = 2 × 1 + b, donc b = 5 − 2 = <b>3</b>.<br>f(x) = 2x + 3. Vérification : f(3) = 2 × 3 + 3 = 9 ✓</div>
 ${graph({ xr: [-3, 5], yr: [-2, 11], fs: [{ f: x => 2 * x + 3, l: 'y = 2x + 3' }], pts: [{ x: 1, y: 5, l: 'A', c: VIO }, { x: 3, y: 9, l: 'B', c: VIO }, { x: 0, y: 3, l: 'b = 3', c: ORA, anchor: 'end' }], tri: { x: 1, y: 5, dx: 2, dy: 4 } })}
-<div class="warn">⚠️ Même ordre en haut et en bas : (y<sub>B</sub> − y<sub>A</sub>) ÷ (x<sub>B</sub> − x<sub>A</sub>). Et pas (x ÷ y) !</div>
-<div class="warn">⚠️ Vérifie toujours avec le 2<sup>e</sup> point.</div>`;
+<div class="ex"><span class="q">Exemple 2 : avec des négatifs</span><br>f(−2) = 7 et f(4) = −5 : a = (−5 − 7) ÷ (4 − (−2)) = −12 ÷ 6 = <b>−2</b>.<br>7 = −2 × (−2) + b = 4 + b, donc <b>b = 3</b> : f(x) = −2x + 3.<br>Vérification : f(4) = −8 + 3 = −5 ✓</div>
+<div class="warn">⚠️ Même ordre en haut et en bas : (y<sub>B</sub> − y<sub>A</sub>) ÷ (x<sub>B</sub> − x<sub>A</sub>). Et pas les x divisés par les y !<br>⚠️ Soustraire un négatif, c'est ajouter : 4 − (−2) = 6.<br>⚠️ Vérifie toujours avec le 2<sup>e</sup> point.</div>
+<div class="retenir">À retenir : a = variation des y ÷ variation des x, puis b avec un des points.</div>`;
 }
 
 /* ---------- 10. résoudre f(x) = k ---------- */
@@ -528,12 +548,14 @@ function L10(d) {
 }
 function C10() {
   return `<h2>10. Résoudre f(x) = k</h2>
+<p class="intro">Résoudre f(x) = k, c'est répondre à la question : « quel nombre de départ donne le résultat k ? »</p>
 <div class="def">Résoudre f(x) = k, c'est trouver les <b>antécédents</b> de k par f.<br>• <b>Par le calcul</b> (f affine) : on résout l'équation ax + b = k.<br>• <b>Sur le graphique</b> : on trace la droite horizontale y = k et on lit les abscisses des points d'intersection.</div>
-<div class="ex">f(x) = 3x − 4. Résoudre f(x) = 5 :<br>3x − 4 = 5 ⇔ 3x = 9 ⇔ <b>x = 3</b>. Vérification : f(3) = 9 − 4 = 5 ✓</div>
+<div class="methode"><b>Méthode</b> par le calcul<ol><li>Écris l'équation ax + b = k.</li><li><b>Enlève b</b> des deux côtés (ajoute-le s'il est négatif) : ax = k − b.</li><li><b>Divise</b> les deux côtés par a : x = (k − b) ÷ a.</li><li>Vérifie en calculant f(x).</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 :</span><br>f(x) = 3x − 4. Résoudre f(x) = 5 :<br>3x − 4 = 5<br>⇔ 3x = 9<br>⇔ <b>x = 3</b>.<br>Vérification : f(3) = 9 − 4 = 5 ✓<br>Sur le graphique : la droite y = 5 coupe la droite de f en x = 3.</div>
 ${graph({ xr: [-2, 5], yr: [-5, 8], fs: [{ f: x => 3 * x - 4, l: 'y = 3x − 4' }], h: { y: 5, l: 'y = 5' }, pts: [{ x: 3, y: 5, px: true, c: RED }], xl: [{ x: 3, l: '3', c: RED }] })}
-<div class="ex">Si f(x) = 2 pour tout x (fonction constante), l'équation f(x) = 5 n'a <b>aucune solution</b>.</div>
-<div class="warn">⚠️ Ne pas calculer f(5) à la place ! On cherche x, pas l'image de 5.</div>
-<div class="warn">⚠️ Fais la même opération des deux côtés : on <b>enlève</b> b, puis on <b>divise</b> par a.</div>`;
+<div class="ex"><span class="q">Exemple 2 : a négatif, solution décimale</span><br>g(x) = −2x + 1. Résoudre g(x) = 6 : −2x = 6 − 1 = 5 ⇔ x = 5 ÷ (−2) = <b>−2,5</b>.<br>Cas particulier : si h(x) = 2 pour tout x (fonction constante), l'équation h(x) = 5 n'a <b>aucune solution</b>.</div>
+<div class="warn">⚠️ Ne calcule pas f(k) à la place ! On cherche x, pas l'image de k.<br>⚠️ Fais la même opération des deux côtés : on <b>enlève</b> b (attention au signe), puis on <b>divise</b> par a.<br>⚠️ Garde le signe de a quand tu divises : 5 ÷ (−2) = −2,5.</div>
+<div class="retenir">À retenir : f(x) = k → enlever b, puis diviser par a.</div>`;
 }
 
 /* ---------- 11. sens de variation ---------- */
@@ -575,11 +597,14 @@ function L11(d) {
 }
 function C11() {
   return `<h2>11. Sens de variation et signe de a</h2>
+<p class="intro">Une seule information, le signe de a, dit si la fonction affine « monte » ou « descend ». Cela permet de comparer des images sans les calculer.</p>
 <div class="def">Pour f(x) = ax + b :<br>• <b>a &gt; 0</b> : f est <b>croissante</b> (la droite monte) ;<br>• <b>a &lt; 0</b> : f est <b>décroissante</b> (la droite descend) ;<br>• <b>a = 0</b> : f est <b>constante</b> (droite horizontale).</div>
 ${graph({ xr: [-4, 4], yr: [-5, 5], fs: [{ f: x => 2 * x - 1, l: 'a > 0', c: GRN }, { f: x => -x + 2, l: 'a < 0', c: RED }, { f: () => -3, l: 'a = 0', c: VIO }] })}
-<div class="ex">f(x) = 7 − 3x : a = −3 &lt; 0, f est décroissante.</div>
-<div class="ex">Croissante : si x<sub>1</sub> &lt; x<sub>2</sub> alors f(x<sub>1</sub>) &lt; f(x<sub>2</sub>) (l'ordre est conservé).<br>Décroissante : si x<sub>1</sub> &lt; x<sub>2</sub> alors f(x<sub>1</sub>) &gt; f(x<sub>2</sub>) (l'ordre est renversé).</div>
-<div class="warn">⚠️ C'est le signe de <b>a</b> qui compte, pas celui de b : f(x) = −5 + 2x est croissante.</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Repère a, le nombre devant x (range d'abord sous la forme ax + b si besoin).</li><li>Regarde seulement son <b>signe</b> : + → croissante, − → décroissante, 0 → constante.</li><li>Pour comparer f(x<sub>1</sub>) et f(x<sub>2</sub>) : compare x<sub>1</sub> et x<sub>2</sub>, puis garde l'ordre (croissante) ou <b>renverse-le</b> (décroissante).</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 :</span><br>f(x) = 7 − 3x : a = −3 &lt; 0, f est <b>décroissante</b>.<br>g(x) = −5 + 2x : a = 2 &gt; 0, g est <b>croissante</b> (même si b est négatif).</div>
+<div class="ex"><span class="q">Exemple 2 : comparer sans calculer</span><br>f(x) = −4x + 9. On a −12 &lt; 25 et f est décroissante (a = −4), donc l'ordre est renversé : <b>f(−12) &gt; f(25)</b>.<br>(Calcul pour vérifier : f(−12) = 57 et f(25) = −91.)</div>
+<div class="warn">⚠️ C'est le signe de <b>a</b> qui compte, pas celui de b : f(x) = −5 + 2x est croissante.<br>⚠️ Sur un graphique, lis la droite <b>de gauche à droite</b>.</div>
+<div class="retenir">À retenir : a &gt; 0 → croissante (l'ordre est conservé) ; a &lt; 0 → décroissante (l'ordre est renversé).</div>`;
 }
 
 /* ---------- 12. défis ---------- */
@@ -638,13 +663,15 @@ function L12(d) {
 }
 function C12() {
   return `<h2>12. Défis : droites, forfaits, vers la 2<sup>de</sup></h2>
-<div class="def"><b>Intersection de deux droites</b> : au point commun, f(x) = g(x). On résout cette équation pour trouver x, puis y = f(x).</div>
-<div class="ex">f(x) = 2x + 1 et g(x) = −x + 7 : 2x + 1 = −x + 7 ⇔ 3x = 6 ⇔ x = 2 ; y = f(2) = 5. <b>I(2 ; 5)</b>.</div>
+<p class="intro">On utilise tout le chapitre pour résoudre des problèmes : point commun de deux droites, choix du meilleur tarif, et un avant-goût de la fonction carré.</p>
+<div class="def"><b>Intersection de deux droites</b> : au point commun, f(x) = g(x). On résout cette équation pour trouver x, puis on calcule y = f(x).</div>
+<div class="methode"><b>Méthode</b><ol><li>Écris f(x) = g(x), regroupe les x d'un côté et les nombres de l'autre, trouve x.</li><li>Calcule y = f(x) (et vérifie avec g(x)).</li><li>Pour deux tarifs, la même équation donne le nombre d'entrées où ils coûtent pareil ; avant et après, compare les prix.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : intersection</span><br>f(x) = 2x + 1 et g(x) = −x + 7.<br>2x + 1 = −x + 7 ⇔ 3x = 6 ⇔ x = 2.<br>y = f(2) = 5 et g(2) = 5 ✓<br><b>I(2 ; 5)</b>.</div>
 ${graph({ xr: [-2, 6], yr: [-2, 9], fs: [{ f: x => 2 * x + 1, l: 'f' }, { f: x => -x + 7, l: 'g', c: GRN }], pts: [{ x: 2, y: 5, px: true, py: true, l: 'I(2 ; 5)', c: RED }] })}
-<div class="ex"><b>Comparer deux forfaits</b> : A(n) = 8n (8 € l'entrée) et B(n) = 30 + 5n. Même prix quand 8n = 30 + 5n ⇔ 3n = 30 ⇔ n = 10. Moins de 10 entrées : A est moins cher ; plus de 10 : B.</div>
-<div class="ex"><b>Vers la 2<sup>de</sup></b> : f(x) = x<sup>2</sup>. Les antécédents de 9 sont <b>3 et −3</b> ; 0 a un seul antécédent ; −4 n'en a aucun (un carré n'est jamais négatif).<br>f(x) = (x − 2)(x + 5) : les antécédents de 0 sont 2 et −5 (produit nul).</div>
-<div class="warn">⚠️ Pour l'intersection, n'oublie pas de calculer y après avoir trouvé x.</div>
-<div class="warn">⚠️ x<sup>2</sup> = 9 a <b>deux</b> solutions : 3 et −3.</div>`;
+<div class="ex"><span class="q">Exemple 2 : comparer deux forfaits</span><br>A(n) = 8n (8 € l'entrée) et B(n) = 30 + 5n (abonnement 30 €, puis 5 € l'entrée).<br>Même prix quand 8n = 30 + 5n ⇔ 3n = 30 ⇔ <b>n = 10</b>. Moins de 10 entrées : A est moins cher ; plus de 10 : B.</div>
+<div class="ex"><span class="q">Exemple 3 : vers la 2<sup>de</sup></span><br>f(x) = x<sup>2</sup> : les antécédents de 9 sont <b>3 et −3</b> ; 0 a un seul antécédent ; −4 n'en a aucun (un carré n'est jamais négatif).<br>f(x) = (x − 2)(x + 5) : les antécédents de 0 sont 2 et −5 (un produit est nul si l'un des facteurs est nul).</div>
+<div class="warn">⚠️ Pour l'intersection, n'oublie pas de calculer y après avoir trouvé x.<br>⚠️ Pour les forfaits, on demande souvent un <b>nombre d'entrées</b>, pas un prix.<br>⚠️ x<sup>2</sup> = 9 a <b>deux</b> solutions : 3 et −3.</div>
+<div class="retenir">À retenir : point commun ⇔ f(x) = g(x) ; on trouve x, puis y.</div>`;
 }
 
 /* ================= export ================= */

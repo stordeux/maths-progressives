@@ -63,12 +63,17 @@ function L1(d) {
 }
 function C1() {
   const P = { A: pol([0, 0], 150, 0), B: [0, 0], C: pol([0, 0], 140, 50) };
+  const E = [0, 0], Q = { E, D: pol(E, 140, 0), F: pol(E, 140, 55), G: pol(E, 140, 120) };
   return `<h2>1. Nommer un angle</h2>
+<p class="intro">Pour parler d'un angle sans se tromper, on lui donne un nom de trois lettres. Tout le reste du chapitre utilise ces noms !</p>
 <div class="def">Un <b>angle</b> est formé par deux demi-droites de même origine. Cette origine est le <b>sommet</b> de l'angle, les demi-droites sont ses <b>côtés</b>.<br>On le nomme avec <b>trois lettres</b>, la lettre du <b>sommet au milieu</b>, et on met un chapeau : ${H('ABC')}.</div>
-${figure({ P, segs: [['B', 'A'], ['B', 'C']], arcs: [{ v: 'B', a: 'A', b: 'C', r: 34 }], width: 360 })}
-<div class="ex">Sommet B, côtés [BA) et [BC) : c'est l'angle ${H('ABC')}, qu'on peut aussi lire ${H('CBA')}.</div>
-<div class="warn">⚠️ ${H('BAC')} n'est <b>pas</b> le même angle : son sommet est A ! Le sommet est <b>toujours au milieu</b>.</div>
-<div class="warn">⚠️ La longueur des côtés dessinés ne change pas l'angle : seul compte l'« écartement ».</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Repère le <b>sommet</b> : le point où les deux côtés de l'angle marqué se rejoignent.</li><li>Repère un point sur <b>chacun</b> des deux côtés de l'angle marqué.</li><li>Écris : un point d'un côté, puis le <b>sommet</b>, puis le point de l'autre côté.</li></ol></div>
+<div class="cols">${figure({ P, segs: [['B', 'A'], ['B', 'C']], arcs: [{ v: 'B', a: 'A', b: 'C', r: 34 }], width: 300, aria: 'angle ABC' })}
+${figure({ P: Q, segs: [['E', 'D'], ['E', 'F'], ['E', 'G']], arcs: [{ v: 'E', a: 'F', b: 'G', r: 36 }], lab: { E: 240 }, width: 300, aria: 'trois demi-droites de sommet E' })}</div>
+<div class="ex"><span class="q">Exemple 1 : un seul angle</span><br>Sommet B, côtés [BA) et [BC) : c'est l'angle ${H('ABC')}, qu'on peut aussi lire ${H('CBA')} (c'est le même).</div>
+<div class="ex"><span class="q">Exemple 2 : plusieurs angles au même sommet</span><br>Sur la 2<sup>e</sup> figure, trois demi-droites partent de E. L'angle marqué a pour côtés [EF) et [EG) : c'est ${H('FEG')}.<br>${H('DEF')} est l'autre petit angle, et ${H('DEG')} est le grand angle qui contient les deux.</div>
+<div class="warn">⚠️ ${H('BAC')} n'est <b>pas</b> le même angle que ${H('ABC')} : son sommet est A ! Le sommet est <b>toujours au milieu</b>.<br>⚠️ Avec plusieurs demi-droites, vérifie que les deux lettres extérieures sont bien sur les côtés de l'angle <b>marqué</b>.<br>⚠️ La longueur des côtés dessinés ne change pas l'angle : seul compte l'« écartement ».</div>
+<div class="retenir">À retenir : trois lettres, et la lettre du sommet toujours au milieu.</div>`;
 }
 
 /* =========================================================================================
@@ -96,18 +101,24 @@ function C2() {
   const O = k => [k * 175, 0];
   const P = {}, segs = [], arcs = [], rights = [], texts = [];
   [[50, 'aigu'], [90, 'droit'], [130, 'obtus'], [180, 'plat']].forEach(([m, n], k) => {
-    const V = O(k), A = pol(V, 70, m === 180 ? 0 : 0), C = pol(V, 70, m);
+    const V = O(k), A = pol(V, 70, 0), C = pol(V, 70, m);
     const p = 'abcd'[k];
     P[p + 1] = A; P[p + 2] = V; P[p + 3] = C;
     segs.push([p + 2, p + 1], [p + 2, p + 3]);
     if (m === 90) rights.push({ v: p + 2, a: p + 1, b: p + 3 }); else arcs.push(m === 180 ? { v: V, d1: 0, span: 180, r: 22 } : { v: p + 2, a: p + 1, b: p + 3, r: 22 });
     texts.push({ p: [V[0], -28], s: n, fs: 20 });
   });
+  const Z = [0, 0], R = { Z, r0: pol(Z, 150, 0), r90: pol(Z, 150, 90), r180: pol(Z, 150, 180) };
   return `<h2>2. Aigu, droit, obtus, plat</h2>
-<div class="def">• angle <b>aigu</b> : plus petit qu'un angle droit (moins de 90°)<br>• angle <b>droit</b> : 90°, le coin d'une feuille, codé par un petit carré<br>• angle <b>obtus</b> : entre 90° et 180°<br>• angle <b>plat</b> : 180°, ses deux côtés forment une droite</div>
-${figure({ P, hide: Object.keys(P), segs, arcs, rights, texts, width: 560 })}
-<div class="ex">Un angle de 35° est aigu ; un angle de 120° est obtus.</div>
-<div class="warn">⚠️ Pour décider, compare l'angle à un angle <b>droit</b> (avec ton équerre ou le coin d'une feuille), sans te laisser tromper par la longueur des côtés ou la position de la figure.</div>`;
+<p class="intro">Avant de mesurer un angle, on sait déjà beaucoup en le comparant à un <b>angle droit</b> (le coin d'une feuille).</p>
+<div class="def">• angle <b>aigu</b> : plus petit qu'un angle droit (moins de 90°)<br>• angle <b>droit</b> : 90°, le coin d'une feuille, codé par un petit carré<br>• angle <b>obtus</b> : plus grand qu'un angle droit, mais moins qu'un angle plat (entre 90° et 180°)<br>• angle <b>plat</b> : 180°, ses deux côtés forment une droite</div>
+${figure({ P, hide: Object.keys(P), segs, arcs, rights, texts, width: 560, aria: 'les quatre natures d\'angles' })}
+<div class="cols"><div class="methode"><b>Méthode</b><ol><li>Les deux côtés forment-ils une droite ? → <b>plat</b>.</li><li>Sinon, pose ton équerre (ou le coin d'une feuille) sur un côté, le coin sur le sommet.</li><li>Pile sur l'équerre → <b>droit</b> ; à l'intérieur → <b>aigu</b> ; il dépasse → <b>obtus</b>.</li></ol></div>
+${figure({ P: R, hide: ['Z', 'r0', 'r90', 'r180'], segs: [['Z', 'r0'], ['Z', 'r90'], ['Z', 'r180']], arcs: [{ v: Z, d1: 0, span: 90, r: 110, kind: 'other' }, { v: Z, d1: 90, span: 90, r: 110 }], rights: [{ v: 'Z', a: 'r0', b: 'r90', size: 16 }], texts: [{ p: pol(Z, 62, 40), s: 'aigu', fs: 18 }, { p: pol(Z, 62, 140), s: 'obtus', fs: 18 }, { p: pol(Z, 170, 90), s: '90°', fs: 15 }, { p: pol(Z, 172, 0), s: '0°', fs: 15 }, { p: pol(Z, 176, 180), s: '180°', fs: 15 }], width: 300, aria: 'zones aigu et obtus' })}</div>
+<div class="ex"><span class="q">Exemple 1 :</span><br>Un angle de 35° est <b>aigu</b> (35 &lt; 90) ; un angle de 120° est <b>obtus</b> (90 &lt; 120 &lt; 180).</div>
+<div class="ex"><span class="q">Exemple 2 : figure penchée, pas de codage</span><br>Un angle peut être dessiné tourné, sans petit carré. S'il tombe pile sur l'équerre, il est quand même <b>droit</b>. Un angle de 175° est <b>obtus</b>, pas plat : ses côtés ne sont pas tout à fait alignés.</div>
+<div class="warn">⚠️ Ne te laisse pas tromper par la longueur des côtés ou la position de la figure : seul compte l'écartement.<br>⚠️ Aigu ou obtus ? Compare toujours avec l'angle <b>droit</b> : plus petit → aigu, plus grand → obtus.</div>
+<div class="retenir">À retenir : aigu → moins de 90° ; droit → 90° ; obtus → entre 90° et 180° ; plat → 180°.</div>`;
 }
 
 /* =========================================================================================
@@ -143,21 +154,40 @@ function protQ(d, lvl) {
 }
 const L3 = d => protQ(d, 3), L4 = d => protQ(d, 4);
 function C3() {
-  const O = [0, 0], P = { O, A: pol(O, 200, 0), B: pol(O, 200, 50) };
+  const O = [0, 0], P = { O, A: pol(O, 200, 0), B: pol(O, 200, 50) }, Q = { O, A: pol(O, 200, 0), B: pol(O, 200, 125) };
+  const fig = (P, aria) => figure({ P, prot: { O, rot: 0, R: 170 }, segs: [{ a: 'O', b: 'A', w: 3.2, c: '#7c2d12' }, { a: 'O', b: 'B', w: 3.2, c: '#7c2d12' }], arcs: [{ v: 'O', a: 'A', b: 'B', r: 24, kind: 'ask' }], lab: { O: -90 }, width: 460, aria });
   return `<h2>3. Mesurer avec un rapporteur</h2>
-<div class="def">On mesure un angle en <b>degrés</b> (°) avec un rapporteur :<br>1. le <b>centre</b> du rapporteur sur le <b>sommet</b> ;<br>2. la ligne du <b>0</b> sur un <b>côté</b> ;<br>3. on suit la graduation <b>qui part de ce 0</b> jusqu'à l'autre côté.</div>
-${figure({ P, prot: { O, rot: 0, R: 170 }, segs: [{ a: 'O', b: 'A', w: 3.2, c: '#7c2d12' }, { a: 'O', b: 'B', w: 3.2, c: '#7c2d12' }], arcs: [{ v: 'O', a: 'A', b: 'B', r: 24, kind: 'ask' }], lab: { O: -90 }, width: 460 })}
-<div class="ex">[OA) passe par le 0 de la graduation <b style="color:#b91c1c">rouge</b> (extérieure). On la suit : 0, 10, 20, 30, 40, <b>50</b>. Donc ${H('AOB')} = 50°.</div>
-<div class="warn">⚠️ Erreur classique : lire la <b>mauvaise graduation</b>. Ici, la graduation bleue donne 130° : c'est faux ! Contrôle toujours : l'angle est aigu, donc sa mesure est plus petite que 90°.</div>`;
+<p class="intro">Le rapporteur donne la <b>mesure</b> d'un angle, en degrés (°). Bien placé, il suffit de savoir lire la bonne graduation.</p>
+<div class="def">Un rapporteur a deux graduations de 0° à 180°, qui vont en sens contraires :<br>• la graduation <b style="color:#b91c1c">rouge (extérieure)</b> part de 0 à droite ;<br>• la graduation <b style="color:#1d4ed8">bleue (intérieure)</b> part de 0 à gauche.</div>
+<div class="methode"><b>Méthode</b><ol><li>Le <b>centre</b> du rapporteur est sur le <b>sommet</b> de l'angle.</li><li>La ligne du <b>0</b> est sur un <b>côté</b> : repère de quelle couleur est ce 0.</li><li>Suis la graduation <b>de cette couleur</b> (0, 10, 20…) jusqu'à l'autre côté.</li><li>Contrôle : angle aigu → moins de 90° ; angle obtus → plus de 90°.</li></ol></div>
+${fig(P, 'rapporteur posé sur un angle de 50 degrés')}
+<div class="ex"><span class="q">Exemple 1 : un angle aigu</span><br>[OA) passe par le 0 de la graduation <b style="color:#b91c1c">rouge</b>. On la suit : 0, 10, 20, 30, 40, <b>50</b>. Donc ${H('AOB')} = <b>50°</b>. Contrôle : l'angle est aigu et 50 &lt; 90 ✓.</div>
+${fig(Q, 'rapporteur posé sur un angle de 125 degrés')}
+<div class="ex"><span class="q">Exemple 2 : un angle obtus, entre deux nombres</span><br>Toujours la graduation rouge (le 0 est sur [OA)). L'autre côté tombe sur le <b>trait moyen</b> entre 120 et 130 : ${H('AOB')} = <b>125°</b>. Contrôle : l'angle est obtus et 125 &gt; 90 ✓.</div>
+<div class="warn">⚠️ Erreur classique : lire la <b>mauvaise graduation</b>. Dans l'exemple 1, la graduation bleue donne 130° : c'est faux ! Les deux lectures font toujours 180° à elles deux (50 + 130 = 180).<br>⚠️ Un grand trait tous les 10°, un trait moyen tous les 5°.</div>
+<div class="retenir">À retenir : centre sur le sommet, 0 sur un côté, et on suit la graduation qui part de CE 0.</div>`;
 }
 function C4() {
   const O = [0, 0], P = { O, A: pol(O, 200, 180), B: pol(O, 200, 120) };
+  // zoom sur la graduation entre 40° et 50° : l'autre côté tombe sur 43°
+  const x = k => 30 + k * 34;
+  let z = '<svg viewBox="0 0 400 120" class="vis" role="img" aria-label="zoom sur la graduation entre 40 et 50 degrés" font-family="system-ui,sans-serif" style="max-width:400px"><rect x="10" y="20" width="380" height="60" rx="6" fill="#fef3c7" stroke="#92400e"/>';
+  for (let k = 0; k <= 10; k++) {
+    const h = k % 10 === 0 ? 30 : k % 5 === 0 ? 20 : 11;
+    z += `<line x1="${x(k)}" y1="20" x2="${x(k)}" y2="${20 + h}" stroke="#78350f" stroke-width="${k % 5 === 0 ? 2 : 1.2}"/>`;
+  }
+  z += `<text x="${x(0)}" y="70" font-size="17" text-anchor="middle" fill="#b91c1c" font-weight="700">40</text><text x="${x(10)}" y="70" font-size="17" text-anchor="middle" fill="#b91c1c" font-weight="700">50</text>`;
+  z += `<line x1="${x(3)}" y1="8" x2="${x(3)}" y2="92" stroke="#7c2d12" stroke-width="3.2"/><text x="${x(3)}" y="112" font-size="17" text-anchor="middle" fill="#7c2d12" font-weight="700">43°</text></svg>`;
   return `<h2>4. Intérieur ou extérieur ?</h2>
+<p class="intro">L'angle n'est pas toujours tourné vers la droite : il faut alors choisir l'autre graduation, et parfois lire au degré près.</p>
 <div class="def">Le rapporteur a <b>deux graduations</b> qui vont en sens contraires. On utilise celle dont le <b>0</b> est <b>sur le côté</b> de l'angle.<br>Mesures fines : un grand trait tous les 10°, un trait moyen tous les 5°, un petit trait par degré.</div>
-${figure({ P, prot: { O, rot: 0, R: 170 }, segs: [{ a: 'O', b: 'A', w: 3.2, c: '#7c2d12' }, { a: 'O', b: 'B', w: 3.2, c: '#7c2d12' }], arcs: [{ v: 'O', a: 'A', b: 'B', r: 24, kind: 'ask' }], lab: { O: -90 }, width: 460 })}
-<div class="ex">Ici [OA) est à <b>gauche</b> : il passe par le 0 de la graduation <b style="color:#1d4ed8">bleue</b> (intérieure). On lit ${H('AOB')} = <b>60°</b> (et non 120°).</div>
-<div class="ex">Si l'autre côté tombe entre 40 et 50, au 3<sup>e</sup> petit trait après 40 : 43°.</div>
-<div class="warn">⚠️ Ne lis pas toujours la graduation extérieure ! Cherche d'abord <b>où est le 0</b>, et vérifie à la fin : aigu → moins de 90°, obtus → plus de 90°.</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Cherche quel côté de l'angle passe par un <b>0</b> : à droite → graduation <b style="color:#b91c1c">rouge</b> ; à gauche → graduation <b style="color:#1d4ed8">bleue</b>.</li><li>Suis cette graduation jusqu'à l'autre côté et lis la <b>dizaine</b> juste avant.</li><li>Compte les <b>petits traits</b> après cette dizaine (5 au trait moyen).</li><li>Contrôle : aigu → moins de 90° ; obtus → plus de 90°.</li></ol></div>
+${figure({ P, prot: { O, rot: 0, R: 170 }, segs: [{ a: 'O', b: 'A', w: 3.2, c: '#7c2d12' }, { a: 'O', b: 'B', w: 3.2, c: '#7c2d12' }], arcs: [{ v: 'O', a: 'A', b: 'B', r: 24, kind: 'ask' }], lab: { O: -90 }, width: 460, aria: 'rapporteur, côté à gauche' })}
+<div class="ex"><span class="q">Exemple 1 : le côté est à gauche</span><br>[OA) est à <b>gauche</b> : il passe par le 0 de la graduation <b style="color:#1d4ed8">bleue</b> (intérieure). On lit ${H('AOB')} = <b>60°</b> (et non 120°). Contrôle : aigu, 60 &lt; 90 ✓.</div>
+${z}
+<div class="ex"><span class="q">Exemple 2 : lire au degré près</span><br>L'autre côté tombe après le grand trait 40, sur le <b>3<sup>e</sup> petit trait</b> : 40 + 3 = <b>43°</b>. S'il tombait sur le trait moyen, ce serait 45°.</div>
+<div class="warn">⚠️ Ne lis pas toujours la graduation extérieure ! Cherche d'abord <b>où est le 0</b>.<br>⚠️ Le rapporteur peut être un peu tourné : la règle ne change pas, on suit la graduation dont le 0 est sur un côté.<br>⚠️ Si tu trouves 120° pour un angle aigu, tu as lu l'autre graduation : la bonne réponse est 180° − 120° = 60°.</div>
+<div class="retenir">À retenir : d'abord trouver le 0 sur un côté, ensuite lire, enfin contrôler aigu ou obtus.</div>`;
 }
 
 /* =========================================================================================
@@ -191,11 +221,17 @@ function C5() {
   const O = [0, 0], P = { O }, segs = [], arcs = [], texts = [];
   [0, 45, 90, 135, 180].forEach((k, i) => { P['r' + i] = pol(O, 150, k); segs.push(['O', 'r' + i]); texts.push({ p: pol(O, 172, k), s: k + '°', fs: 15 }); });
   arcs.push({ v: O, d1: 0, span: 45, r: 40, kind: 'other' }, { v: O, d1: 90, span: 45, r: 40, kind: 'other' });
+  const Q = { S: [0, 0], U: pol([0, 0], 150, 0), V: pol([0, 0], 150, 150), W: pol([0, 0], 135, 135) };
   return `<h2>5. Estimer un angle</h2>
-<div class="def">Pour estimer un angle sans rapporteur, on le compare à des <b>angles repères</b> : 45° (la moitié d'un angle droit), 90°, 135°, 180°.</div>
-${figure({ P, hide: Object.keys(P).filter(k => k !== 'O'), segs, arcs, texts, lab: { O: -90 }, width: 420 })}
-<div class="ex">Un angle un peu plus ouvert que la moitié d'un angle droit mesure environ 50° ou 60°.</div>
-<div class="warn">⚠️ Commence toujours par décider : aigu ou obtus ? Un angle obtus ne peut pas mesurer 40°.</div>`;
+<p class="intro">Estimer, c'est trouver « à peu près » la mesure sans rapporteur. C'est aussi le meilleur moyen de vérifier une mesure !</p>
+<div class="def">Pour estimer un angle, on le compare à des <b>angles repères</b> : 45° (la moitié d'un angle droit), 90° (angle droit), 135° (90° + 45°), 180° (angle plat).</div>
+<div class="methode"><b>Méthode</b><ol><li>Aigu ou obtus ? Cela élimine déjà la moitié des réponses.</li><li>De quel angle repère est-il le plus proche : 45°, 90°, 135° ou 180° ?</li><li>Un peu plus ou un peu moins que ce repère ? Choisis la mesure qui convient.</li></ol></div>
+<div class="cols">${figure({ P, hide: Object.keys(P).filter(k => k !== 'O'), segs, arcs, texts, lab: { O: -90 }, width: 320, aria: 'angles repères' })}
+${figure({ P: Q, hide: ['W'], segs: [['S', 'U'], ['S', 'V'], { a: 'S', b: 'W', c: '#a8a29e', w: 1.6 }], arcs: [{ v: 'S', a: 'U', b: 'V', r: 34, kind: 'ask', label: '?' }], texts: [{ p: pol([0, 0], 158, 128), s: '135°', fs: 14, c: '#78716c' }], lab: { S: -90 }, width: 300, aria: 'angle de 150 degrés comparé à 135 degrés' })}</div>
+<div class="ex"><span class="q">Exemple 1 :</span><br>Un angle un peu plus ouvert que la moitié d'un angle droit mesure environ <b>50° ou 60°</b>, pas 20°, ni 100°.</div>
+<div class="ex"><span class="q">Exemple 2 : choisir entre 30°, 70°, 110° et 150°</span><br>L'angle de la 2<sup>e</sup> figure est <b>obtus</b> : il reste 110° et 150°. Il dépasse nettement le repère gris de 135°, presque jusqu'à l'angle plat : c'est environ <b>150°</b>.</div>
+<div class="warn">⚠️ Commence toujours par décider : aigu ou obtus ? Un angle obtus ne peut pas mesurer 40°.<br>⚠️ Ne confonds pas 30° et 150° : ils font 180° à eux deux, comme les deux graduations du rapporteur.</div>
+<div class="retenir">À retenir : aigu ou obtus d'abord, puis comparer à 45°, 90°, 135° et 180°.</div>`;
 }
 
 /* =========================================================================================
@@ -235,12 +271,17 @@ function L6(d) {
 }
 function C6() {
   const O = [0, 0], P = { O, A: pol(O, 185, 10), B: pol(O, 170, 55), C: pol(O, 185, 120) };
+  const Q = { O, A: pol(O, 150, 0), B: pol(O, 150, 40), C: pol(O, 150, 95) };
   return `<h2>6. Angles adjacents</h2>
-<div class="def">Deux angles sont <b>adjacents</b> s'ils ont le <b>même sommet</b>, un <b>côté commun</b>, et s'ils sont <b>de part et d'autre</b> de ce côté commun (ils ne se chevauchent pas).<br>Alors on peut <b>additionner</b> leurs mesures.</div>
-${figure({ P, segs: [['O', 'A'], ['O', 'B'], ['O', 'C']], arcs: [{ v: 'O', a: 'A', b: 'B', r: 38, label: '45°' }, { v: 'O', a: 'B', b: 'C', r: 38, kind: 'other', label: '65°' }, { v: 'O', a: 'A', b: 'C', r: 125, fill: false, kind: 'ask', label: '110°' }], lab: { O: 245 }, width: 400 })}
-<div class="ex">${H('AOB')} et ${H('BOC')} sont adjacents (côté commun [OB)) : ${H('AOC')} = 45° + 65° = 110°.</div>
-<div class="ex">Dans l'autre sens : ${H('BOC')} = ${H('AOC')} − ${H('AOB')} = 110° − 45° = 65°.</div>
-<div class="warn">⚠️ ${H('AOB')} et ${H('AOC')} ne sont <b>pas</b> adjacents : ils se chevauchent.</div>`;
+<p class="intro">Quand deux angles sont « collés » l'un à l'autre, leurs mesures s'additionnent, comme deux longueurs mises bout à bout.</p>
+<div class="def">Deux angles sont <b>adjacents</b> s'ils ont :<br>• le <b>même sommet</b> ;<br>• un <b>côté commun</b> ;<br>• et s'ils sont <b>de part et d'autre</b> de ce côté commun (ils ne se chevauchent pas).<br>Alors la mesure du grand angle est la <b>somme</b> des deux mesures.</div>
+<div class="methode"><b>Méthode</b><ol><li>Vérifie que les deux angles sont bien adjacents (même sommet, côté commun, pas de chevauchement).</li><li>On cherche le <b>grand</b> angle → on <b>additionne</b>.</li><li>On cherche un des <b>petits</b> angles → on fait grand angle <b>moins</b> l'autre petit angle.</li></ol></div>
+<div class="cols">${figure({ P, segs: [['O', 'A'], ['O', 'B'], ['O', 'C']], arcs: [{ v: 'O', a: 'A', b: 'B', r: 38, label: '45°' }, { v: 'O', a: 'B', b: 'C', r: 38, kind: 'other', label: '65°' }, { v: 'O', a: 'A', b: 'C', r: 125, fill: false, kind: 'ask', label: '110°' }], lab: { O: 245 }, width: 320, aria: 'angles adjacents' })}
+${figure({ P: Q, segs: [['O', 'A'], ['O', 'B'], ['O', 'C']], arcs: [{ v: 'O', a: 'A', b: 'B', r: 36 }, { v: 'O', a: 'A', b: 'C', r: 70, kind: 'ask', fill: false }], lab: { O: 225 }, width: 260, aria: 'angles qui se chevauchent' })}</div>
+<div class="ex"><span class="q">Exemple 1 : le grand angle</span><br>${H('AOB')} et ${H('BOC')} sont adjacents (côté commun [OB)) : ${H('AOC')} = 45° + 65° = <b>110°</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : un petit angle</span><br>On sait que ${H('AOC')} = 110° et ${H('AOB')} = 45°. Alors ${H('BOC')} = 110° − 45° = <b>65°</b>.<br>Contrôle : 45 + 65 = 110 ✓.</div>
+<div class="warn">⚠️ Sur la 2<sup>e</sup> figure, ${H('AOB')} et ${H('AOC')} ne sont <b>pas</b> adjacents : ils se chevauchent (${H('AOB')} est à l'intérieur de ${H('AOC')}).<br>⚠️ Si on cherche une <b>partie</b>, il faut soustraire, pas additionner : additionner donnerait un angle plus grand que le tout !</div>
+<div class="retenir">À retenir : grand angle = petit angle + petit angle.</div>`;
 }
 
 /* =========================================================================================
@@ -282,11 +323,14 @@ function C7() {
   const O = [0, 0], Q = [320, 0];
   const P = { A: pol(O, 120, 0), O, B: pol(O, 125, 35), C: pol(O, 120, 90), D: pol(Q, 120, 0), E: Q, F: pol(Q, 125, 50), G: pol(Q, 120, 180) };
   return `<h2>7. Complémentaires et supplémentaires</h2>
-<div class="def">• Deux angles sont <b>complémentaires</b> si leur somme vaut <b>90°</b> (un angle droit).<br>• Deux angles sont <b>supplémentaires</b> si leur somme vaut <b>180°</b> (un angle plat).</div>
-${figure({ P, segs: [['O', 'A'], ['O', 'B'], ['O', 'C'], ['E', 'D'], ['E', 'F'], ['E', 'G']], arcs: [{ v: 'O', a: 'A', b: 'B', r: 36, label: '35°' }, { v: 'O', a: 'B', b: 'C', r: 36, kind: 'ask', label: '55°' }, { v: 'E', a: 'D', b: 'F', r: 36, label: '50°' }, { v: 'E', a: 'F', b: 'G', r: 36, kind: 'ask', label: '130°' }], rights: [{ v: 'O', a: 'A', b: 'C', size: 14 }], lab: { O: 225, E: -90 }, width: 520 })}
-<div class="ex">35° et 55° sont complémentaires : 35 + 55 = 90.<br>50° et 130° sont supplémentaires : 50 + 130 = 180.</div>
-<div class="ex">Le complémentaire de 28° : 90° − 28° = 62°. Le supplémentaire de 28° : 180° − 28° = 152°.</div>
-<div class="warn">⚠️ Ne confonds pas : <b>complémentaire → 90°</b>, <b>supplémentaire → 180°</b>. Un angle obtus n'a pas de complémentaire.</div>`;
+<p class="intro">Deux mots à bien retenir : ils disent quelle est la <b>somme</b> de deux angles, et permettent de trouver l'un quand on connaît l'autre.</p>
+<div class="def">• Deux angles sont <b>complémentaires</b> si leur somme vaut <b>90°</b> (un angle droit).<br>• Deux angles sont <b>supplémentaires</b> si leur somme vaut <b>180°</b> (un angle plat).<br>Ils peuvent être côte à côte… ou séparés : seule la somme compte.</div>
+${figure({ P, segs: [['O', 'A'], ['O', 'B'], ['O', 'C'], ['E', 'D'], ['E', 'F'], ['E', 'G']], arcs: [{ v: 'O', a: 'A', b: 'B', r: 36, label: '35°' }, { v: 'O', a: 'B', b: 'C', r: 36, kind: 'ask', label: '55°' }, { v: 'E', a: 'D', b: 'F', r: 36, label: '50°' }, { v: 'E', a: 'F', b: 'G', r: 36, kind: 'ask', label: '130°' }], rights: [{ v: 'O', a: 'A', b: 'C', size: 14 }], lab: { O: 225, E: -90 }, width: 520, aria: 'angles complémentaires et supplémentaires' })}
+<div class="methode"><b>Méthode</b><ol><li>Trouve le total : angle <b>droit</b> partagé ou mot « complémentaires » → <b>90°</b> ; points <b>alignés</b> ou mot « supplémentaires » → <b>180°</b>.</li><li>Angle cherché = total − angle connu.</li><li>Vérifie : la somme des deux angles redonne bien le total.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : sur la figure</span><br>${H('AOC')} est droit, donc ${H('AOB')} et ${H('BOC')} sont complémentaires : ${H('BOC')} = 90° − 35° = <b>55°</b>.<br>D, E et G sont alignés : ${H('FEG')} = 180° − 50° = <b>130°</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : deux angles séparés</span><br>${H('ABC')} et ${H('DEF')} sont supplémentaires, avec ${H('ABC')} = 47°. Ils n'ont pas le même sommet, mais leur somme vaut 180° : ${H('DEF')} = 180° − 47° = <b>133°</b>.</div>
+<div class="warn">⚠️ Ne confonds pas : <b>complémentaire → 90°</b>, <b>supplémentaire → 180°</b>. Astuce : « <b>s</b>upplémentaire » comme « <b>s</b>omme plus grande ».<br>⚠️ Un angle obtus n'a pas de complémentaire (il dépasse déjà 90°).</div>
+<div class="retenir">À retenir : complémentaires → somme 90° ; supplémentaires → somme 180°.</div>`;
 }
 
 /* =========================================================================================
@@ -316,10 +360,14 @@ function L8(d) {
 function C8() {
   const O = [0, 0], P = { O, A: pol(O, 130, 10), B: pol(O, 130, 190), C: pol(O, 120, 70), D: pol(O, 120, 250) };
   return `<h2>8. Angles opposés par le sommet</h2>
-<div class="def">Deux droites qui se coupent forment quatre angles. Deux angles <b>opposés par le sommet</b> (même sommet, côtés dans le prolongement l'un de l'autre) ont la <b>même mesure</b>.</div>
-${figure({ P, segs: [['A', 'B'], ['C', 'D']], arcs: [{ v: 'O', a: 'A', b: 'C', r: 44, label: '60°' }, { v: 'O', a: 'B', b: 'D', r: 44, label: '60°' }, { v: 'O', a: 'C', b: 'B', r: 44, kind: 'ask', n: 2, label: '120°' }, { v: 'O', a: 'D', b: 'A', r: 44, kind: 'ask', n: 2, label: '120°' }], lab: { O: 160 }, width: 400 })}
-<div class="ex">${H('AOC')} et ${H('BOD')} sont opposés par le sommet : tous les deux mesurent 60°.<br>${H('COB')} est adjacent à ${H('AOC')} sur la droite (AB) : ${H('COB')} = 180° − 60° = 120°.</div>
-<div class="warn">⚠️ Deux angles <b>côte à côte</b> le long d'une droite ne sont pas égaux : ils sont <b>supplémentaires</b> (somme 180°).</div>`;
+<p class="intro">Deux droites qui se croisent forment quatre angles. Il suffit d'en connaître un pour trouver les trois autres !</p>
+<div class="def">Deux angles <b>opposés par le sommet</b> ont le même sommet et leurs côtés dans le prolongement l'un de l'autre (ils sont « en face » l'un de l'autre).<br><b>Propriété</b> : deux angles opposés par le sommet ont la <b>même mesure</b>.</div>
+<div class="cols">${figure({ P, segs: [['A', 'B'], ['C', 'D']], arcs: [{ v: 'O', a: 'A', b: 'C', r: 44, label: '60°' }, { v: 'O', a: 'B', b: 'D', r: 44, label: '60°' }, { v: 'O', a: 'C', b: 'B', r: 44, kind: 'ask', n: 2, label: '120°' }, { v: 'O', a: 'D', b: 'A', r: 44, kind: 'ask', n: 2, label: '120°' }], lab: { O: 160 }, width: 340, aria: 'deux droites sécantes' })}
+<div class="methode"><b>Méthode</b><ol><li>Repère l'angle connu et l'angle cherché.</li><li>Ils sont <b>en face</b> l'un de l'autre → <b>même mesure</b>.</li><li>Ils sont <b>côte à côte</b> le long d'une des droites → ils forment un angle plat : angle cherché = <b>180° − angle connu</b>.</li></ol></div></div>
+<div class="ex"><span class="q">Exemple 1 : opposés</span><br>${H('AOC')} et ${H('BOD')} sont opposés par le sommet : ${H('BOD')} = ${H('AOC')} = <b>60°</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : côte à côte</span><br>${H('COB')} est à côté de ${H('AOC')}, et A, O, B sont alignés : ${H('COB')} = 180° − 60° = <b>120°</b>. Puis ${H('DOA')}, opposé à ${H('COB')}, mesure aussi 120°.<br>Contrôle : 60 + 120 + 60 + 120 = 360 (un tour complet) ✓.</div>
+<div class="warn">⚠️ Deux angles <b>côte à côte</b> le long d'une droite ne sont pas égaux (sauf s'ils sont droits) : ils sont <b>supplémentaires</b>.<br>⚠️ Les angles opposés sont ceux qui ne se touchent que par le sommet.</div>
+<div class="retenir">À retenir : en face → égaux ; côte à côte sur une droite → somme 180°.</div>`;
 }
 
 /* =========================================================================================
@@ -344,13 +392,18 @@ function L9(d) {
   });
 }
 function C9() {
-  const T = triangle(70, 50, 0);
+  const T = triangle(70, 50, 0), Z = [0, 0];
   return `<h2>9. Somme des angles d'un triangle</h2>
-<div class="def">Dans <b>tout</b> triangle, la somme des mesures des trois angles est égale à <b>180°</b>.</div>
-${figure({ P: T, segs: [['A', 'B'], ['B', 'C'], ['C', 'A']], arcs: [{ v: 'A', a: 'B', b: 'C', r: 30, label: '70°' }, { v: 'B', a: 'C', b: 'A', r: 30, kind: 'other', label: '50°' }, { v: 'C', a: 'A', b: 'B', r: 30, kind: 'ask', label: '?' }], width: 380 })}
-<div class="ex">${H('BAC')} = 70° et ${H('ABC')} = 50°.<br>70° + 50° = 120°, donc ${H('ACB')} = 180° − 120° = 60°.</div>
-<p>Pourquoi ? Si on découpe les trois coins d'un triangle en papier et qu'on les met côte à côte, ils forment un angle plat.</p>
-<div class="warn">⚠️ Il faut enlever les <b>deux</b> angles connus de 180°, pas un seul.</div>`;
+<p class="intro">Les trois angles d'un triangle ne sont pas « libres » : si on en connaît deux, on peut calculer le troisième.</p>
+<div class="def"><b>Propriété</b> : dans <b>tout</b> triangle, la somme des mesures des trois angles est égale à <b>180°</b>.</div>
+<div class="cols">${figure({ P: T, segs: [['A', 'B'], ['B', 'C'], ['C', 'A']], arcs: [{ v: 'A', a: 'B', b: 'C', r: 30, label: '70°' }, { v: 'B', a: 'C', b: 'A', r: 30, kind: 'other', label: '50°' }, { v: 'C', a: 'A', b: 'B', r: 30, kind: 'ask', label: '?' }], width: 300, aria: 'triangle' })}
+${figure({ P: { Z, u: pol(Z, 130, 0), v: pol(Z, 130, 70), w: pol(Z, 130, 130), x: pol(Z, 130, 180) }, hide: ['Z', 'u', 'v', 'w', 'x'], segs: [['Z', 'u'], ['Z', 'v'], ['Z', 'w'], ['Z', 'x']], arcs: [{ v: Z, d1: 0, span: 70, r: 50, label: '70°' }, { v: Z, d1: 70, span: 60, r: 50, kind: 'ask', label: '60°' }, { v: Z, d1: 130, span: 50, r: 50, kind: 'other', label: '50°' }], width: 300, aria: 'les trois angles mis côte à côte forment un angle plat' })}</div>
+<p>Pourquoi ? Si on découpe les trois coins d'un triangle en papier et qu'on les met côte à côte (à droite), ils forment un <b>angle plat</b>.</p>
+<div class="methode"><b>Méthode</b><ol><li>Additionne les <b>deux</b> angles connus.</li><li>Angle cherché = 180° − cette somme.</li><li>Vérifie : les trois angles font bien 180°.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 :</span><br>${H('BAC')} = 70° et ${H('ABC')} = 50°.<br>70° + 50° = 120°, donc ${H('ACB')} = 180° − 120° = <b>60°</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : avec un angle obtus</span><br>Dans le triangle DEF, ${H('EDF')} = 105° et ${H('DEF')} = 38°.<br>105° + 38° = 143°, donc ${H('DFE')} = 180° − 143° = <b>37°</b>. Contrôle : 105 + 38 + 37 = 180 ✓.</div>
+<div class="warn">⚠️ Il faut enlever les <b>deux</b> angles connus de 180°, pas un seul.<br>⚠️ N'additionne pas les deux angles connus pour répondre : l'angle cherché, c'est ce qui <b>manque</b> pour aller jusqu'à 180°.</div>
+<div class="retenir">À retenir : dans un triangle, angle 1 + angle 2 + angle 3 = 180°.</div>`;
 }
 
 /* =========================================================================================
@@ -411,11 +464,15 @@ function L10(d) {
 function C10() {
   const P = { A: [70, 120], B: [0, 0], C: [140, 0], D: [220, 0], E: [360, 0], F: [220, 140], G: [430, 0], H: [570, 0], K: [500, 121.24] };
   return `<h2>10. Triangles particuliers</h2>
-<div class="def">• <b>Isocèle</b> en A (AB = AC) : les deux angles <b>à la base</b> sont égaux.<br>• <b>Équilatéral</b> (trois côtés égaux) : trois angles de <b>60°</b>.<br>• <b>Rectangle</b> en D : un angle de 90°, les deux autres sont <b>complémentaires</b>.</div>
-${figure({ P, segs: [['A', 'B'], ['B', 'C'], ['C', 'A'], ['D', 'E'], ['E', 'F'], ['F', 'D'], ['G', 'H'], ['H', 'K'], ['K', 'G']], ticks: [{ a: 'A', b: 'B' }, { a: 'A', b: 'C' }, { a: 'G', b: 'H', n: 2 }, { a: 'H', b: 'K', n: 2 }, { a: 'K', b: 'G', n: 2 }], rights: [{ v: 'D', a: 'E', b: 'F' }], arcs: [{ v: 'B', a: 'C', b: 'A', r: 24 }, { v: 'C', a: 'A', b: 'B', r: 24 }], width: 560 })}
-<div class="ex">Isocèle en A avec ${H('ABC')} = 50° : ${H('ACB')} = 50° et ${H('BAC')} = 180° − 50° − 50° = 80°.</div>
-<div class="ex">Isocèle en A avec ${H('BAC')} = 40° : les angles à la base valent (180° − 40°) ÷ 2 = 70°.</div>
-<div class="warn">⚠️ Les angles égaux d'un triangle isocèle sont ceux <b>à la base</b>, pas celui du sommet principal. Pense à <b>diviser par 2</b> quand on cherche un angle à la base.</div>`;
+<p class="intro">Dans un triangle particulier, les <b>codages</b> donnent des angles « gratuits » : il en faut alors moins pour tout calculer.</p>
+<div class="def">• <b>Isocèle</b> en A (AB = AC) : les deux angles <b>à la base</b> ${H('ABC')} et ${H('ACB')} sont égaux.<br>• <b>Équilatéral</b> (trois côtés égaux) : trois angles de <b>60°</b>.<br>• <b>Rectangle</b> en D : un angle de 90°, les deux autres sont <b>complémentaires</b> (somme 90°).</div>
+${figure({ P, segs: [['A', 'B'], ['B', 'C'], ['C', 'A'], ['D', 'E'], ['E', 'F'], ['F', 'D'], ['G', 'H'], ['H', 'K'], ['K', 'G']], ticks: [{ a: 'A', b: 'B' }, { a: 'A', b: 'C' }, { a: 'G', b: 'H', n: 2 }, { a: 'H', b: 'K', n: 2 }, { a: 'K', b: 'G', n: 2 }], rights: [{ v: 'D', a: 'E', b: 'F' }], arcs: [{ v: 'B', a: 'C', b: 'A', r: 24 }, { v: 'C', a: 'A', b: 'B', r: 24 }], width: 560, aria: 'triangles isocèle, rectangle et équilatéral' })}
+<div class="methode"><b>Méthode</b><ol><li>Lis les <b>codages</b> : petits traits = côtés égaux ; petit carré = angle droit.</li><li>Isocèle : repère le <b>sommet principal</b> (entre les deux côtés égaux) ; les deux autres angles sont égaux.</li><li>Écris ce que tu sais, puis utilise la somme <b>180°</b>.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : rectangle</span><br>DEF rectangle en D avec ${H('DEF')} = 35° : ${H('DFE')} = 180° − 90° − 35° = <b>55°</b> (ou 90° − 35°).</div>
+<div class="ex"><span class="q">Exemple 2 : isocèle, angle à la base connu</span><br>Isocèle en A avec ${H('ABC')} = 50° : ${H('ACB')} = 50° aussi, et ${H('BAC')} = 180° − 50° − 50° = <b>80°</b>.</div>
+<div class="ex"><span class="q">Exemple 3 : isocèle, angle au sommet connu</span><br>Isocèle en A avec ${H('BAC')} = 40° : il reste 180° − 40° = 140° pour les deux angles à la base, égaux : 140° ÷ 2 = <b>70°</b> chacun.</div>
+<div class="warn">⚠️ Les angles égaux d'un triangle isocèle sont ceux <b>à la base</b>, pas celui du sommet principal.<br>⚠️ Pour un angle à la base, pense à <b>diviser par 2</b>. Pour l'angle au sommet, enlève l'angle à la base <b>deux fois</b>.<br>⚠️ N'oublie pas l'angle droit : il compte déjà pour 90°.</div>
+<div class="retenir">À retenir : isocèle → 2 angles égaux ; équilatéral → 3 × 60° ; rectangle → les 2 autres font 90°.</div>`;
 }
 
 /* =========================================================================================
@@ -472,16 +529,21 @@ function L11(d) {
   });
 }
 function C11() {
-  // figure de démonstration fixe (pas d'aléatoire dans un cours)
-  const r0 = 0, s = 60, E = [0, 0], F = pol(E, 130 / Math.sin(Math.PI / 3), s), c = F[0] / 2;
-  const L1m = pol(E, c - 200, r0), L1p = pol(E, c + 200, r0), L2m = pol(F, -c - 200, 0), L2p = pol(F, -c + 200, 0), S1 = pol(E, -85, s), S2 = pol(F, 85, s);
+  // figures de démonstration fixes (pas d'aléatoire dans un cours)
+  const s = 60, E = [0, 0], F = pol(E, 130 / Math.sin(Math.PI / 3), s), c = F[0] / 2;
+  const L1m = pol(E, c - 200, 0), L1p = pol(E, c + 200, 0), L2m = pol(F, -c - 200, 0), L2p = pol(F, -c + 200, 0), S1 = pol(E, -85, s), S2 = pol(F, 85, s);
   const lines = [{ a: L1m, b: L1p, label: '(d₁)' }, { a: L2m, b: L2p, label: '(d₂)' }, { a: S1, b: S2, label: '(d)', side: -1, c: '#44403c' }];
+  const eight = V => [[0, 60, 'given', '60°'], [60, 120, 'other', '120°'], [180, 60, 'given', '60°'], [240, 120, 'other', '120°']].map(([d1, span, kind, label]) => ({ v: V, d1, span, r: 26, kind, label }));
   return `<h2>11. Alternes-internes et correspondants</h2>
-<div class="def">Deux droites (d₁) et (d₂) coupées par une sécante (d) forment 8 angles.<br>• <b>Alternes-internes</b> : entre (d₁) et (d₂), de part et d'autre de (d).<br>• <b>Correspondants</b> : à la même place à chaque intersection.<br><b>Si (d₁) et (d₂) sont parallèles</b>, deux angles alternes-internes ont la même mesure, et deux angles correspondants aussi.</div>
-${figure({ lines, arcs: [{ v: E, a: L1p, b: F, r: 30, label: '60°' }, { v: F, a: L2m, b: E, r: 30, kind: 'ask', label: '60°' }, { v: F, a: L2p, b: S2, r: 30, kind: 'other', label: '60°' }], width: 460 })}
-<div class="ex">Orange et bleu : alternes-internes. Orange et vert : correspondants. Ils mesurent tous 60°.</div>
-<div class="ex">Les autres angles se déduisent avec les angles opposés par le sommet (égaux) et les angles supplémentaires (180° − 60° = 120°).</div>
-<div class="warn">⚠️ Ces égalités ne sont vraies <b>que si les droites sont parallèles</b>.</div>`;
+<p class="intro">Quand une droite coupe deux droites <b>parallèles</b>, beaucoup d'angles sont égaux. On apprend à les repérer par leur position.</p>
+<div class="def">Deux droites (d₁) et (d₂) coupées par une <b>sécante</b> (d) forment 8 angles.<br>• <b>Alternes-internes</b> : <b>entre</b> (d₁) et (d₂), et <b>de part et d'autre</b> de (d).<br>• <b>Correspondants</b> : à la <b>même place</b> à chaque intersection.<br><b>Propriété</b> : si (d₁) et (d₂) sont <b>parallèles</b>, deux angles alternes-internes ont la même mesure, et deux angles correspondants aussi.</div>
+${figure({ lines, arcs: [{ v: E, a: L1p, b: F, r: 30, label: '60°' }, { v: F, a: L2m, b: E, r: 30, kind: 'ask', label: '60°' }, { v: F, a: L2p, b: S2, r: 30, kind: 'other', label: '60°' }], width: 440, aria: 'angles alternes-internes et correspondants' })}
+<div class="methode"><b>Méthode</b><ol><li>Regarde la place de chaque angle : entre les parallèles ou dehors ? à gauche ou à droite de la sécante ?</li><li>Même place aux deux intersections → <b>correspondants</b> → égaux.</li><li>Entre les parallèles et de part et d'autre de (d) → <b>alternes-internes</b> → égaux.</li><li>Sinon, passe par un angle intermédiaire : l'angle correspondant, puis un angle <b>opposé par le sommet</b> (égal) ou un angle <b>supplémentaire</b> (180° − …).</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : la première figure</span><br>Orange et bleu : alternes-internes. Orange et vert : correspondants. Les droites sont parallèles, donc ils mesurent tous <b>60°</b>.</div>
+${figure({ lines, arcs: [...eight(E), ...eight(F)], width: 440, aria: 'les huit angles' })}
+<div class="ex"><span class="q">Exemple 2 : un angle « ni l'un ni l'autre »</span><br>Avec des parallèles, les 8 angles ne prennent que <b>deux</b> valeurs : 60° (orange) et 180° − 60° = <b>120°</b> (vert). Un angle vert et un angle orange sont supplémentaires.</div>
+<div class="warn">⚠️ Ces égalités ne sont vraies <b>que si les droites sont parallèles</b>.<br>⚠️ Un angle aigu et un angle obtus ne peuvent pas être égaux : si tu trouves 60° pour un angle obtus, c'est 180° − 60° = 120°.</div>
+<div class="retenir">À retenir : avec deux parallèles, alternes-internes et correspondants sont égaux ; tous les angles valent x ou 180° − x.</div>`;
 }
 
 function L12(d) {
@@ -565,13 +627,18 @@ function L12(d) {
 }
 function C12() {
   const P = { A: [0, 0], B: [200, -10], C: [230, 150], D: [-20, 120] };
+  const T = triangle(50, 70, 0), Q = { A: T.A, B: T.B, C: T.C, D: [T.B[0] + 110, 0] };
   return `<h2>12. Défis</h2>
+<p class="intro">On mélange tout ce qui précède : il faut souvent calculer un angle « intermédiaire » avant d'arriver à celui qu'on cherche.</p>
 <div class="def"><b>Droites parallèles ?</b> Si deux angles alternes-internes (ou correspondants) ont la <b>même mesure</b>, alors les droites sont parallèles. S'ils sont différents, elles ne le sont pas.</div>
-<div class="def"><b>Polygones</b> : une diagonale coupe un quadrilatère en deux triangles, donc la somme de ses angles vaut <b>360°</b>. Un polygone à n côtés se découpe en n − 2 triangles : somme = (n − 2) × 180°.</div>
-${figure({ P, segs: [['A', 'B'], ['B', 'C'], ['C', 'D'], ['D', 'A'], { a: 'A', b: 'C', c: '#a8a29e', w: 1.6 }], arcs: [{ v: 'A', a: 'B', b: 'D', r: 26 }, { v: 'B', a: 'C', b: 'A', r: 26 }, { v: 'C', a: 'D', b: 'B', r: 26 }, { v: 'D', a: 'A', b: 'C', r: 26 }], width: 340 })}
-<div class="ex">Hexagone régulier : 6 − 2 = 4 triangles, 4 × 180° = 720°, et 720° ÷ 6 = 120° par angle.</div>
-<div class="ex">Figure composée : on cherche d'abord un angle « intermédiaire » (somme dans un triangle, triangle isocèle…), puis on utilise un angle plat (180°).</div>
-<div class="warn">⚠️ Ne te fie pas au dessin pour décider si deux droites sont parallèles : regarde les <b>mesures</b>.</div>`;
+<div class="def"><b>Polygones</b> : une diagonale coupe un quadrilatère en deux triangles, donc la somme de ses angles vaut <b>2 × 180° = 360°</b>. Un polygone à n côtés se découpe en n − 2 triangles : somme = <b>(n − 2) × 180°</b>. S'il est <b>régulier</b>, ses n angles sont égaux.</div>
+<div class="methode"><b>Méthode</b><ol><li>Parallèles : repère deux angles alternes-internes ou correspondants et <b>compare leurs mesures</b>.</li><li>Quadrilatère : angle cherché = 360° − (somme des trois autres).</li><li>Polygone régulier : (n − 2) × 180°, puis ÷ n.</li><li>Figure composée : calcule d'abord l'angle du triangle, puis utilise l'angle plat (180°).</li></ol></div>
+<div class="cols">${figure({ P, segs: [['A', 'B'], ['B', 'C'], ['C', 'D'], ['D', 'A'], { a: 'A', b: 'C', c: '#a8a29e', w: 1.6 }], arcs: [{ v: 'A', a: 'B', b: 'D', r: 26 }, { v: 'B', a: 'C', b: 'A', r: 26 }, { v: 'C', a: 'D', b: 'B', r: 26 }, { v: 'D', a: 'A', b: 'C', r: 26 }], width: 280, aria: 'quadrilatère coupé par une diagonale' })}
+${figure({ P: Q, segs: [['A', 'D'], ['B', 'C'], ['C', 'A']], arcs: [{ v: 'A', a: 'B', b: 'C', r: 28, label: '50°' }, { v: 'C', a: 'A', b: 'B', r: 28, label: '60°' }, { v: 'B', a: 'C', b: 'D', r: 30, kind: 'ask', label: '?' }], width: 320, aria: 'angle extérieur d\'un triangle' })}</div>
+<div class="ex"><span class="q">Exemple 1 : quadrilatère et polygone</span><br>Un quadrilatère a des angles de 85°, 95° et 110° : le 4<sup>e</sup> mesure 360° − 290° = <b>70°</b>.<br>Hexagone régulier : 6 − 2 = 4 triangles, 4 × 180° = 720°, et 720° ÷ 6 = <b>120°</b> par angle.</div>
+<div class="ex"><span class="q">Exemple 2 : figure composée (2<sup>e</sup> figure)</span><br>D est sur la droite (AB). Dans le triangle ABC : ${H('ABC')} = 180° − 50° − 60° = 70°.<br>A, B, D sont alignés : ${H('CBD')} = 180° − 70° = <b>110°</b>.</div>
+<div class="warn">⚠️ Ne te fie pas au dessin pour décider si deux droites sont parallèles : regarde les <b>mesures</b> (61° et 59°, ce n'est pas pareil !).<br>⚠️ Polygone régulier : 360° ÷ n est l'angle <b>au centre</b>, pas l'angle entre deux côtés.<br>⚠️ Dans une figure composée, ne t'arrête pas à l'angle intermédiaire.</div>
+<div class="retenir">À retenir : triangle 180°, quadrilatère 360°, polygone à n côtés (n − 2) × 180°.</div>`;
 }
 
 export const LEVELS = [
