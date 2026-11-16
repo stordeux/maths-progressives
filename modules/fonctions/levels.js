@@ -210,8 +210,8 @@ function C2() {
 <div class="def">La <b>courbe</b> de f est formée des points de coordonnées <b>(x ; f(x))</b> : l'abscisse est le nombre de départ, l'ordonnée est son image.</div>
 <div class="methode"><b>Méthode</b> pour lire l'image de a<ol><li>Place-toi sur <b>a</b> sur l'axe des abscisses (horizontal).</li><li>Monte ou descends <b>verticalement</b> jusqu'à la courbe.</li><li>Va <b>horizontalement</b> jusqu'à l'axe des ordonnées et lis la valeur : c'est f(a).</li></ol></div>
 ${cDraw(C, { pts: [{ x: 3, y: 0, px: true, py: true, l: '(3 ; 0)' }, { x: 1, y: -4, px: true, py: true, l: '(1 ; −4)', c: VIO }, { x: -2, y: 5, px: true, py: true, l: '(−2 ; 5)', c: GRN }] })}
-<div class="ex"><span class="q">Exemple 1 :</span><br>On part de x = 3, on monte jusqu'à la courbe : le point est sur l'axe des abscisses, donc <b>f(3) = 0</b>.</div>
-<div class="ex"><span class="q">Exemple 2 : abscisse ou image négative</span><br>On part de x = 1 et on <b>descend</b> jusqu'à la courbe : on lit y = −4, donc <b>f(1) = −4</b>.<br>On part de x = −2 (à gauche de 0) : on lit <b>f(−2) = 5</b>.</div>
+<div class="ex"><span class="q">Exemple 1 :</span><br>On part de x = −2 (à gauche de 0) et on <b>monte</b> jusqu'à la courbe (point vert). On va horizontalement jusqu'à l'axe vertical : on lit 5, donc <b>f(−2) = 5</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : image négative ou nulle</span><br>On part de x = 1 et on <b>descend</b> jusqu'à la courbe (point violet) : on lit y = −4, donc <b>f(1)&nbsp;=&nbsp;−4</b>.<br>En x = 3, la courbe coupe l'axe des abscisses (point orange) : le point est à la hauteur 0, donc <b>f(3) = 0</b>.</div>
 <div class="warn">⚠️ Erreur classique : recopier le nombre de départ. L'image se lit toujours sur l'axe <b>vertical</b>.<br>⚠️ Une image peut être négative : le point est alors <b>sous</b> l'axe des abscisses.</div>
 <div class="retenir">À retenir : on part de l'axe horizontal, on lit l'image sur l'axe vertical.</div>`;
 }
@@ -254,7 +254,7 @@ function C3() {
 <div class="methode"><b>Méthode</b> pour les antécédents de k<ol><li>Trace (au doigt) la droite <b>horizontale y = k</b>.</li><li>Repère <b>tous</b> les points où elle coupe ou touche la courbe.</li><li>Lis l'<b>abscisse</b> de chacun sur l'axe horizontal.</li></ol></div>
 ${cDraw(C, { h: { y: -3, l: 'y = −3' }, pts: [{ x: 0, y: -3, px: true, c: RED }, { x: 2, y: -3, px: true, c: RED }], xl: [{ x: 0, l: '0', c: RED, below: false }, { x: 2, l: '2', c: RED, below: false }] })}
 <div class="ex"><span class="q">Exemple 1 : deux antécédents</span><br>La droite y = −3 coupe la courbe en deux points, d'abscisses 0 et 2 : <b>−3 a deux antécédents, 0 et 2</b>. On vérifie : f(0) = −3 et f(2) = −3.</div>
-<div class="ex"><span class="q">Exemple 2 : un seul, ou aucun</span><br>La droite y = −4 touche la courbe en un seul point (le plus bas) : −4 a <b>un seul</b> antécédent, 1.<br>La droite y = −6 passe sous la courbe : −6 n'a <b>aucun</b> antécédent.</div>
+<div class="ex"><span class="q">Exemple 2 : un seul, ou aucun</span><br>La droite y = −4 touche la courbe en un seul point (le plus bas) : −4 a <b>un seul</b> antécédent, 1.<br>La droite y = −6 passe sous la courbe : −6 n'a <b>aucun</b> antécédent (on répond avec le bouton « Aucun antécédent »).</div>
 <div class="warn">⚠️ Ne confonds pas image et antécédent : l'antécédent se lit sur l'axe <b>horizontal</b>.<br>⚠️ N'en oublie pas : suis la droite horizontale <b>jusqu'au bout</b>, des deux côtés.</div>
 <div class="retenir">À retenir : antécédents de k → droite horizontale y = k → abscisses des points d'intersection.</div>`;
 }
@@ -669,7 +669,7 @@ function C12() {
 <div class="ex"><span class="q">Exemple 1 : intersection</span><br>f(x) = 2x + 1 et g(x) = −x + 7.<br>2x + 1 = −x + 7 ⇔ 3x = 6 ⇔ x = 2.<br>y = f(2) = 5 et g(2) = 5 ✓<br><b>I(2 ; 5)</b>.</div>
 ${graph({ xr: [-2, 6], yr: [-2, 9], fs: [{ f: x => 2 * x + 1, l: 'f' }, { f: x => -x + 7, l: 'g', c: GRN }], pts: [{ x: 2, y: 5, px: true, py: true, l: 'I(2 ; 5)', c: RED }] })}
 <div class="ex"><span class="q">Exemple 2 : comparer deux forfaits</span><br>A(n) = 8n (8 € l'entrée) et B(n) = 30 + 5n (abonnement 30 €, puis 5 € l'entrée).<br>Même prix quand 8n = 30 + 5n ⇔ 3n = 30 ⇔ <b>n = 10</b>. Moins de 10 entrées : A est moins cher ; plus de 10 : B.</div>
-<div class="ex"><span class="q">Exemple 3 : vers la 2<sup>de</sup></span><br>f(x) = x<sup>2</sup> : les antécédents de 9 sont <b>3 et −3</b> ; 0 a un seul antécédent ; −4 n'en a aucun (un carré n'est jamais négatif).<br>f(x) = (x − 2)(x + 5) : les antécédents de 0 sont 2 et −5 (un produit est nul si l'un des facteurs est nul).</div>
+<div class="ex"><span class="q">Exemple 3 : vers la 2<sup>de</sup></span><br>f(x) = x<sup>2</sup> : les antécédents de 9 sont <b>3 et −3</b> ; 0 a un seul antécédent ; −4 n'en a aucun (un carré n'est jamais négatif).<br>f(x) = x<sup>2</sup> − 3 : antécédents de 13 ? x<sup>2</sup> − 3 = 13 ⇔ x<sup>2</sup> = 16 ⇔ <b>x = 4 ou x = −4</b>.<br>f(x) = (x − 2)(x + 5) : les antécédents de 0 sont 2 et −5 (un produit est nul si l'un des facteurs est nul).</div>
 <div class="warn">⚠️ Pour l'intersection, n'oublie pas de calculer y après avoir trouvé x.<br>⚠️ Pour les forfaits, on demande souvent un <b>nombre d'entrées</b>, pas un prix.<br>⚠️ x<sup>2</sup> = 9 a <b>deux</b> solutions : 3 et −3.</div>
 <div class="retenir">À retenir : point commun ⇔ f(x) = g(x) ; on trouve x, puis y.</div>`;
 }
