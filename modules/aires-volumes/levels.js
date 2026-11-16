@@ -158,15 +158,21 @@ function L1(d) {
   return Q({ visual, html: intro + 'Quel est le <b>périmètre</b> de la figure coloriée ?', tpl: 'Périmètre = {0} côtés de carreau', E: P0, value: c.P, pow10: false,
     alts: [[A0, "Ça, c'est l'aire (les carreaux à l'intérieur). Le périmètre, c'est le nombre de côtés de carreau sur le tour."], [c.bord, msgBord]], hint: hP, solution: solP });
 }
+/** fenêtre Cours : affiche une figure plus petite (largeur en pixels) */
+const petit = (svg, w) => svg.replace(/style="width:[\d.]+px"/, `style="width:${w}px;max-width:min(${w}px, 100%)"`);
 function C1() {
   const ex = [[false, false, false, false, false, false], [false, true, true, true, true, false], [false, true, true, false, false, false], [false, false, false, false, false, false]];
+  const rec = [...Array(5)].map((_, y) => [...Array(7)].map((_, x) => x >= 1 && x <= 5 && y >= 1 && y <= 3));
   return `<h2>1. Compter les carreaux</h2>
+<p class="intro">Sur un quadrillage, on mesure une surface en comptant des carreaux, et un tour en comptant des côtés de carreau. Ce sont les deux grandeurs de base : l'aire et le périmètre.</p>
 <div class="def">L'<b>aire</b> d'une figure, c'est la place qu'occupe sa surface : on compte les <b>carreaux</b> à l'intérieur.<br>
 Le <b>périmètre</b>, c'est la longueur de son <b>tour</b> : on compte les <b>côtés de carreau</b> sur le bord.</div>
-${D.quadrillage(ex, 'figure de 6 carreaux')}
-<div class="ex">Aire : 4 + 2 = <b>6 carreaux</b>.<br>Périmètre : on suit le bord épais et on compte 8 côtés horizontaux et 4 côtés verticaux, soit <b>12 côtés de carreau</b>.</div>
-<div class="ex">Rectangle de 5 carreaux sur 3 : aire = 3 × 5 = 15 carreaux ; périmètre = 5 + 3 + 5 + 3 = 16 côtés.</div>
-<div class="warn">⚠️ Ne confonds pas <b>aire</b> (l'intérieur) et <b>périmètre</b> (le tour).<br>⚠️ Pour le périmètre, on compte des côtés, pas des carreaux : un carreau dans un coin apporte 2 côtés.</div>`;
+<div class="cols">${D.quadrillage(rec, 'rectangle de 5 carreaux sur 3')}${D.quadrillage(ex, 'figure de 6 carreaux')}</div>
+<div class="methode"><b>Méthode</b><ol><li><b>Aire</b> : compte les carreaux ligne par ligne, puis additionne. Pour un rectangle : nombre de lignes × nombre de carreaux par ligne.</li><li><b>Périmètre</b> : suis le bord épais avec ton doigt et compte les côtés de carreau.</li><li>Pour ne rien oublier, compte d'abord les côtés <b>horizontaux</b>, puis les côtés <b>verticaux</b>, et additionne.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : le rectangle de 5 carreaux sur 3 (à gauche).</span><br>Aire : 3 lignes de 5 carreaux, 3 × 5 = <b>15 carreaux</b>.<br>Périmètre : 5 + 3 + 5 + 3 = <b>16 côtés de carreau</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : la figure en escalier (à droite).</span><br>Aire : 4 + 2 = <b>6 carreaux</b>.<br>Périmètre : 8 côtés horizontaux et 4 côtés verticaux, soit <b>12 côtés de carreau</b>.</div>
+<div class="warn">⚠️ Ne confonds pas <b>aire</b> (l'intérieur) et <b>périmètre</b> (le tour).<br>⚠️ Pour le périmètre, on compte des côtés, pas des carreaux du bord : un carreau dans un coin apporte 2 côtés.<br>⚠️ Quand on te demande les deux, vérifie que tu ne les as pas inversés dans les cases.</div>
+<div class="retenir">À retenir : aire = carreaux à l'intérieur ; périmètre = côtés de carreau sur le tour.</div>`;
 }
 
 /* ================= 2. rectangle et carré ================= */
@@ -205,12 +211,16 @@ function L2(d) {
 }
 function C2() {
   return `<h2>2. Rectangle et carré</h2>
+<p class="intro">Plus besoin de compter : pour un rectangle ou un carré, deux formules donnent directement le périmètre et l'aire.</p>
 <div class="def"><b>Rectangle</b> de longueur L et de largeur l : &nbsp; P = 2 × (L + l) &nbsp;&nbsp; A = L × l<br>
 <b>Carré</b> de côté c : &nbsp; P = 4 × c &nbsp;&nbsp; A = c × c</div>
-${D.rectangle(5, 3, '5 cm', '3 cm')}
-<div class="ex">P = 2 × (5 + 3) = 16 cm &nbsp; et &nbsp; A = 5 × 3 = 15 cm².</div>
-<div class="ex">Carré de côté 4 m : P = 4 × 4 = 16 m et A = 4 × 4 = 16 m² (même nombre, mais pas la même grandeur !).</div>
-<div class="warn">⚠️ Un périmètre est une <b>longueur</b> (cm, m) ; une aire se mesure en <b>unités d'aire</b> (cm², m²).<br>⚠️ Aire du carré : c × c, et non c × 2.</div>`;
+<div class="cols">${D.rectangle(5, 3, '5 cm', '3 cm')}${D.rectangle(5, 5, '5 cm', '', { carre: true })}</div>
+<div class="methode"><b>Méthode</b><ol><li>Lis bien ce qu'on demande : le <b>périmètre</b> (le tour) ou l'<b>aire</b> (la surface).</li><li>Applique la formule, avec des longueurs dans la même unité.</li><li>Écris l'unité : cm, m, mm pour un périmètre ; cm², m², mm² pour une aire.</li><li>Si on te donne l'aire ou le périmètre, fais l'opération inverse (division).</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : rectangle de 5 cm sur 3 cm.</span><br>P = 2 × (5 + 3) = 2 × 8 = <b>16 cm</b> et A = 5 × 3 = <b>15 cm²</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : un carré a un périmètre de 20 cm. Son aire ?</span><br>Côté : 20 ÷ 4 = 5 cm. Aire : 5 × 5 = <b>25 cm²</b>.</div>
+<div class="ex"><span class="q">Exemple 3 : un rectangle a une aire de 24 m² et une longueur de 6 m. Sa largeur ?</span><br>6 × l = 24, donc l = 24 ÷ 6 = <b>4 m</b>.</div>
+<div class="warn">⚠️ Un périmètre est une <b>longueur</b> (cm, m) ; une aire se mesure en <b>unités d'aire</b> (cm², m²).<br>⚠️ Aire du carré : c × c, et non c × 2. Périmètre du rectangle : il y a <b>deux</b> longueurs et <b>deux</b> largeurs.<br>⚠️ Pour retrouver une largeur, on <b>divise</b> l'aire par la longueur ; on ne soustrait pas.</div>
+<div class="retenir">À retenir : P = 2 × (L + l) et A = L × l ; carré : P = 4 × c et A = c × c.</div>`;
 }
 
 /* ================= 3. aire du triangle ================= */
@@ -238,11 +248,15 @@ function L3(d) {
 }
 function C3() {
   return `<h2>3. Aire du triangle</h2>
-<div class="def">A = <b>base × hauteur ÷ 2</b>. La <b>hauteur</b> issue d'un sommet est le segment qui part de ce sommet et arrive <b>perpendiculairement</b> sur le côté opposé (la base).</div>
-${D.triangle(6, 4, 2, { b: '6 cm', h: '4 cm' })}
-<div class="ex">Base AB = 6 cm, hauteur CH = 4 cm : A = 6 × 4 ÷ 2 = 12 cm².<br>Pourquoi ÷ 2 ? Le triangle est la moitié du rectangle de 6 cm sur 4 cm.</div>
-<div class="ex">Dans un triangle rectangle, la hauteur est un des côtés de l'angle droit. Si l'angle est obtus, la hauteur peut tomber en dehors du triangle : on prolonge la base.</div>
-<div class="warn">⚠️ Ne prends pas un côté penché pour la hauteur : la hauteur fait un angle droit avec la base.<br>⚠️ N'oublie pas le « ÷ 2 ».</div>`;
+<p class="intro">Un triangle, c'est la moitié d'un rectangle bien choisi. Toute la difficulté est de trouver la bonne <b>hauteur</b>.</p>
+<div class="def">A = <b>base × hauteur ÷ 2</b>. La <b>hauteur</b> issue d'un sommet est le segment qui part de ce sommet et arrive <b>perpendiculairement</b> sur le côté opposé (la base), éventuellement prolongé.</div>
+<div class="cols">${D.triangle(6, 4, 2, { b: '6 cm', h: '4 cm' })}${D.triangle(5, 4, -3, { b: '5 cm', h: '4 cm', side: '5 cm' })}</div>
+<div class="methode"><b>Méthode</b><ol><li>Choisis la base (souvent le côté du bas).</li><li>Repère la hauteur : le segment en pointillés, avec l'angle droit sur la base.</li><li>Calcule base × hauteur, puis divise par 2.</li><li>Écris l'unité d'aire (cm², m²…).</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : base AB = 6 cm, hauteur CH = 4 cm.</span><br>A = 6 × 4 ÷ 2 = 24 ÷ 2 = <b>12 cm²</b>.<br>Pourquoi ÷ 2 ? Le triangle est la moitié du rectangle de 6 cm sur 4 cm.</div>
+<div class="ex"><span class="q">Exemple 2 (piège) : base AB = 5 cm, hauteur 4 cm qui tombe en dehors, côté [AC] = 5 cm.</span><br>On prolonge la base. On utilise la hauteur, pas le côté penché : A = 5 × 4 ÷ 2 = <b>10 cm²</b> (et non 5 × 5 ÷ 2).</div>
+<div class="ex"><span class="q">Exemple 3 : triangle rectangle de côtés de l'angle droit 3 cm et 8 cm.</span><br>Un côté de l'angle droit sert de hauteur pour l'autre : A = 3 × 8 ÷ 2 = <b>12 cm²</b>.</div>
+<div class="warn">⚠️ Ne prends pas un côté penché pour la hauteur : la hauteur fait un angle droit avec la base.<br>⚠️ N'oublie pas le « ÷ 2 ».<br>⚠️ On multiplie base et hauteur : on ne les additionne pas.</div>
+<div class="retenir">À retenir : aire du triangle = base × hauteur ÷ 2, avec la hauteur perpendiculaire à la base.</div>`;
 }
 
 /* ================= 4. le disque ================= */
@@ -273,12 +287,16 @@ function L4(d) {
 }
 function C4() {
   return `<h2>4. Le disque</h2>
+<p class="intro">Pour un cercle, tout dépend du rayon et du nombre π (« pi »), environ 3,14. Ses formules servent ensuite pour les cylindres, cônes et boules.</p>
 <div class="def">Cercle de <b>rayon</b> r et de <b>diamètre</b> d = 2 × r :<br>
 <b>périmètre</b> P = 2 × π × r = π × d &nbsp;&nbsp;&nbsp; <b>aire</b> A = π × r × r = π × r²<br>π ≈ 3,14 (touche π de la calculatrice).</div>
-${D.disque('r', '3 cm', { size: 130 })}
-<div class="ex">r = 3 cm : P = 2 × π × 3 = 6π ≈ 18,8 cm (arrondi au dixième) ; A = π × 3 × 3 = 9π ≈ 28,3 cm².</div>
-<div class="ex">Arrondir au dixième : 28,274… → on regarde le chiffre des centièmes (7 ≥ 5), donc 28,3.</div>
-<div class="warn">⚠️ <b>Rayon</b> ou <b>diamètre</b> ? Si on te donne le diamètre, divise par 2 pour avoir le rayon de l'aire.<br>⚠️ r² = r × r, et non r × 2.<br>⚠️ Arrondir n'est pas couper : 28,27 au dixième donne 28,3.</div>`;
+<div class="cols">${D.disque('r', '3 cm', { size: 130 })}${D.disque('d', '10 cm', { size: 130 })}</div>
+<div class="methode"><b>Méthode</b><ol><li>Repère si on te donne le rayon ou le diamètre ; si c'est le diamètre, r = d ÷ 2.</li><li>Périmètre : 2 × π × r. Aire : π × r × r.</li><li>Avec π ≈ 3,14, calcule à la main ; sinon utilise la touche π et arrondis comme demandé.</li><li>Valeur exacte : garde π dans le résultat (6π, 9π…).</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : r = 3 cm, avec π ≈ 3,14.</span><br>P ≈ 2 × 3,14 × 3 = <b>18,84 cm</b> ; A ≈ 3,14 × 3 × 3 = 3,14 × 9 = <b>28,26 cm²</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : diamètre 10 cm, touche π, arrondi au dixième.</span><br>r = 10 ÷ 2 = 5 cm. P = π × 10 ≈ 31,41… ≈ <b>31,4 cm</b>.<br>A = π × 5 × 5 = 25π ≈ 78,53… ≈ <b>78,5 cm²</b>.</div>
+<div class="ex"><span class="q">Exemple 3 : valeur exacte, r = 4 cm.</span><br>P = 2 × π × 4 = <b>8π cm</b> ; A = π × 4 × 4 = <b>16π cm²</b>.</div>
+<div class="warn">⚠️ <b>Rayon</b> ou <b>diamètre</b> ? Si on te donne le diamètre, divise par 2 pour avoir le rayon de l'aire.<br>⚠️ r² = r × r, et non r × 2.<br>⚠️ Arrondir n'est pas couper : 78,53… au dixième donne 78,5, mais 28,27… donne 28,3.</div>
+<div class="retenir">À retenir : P = 2 × π × r et A = π × r × r, toujours avec le rayon.</div>`;
 }
 
 /* ================= 5. figures composées ================= */
@@ -330,11 +348,17 @@ function L5(d) {
 }
 function C5() {
   return `<h2>5. Figures composées</h2>
+<p class="intro">Une figure compliquée se découpe en morceaux simples dont on connaît déjà l'aire : rectangles, triangles, disques.</p>
 <div class="def">On <b>découpe</b> la figure en morceaux connus (rectangles, triangles, disques…) :<br>on <b>additionne</b> les aires des morceaux, ou on <b>soustrait</b> ce qui manque (un coin, un trou).</div>
-${D.maison(6, 4, 3, { L: '6 cm', h1: '4 cm', h2: '3 cm' })}
-<div class="ex">Rectangle : 6 × 4 = 24 cm². Triangle : 6 × 3 ÷ 2 = 9 cm². Total : 24 + 9 = 33 cm².</div>
-<div class="ex">Plaque de 10 cm sur 6 cm percée d'un trou de rayon 2 cm : 60 − π × 2 × 2 = 60 − 4π ≈ 47,4 cm².</div>
-<div class="warn">⚠️ Un <b>demi</b>-disque : on divise l'aire du disque par 2.<br>⚠️ Pour le <b>périmètre</b>, seul le bord extérieur compte : un segment intérieur (en pointillés) n'en fait pas partie.</div>`;
+<div class="cols">${D.maison(6, 4, 3, { L: '6 cm', h1: '4 cm', h2: '3 cm' })}${D.figureL(8, 6, 3, 2, { a: '8 cm', b: '6 cm', c: '3 cm', e: '2 cm' })}</div>
+<div class="methode"><b>Méthode</b><ol><li>Repère les morceaux simples (trace les découpes en pointillés).</li><li>Calcule l'aire de chaque morceau avec sa formule.</li><li>Additionne les morceaux, ou soustrais le coin vide ou le trou.</li><li>Pour un <b>périmètre</b>, fais seulement le tour extérieur.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : une « maison » (à gauche).</span><br>Rectangle : 6 × 4 = 24 cm². Triangle : 6 × 3 ÷ 2 = 9 cm². Total : 24 + 9 = <b>33 cm²</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : un rectangle avec un coin vide (à droite).</span><br>Grand rectangle : 8 × 6 = 48 cm². Coin vide : 3 × 2 = 6 cm². A = 48 − 6 = <b>42 cm²</b>.</div>
+<div class="cols">${D.trou(10, 6, 2, { L: '10 cm', l: '6 cm', r: '2 cm' })}${D.demiDisque(6, 4, { L: '6 cm', l: '4 cm' })}</div>
+<div class="ex"><span class="q">Exemple 3 : plaque de 10 cm sur 6 cm percée d'un trou de rayon 2 cm.</span><br>A = 60 − π × 2 × 2 = 60 − 4π ≈ 47,43… ≈ <b>47,4 cm²</b>.</div>
+<div class="ex"><span class="q">Exemple 4 : périmètre d'un rectangle de 6 cm sur 4 cm terminé par un demi-disque.</span><br>Côtés droits : 6 + 4 + 6 = 16 cm. Demi-cercle : π × 4 ÷ 2 = 2π ≈ 6,28 cm.<br>P ≈ 22,28… ≈ <b>22,3 cm</b> (le côté en pointillés ne compte pas).</div>
+<div class="warn">⚠️ Un <b>demi</b>-disque : on divise l'aire du disque par 2, et son rayon est la moitié de la largeur.<br>⚠️ Un trou ou un coin vide se <b>soustrait</b>.<br>⚠️ Pour le <b>périmètre</b>, seul le bord extérieur compte : un segment intérieur (en pointillés) n'en fait pas partie.</div>
+<div class="retenir">À retenir : découper en morceaux connus, puis additionner ou soustraire.</div>`;
 }
 
 /* ================= conversions (6, 7, 9) ================= */
@@ -403,11 +427,16 @@ function L6(d) {
 }
 function C6() {
   return `<h2>6. Conversions de longueurs</h2>
-<div class="def">Chaque unité de longueur vaut <b>10 fois</b> l'unité située à sa droite : 1 km = 10 hm = 100 dam = 1 000 m ; 1 m = 10 dm = 100 cm = 1 000 mm.</div>
+<p class="intro">Pour comparer ou additionner des longueurs, il faut les écrire dans la même unité. Le tableau de conversion évite les erreurs de virgule.</p>
+<div class="def">Chaque unité de longueur vaut <b>10 fois</b> l'unité située à sa droite : 1 km = 10 hm = 100 dam = 1 000 m ; 1 m = 10 dm = 100 cm = 1 000 mm.<br>Dans le tableau : <b>une colonne</b> par unité.</div>
 ${D.tableau('L', [{ s: '3.25', e: 3 }, { s: '325', e: 1, color: '#2b8a3e' }])}
-<div class="ex">3,25 m en cm : on écrit 3 dans la colonne des m (le chiffre des unités), puis la virgule se place après la colonne des cm : <b>3,25 m = 325 cm</b>.</div>
-<div class="ex">45 m en km : 45 m = 0,045 km (on complète par des zéros).</div>
-<div class="warn">⚠️ Vers une unité <b>plus petite</b>, le nombre <b>grandit</b> ; vers une unité plus grande, il diminue.<br>⚠️ Un rang par unité : de m à mm, c'est 3 rangs (× 1 000).</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Écris le nombre dans le tableau : le chiffre des <b>unités</b> va dans la colonne de l'unité de départ.</li><li>Place la virgule juste après la colonne de l'unité d'arrivée.</li><li>Complète par des zéros les colonnes vides.</li><li>Contrôle : vers une unité plus petite, le nombre grandit.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : 3,25 m en cm.</span><br>Le 3 va dans la colonne des m ; la virgule se place après la colonne des cm : <b>3,25 m = 325 cm</b> (× 100).</div>
+${D.tableau('L', [{ s: '45', e: 3 }, { s: '0.045', e: 6, color: '#2b8a3e' }])}
+<div class="ex"><span class="q">Exemple 2 : 45 m en km.</span><br>Le 5 va dans la colonne des m. Virgule après les km, et on complète par des zéros : <b>45 m = 0,045 km</b> (÷ 1 000).</div>
+<div class="ex"><span class="q">Exemple 3 : 7,8 mm en cm.</span><br>Un cm vaut 10 mm : 7,8 ÷ 10 = <b>0,78 cm</b>.</div>
+<div class="warn">⚠️ Vers une unité <b>plus petite</b>, le nombre <b>grandit</b> ; vers une unité plus grande, il diminue.<br>⚠️ Un rang par unité : de m à mm, c'est 3 rangs (× 1 000), pas 2.<br>⚠️ N'oublie pas le dam (décamètre) entre le hm et le m.</div>
+<div class="retenir">À retenir : longueurs, × 10 ou ÷ 10 à chaque colonne.</div>`;
 }
 
 /* ================= 7. conversions d'aires ================= */
@@ -419,12 +448,18 @@ function L7(d) {
   return conversion('A', pairs, d);
 }
 function C7() {
+  const g = [...Array(10)].map(() => [...Array(10)].map(() => true));
   return `<h2>7. Conversions d'aires</h2>
-<div class="def">1 m² est l'aire d'un carré de 1 m de côté, soit 10 dm × 10 dm = <b>100 dm²</b>.<br>Chaque unité d'aire vaut <b>100 fois</b> l'unité à sa droite : dans le tableau, <b>deux colonnes</b> par unité.</div>
+<p class="intro">Une unité d'aire est un carré : quand le côté est multiplié par 10, l'aire est multipliée par 100. D'où deux colonnes par unité dans le tableau.</p>
+<div class="def">1 m² est l'aire d'un carré de 1 m de côté, soit 10 dm × 10 dm = <b>100 dm²</b>.<br>Chaque unité d'aire vaut <b>100 fois</b> l'unité à sa droite : dans le tableau, <b>deux colonnes</b> par unité.<br>Unités agraires : 1 a = 1 dam² = 100 m² et 1 ha = 1 hm² = 10 000 m².</div>
+<div class="cols">${petit(D.quadrillage(g, '1 dm² = 100 cm²'), 200)}<div class="ex">Un carré de 1 dm de côté contient 10 × 10 = <b>100</b> carrés de 1 cm de côté :<br>1 dm² = 100 cm².</div></div>
 ${D.tableau('A', [{ s: '3.5', e: 6 }, { s: '35000', e: 2, color: '#2b8a3e' }])}
-<div class="ex">3,5 m² en cm² : le 3 va dans la colonne de droite des m², la virgule se place après les cm² : <b>3,5 m² = 35 000 cm²</b> (× 10 000).</div>
-<div class="ex">Unités agraires : 1 a = 1 dam² = 100 m² et 1 ha = 1 hm² = 10 000 m².</div>
-<div class="warn">⚠️ Le piège classique : faire × 10 au lieu de × 100. 1 m² = 100 dm², <b>pas</b> 10 dm² !</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Écris le nombre : le chiffre des unités va dans la colonne de <b>droite</b> de l'unité de départ.</li><li>Place la virgule juste après la colonne de droite de l'unité d'arrivée.</li><li>Complète par des zéros.</li><li>Contrôle : × 100 (ou ÷ 100) à chaque unité.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : 3,5 m² en cm².</span><br>Le 3 va dans la colonne de droite des m², la virgule se place après les cm² : <b>3,5 m² = 35 000 cm²</b> (× 10 000).</div>
+<div class="ex"><span class="q">Exemple 2 : 250 cm² en m².</span><br>De cm² à m², deux unités, donc ÷ 10 000 : <b>250 cm² = 0,025 m²</b>.</div>
+<div class="ex"><span class="q">Exemple 3 : 2,4 ha en m².</span><br>1 ha = 10 000 m², donc <b>2,4 ha = 24 000 m²</b>.</div>
+<div class="warn">⚠️ Le piège classique : faire × 10 au lieu de × 100. 1 m² = 100 dm², <b>pas</b> 10 dm² !<br>⚠️ Dans le tableau, chaque unité d'aire occupe <b>deux</b> colonnes : place le chiffre des unités dans celle de droite.<br>⚠️ Un hectare (ha) n'est pas un hm : c'est un hm².</div>
+<div class="retenir">À retenir : aires, × 100 ou ÷ 100 à chaque unité.</div>`;
 }
 
 /* ================= 8. volume du pavé et du cube ================= */
@@ -460,12 +495,16 @@ function L8(d) {
 }
 function C8() {
   return `<h2>8. Volume du pavé et du cube</h2>
-<div class="def">Le volume se mesure en cubes : 1 cm³ est le volume d'un cube de 1 cm d'arête.<br>
+<p class="intro">Le volume mesure la place occupée dans l'espace. On compte combien de petits cubes de 1 cm³ remplissent le solide.</p>
+<div class="def">1 cm³ est le volume d'un cube de 1 cm d'arête.<br>
 <b>Pavé droit</b> : V = longueur × largeur × hauteur &nbsp;&nbsp; <b>Cube</b> d'arête a : V = a × a × a = a³</div>
-${D.pave(4, 2, 3, { L: '4', h: '2', l: '3' }, { grille: true })}
-<div class="ex">Une couche : 4 × 3 = 12 petits cubes ; 2 couches : 12 × 2 = 24 cubes. V = 4 × 3 × 2 = 24 cm³.</div>
-<div class="ex">Cube de 5 cm d'arête : V = 5 × 5 × 5 = 125 cm³.</div>
-<div class="warn">⚠️ Les trois longueurs doivent être dans la <b>même unité</b> avant de multiplier.<br>⚠️ Ne confonds pas le volume (on multiplie 3 longueurs) avec l'aire des faces.</div>`;
+<div class="cols">${D.pave(4, 2, 3, { L: '4', h: '2', l: '3' }, { grille: true })}${D.pave(5, 5, 5, { L: '5 cm', h: '', l: '' })}</div>
+<div class="methode"><b>Méthode</b><ol><li>Vérifie que les trois longueurs sont dans la <b>même unité</b> ; sinon, convertis d'abord.</li><li>Multiplie les trois dimensions (une couche × le nombre de couches).</li><li>Écris l'unité de volume : cm³, m³…</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : le pavé de petits cubes (à gauche).</span><br>Une couche : 4 × 3 = 12 petits cubes ; 2 couches : 12 × 2 = 24 cubes. V = 4 × 3 × 2 = <b>24 cm³</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : cube de 5 cm d'arête (à droite).</span><br>V = 5 × 5 × 5 = <b>125 cm³</b>.</div>
+<div class="ex"><span class="q">Exemple 3 : pavé de 2 dm, 7 cm et 5 cm. Volume en cm³ ?</span><br>2 dm = 20 cm. V = 20 × 7 × 5 = <b>700 cm³</b>.<br>Avec des décimaux : 2,5 × 4 × 3 = 30 cm³.</div>
+<div class="warn">⚠️ Les trois longueurs doivent être dans la <b>même unité</b> avant de multiplier.<br>⚠️ Ne confonds pas le volume (on multiplie 3 longueurs) avec l'aire d'une face (2 longueurs) ou de toutes les faces.<br>⚠️ Cube : a × a × a, pas a × 3.</div>
+<div class="retenir">À retenir : V = L × l × h ; cube : V = a³.</div>`;
 }
 
 /* ================= 9. volumes et contenances ================= */
@@ -481,12 +520,17 @@ function L9(d) {
 }
 function C9() {
   return `<h2>9. Volumes et contenances</h2>
-<div class="def">1 dm³ = 10 cm × 10 cm × 10 cm = <b>1 000 cm³</b> : chaque unité de volume vaut 1 000 fois la suivante (<b>trois colonnes</b> par unité).<br>
-Contenances : <b>1 L = 1 dm³</b> et <b>1 mL = 1 cm³</b> ; 1 L = 10 dL = 100 cL = 1 000 mL.</div>
+<p class="intro">Le litre sert à mesurer ce que contient un récipient. Il se relie directement aux unités de volume : 1 L, c'est un cube de 10 cm d'arête.</p>
+<div class="def">1 dm³ = 10 cm × 10 cm × 10 cm = <b>1 000 cm³</b> : chaque unité de volume vaut 1 000 fois la suivante (<b>trois colonnes</b> par unité).<br>
+Contenances : <b>1 L = 1 dm³</b> et <b>1 mL = 1 cm³</b> ; 1 hL = 100 L ; 1 L = 10 dL = 100 cL = 1 000 mL.</div>
+<div class="cols">${petit(D.pave(1, 1, 1, { L: '10 cm', h: '10 cm', l: '10 cm' }), 230)}<div class="ex">Ce cube de 10 cm d'arête a un volume de 1 dm³ = 1 000 cm³ : il contient exactement <b>1 litre</b>.</div></div>
 ${D.tableau('V', [{ s: '2.5', e: 6 }, { s: '2500', e: 3, color: '#2b8a3e' }], { extra: true })}
-<div class="ex">2,5 dm³ = 2,5 L = 2 500 cm³ = 2 500 mL.</div>
-<div class="ex">1 m³ = 1 000 dm³ = 1 000 L : un cube de 1 m d'arête contient 1 000 litres.</div>
-<div class="warn">⚠️ Pour les volumes c'est × 1 000 à chaque unité, pas × 10 ni × 100.<br>⚠️ 1 L = 1 dm³ (pas 1 m³) : un litre, c'est un cube de 10 cm d'arête.</div>`;
+<div class="methode"><b>Méthode</b><ol><li>Volumes entre eux (m³, dm³, cm³) : × 1 000 ou ÷ 1 000 à chaque unité.</li><li>Contenances entre elles (hL, L, dL, cL, mL) : × 10 ou ÷ 10 à chaque unité.</li><li>Pour passer de l'un à l'autre, utilise les ponts : 1 dm³ = 1 L et 1 cm³ = 1 mL.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : 2,5 dm³ en cm³ et en mL.</span><br>2,5 dm³ = 2,5 L = <b>2 500 cm³</b> = <b>2 500 mL</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : 75 cL en L.</span><br>1 L = 100 cL, donc 75 cL = <b>0,75 L</b>.</div>
+<div class="ex"><span class="q">Exemple 3 : 3 500 cm³ en L.</span><br>3 500 cm³ = 3,5 dm³ = <b>3,5 L</b>. Et 1 m³ = 1 000 dm³ = 1 000 L.</div>
+<div class="warn">⚠️ Pour les volumes c'est × 1 000 à chaque unité, pas × 10 ni × 100.<br>⚠️ 1 L = 1 dm³ (pas 1 m³) : un litre, c'est un cube de 10 cm d'arête.<br>⚠️ Pour les contenances (L, dL, cL, mL), c'est × 10 par unité, comme les longueurs.</div>
+<div class="retenir">À retenir : 1 L = 1 dm³ = 1 000 cm³ et 1 mL = 1 cm³.</div>`;
 }
 
 /* ================= 10. prisme droit et cylindre ================= */
@@ -520,11 +564,15 @@ function L10(d) {
 }
 function C10() {
   return `<h2>10. Prisme droit et cylindre</h2>
+<p class="intro">Un prisme droit et un cylindre sont des « empilements » de leur base : leur volume se calcule de la même façon.</p>
 <div class="def">Pour un <b>prisme droit</b> comme pour un <b>cylindre</b> : &nbsp; <b>V = aire de la base × hauteur</b>.<br>Cylindre de rayon r et de hauteur h : V = π × r × r × h.</div>
-<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">${D.prisme(4, 3, 6, { a: '4 cm', b: '3 cm', H: '6 cm' })}${D.cylindre(2, 5, 'r', { r: '2 cm', h: '5 cm' })}</div>
-<div class="ex">Prisme : base = 4 × 3 ÷ 2 = 6 cm², V = 6 × 6 = 36 cm³.</div>
-<div class="ex">Cylindre : V = π × 2 × 2 × 5 = 20π ≈ 62,8 cm³ (au dixième).</div>
-<div class="warn">⚠️ La base d'un prisme peut être un triangle : son aire a un « ÷ 2 ».<br>⚠️ Rayon, pas diamètre ! Et la hauteur d'un prisme couché est la longueur qui « part en profondeur ».</div>`;
+<div class="cols">${D.prisme(4, 3, 6, { a: '4 cm', b: '3 cm', H: '6 cm' })}${D.cylindre(2, 5, 'r', { r: '2 cm', h: '5 cm' })}</div>
+<div class="methode"><b>Méthode</b><ol><li>Repère la base (triangle, rectangle, disque) et la hauteur du solide.</li><li>Calcule l'aire de la base (triangle rectangle : côté × côté ÷ 2 ; disque : π × r × r).</li><li>Multiplie par la hauteur.</li><li>Arrondis si demandé ; pour des litres, divise des cm³ par 1 000.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : prisme à base triangle rectangle 4 cm × 3 cm, hauteur 6 cm.</span><br>Base = 4 × 3 ÷ 2 = 6 cm². V = 6 × 6 = <b>36 cm³</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : cylindre de rayon 2 cm et de hauteur 5 cm.</span><br>V = π × 2 × 2 × 5 = 20π ≈ 62,83… ≈ <b>62,8 cm³</b> (au dixième).</div>
+<div class="ex"><span class="q">Exemple 3 : boîte cylindrique de diamètre 10 cm et de hauteur 20 cm. Contenance en L ?</span><br>r = 5 cm. V = π × 5 × 5 × 20 = 500π ≈ 1 570,8 cm³.<br>1 L = 1 000 cm³, donc V ≈ <b>1,57 L</b> (au centième).</div>
+<div class="warn">⚠️ La base d'un prisme peut être un triangle : son aire a un « ÷ 2 ».<br>⚠️ Rayon, pas diamètre ! Et 2 × π × r × h est l'aire de la surface latérale, pas le volume.<br>⚠️ La hauteur d'un prisme couché est la longueur qui « part en profondeur ».</div>
+<div class="retenir">À retenir : prisme ou cylindre, V = aire de la base × hauteur.</div>`;
 }
 
 /* ================= 11. pyramide et cône ================= */
@@ -554,11 +602,16 @@ function L11(d) {
 }
 function C11() {
   return `<h2>11. Pyramide et cône</h2>
-<div class="def">Pyramide ou cône : &nbsp; <b>V = aire de la base × hauteur ÷ 3</b> &nbsp;(c'est le tiers du prisme ou du cylindre de même base et de même hauteur).<br>Cône de rayon r : V = π × r × r × h ÷ 3.</div>
-<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">${D.pyramide(4, 4, 6, { a: '4 cm', h: '6 cm' })}${D.cone(3, 5, 'r', { r: '3 cm', h: '5 cm' })}</div>
-<div class="ex">Pyramide à base carrée de 4 cm, hauteur 6 cm : V = 4 × 4 × 6 ÷ 3 = 32 cm³.</div>
-<div class="ex">Cône de rayon 3 cm, hauteur 5 cm : V = π × 3 × 3 × 5 ÷ 3 = 15π ≈ 47,1 cm³.</div>
-<div class="warn">⚠️ Le plus fréquent : <b>oublier le ÷ 3</b> (le « 1/3 »).<br>⚠️ La hauteur est perpendiculaire à la base (en pointillés), ce n'est pas une arête penchée.</div>`;
+<p class="intro">Une pyramide ou un cône « pointu » occupe exactement le tiers du prisme ou du cylindre de même base et de même hauteur.</p>
+<div class="def">Pyramide ou cône : &nbsp; <b>V = aire de la base × hauteur ÷ 3</b>.<br>Cône de rayon r : V = π × r × r × h ÷ 3.<br>La hauteur va du sommet à la base, <b>perpendiculairement</b>.</div>
+<div class="cols">${D.pyramide(4, 4, 6, { a: '4 cm', h: '6 cm' })}${D.cone(3, 5, 'r', { r: '3 cm', h: '5 cm' })}</div>
+<div class="methode"><b>Méthode</b><ol><li>Calcule l'aire de la base (carré, rectangle ou disque).</li><li>Multiplie par la hauteur (en pointillés).</li><li>Divise par 3.</li><li>Arrondis à la fin si demandé (cône : touche π).</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : pyramide à base carrée de 4 cm, hauteur 6 cm.</span><br>Base : 4 × 4 = 16 cm². V = 16 × 6 ÷ 3 = 96 ÷ 3 = <b>32 cm³</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : pyramide à base rectangulaire de 5 cm sur 3 cm, hauteur 7 cm.</span><br>Base : 15 cm². V = 15 × 7 ÷ 3 = 105 ÷ 3 = <b>35 cm³</b>.</div>
+<div class="ex"><span class="q">Exemple 3 : cône de rayon 3 cm, hauteur 5 cm.</span><br>V = π × 3 × 3 × 5 ÷ 3 = 15π ≈ 47,12… ≈ <b>47,1 cm³</b>.</div>
+<div class="ex"><span class="q">Exemple 4 : cône de diamètre 8 cm, hauteur 6 cm.</span><br>r = 4 cm. V = π × 4 × 4 × 6 ÷ 3 = 32π ≈ 100,53… ≈ <b>100,5 cm³</b>.</div>
+<div class="warn">⚠️ Le plus fréquent : <b>oublier le ÷ 3</b> (le « 1/3 »). On divise par 3, pas par 2.<br>⚠️ La hauteur est perpendiculaire à la base (en pointillés), ce n'est pas une arête penchée.<br>⚠️ Pour le cône, rayon et non diamètre.</div>
+<div class="retenir">À retenir : pyramide ou cône, V = aire de la base × hauteur ÷ 3.</div>`;
 }
 
 /* ================= 12. défis : boule, sphère, agrandissement ================= */
@@ -612,13 +665,17 @@ function L12(d) {
 }
 function C12() {
   return `<h2>12. Défis : boule, sphère, agrandissement</h2>
-<div class="def">Boule de rayon r : &nbsp; <b>V = ${F(4, 3)} × π × r³</b> &nbsp;&nbsp; Sphère (la surface) : <b>A = 4 × π × r²</b></div>
-${D.boule('r', '3 cm')}
-<div class="ex">r = 3 cm : V = 4 × π × 27 ÷ 3 = 36π ≈ 113,1 cm³ ; A = 4 × π × 9 = 36π ≈ 113,1 cm².</div>
-<div class="def"><b>Agrandissement ou réduction de rapport k</b> : les longueurs sont multipliées par k, les <b>aires par k²</b>, les <b>volumes par k³</b>.</div>
-${D.agrandi('v', 2, 2, 2, 2, { L: '1 cm', h: '1 cm' }, { L: '2 cm', h: '2 cm' }, '× 2')}
-<div class="ex">Un cube d'arête doublée (k = 2) : aire de chaque face × 4, volume × 8.</div>
-<div class="warn">⚠️ N'oublie pas le ${F(4, 3)} (et donc le ÷ 3) dans le volume de la boule.<br>⚠️ Aires × k², volumes × k³ : pas × k !</div>`;
+<p class="intro">Deux nouveautés de 3e : les formules de la boule, et l'effet d'un agrandissement sur les aires et les volumes.</p>
+<div class="def">Boule de rayon r : &nbsp; <b>V = ${F(4, 3)} × π × r³</b> &nbsp;&nbsp; Sphère (la surface) : <b>A = 4 × π × r²</b><br>
+<b>Agrandissement ou réduction de rapport k</b> : les longueurs sont multipliées par k, les <b>aires par k²</b>, les <b>volumes par k³</b>.</div>
+<div class="cols">${petit(D.boule('r', '3 cm'), 240)}${D.agrandi('v', 2, 2, 2, 2, { L: '1 cm', h: '1 cm' }, { L: '2 cm', h: '2 cm' }, '× 2')}</div>
+<div class="methode"><b>Méthode</b><ol><li>Boule ou sphère : prends le <b>rayon</b> (moitié du diamètre). Volume : 4 × π × r × r × r ÷ 3. Aire : 4 × π × r × r.</li><li>Agrandissement : repère k, puis multiplie les longueurs par k, les aires par k × k, les volumes par k × k × k.</li><li>Arrondis à la fin.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : boule de rayon 3 cm.</span><br>V = 4 × π × 27 ÷ 3 = 36π ≈ 113,1 cm³ ; A = 4 × π × 9 = 36π ≈ 113,1 cm².</div>
+<div class="ex"><span class="q">Exemple 2 : boule de diamètre 10 cm.</span><br>r = 5 cm. V = 4 × π × 125 ÷ 3 ≈ 523,59… ≈ <b>523,6 cm³</b> ; A = 4 × π × 25 = 100π ≈ <b>314,2 cm²</b>.</div>
+<div class="ex"><span class="q">Exemple 3 : un rectangle de 3 cm sur 2 cm (aire 6 cm²) est agrandi à l'échelle 3.</span><br>Aire × 3² = × 9 : 6 × 9 = <b>54 cm²</b> (vérification : 9 cm × 6 cm = 54 cm²).</div>
+<div class="ex"><span class="q">Exemple 4 : un pavé de 24 cm³ est réduit à l'échelle 0,5.</span><br>Volume × 0,5³ = × 0,125 : 24 × 0,125 = <b>3 cm³</b>.</div>
+<div class="warn">⚠️ N'oublie pas le ${F(4, 3)} (et donc le ÷ 3) dans le volume de la boule ; r³ = r × r × r.<br>⚠️ Aires × k², volumes × k³ : pas × k !<br>⚠️ Ne confonds pas le volume de la boule (r³) et l'aire de la sphère (r²).</div>
+<div class="retenir">À retenir : boule V = 4/3 × π × r³, sphère A = 4 × π × r² ; agrandissement : k, k², k³.</div>`;
 }
 
 export const LEVELS = [
