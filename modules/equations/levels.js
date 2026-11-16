@@ -13,6 +13,8 @@ import { numsCheck, fracCheck, choiceCheck } from '../../engine/answers/checks.j
 import { gcd, lcm, red, approx } from '../../engine/util/arith.js';
 import { M, P, F, X2, terms, big } from '../../engine/util/fmt.js';
 import { balance, canBalance, steps, rect, sqGraph } from './draw.js';
+import { intLine, fracLine } from '../../engine/draw/numberLine.js';
+import { plot } from '../../engine/draw/plot.js';
 
 /* ================= équations du premier degré ================= */
 const ax = c => ['x', c], nb = c => ['n', c], par = (k, p, q) => ['p', k, p, q];
@@ -199,12 +201,19 @@ function L1(d) {
 }
 function C1() {
   return `<h2>1. Est-ce une solution ?</h2>
+<p class="intro">Une équation pose une question : « pour quelle valeur de x l'égalité est-elle vraie ? ». Avant d'apprendre à la résoudre, on apprend à <b>tester</b> un nombre.</p>
 <div class="def">Une <b>équation</b> est une égalité avec une inconnue, souvent notée <b>x</b>. Elle a deux <b>membres</b> : à gauche et à droite du signe =.<br>Un nombre est <b>solution</b> si, en remplaçant x par ce nombre, les deux membres sont <b>égaux</b>.</div>
-<p>Une équation, c'est comme une <b>balance en équilibre</b> : chaque sac « x » contient le même nombre de masses.</p>
-${balance({ x: 2, u: 3 }, { u: 11 }, { labels: ['2x + 3', '11'], label: 'Balance : 2x + 3 à gauche, 11 à droite' })}
-<div class="ex">Est-ce que 4 est solution de 2x + 3 = 11 ?<br>À gauche : 2 × 4 + 3 = 11. À droite : 11. Égalité : <b>oui</b>.</div>
-<div class="ex">Est-ce que 5 est solution de 3x − 1 = 2x + 3 ?<br>À gauche : 3 × 5 − 1 = 14. À droite : 2 × 5 + 3 = 13. 14 ≠ 13 : <b>non</b>.</div>
-<div class="warn">⚠️ Calcule les deux membres <b>séparément</b>, puis compare. Et remplace <b>tous</b> les x, des deux côtés !</div>`;
+<div><p>Une équation, c'est comme une <b>balance en équilibre</b> : chaque sac « x » contient le même nombre de masses.</p></div>
+<div>${balance({ x: 2, u: 3 }, { u: 11 }, { labels: ['2x + 3', '11'], label: 'Balance : 2x + 3 à gauche, 11 à droite' })}</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Remplace <b>chaque</b> x par le nombre, des deux côtés (entre parenthèses s'il est négatif).</li>
+<li>Calcule le membre de gauche, puis le membre de droite, <b>séparément</b>.</li>
+<li>Compare : égaux → c'est une solution ; différents → ce n'en est pas une.</li>
+<li>S'il y a plusieurs nombres proposés, teste-les un par un.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : 4 est-il solution de 2x + 3 = 11 ?</span><br>À gauche : 2 × 4 + 3 = 11. À droite : 11. Égalité : <b>oui</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : 5 est-il solution de 3x − 1 = 2x + 3 ? Et −2 de 4x + 5 = x − 1 ?</span><br>• À gauche : 3 × 5 − 1 = 14. À droite : 2 × 5 + 3 = 13. 14 ≠ 13 : <b>non</b>.<br>• À gauche : 4 × (−2) + 5 = −3. À droite : −2 − 1 = −3. Égalité : <b>oui</b>, −2 est solution.</div>
+<div class="warn">⚠️ Calcule les deux membres <b>séparément</b>, puis compare.<br>⚠️ Remplace <b>tous</b> les x, des deux côtés !<br>⚠️ 4x avec x = −2, c'est 4 × (−2) = −8 : attention à la règle des signes.</div>
+<div class="retenir">À retenir : un nombre est solution s'il rend les deux membres égaux.</div>`;
 }
 
 /* ---------- 2. x + a = b et x − a = b ---------- */
@@ -227,13 +236,18 @@ function L2(d) {
 }
 function C2() {
   return `<h2>2. x + a = b et x − a = b</h2>
+<p class="intro">Résoudre une équation, c'est trouver la valeur de x. On la transforme pas à pas, sans casser l'équilibre, jusqu'à obtenir « x = … ».</p>
 <div class="def"><b>Règle d'or</b> : on peut ajouter ou enlever le <b>même nombre</b> aux <b>deux membres</b> d'une équation. La balance reste en équilibre.</div>
-<div class="ex">x + 3 = 7 : on enlève 3 des deux côtés → x = 7 − 3 → <b>x = 4</b>.</div>
-${balance({ x: 1, u: 3 }, { u: 7 }, { labels: ['x + 3', '7'], anim: true, start: 'Équilibre : x + 3 = 7', label: 'Animation : on enlève 3 des deux côtés' })}
-<div class="ex">x − 2 = 5 : les 2 ballons tirent vers le haut (−2). On ajoute 2 des deux côtés → x = 5 + 2 → <b>x = 7</b>.</div>
-${balance({ x: 1, b: 2 }, { u: 5 }, { labels: ['x − 2', '5'], anim: true, start: 'Équilibre : x − 2 = 5', label: 'Animation : on ajoute 2 des deux côtés' })}
-<div class="warn">⚠️ « Passer de l'autre côté » sans changer d'opération est l'erreur classique : x − 2 = 5 ne donne <b>pas</b> x = 5 − 2.</div>
-<p class="note">Pour vérifier : remplace x par ta réponse dans l'équation de départ.</p>`;
+<div>${balance({ x: 1, u: 3 }, { u: 7 }, { labels: ['x + 3', '7'], anim: true, start: 'Équilibre : x + 3 = 7', label: 'Animation : on enlève 3 des deux côtés' })}</div>
+<div>${balance({ x: 1, b: 2 }, { u: 5 }, { labels: ['x − 2', '5'], anim: true, start: 'Équilibre : x − 2 = 5', label: 'Animation : on ajoute 2 des deux côtés' })}</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Repère le nombre collé à x : « + a » ou « − a ».</li>
+<li>Fais l'opération <b>contraire</b> des deux côtés : on enlève a pour annuler + a, on ajoute a pour annuler − a.</li>
+<li>Vérifie en remplaçant x par ta réponse dans l'équation de départ.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : x + 3 = 7 et x − 2 = 5.</span><br>• On enlève 3 des deux côtés : x = 7 − 3, donc <b>x = 4</b>.<br>• Les 2 ballons tirent vers le haut (− 2). On ajoute 2 des deux côtés : x = 5 + 2, donc <b>x = 7</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : 12 = x + 5 et x − 38 = 25.</span><br>• L'inconnue peut être à droite : on enlève 5 des deux côtés, 12 − 5 = x, donc <b>x = 7</b>.<br>• On ajoute 38 des deux côtés : x = 25 + 38, donc <b>x = 63</b>. Vérification : 63 − 38 = 25 ✓</div>
+<div class="warn">⚠️ « Passer de l'autre côté » sans changer d'opération est l'erreur classique : x − 2 = 5 ne donne <b>pas</b> x = 5 − 2.<br>⚠️ Pour x + 3 = 7, on n'ajoute pas 3 : on l'<b>enlève</b>.</div>
+<div class="retenir">À retenir : pour annuler + a on enlève a, pour annuler − a on ajoute a, des deux côtés.</div>`;
 }
 
 /* ---------- 3. ax = b ---------- */
@@ -249,11 +263,17 @@ function L3(d) {
 }
 function C3() {
   return `<h2>3. ax = b</h2>
+<p class="intro">Quand x est multiplié par un nombre, on ne soustrait pas : on <b>partage</b> les deux plateaux de la balance en parts égales.</p>
 <div class="def">On peut <b>diviser</b> (ou multiplier) les deux membres d'une équation par un <b>même nombre non nul</b>.<br>ax = b ⇔ x = b ÷ a.</div>
-<div class="ex">3x = 12 : trois sacs pèsent 12. Un sac pèse 12 ÷ 3 = 4 → <b>x = 4</b>.</div>
-${balance({ x: 3 }, { u: 12 }, { labels: ['3x', '12'], anim: true, start: 'Équilibre : 3x = 12', label: 'Animation : on partage en 3 parts égales' })}
-<div class="warn">⚠️ 3x = 12 ne donne pas x = 12 − 3 : 3x veut dire 3 × x, on <b>divise</b> par 3.</div>
-<div class="warn">⚠️ On divise <b>les deux membres</b>, pas un seul : sinon la balance n'est plus en équilibre.</div>`;
+<div>${balance({ x: 3 }, { u: 12 }, { labels: ['3x', '12'], anim: true, start: 'Équilibre : 3x = 12', label: 'Animation : on partage en 3 parts égales' })}</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Lis ax comme a × x : il y a a sacs identiques.</li>
+<li>Divise les <b>deux</b> membres par a.</li>
+<li>Vérifie : a × (ta réponse) doit redonner b.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : 3x = 12.</span><br>Trois sacs pèsent 12. Un sac pèse 12 ÷ 3 = 4, donc <b>x = 4</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : 56 = 7x et 12x = 144.</span><br>• 56 ÷ 7 = 8, donc <b>x = 8</b> (l'inconnue peut être à droite).<br>• 144 ÷ 12 = 12, donc <b>x = 12</b>. Vérification : 12 × 12 = 144 ✓</div>
+<div class="warn">⚠️ 3x = 12 ne donne pas x = 12 − 3 : 3x veut dire 3 × x, on <b>divise</b> par 3.<br>⚠️ On divise, on ne multiplie pas : 3x = 12 ne donne pas x = 36.<br>⚠️ On divise <b>les deux membres</b>, pas un seul : sinon la balance n'est plus en équilibre.</div>
+<div class="retenir">À retenir : ax = b donne x = b ÷ a.</div>`;
 }
 
 /* ---------- 4. ax + b = c ---------- */
@@ -274,12 +294,18 @@ function L4(d) {
 }
 function C4() {
   return `<h2>4. ax + b = c</h2>
+<p class="intro">On combine les deux règles précédentes. Le secret : faire les étapes <b>dans le bon ordre</b>.</p>
 <div class="def">Méthode en deux étapes :<br>1) on <b>isole</b> le terme en x en ajoutant ou en enlevant le même nombre des deux côtés ;<br>2) on <b>divise</b> les deux membres par le coefficient de x.</div>
-<div class="ex">2x + 3 = 11 → 2x = 11 − 3 = 8 → x = 8 ÷ 2 → <b>x = 4</b>.</div>
-${balance({ x: 2, u: 3 }, { u: 11 }, { labels: ['2x + 3', '11'], anim: true, start: 'Équilibre : 2x + 3 = 11', label: 'Animation : on enlève 3 puis on partage en 2' })}
-<div class="ex">3x − 4 = 11 → 3x = 11 + 4 = 15 → <b>x = 5</b>.</div>
-<div class="warn">⚠️ Dans l'ordre ! Si on divise d'abord, il faut diviser <b>tous</b> les termes : (2x + 3) ÷ 2 n'est pas x + 3.</div>
-<p class="note">Vérification : 2 × 4 + 3 = 11 ✓</p>`;
+<div>${balance({ x: 2, u: 3 }, { u: 11 }, { labels: ['2x + 3', '11'], anim: true, start: 'Équilibre : 2x + 3 = 11', label: 'Animation : on enlève 3 puis on partage en 2' })}</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Repère le nombre seul du côté de x (avec son signe).</li>
+<li>Fais l'opération contraire des deux côtés : il reste ax = … .</li>
+<li>Divise les deux membres par a.</li>
+<li>Vérifie dans l'équation de départ.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : 2x + 3 = 11.</span><br>2x = 11 − 3 = 8, puis x = 8 ÷ 2, donc <b>x = 4</b>. Vérification : 2 × 4 + 3 = 11 ✓</div>
+<div class="ex"><span class="q">Exemple 2 : 3x − 4 = 11 et 29 = 5 + 4x.</span><br>• On ajoute 4 : 3x = 15, donc <b>x = 5</b>.<br>• On enlève 5 : 24 = 4x, donc <b>x = 6</b>.</div>
+<div class="warn">⚠️ Dans l'ordre ! On s'occupe d'abord du nombre seul, <b>ensuite</b> on divise. Si on divise d'abord, il faut diviser <b>tous</b> les termes : (2x + 3) ÷ 2 n'est pas x + 3.<br>⚠️ « − 4 » ne change pas de côté sans changer d'opération : on <b>ajoute</b> 4.</div>
+<div class="retenir">À retenir : d'abord isoler ax, ensuite diviser par a.</div>`;
 }
 
 /* ---------- 5. solutions négatives ---------- */
@@ -299,12 +325,19 @@ function L5(d) {
 function C5() {
   const q = { L: [ax(3), nb(7)], R: [nb(1)] };
   return `<h2>5. Solutions négatives</h2>
-<div class="def">Les mêmes règles marchent avec tous les nombres relatifs : on fait <b>la même opération des deux côtés</b>. La solution peut être négative.</div>
-<div class="ex">x + 9 = 4 → x = 4 − 9 → <b>x = −5</b>. (Vérification : −5 + 9 = 4 ✓)</div>
+<p class="intro">La solution d'une équation peut être un nombre négatif. La méthode ne change pas, il faut seulement être soigneux avec les signes.</p>
+<div class="def">Les mêmes règles marchent avec tous les nombres relatifs : on fait <b>la même opération des deux côtés</b>.<br>Règle des signes pour diviser : deux nombres de même signe donnent un quotient positif, deux nombres de signes contraires un quotient négatif.</div>
+<div>${intLine({ min: -6, max: 5, marks: [{ x: -5 }, { x: 4, c: '#2b8a3e' }], arrows: [{ from: -5, to: 4, l: '+ 9' }] })}</div>
+<div><p class="note">x + 9 = 4 : en partant de x et en avançant de 9, on arrive à 4. Donc x est à 9 crans à gauche de 4 : x = −5.</p></div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Isole le terme en x (opération contraire des deux côtés).</li>
+<li>Divise par le coefficient de x <b>avec son signe</b>.</li>
+<li>Applique la règle des signes, puis vérifie.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : x + 9 = 4 et 3x + 7 = 1.</span><br>• x = 4 − 9, donc <b>x = −5</b>. Vérification : −5 + 9 = 4 ✓<br>• 3x = 1 − 7 = −6, donc x = −6 ÷ 3, <b>x = −2</b> :</div>
 ${solve(q).html}
-<div class="ex">−4x = 20 → x = 20 ÷ (−4) → <b>x = −5</b>.</div>
-<div class="warn">⚠️ Dans −4x = 20, on divise par <b>−4</b> (avec le signe), pas par 4.</div>
-<div class="warn">⚠️ −x = 6 veut dire −1 × x = 6, donc <b>x = −6</b>.</div>`;
+<div class="ex"><span class="q">Exemple 2 : −4x = 20, −x = 6 et 5 − 2x = 11.</span><br>• x = 20 ÷ (−4), donc <b>x = −5</b>.<br>• −x = 6 veut dire −1 × x = 6, donc <b>x = −6</b>.<br>• On enlève 5 : −2x = 6, puis x = 6 ÷ (−2), donc <b>x = −3</b>.</div>
+<div class="warn">⚠️ Dans −4x = 20, on divise par <b>−4</b> (avec le signe), pas par 4.<br>⚠️ Le nombre qui change de côté change aussi d'opération : 3x + 7 = 1 donne 3x = 1 − 7, pas 1 + 7.</div>
+<div class="retenir">À retenir : même méthode, et on divise par le coefficient de x avec son signe.</div>`;
 }
 
 /* ---------- 6. solutions fractionnaires ---------- */
@@ -345,12 +378,22 @@ function L6(d) {
 }
 function C6() {
   return `<h2>6. Solutions fractionnaires</h2>
-<div class="def">Quand la division ne tombe pas juste, la solution s'écrit sous forme de <b>fraction</b> : ax = b ⇔ x = ${F('b', 'a')}. On la donne <b>simplifiée</b>.</div>
-<div class="ex">3x = 7 ⇔ <b>x = ${F(7, 3)}</b> (et pas 2,33… qui n'est qu'une valeur approchée).</div>
-<div class="ex">6x = 4 ⇔ x = ${F(4, 6)} = <b>${F(2, 3)}</b> (on simplifie par 2).</div>
+<p class="intro">Quand la division ne tombe pas juste, la solution n'est pas un nombre entier. On l'écrit alors avec une <b>fraction</b>, qui est sa valeur exacte.</p>
+<div class="def">ax = b ⇔ x = ${F('b', 'a')}. On donne la fraction <b>simplifiée</b>, avec le signe − au numérateur si elle est négative.</div>
+<div class="cols">
+<div>${fracLine(7, 3, 3)}</div>
+<div><p class="note">La solution de 3x = 7 est le point A : on partage chaque unité en 3, et on compte 7 tiers. ${F(7, 3)} est entre 2 et 3.</p></div>
+</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Isole le terme en x comme d'habitude.</li>
+<li>Écris x = (nombre de droite) ÷ (coefficient de x), sous forme de fraction.</li>
+<li>Simplifie la fraction (divise en haut et en bas par le même nombre).</li>
+<li>Si elle est négative, écris le − en haut : −${F(3, 4)} se tape −3 sur 4.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : 3x = 7 et 6x = 4.</span><br>• <b>x = ${F(7, 3)}</b> (et pas 2,33… qui n'est qu'une valeur approchée).<br>• x = ${F(4, 6)} = <b>${F(2, 3)}</b> (on simplifie par 2).</div>
+<div class="ex"><span class="q">Exemple 2 : 4x + 5 = 2.</span><br>On enlève 5 puis on divise par 4 :</div>
 ${solve({ L: [ax(4), nb(5)], R: [nb(2)] }).html}
-<div class="warn">⚠️ Ne pas inverser : 3x = 7 donne ${F(7, 3)}, pas ${F(3, 7)}. Le coefficient de x va <b>en bas</b>.</div>
-<div class="warn">⚠️ Signe : −2x = 3 donne x = −${F(3, 2)} ; on écrit le − devant (ou au numérateur).</div>`;
+<div class="warn">⚠️ Ne pas inverser : 3x = 7 donne ${F(7, 3)}, pas ${F(3, 7)}. Le coefficient de x va <b>en bas</b>.<br>⚠️ Signe : −2x = 3 donne x = ${F('−3', 2)} ; le dénominateur reste positif.<br>⚠️ Une fraction non simplifiée, comme ${F(4, 6)}, n'est pas la réponse attendue.</div>
+<div class="retenir">À retenir : ax = b donne x = ${F('b', 'a')}, une fraction simplifiée.</div>`;
 }
 
 /* ---------- 7. x des deux côtés ---------- */
@@ -378,11 +421,17 @@ function L7(d) {
 }
 function C7() {
   return `<h2>7. Des x des deux côtés</h2>
+<p class="intro">Quand il y a des x dans les deux membres, on commence par les rassembler d'un seul côté. Ensuite, on retrouve une équation déjà connue.</p>
 <div class="def">On regroupe d'abord tous les x <b>du même côté</b> en enlevant (ou en ajoutant) le même terme en x aux deux membres. Puis on termine comme au niveau 4.</div>
-<div class="ex">3x + 2 = x + 8 : on enlève x des deux côtés → 2x + 2 = 8 → 2x = 6 → <b>x = 3</b>.</div>
 ${balance({ x: 3, u: 2 }, { x: 1, u: 8 }, { labels: ['3x + 2', 'x + 8'], anim: true, start: 'Équilibre : 3x + 2 = x + 8', label: 'Animation : on enlève un sac x, puis 2 masses, puis on partage' })}
-<div class="ex">2x − 5 = 6x + 3 → −4x − 5 = 3 → −4x = 8 → <b>x = −2</b>.</div>
-<div class="warn">⚠️ Pour faire disparaître « + x » à droite, on <b>enlève</b> x des deux côtés : 3x − x = 2x (et non 3x + x).</div>`;
+<div class="methode"><b>Méthode</b><ol>
+<li>Choisis un côté pour les x (souvent celui où il y en a le plus).</li>
+<li>Enlève (ou ajoute) le terme en x de l'autre côté, dans les deux membres.</li>
+<li>Isole le terme en x, puis divise.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : 3x + 2 = x + 8.</span><br>On enlève x des deux côtés : 2x + 2 = 8. Puis 2x = 6, donc <b>x = 3</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : 2x − 5 = 6x + 3.</span><br>• On enlève 6x : −4x − 5 = 3, puis −4x = 8, donc <b>x = −2</b>.<br>• Autre façon : on enlève 2x, −5 = 4x + 3, puis −8 = 4x, donc x = −2 aussi.<br>Vérification : 2 × (−2) − 5 = −9 et 6 × (−2) + 3 = −9 ✓</div>
+<div class="warn">⚠️ Pour faire disparaître « + x » à droite, on <b>enlève</b> x des deux côtés : 3x − x = 2x (et non 3x + x).<br>⚠️ Le nombre seul change d'opération en changeant de côté, comme avant.</div>
+<div class="retenir">À retenir : d'abord tous les x du même côté, ensuite comme ax + b = c.</div>`;
 }
 
 /* ---------- 8. parenthèses à développer ---------- */
@@ -406,11 +455,18 @@ function L8(d) {
 }
 function C8() {
   return `<h2>8. Équations avec des parenthèses</h2>
-<div class="def">On <b>développe</b> d'abord : k(a + b) = ka + kb. On réduit chaque membre, puis on résout comme avant.</div>
+<p class="intro">Si l'équation contient des parenthèses, on les fait disparaître en développant. On retrouve alors une équation des niveaux précédents.</p>
+<div class="def">On <b>développe</b> d'abord : k(a + b) = ka + kb. On réduit chaque membre, puis on résout comme avant.<br>Un « − » devant une parenthèse change le signe de tous ses termes.</div>
+<div>${balance({ x: 3, u: 6 }, { u: 15 }, { labels: ['3(x + 2)', '15'], anim: true, start: '3(x + 2) = 3x + 6 = 15', label: 'Animation : 3 fois (x + 2), soit 3 sacs et 6 masses, pèsent 15' })}</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Développe chaque produit : le nombre devant multiplie <b>chaque</b> terme.</li>
+<li>Réduis chaque membre (les x ensemble, les nombres ensemble).</li>
+<li>Regroupe les x d'un côté, isole, divise. Vérifie.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : 3(x − 2) = x + 4.</span><br>3x − 6 = x + 4, puis 2x − 6 = 4, puis 2x = 10, donc <b>x = 5</b>.</div>
 ${solve({ L: [par(3, 1, -2)], R: [ax(1), nb(4)] }).html}
-<div class="ex">3(x − 2) = x + 4 ⇔ 3x − 6 = x + 4 ⇔ 2x = 10 ⇔ <b>x = 5</b>.</div>
-<div class="warn">⚠️ 3(x − 2) n'est pas 3x − 2 : le 3 multiplie <b>aussi</b> le 2.</div>
-<div class="warn">⚠️ 10 − 2(x + 1) = 10 − 2x − 2 : le « − » devant change le signe de <b>tous</b> les termes.</div>`;
+<div class="ex"><span class="q">Exemple 2 : 10 − 2(x + 1) = x + 2 et 2(x + 3) − 4 = 3(x − 1).</span><br>• 10 − 2x − 2 = x + 2, soit 8 − 2x = x + 2, puis 6 = 3x, donc <b>x = 2</b>.<br>• 2x + 6 − 4 = 3x − 3, soit 2x + 2 = 3x − 3, donc <b>x = 5</b>.</div>
+<div class="warn">⚠️ 3(x − 2) n'est pas 3x − 2 : le 3 multiplie <b>aussi</b> le 2.<br>⚠️ 10 − 2(x + 1) = 10 − 2x − 2 : le « − » devant change le signe de <b>tous</b> les termes.</div>
+<div class="retenir">À retenir : développer et réduire d'abord, résoudre ensuite.</div>`;
 }
 
 /* ---------- 9. mise en équation ---------- */
@@ -455,11 +511,20 @@ function L9(d) {
 }
 function C9() {
   return `<h2>9. Mettre un problème en équation</h2>
-<div class="def">Méthode :<br>1) <b>choisir l'inconnue</b> : « soit x … » ;<br>2) <b>traduire</b> l'énoncé par une équation ;<br>3) <b>résoudre</b> l'équation ;<br>4) <b>vérifier</b> avec l'énoncé et répondre par une phrase.</div>
-<div class="ex">« Je pense à un nombre, je le multiplie par 4 et j'ajoute 7 : j'obtiens 31. »<br>Soit x le nombre : 4x + 7 = 31 ⇔ 4x = 24 ⇔ <b>x = 6</b>. Vérification : 4 × 6 + 7 = 31 ✓</div>
-<div class="ex">Rectangle : la longueur dépasse la largeur de 3 cm, périmètre 26 cm.<br>Soit x la largeur : 2(x + x + 3) = 26 ⇔ 4x + 6 = 26 ⇔ <b>x = 5</b> cm.</div>
-${rect('x', 'x + 3')}
-<div class="warn">⚠️ Écris clairement ce que représente x. Et vérifie que la réponse a du sens (une longueur positive, un nombre entier de séances…).</div>`;
+<p class="intro">Les équations servent à résoudre des problèmes : âges, prix, longueurs… Il faut traduire le texte en langage mathématique.</p>
+<div class="cols">
+<div class="def">Une <b>mise en équation</b> se fait en 4 temps : choisir l'inconnue, traduire l'énoncé par une équation, la résoudre, vérifier et répondre par une phrase.</div>
+<div>${rect('x', 'x + 3')}</div>
+</div>
+<div class="methode"><b>Méthode</b><ol>
+<li><b>Choisis l'inconnue</b> : « soit x … » (ce que demande la question).</li>
+<li>Écris les autres quantités avec x (le double : 2x ; 3 de plus : x + 3 ; le suivant : x + 1).</li>
+<li><b>Traduis</b> la phrase qui donne une égalité, puis <b>résous</b>.</li>
+<li><b>Vérifie</b> avec l'énoncé et réponds par une phrase.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : « Je pense à un nombre, je le multiplie par 4 et j'ajoute 7 : j'obtiens 31. »</span><br>Soit x le nombre : 4x + 7 = 31, donc 4x = 24 et <b>x = 6</b>. Vérification : 4 × 6 + 7 = 31 ✓<br>Rectangle : la longueur dépasse la largeur de 3 cm, le périmètre vaut 26 cm. Soit x la largeur : 2(x + x + 3) = 26, soit 4x + 6 = 26, donc <b>x = 5</b> cm.</div>
+<div class="ex"><span class="q">Exemple 2 : billes et tarifs.</span><br>• Léa a 5 billes de plus que le double de Tom ; à eux deux, ils en ont 35. Soit x le nombre de billes de Tom : x + 2x + 5 = 35, donc 3x = 30 et <b>Tom a 10 billes</b> (Léa 25).<br>• Tarif A : 30 € puis 4 € par séance ; tarif B : 7 € par séance. 30 + 4x = 7x, donc 30 = 3x et <b>x = 10 séances</b>.<br>• Trois entiers consécutifs ont pour somme 48 : x + (x + 1) + (x + 2) = 48, donc 3x = 45 et le plus petit est <b>15</b>.</div>
+<div class="warn">⚠️ Écris clairement ce que représente x.<br>⚠️ Vérifie que la réponse a du sens : une longueur positive, un nombre entier de séances…<br>⚠️ Réponds à la question posée : si on demande le nombre de billes de Tom, ne donne pas celui de Léa.</div>
+<div class="retenir">À retenir : inconnue, équation, résolution, vérification.</div>`;
 }
 
 /* ---------- 10. équation produit nul ---------- */
@@ -509,12 +574,19 @@ function L10(d) {
 }
 function C10() {
   return `<h2>10. Équation produit nul</h2>
+<p class="intro">Certaines équations ont <b>plusieurs</b> solutions. Quand l'équation est un produit égal à 0, on les trouve toutes facilement.</p>
 <div class="def"><b>Un produit est nul si et seulement si l'un de ses facteurs est nul</b> :<br>A × B = 0 ⇔ A = 0 <b>ou</b> B = 0.</div>
-${steps([{ t: '(x − 3)(x + 5) = 0' }, { t: '⇕' }, { t: 'x − 3 = 0 &nbsp;<b>ou</b>&nbsp; x + 5 = 0' }, { t: 'x = 3 &nbsp;<b>ou</b>&nbsp; x = −5' }])}
-<div class="ex">x(2x − 3) = 0 ⇔ x = 0 ou 2x = 3 ⇔ <b>x = 0 ou x = 1,5</b>.</div>
-<div class="warn">⚠️ Ne pas <b>oublier une solution</b> : il faut annuler chaque facteur. Et x tout seul est un facteur (solution 0) !</div>
-<div class="warn">⚠️ Signe : x + 5 = 0 donne x = <b>−5</b>, pas 5.</div>
-<div class="warn">⚠️ La règle ne marche que pour un produit égal à <b>0</b> : (x − 1)(x + 2) = 6 ne donne pas x − 1 = 6 ou x + 2 = 6.</div>`;
+<div>${steps([{ t: '(x − 3)(x + 5) = 0' }, { t: '⇕' }, { t: 'x − 3 = 0 &nbsp;<b>ou</b>&nbsp; x + 5 = 0' }, { t: 'x = 3 &nbsp;<b>ou</b>&nbsp; x = −5' }])}</div>
+${plot({ fs: [{ f: x => (x - 3) * (x + 5), l: 'y = (x − 3)(x + 5)' }], xr: [-7, 5], yr: [-17, 13], pts: [{ x: -5, y: 0, l: '−5' }, { x: 3, y: 0, l: '3' }] })}
+<div class="methode"><b>Méthode</b><ol>
+<li>Vérifie que l'équation est bien de la forme « produit = 0 ».</li>
+<li>Écris : premier facteur = 0 <b>ou</b> second facteur = 0.</li>
+<li>Résous chaque petite équation du premier degré.</li>
+<li>Donne toutes les solutions (une seule si les deux facteurs donnent la même).</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : (x − 3)(x + 5) = 0.</span><br>x − 3 = 0 ou x + 5 = 0, donc <b>x = 3 ou x = −5</b>. Sur la courbe, ce sont les points où y = 0.</div>
+<div class="ex"><span class="q">Exemple 2 : x(2x − 3) = 0 et (4 − 2x)(x + 1) = 0.</span><br>• x = 0 ou 2x = 3, donc <b>x = 0 ou x = 1,5</b>.<br>• 4 − 2x = 0 ou x + 1 = 0, soit 2x = 4 ou x = −1, donc <b>x = 2 ou x = −1</b>.<br>• Cas particulier : (x − 2)(2x − 4) = 0 donne deux fois x = 2 : <b>une seule solution</b>.</div>
+<div class="warn">⚠️ Ne pas <b>oublier une solution</b> : il faut annuler chaque facteur. Et x tout seul est un facteur (solution 0) !<br>⚠️ Signe : x + 5 = 0 donne x = <b>−5</b>, pas 5.<br>⚠️ La règle ne marche que pour un produit égal à <b>0</b> : (x − 1)(x + 2) = 6 ne donne pas x − 1 = 6 ou x + 2 = 6.</div>
+<div class="retenir">À retenir : A × B = 0 ⇔ A = 0 ou B = 0.</div>`;
 }
 
 /* ---------- 11. x² = a ---------- */
@@ -552,14 +624,18 @@ function L11(d) {
 }
 function C11() {
   return `<h2>11. Équations x<sup>2</sup> = a</h2>
+<p class="intro">Un nombre et son opposé ont le même carré : 3<sup>2</sup> = 9 et (−3)<sup>2</sup> = 9. C'est pourquoi une équation x<sup>2</sup> = a peut avoir deux solutions.</p>
 <div class="def">• Si <b>a &gt; 0</b> : x<sup>2</sup> = a a <b>deux</b> solutions, √a et −√a.<br>• Si <b>a = 0</b> : une seule solution, x = 0.<br>• Si <b>a &lt; 0</b> : <b>aucune</b> solution (un carré n'est jamais négatif).</div>
-<div class="ex">x<sup>2</sup> = 49 ⇔ <b>x = 7 ou x = −7</b>, car 7<sup>2</sup> = 49 et (−7)<sup>2</sup> = 49.</div>
-<div class="ex">x<sup>2</sup> + 5 = 1 ⇔ x<sup>2</sup> = −4 : <b>aucune solution</b>.</div>
-<div class="ex">(x − 2)<sup>2</sup> = 9 ⇔ x − 2 = 3 ou x − 2 = −3 ⇔ <b>x = 5 ou x = −1</b>.</div>
-${sqGraph(0, 9, [-3, 3], 'y = x²')}
+<div>${sqGraph(0, 9, [-3, 3], 'y = x²')}</div>
 <p class="note">La parabole y = x<sup>2</sup> coupe la droite y = a deux fois si a &gt; 0, la touche si a = 0, ne la rencontre pas si a &lt; 0.</p>
-<div class="warn">⚠️ N'oublie pas la solution <b>négative</b> !</div>
-<div class="warn">⚠️ x<sup>2</sup> = 16 ne donne pas x = 8 : x<sup>2</sup> = x × x, pas 2 × x.</div>`;
+<div class="methode"><b>Méthode</b><ol>
+<li>Isole le carré : enlève le nombre ajouté, divise par le coefficient.</li>
+<li>Regarde le signe de a : positif, nul ou négatif.</li>
+<li>Si a &gt; 0 : ce qui est au carré vaut √a <b>ou</b> −√a. Termine le calcul de x.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : x<sup>2</sup> = 49 et x<sup>2</sup> + 5 = 1.</span><br>• <b>x = 7 ou x = −7</b>, car 7<sup>2</sup> = 49 et (−7)<sup>2</sup> = 49.<br>• x<sup>2</sup> = −4 : <b>aucune solution</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : 3x<sup>2</sup> = 48 et (x − 2)<sup>2</sup> = 9.</span><br>• x<sup>2</sup> = 48 ÷ 3 = 16, donc <b>x = 4 ou x = −4</b>.<br>• x − 2 = 3 ou x − 2 = −3, donc <b>x = 5 ou x = −1</b>.</div>
+<div class="warn">⚠️ N'oublie pas la solution <b>négative</b> !<br>⚠️ x<sup>2</sup> = 16 ne donne pas x = 8 : x<sup>2</sup> = x × x, pas 2 × x.<br>⚠️ Dans (x − 2)<sup>2</sup> = 9, c'est x − 2 qui vaut 3 ou −3, pas x.</div>
+<div class="retenir">À retenir : x<sup>2</sup> = a a deux solutions si a &gt; 0, une si a = 0, aucune si a &lt; 0.</div>`;
 }
 
 /* ---------- 12. défis ---------- */
@@ -641,13 +717,19 @@ function L12(d) {
 }
 function C12() {
   return `<h2>12. Défis</h2>
-<div class="def">Tout ce qu'on a appris, mélangé : fractions, carrés, produit nul, équations sans solution. Avant de calculer, <b>regarde la forme</b> de l'équation.</div>
-<div class="ex">${F('x', 2)} + 1 = ${F('x', 3)} + 3 : on multiplie tout par 6 → 3x + 6 = 2x + 18 → <b>x = 12</b>.</div>
-<div class="ex">x<sup>2</sup> = 5x ⇔ x<sup>2</sup> − 5x = 0 ⇔ x(x − 5) = 0 ⇔ <b>x = 0 ou x = 5</b>.</div>
-<div class="ex">2(x + 3) = 2x + 1 ⇔ 2x + 6 = 2x + 1 ⇔ 6 = 1 : impossible, <b>aucune solution</b>.</div>
+<p class="intro">Tout ce qu'on a appris, mélangé : fractions, carrés, produit nul, équations sans solution. Avant de calculer, <b>regarde la forme</b> de l'équation.</p>
+<div class="def">• Des fractions ? On multiplie tout par un dénominateur commun.<br>• Un x<sup>2</sup> ? On ramène tout à 0 et on factorise, ou on isole le carré.<br>• Les x disparaissent ? Aucune solution (égalité fausse) ou une infinité (égalité toujours vraie).</div>
+${plot({ fs: [{ f: x => x * x, l: 'y = x²' }, { f: x => 5 * x, c: '#e8590c', l: 'y = 5x' }], xr: [-2, 7], yr: [-5, 40], pts: [{ x: 0, y: 0, l: '0' }, { x: 5, y: 25 }] })}
+<div class="methode"><b>Méthode</b><ol>
+<li>Repère la forme : premier degré, fractions, carré, produit.</li>
+<li>Ne divise jamais par x : ramène tout à gauche et factorise.</li>
+<li>Avec des carrés des deux côtés, développe : souvent les x<sup>2</sup> s'éliminent.</li>
+<li>Vérifie chaque solution dans l'équation de départ.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : ${F('x', 2)} + 1 = ${F('x', 3)} + 3 et x<sup>2</sup> = 5x.</span><br>• On multiplie tout par 6 : 3x + 6 = 2x + 18, donc <b>x = 12</b>.<br>• x<sup>2</sup> − 5x = 0, soit x(x − 5) = 0, donc <b>x = 0 ou x = 5</b> (les deux points communs sur le graphique).</div>
 ${steps([{ l: 'x<sup>2</sup>', r: '5x' }, { op: ['− 5x', '− 5x'], why: '' }, { l: 'x<sup>2</sup> − 5x', r: '0' }, { l: 'x(x − 5)', r: '0' }, { t: 'x = 0 &nbsp;<b>ou</b>&nbsp; x = 5' }])}
-<div class="warn">⚠️ Ne jamais diviser par x : on perdrait la solution x = 0.</div>
-<div class="warn">⚠️ Si les x disparaissent, l'équation n'a aucune solution (égalité fausse) ou en a une infinité (égalité toujours vraie).</div>`;
+<div class="ex"><span class="q">Exemple 2 : (x + 1)<sup>2</sup> = (x + 3)(x − 2), (2x − 1)<sup>2</sup> = 9 et 2(x + 3) = 2x + 1.</span><br>• x<sup>2</sup> + 2x + 1 = x<sup>2</sup> + x − 6 : les x<sup>2</sup> s'éliminent, x + 1 = −6, donc <b>x = −7</b>.<br>• 2x − 1 = 3 ou 2x − 1 = −3, donc <b>x = 2 ou x = −1</b>.<br>• 2x + 6 = 2x + 1, soit 6 = 1 : impossible, <b>aucune solution</b>.</div>
+<div class="warn">⚠️ Ne jamais diviser par x : on perdrait la solution x = 0.<br>⚠️ Un carré égal à un nombre positif : <b>deux</b> cas à traiter.</div>
+<div class="retenir">À retenir : d'abord reconnaître la forme, ensuite choisir la méthode.</div>`;
 }
 
 export const LEVELS = [
