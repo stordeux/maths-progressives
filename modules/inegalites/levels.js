@@ -70,12 +70,14 @@ function L1(d){
   return cmpQ(Lh,Lv,Rh,Rv,`Calcule d'abord chaque membre. Rappel : |a| est la distance de a à 0 (toujours ≥ 0), (−a)<sup>2</sup> est positif, mais −a<sup>2</sup> = −(a<sup>2</sup>).`,why);
 }
 function C1(){return `<h2>1. Comparer des nombres</h2>
+<p class="intro">Comparer, c'est dire lequel de deux nombres est le plus petit. C'est la base de toutes les inégalités du chapitre.</p>
 <div class="def">Sur une droite graduée, <b>le plus petit nombre est le plus à gauche</b>.<br>a &lt; b se lit « a est strictement inférieur à b » ; a ≤ b : « a est inférieur <b>ou égal</b> à b ».</div>
 ${realLine(null,[{x:-7,l:'−7'},{x:-3,l:'−3',c:'#5f3dc4'},{x:2,l:'2',c:'#2f9e44'}])}
-<div class="ex">−7 &lt; −3 &lt; 2 &nbsp; : &nbsp; parmi deux négatifs, le plus petit est le plus <b>loin</b> de 0.</div>
-<h3>Décimaux</h3><div class="ex">2,45 &lt; 2,5 car 2,45 &lt; 2,50 (on compare chiffre par chiffre).<br>−2,5 &lt; −2,45 (pour les négatifs, l'ordre s'inverse).</div>
-<h3>Fractions</h3><div class="ex">${F(2,3)} et ${F(3,4)} : ${F(8,12)} &lt; ${F(9,12)}, donc ${F(2,3)} &lt; ${F(3,4)}.</div>
-<div class="warn">⚠️ (−3)<sup>2</sup> = 9 mais −3<sup>2</sup> = −9. Et |−5| = 5 (la valeur absolue est une distance, toujours positive).</div>`}
+<div class="methode"><b>Méthode</b><ol><li>Compare d'abord les <b>signes</b> : un négatif est toujours plus petit qu'un positif.</li><li>Décimaux : écris-les avec le même nombre de décimales, puis compare chiffre par chiffre.</li><li>Fractions : mets-les au <b>même dénominateur</b>, puis compare les numérateurs.</li><li>Deux négatifs : le plus petit est celui qui est le plus <b>loin de 0</b>.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : entiers et décimaux</span><br>−7 &lt; −3 &lt; 2 (voir la droite).<br>2,45 &lt; 2,5 car 2,45 &lt; 2,50. Mais −2,5 &lt; −2,45 : pour les négatifs, l'ordre s'inverse.</div>
+<div class="ex"><span class="q">Exemple 2 : fractions, carrés, valeurs absolues</span><br>${F(2,3)} et ${F(3,4)} : ${F(8,12)} &lt; ${F(9,12)}, donc ${F(2,3)} &lt; ${F(3,4)}. Avec un signe − : −${F(2,3)} &gt; −${F(3,4)}.<br>(−3)<sup>2</sup> = 9 et −3<sup>2</sup> = −9, donc −3<sup>2</sup> &lt; (−3)<sup>2</sup>. Et |−5| = 5 &gt; 4.</div>
+<div class="warn">⚠️ −7 n'est pas plus grand que −3 : il est plus loin de 0, mais à <b>gauche</b>.<br>⚠️ 2,45 n'est pas plus grand que 2,5 : « 45 » n'est pas comparable à « 5 » sans écrire 2,50.<br>⚠️ (−3)<sup>2</sup> = 9 mais −3<sup>2</sup> = −9. Et |−5| = 5 (une valeur absolue est toujours positive).</div>
+<div class="retenir">À retenir : plus petit = plus à gauche sur la droite graduée.</div>`}
 
 /* ---------- 2 ---------- */
 function L2(d){
@@ -88,12 +90,15 @@ function L2(d){
   return{type:'iv',truth:T,html,check:ivCheck(S),hint,solution:`<b>${fmtSet(S)}</b>`,afterVisual:realLine(S)};
 }
 function C2(){return `<h2>2. Les intervalles</h2>
-<div class="def">L'ensemble des x tels que −2 ≤ x &lt; 5 s'écrit <b>[−2 ; 5[</b>.<br>• Crochet <b>tourné vers le nombre</b> ( [−2 ) : le nombre est <b>compris</b>.<br>• Crochet <b>tourné vers l'extérieur</b> ( 5[ ) : le nombre est <b>exclu</b>.</div>
+<p class="intro">Un intervalle est une façon courte d'écrire « tous les nombres entre ceci et cela ». On s'en sert pour donner les solutions d'une inéquation.</p>
+<div class="def">L'ensemble des x tels que −2 ≤ x &lt; 5 s'écrit <b>[−2 ; 5[</b>.<br>• Crochet <b>tourné vers le nombre</b> ( [−2 ) : le nombre est <b>compris</b> (≤ ou ≥).<br>• Crochet <b>tourné vers l'extérieur</b> ( 5[ ) : le nombre est <b>exclu</b> (&lt; ou &gt;).</div>
 ${realLine([I(-2,1,5,0)])}
-<div class="ex">x &gt; 3 → ]3 ; +∞[ &nbsp;&nbsp; x ≤ 1 → ]−∞ ; 1]</div>${realLine([I(3,0,INF,0)])}
-<div class="warn">⚠️ Du côté de −∞ ou +∞, le crochet est <b>toujours ouvert</b> (l'infini n'est pas un nombre).</div>
-<h3>Réunion ∪</h3><div class="ex">x &lt; −1 <b>ou</b> x ≥ 4 → ]−∞ ; −1[ ∪ [4 ; +∞[</div>${realLine([I(-INF,0,-1,0),I(4,1,INF,0)])}
-<p class="note">Pour répondre : touche un crochet pour le retourner ; tape les bornes (touche ∞, et − devant pour −∞). Boutons ℝ (tous les réels) et ∅ (aucun réel) si besoin.</p>`}
+<div class="methode"><b>Méthode</b><ol><li>Écris la plus petite borne à gauche, la plus grande à droite.</li><li>Pour chaque borne : ≤ ou ≥ → crochet tourné vers le nombre ; &lt; ou &gt; → crochet tourné vers l'extérieur.</li><li>Pas de borne d'un côté ? Écris −∞ ou +∞, avec un crochet <b>ouvert</b>.</li><li>« ou » entre deux conditions → deux intervalles reliés par <b>∪</b>.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : une seule inégalité</span><br>x &gt; 3 → <b>]3 ; +∞[</b> &nbsp;&nbsp; x ≤ 1 → <b>]−∞ ; 1]</b></div>${realLine([I(3,0,INF,0)])}
+<div class="ex"><span class="q">Exemple 2 : réunion ∪</span><br>x &lt; −1 <b>ou</b> x ≥ 4 → <b>]−∞ ; −1[ ∪ [4 ; +∞[</b></div>${realLine([I(-INF,0,-1,0),I(4,1,INF,0)])}
+<div class="warn">⚠️ Du côté de −∞ ou +∞, le crochet est <b>toujours ouvert</b> (l'infini n'est pas un nombre).<br>⚠️ Dans ]3 ; +∞[, le 3 est <b>exclu</b> : le crochet ] est tourné vers l'extérieur.<br>⚠️ Les bornes s'écrivent dans l'ordre : [−2 ; 5[, jamais [5 ; −2[.</div>
+<p class="note">Pour répondre : touche un crochet pour le retourner ; tape les bornes (touche ∞, et − devant pour −∞). Boutons ℝ (tous les réels) et ∅ (aucun réel) si besoin.</p>
+<div class="retenir">À retenir : crochet vers le nombre = compris ; crochet vers l'extérieur = exclu ; toujours ouvert en ±∞.</div>`}
 
 /* ---------- 3 ---------- */
 function L3(d){
@@ -108,11 +113,15 @@ function L3(d){
     solution:`${why} Donc ${Lh} <b>${s>0?'&lt;':'&gt;'}</b> ${Rh}.`,afterVisual:''};
 }
 function C3(){return `<h2>3. Opérations sur les inégalités</h2>
-<div class="def">Si a &lt; b, alors :<br>• a + c &lt; b + c et a − c &lt; b − c &nbsp; (le sens <b>ne change pas</b>)<br>• si k &gt; 0 : ka &lt; kb et a/k &lt; b/k &nbsp; (le sens <b>ne change pas</b>)<br>• si k &lt; 0 : ka <b>&gt;</b> kb &nbsp; (le sens <b>change</b> !)</div>
-<div class="ex">2 &lt; 5 &nbsp;→&nbsp; −3 × 2 = −6 et −3 × 5 = −15 : on a bien −6 <b>&gt;</b> −15.</div>
+<p class="intro">Pour résoudre une inéquation, on fait des opérations des deux côtés. Presque toutes gardent le sens… sauf une, qu'il faut absolument connaître.</p>
+<div class="def">Si a &lt; b, alors :<br>• a + c &lt; b + c et a − c &lt; b − c &nbsp; (le sens <b>ne change pas</b>)<br>• si k &gt; 0 : ka &lt; kb et a ÷ k &lt; b ÷ k &nbsp; (le sens <b>ne change pas</b>)<br>• si k &lt; 0 : ka <b>&gt;</b> kb et a ÷ k <b>&gt;</b> b ÷ k &nbsp; (le sens <b>change</b> !)</div>
+<div class="methode"><b>Méthode</b><ol><li>Repère les opérations faites sur x pour obtenir l'expression, dans l'ordre.</li><li>Pour chaque opération : + ou − → rien ne change ; × ou ÷ par un <b>positif</b> → rien ne change ; × ou ÷ par un <b>négatif</b> → le sens <b>s'inverse</b>.</li><li>En cas de doute, teste avec x = 1 et y = 2.</li></ol></div>
 ${realLine(null,[{x:2,l:'2'},{x:5,l:'5'},{x:-2,l:'−2',c:'#5f3dc4'},{x:-5,l:'−5',c:'#5f3dc4'}])}
-<p>Prendre l'opposé, c'est faire une symétrie par rapport à 0 : l'ordre s'inverse.</p>
-<div class="warn">⚠️ L'erreur la plus fréquente : oublier de retourner l'inégalité quand on multiplie ou divise par un <b>négatif</b>.</div>`}
+<p>Prendre l'opposé, c'est faire une symétrie par rapport à 0 : 2 est à gauche de 5, mais −2 est à <b>droite</b> de −5. L'ordre s'inverse.</p>
+<div class="ex"><span class="q">Exemple 1 :</span><br>On sait que x &lt; y. Alors x + 7 &lt; y + 7 et 3x &lt; 3y.<br>Mais −3x <b>&gt;</b> −3y. Test : 2 &lt; 5 donne −6 &gt; −15 ✓.</div>
+<div class="ex"><span class="q">Exemple 2 : deux opérations</span><br>x &lt; y. Pour 5 − 2x : on multiplie par −2 (le sens change : −2x &gt; −2y), puis on ajoute 5 (le sens ne change plus). Donc <b>5 − 2x &gt; 5 − 2y</b>.<br>Pour 3x − 4 : × 3 (positif) puis − 4 : <b>3x − 4 &lt; 3y − 4</b>.</div>
+<div class="warn">⚠️ L'erreur la plus fréquente : oublier de retourner l'inégalité quand on multiplie ou divise par un <b>négatif</b>.<br>⚠️ Soustraire un nombre ne change <b>pas</b> le sens, même si le résultat est négatif.</div>
+<div class="retenir">À retenir : × ou ÷ par un négatif → on retourne l'inégalité. Tout le reste la garde.</div>`}
 
 /* ---------- 4 ---------- */
 function L4(d){
@@ -127,11 +136,13 @@ function L4(d){
     solution:`${sol} Solutions : <b>${fmtSet(S)}</b>`,afterVisual:realLine(S)};
 }
 function C4(){return `<h2>4. Inéquations simples</h2>
-<p>On résout comme une équation, avec les règles du niveau 3.</p>
-<div class="ex">x + 4 ≤ 1 ⇔ x ≤ 1 − 4 ⇔ x ≤ −3 → <b>]−∞ ; −3]</b></div>
-<div class="ex">3x &gt; 12 ⇔ x &gt; 4 (÷ 3, positif) → <b>]4 ; +∞[</b></div>
-<div class="ex">−2x &lt; 6 ⇔ x <b>&gt;</b> −3 (÷ (−2), négatif : on retourne !) → <b>]−3 ; +∞[</b></div>${realLine([I(-3,0,INF,0)])}
-<div class="warn">⚠️ Vérifie toujours avec une valeur : x = 0 dans −2x &lt; 6 donne 0 &lt; 6 : vrai, et 0 est bien dans ]−3 ; +∞[ ✓</div>`}
+<p class="intro">Une inéquation se résout presque comme une équation : on isole x. La seule différence est le sens à surveiller.</p>
+<div class="def">Résoudre une inéquation, c'est trouver <b>tous</b> les nombres x qui la vérifient. On donne la réponse sous forme d'<b>intervalle</b>.</div>
+<div class="methode"><b>Méthode</b><ol><li>Enlève le nombre ajouté à x (même opération des deux côtés).</li><li>Divise par le nombre devant x ; s'il est <b>négatif</b>, <b>retourne</b> l'inégalité.</li><li>Écris l'intervalle (≤, ≥ → crochet fermé ; &lt;, &gt; → ouvert).</li><li>Vérifie avec une valeur de l'intervalle.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 :</span><br>x + 4 ≤ 1 ⇔ x ≤ 1 − 4 ⇔ x ≤ −3 → <b>]−∞ ; −3]</b><br>3x &gt; 12 ⇔ x &gt; 4 (÷ 3, positif) → <b>]4 ; +∞[</b></div>
+<div class="ex"><span class="q">Exemple 2 : diviser par un négatif</span><br>−2x + 5 &lt; 11 ⇔ −2x &lt; 6 ⇔ x <b>&gt;</b> −3 (÷ (−2), négatif : on retourne !) → <b>]−3 ; +∞[</b><br>Vérification avec x = 0 : −2 × 0 + 5 = 5 &lt; 11 : vrai, et 0 est bien dans ]−3 ; +∞[ ✓</div>${realLine([I(-3,0,INF,0)])}
+<div class="warn">⚠️ Dans −2x &lt; 6, on divise par −2 : le &lt; devient &gt;. Sans cela, on trouverait x &lt; −3 : faux (x = 0 marche !).<br>⚠️ Retirer 4 n'est pas « changer de signe » : x + 4 ≤ 1 donne x ≤ −3, le sens reste le même.</div>
+<div class="retenir">À retenir : on isole x comme dans une équation, et on retourne l'inégalité si on divise par un négatif.</div>`}
 
 /* ---------- 5 ---------- */
 function L5(d){
@@ -143,10 +154,14 @@ function L5(d){
     solution:`${M(a)}x − ${P(c)}x ${REL[rel]} ${M(dd)} − ${P(b)} ⇔ ${M(k)}x ${REL[rel]} ${M(k*s)} ⇔ x ${REL[fr]} ${M(s)}${k<0?' (division par un négatif : le sens change)':''}. Solutions : <b>${fmtSet(S)}</b>`,afterVisual:realLine(S)};
 }
 function C5(){return `<h2>5. Inéquations ax + b &lt; cx + d</h2>
-<div class="def">Méthode :<br>1. On regroupe les termes en x d'un côté, les nombres de l'autre.<br>2. On réduit : on obtient kx &lt; m.<br>3. On divise par k, en retournant l'inégalité si <b>k &lt; 0</b>.</div>
-<div class="ex">5x − 3 ≥ 2x + 9<br>⇔ 5x − 2x ≥ 9 + 3<br>⇔ 3x ≥ 12 ⇔ x ≥ 4 → <b>[4 ; +∞[</b></div>
-<div class="ex">x + 7 &gt; 4x − 2<br>⇔ x − 4x &gt; −2 − 7 ⇔ −3x &gt; −9<br>⇔ x <b>&lt;</b> 3 → <b>]−∞ ; 3[</b></div>${realLine([I(-INF,0,3,0)])}
-<p class="note">Astuce : regrouper les x du côté où le coefficient reste positif évite de diviser par un négatif.</p>`}
+<p class="intro">Quand x apparaît des deux côtés, on commence par le regrouper d'un seul côté. Ensuite, c'est une inéquation simple.</p>
+<div class="def">Une inéquation du <b>premier degré</b> peut toujours se ramener à kx &lt; m (ou ≤, &gt;, ≥), puis à x &lt; m ÷ k ou x &gt; m ÷ k selon le signe de k.</div>
+<div class="methode"><b>Méthode</b><ol><li>On regroupe les termes en x d'un côté, les nombres de l'autre (on change de côté = on fait l'opération inverse des deux côtés).</li><li>On réduit : on obtient kx &lt; m.</li><li>On divise par k, en retournant l'inégalité si <b>k &lt; 0</b>.</li><li>On écrit l'intervalle et on vérifie avec une valeur.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 :</span><br>5x − 3 ≥ 2x + 9<br>⇔ 5x − 2x ≥ 9 + 3<br>⇔ 3x ≥ 12 ⇔ x ≥ 4 → <b>[4 ; +∞[</b></div>
+<div class="ex"><span class="q">Exemple 2 : coefficient négatif</span><br>x + 7 &gt; 4x − 2<br>⇔ x − 4x &gt; −2 − 7 ⇔ −3x &gt; −9<br>⇔ x <b>&lt;</b> 3 (÷ (−3) : on retourne) → <b>]−∞ ; 3[</b><br>Vérification avec x = 0 : 7 &gt; −2 ✓</div>${realLine([I(-INF,0,3,0)])}
+<div class="warn">⚠️ Quand un terme change de côté, il change de signe : + 2x à droite devient − 2x à gauche.<br>⚠️ −3x &gt; −9 : les deux nombres sont négatifs, mais c'est la division par −3 qui retourne le sens.</div>
+<p class="note">Astuce : regrouper les x du côté où le coefficient reste positif évite de diviser par un négatif. Ici : 7 + 2 &gt; 4x − x ⇔ 9 &gt; 3x ⇔ 3 &gt; x.</p>
+<div class="retenir">À retenir : x d'un côté, nombres de l'autre, puis division (attention au signe).</div>`}
 
 /* ---------- 6 ---------- */
 function L6(d){
@@ -159,10 +174,15 @@ function L6(d){
     visual:realLine([I(lo,lc,hi,hc)],[],{}),afterVisual:realLine(S)};
 }
 function C6(){return `<h2>6. Encadrements</h2>
-<p>Un <b>encadrement</b> est une double inégalité : 2 &lt; x ≤ 5.</p>
-<div class="def">On applique la même opération aux <b>trois membres</b>, avec les mêmes règles :<br>• + ou − un nombre : rien ne change<br>• × ou ÷ un positif : rien ne change<br>• × ou ÷ un <b>négatif</b> : les inégalités changent de sens (on réécrit dans l'ordre croissant)</div>
-<div class="ex">2 &lt; x ≤ 5 &nbsp;⇒&nbsp; 4 &lt; 2x ≤ 10 &nbsp;⇒&nbsp; 1 &lt; 2x − 3 ≤ 7 : 2x − 3 ∈ ]1 ; 7]</div>
-<div class="ex">2 &lt; x ≤ 5 &nbsp;⇒&nbsp; −10 ≤ −2x &lt; −4 : −2x ∈ [−10 ; −4[ <br><span class="note">(le « ≤ » reste attaché à la borne qui vient de 5)</span></div>`}
+<p class="intro">Si on sait où se trouve x, on peut en déduire où se trouve 2x − 3, ou −x + 1 : on transporte l'encadrement.</p>
+<div class="def">Un <b>encadrement</b> est une double inégalité : 2 &lt; x ≤ 5.<br>On applique la même opération aux <b>trois membres</b>, avec les règles du niveau 3 :<br>• + ou − un nombre : rien ne change<br>• × ou ÷ un positif : rien ne change<br>• × ou ÷ un <b>négatif</b> : les inégalités changent de sens (on réécrit dans l'ordre croissant)</div>
+<div class="methode"><b>Méthode</b><ol><li>Multiplie d'abord les trois membres par le coefficient de x.</li><li>Ajoute ou retire ensuite le nombre seul aux trois membres.</li><li>Si tu as multiplié par un négatif, <b>réécris dans l'ordre croissant</b> : chaque crochet suit sa borne.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 :</span><br>2 &lt; x ≤ 5 &nbsp;⇒&nbsp; 4 &lt; 2x ≤ 10 &nbsp;⇒&nbsp; 1 &lt; 2x − 3 ≤ 7 : <b>2x − 3 ∈ ]1 ; 7]</b></div>
+${realLine([I(2,0,5,1)],[{x:2,c:'#5f3dc4'},{x:5,c:'#5f3dc4'}])}
+<div class="ex"><span class="q">Exemple 2 : coefficient négatif</span><br>2 &lt; x ≤ 5 &nbsp;⇒&nbsp; −2 &gt; −x ≥ −5 (× (−1) : le sens change)<br>On réécrit dans l'ordre croissant : −5 ≤ −x &lt; −2, puis + 1 : −4 ≤ −x + 1 &lt; −1.<br><b>−x + 1 ∈ [−4 ; −1[</b> : le « ≤ » reste attaché à la borne qui vient de 5.</div>
+${realLine([I(-4,1,-1,0)])}
+<div class="warn">⚠️ Applique l'opération aux <b>trois</b> membres, pas seulement au milieu.<br>⚠️ Après une multiplication par un négatif, la plus petite borne devient la plus grande : n'oublie pas de remettre dans l'ordre, crochets compris.</div>
+<div class="retenir">À retenir : mêmes opérations sur les trois membres ; × négatif → on retourne et on remet dans l'ordre.</div>`}
 
 /* ---------- 7 ---------- */
 function L7(d){
@@ -182,13 +202,14 @@ function L7(d){
     visual:'',afterVisual:r>0?realLine(null,[{x:a,l:M(a),c:'#5f3dc4'},{x:a-r,l:M(a-r)},{x:a+r,l:M(a+r)}],{arc:[a,a+r,String(r)]}):plot({fs:[{f:x=>Math.abs(x-a),l:`y = |${xm(a)}|`}],xr:[a-7,a+7],h:{y:r,l:`y = ${M(r)}`}})};
 }
 function C7(){return `<h2>7. Valeur absolue et distance</h2>
-<div class="def">La <b>valeur absolue</b> de a, notée |a|, est la <b>distance entre a et 0</b>.<br>|5| = 5, &nbsp; |−5| = 5, &nbsp; |0| = 0. &nbsp; Une valeur absolue est toujours ≥ 0.</div>
-<div class="def"><b>|a − b| est la distance entre a et b</b> sur la droite graduée.</div>
+<p class="intro">La valeur absolue mesure une <b>distance</b> sur la droite graduée. Cette idée permet de résoudre des équations presque sans calcul.</p>
+<div class="def">La <b>valeur absolue</b> de a, notée |a|, est la <b>distance entre a et 0</b>.<br>|5| = 5, &nbsp; |−5| = 5, &nbsp; |0| = 0. &nbsp; Une valeur absolue est toujours ≥ 0.<br><b>|a − b| est la distance entre a et b</b> sur la droite graduée.</div>
 ${realLine(null,[{x:-2,l:'−2'},{x:5,l:'5',c:'#5f3dc4'}],{arc:[-2,5,'|5 − (−2)| = 7']})}
-<h3>Équation |x − a| = r</h3>« La distance entre x et a vaut r. »
-<div class="ex">|x − 3| = 2 : les points à distance 2 de 3 → <b>x = 1 ou x = 5</b></div>${realLine(null,[{x:3,l:'3',c:'#5f3dc4'},{x:1,l:'1'},{x:5,l:'5'}],{arc:[3,5,'2']})}
-<div class="ex">|x + 4| = 1 : |x + 4| = |x − (−4)|, distance à <b>−4</b> → x = −5 ou x = −3</div>
-<div class="warn">⚠️ |x − 1| = −3 n'a <b>aucune solution</b> : une distance n'est jamais négative.</div>`}
+<div class="methode"><b>Méthode</b> pour |x − a| = r<ol><li>Lis : « la distance entre x et a vaut r ». Attention : |x + 4| = |x − (−4)|, c'est la distance à <b>−4</b>.</li><li>Si r &gt; 0 : deux solutions, <b>a − r</b> et <b>a + r</b> (à gauche et à droite de a).</li><li>Si r = 0 : une seule solution, x = a. Si r &lt; 0 : <b>aucune</b> solution.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : calculer</span><br>|−8| = 8 ; |3 − 10| = |−7| = 7 : la distance entre 3 et 10 vaut 7.</div>
+<div class="ex"><span class="q">Exemple 2 : résoudre</span><br>|x − 3| = 2 : les points à distance 2 de 3 → <b>x = 1 ou x = 5</b>.<br>|x + 4| = 1 : distance à −4 égale à 1 → x = −5 ou x = −3.<br>|x − 1| = −3 : <b>aucune solution</b>.</div>${realLine(null,[{x:3,l:'3',c:'#5f3dc4'},{x:1,l:'1'},{x:5,l:'5'}],{arc:[3,5,'2']})}
+<div class="warn">⚠️ |x − 3| = 2 a <b>deux</b> solutions : n'oublie pas celle de gauche.<br>⚠️ Dans |x + 4|, le centre est −4, pas 4.<br>⚠️ Une distance n'est jamais négative : |…| = −3 est impossible.</div>
+<div class="retenir">À retenir : |x − a| = distance entre x et a.</div>`}
 
 /* ---------- 8 ---------- */
 function L8(d){
@@ -204,11 +225,14 @@ function L8(d){
     visual:'',afterVisual:realLine(S,[{x:a,l:M(a),c:'#5f3dc4'}])+(r>0?plot({fs:[{f:x=>Math.abs(x-a),l:`y = |${xm(a)}|`}],xr:[a-r-4,a+r+4],h:{y:r,l:`y = ${r}`},xset:S}):'')};
 }
 function C8(){return `<h2>8. Inéquations avec valeur absolue</h2>
-<div class="def">|x − a| ≤ r : « x est à distance <b>au plus</b> r de a » → x ∈ <b>[a − r ; a + r]</b> (entre)<br>|x − a| ≥ r : « x est à distance <b>au moins</b> r de a » → x ∈ <b>]−∞ ; a − r] ∪ [a + r ; +∞[</b> (à l'extérieur)</div>
-<div class="ex">|x − 2| &lt; 3 → ]−1 ; 5[</div>${realLine([I(-1,0,5,0)],[{x:2,l:'2',c:'#5f3dc4'}])}
-<div class="ex">|x + 1| ≥ 2 → distance à −1 au moins 2 → ]−∞ ; −3] ∪ [1 ; +∞[</div>${realLine([I(-INF,0,-3,1),I(1,1,INF,0)],[{x:-1,l:'−1',c:'#5f3dc4'}])}
+<p class="intro">Avec l'idée de distance, |x − a| ≤ r se lit « x est proche de a », et |x − a| ≥ r « x est loin de a ».</p>
+<div class="def">Pour r &gt; 0 :<br>|x − a| ≤ r : « x est à distance <b>au plus</b> r de a » → x ∈ <b>[a − r ; a + r]</b> (entre)<br>|x − a| ≥ r : « x est à distance <b>au moins</b> r de a » → x ∈ <b>]−∞ ; a − r] ∪ [a + r ; +∞[</b> (à l'extérieur)<br>Avec &lt; ou &gt;, les bornes sont exclues.</div>
+<div class="methode"><b>Méthode</b><ol><li>Trouve le centre a (attention : |x + 1| → a = −1) et le rayon r.</li><li>Place a − r et a + r sur la droite.</li><li>≤ ou &lt; → solutions <b>entre</b> ; ≥ ou &gt; → solutions <b>à l'extérieur</b>.</li><li>Choisis les crochets : ≤, ≥ → fermés ; &lt;, &gt; → ouverts.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : entre</span><br>|x − 2| &lt; 3 : distance à 2 plus petite que 3 → <b>]−1 ; 5[</b></div>${realLine([I(-1,0,5,0)],[{x:2,l:'2',c:'#5f3dc4'}])}
+<div class="ex"><span class="q">Exemple 2 : à l'extérieur</span><br>|x + 1| ≥ 2 : distance à −1 au moins 2 → <b>]−∞ ; −3] ∪ [1 ; +∞[</b></div>${realLine([I(-INF,0,-3,1),I(1,1,INF,0)],[{x:-1,l:'−1',c:'#5f3dc4'}])}
 <p>Graphiquement : on cherche où la courbe en V de y = |x − a| est sous (ou au-dessus de) la droite y = r.</p>${plot({fs:[{f:x=>Math.abs(x-2),l:'y = |x − 2|'}],xr:[-4,8],h:{y:3,l:'y = 3'},xset:[I(-1,0,5,0)]})}
-<div class="warn">⚠️ |x − 4| &lt; −1 : aucune solution (∅). &nbsp; |x − 4| ≥ −1 : toujours vrai (ℝ).</div>`}
+<div class="warn">⚠️ Cas particuliers : |x − 4| &lt; −1 : aucune solution (∅) ; |x − 4| ≥ −1 : toujours vrai (ℝ) ; |x − 4| &gt; 0 : tout sauf 4.<br>⚠️ « Au moins » donne <b>deux</b> intervalles, reliés par ∪.</div>
+<div class="retenir">À retenir : |x − a| ≤ r → entre a − r et a + r ; |x − a| ≥ r → à l'extérieur.</div>`}
 
 /* ---------- 9 ---------- */
 function sqImg(lo,lc,hi,hc){
@@ -231,12 +255,14 @@ function L9(d){
     visual:realLine([I(lo,lc,hi,hc)]),afterVisual:plot({fs:[{f:x=>x*x,l:'y = x²'}],xr:[Math.min(lo,-1)-2,Math.max(hi,1)+2],yr:[-2,Math.max(lo*lo,hi*hi)+3],seg:[lo,hi,0]})};
 }
 function C9(){return `<h2>9. Carrés et inégalités</h2>
+<p class="intro">Élever au carré ne garde pas toujours l'ordre : tout dépend du <b>signe</b> des nombres. La courbe de x ↦ x<sup>2</sup> permet de le voir.</p>
 <div class="def">• Sur les <b>positifs</b>, la fonction carré est <b>croissante</b> : 0 ≤ a &lt; b ⇒ a<sup>2</sup> &lt; b<sup>2</sup>.<br>• Sur les <b>négatifs</b>, elle est <b>décroissante</b> : a &lt; b ≤ 0 ⇒ a<sup>2</sup> &gt; b<sup>2</sup>.</div>
-${plot({fs:[{f:x=>x*x,l:'y = x²'}],xr:[-5,5],yr:[-1,20]})}
-<div class="ex">2 &lt; x ≤ 4 ⇒ 4 &lt; x<sup>2</sup> ≤ 16</div>
-<div class="ex">−4 ≤ x &lt; −2 ⇒ 4 &lt; x<sup>2</sup> ≤ 16 &nbsp; (l'ordre s'inverse ; −4 donne 16, compris)</div>
-<div class="ex">−3 &lt; x ≤ 2 (contient 0) ⇒ 0 ≤ x<sup>2</sup> &lt; 9 &nbsp; (minimum 0 en x = 0, maximum vers −3, exclu)</div>
-<div class="warn">⚠️ On ne peut <b>pas</b> « élever au carré » une inégalité sans regarder les signes : −5 &lt; 2 mais 25 &gt; 4 !</div>`}
+${plot({fs:[{f:x=>x*x,l:'y = x²'}],xr:[-5,5],yr:[-1,20],seg:[-4,-2,0]})}
+<div class="methode"><b>Méthode</b> pour trouver où est x<sup>2</sup><ol><li>Regarde le signe des nombres de l'intervalle de x.</li><li>Tous positifs : élève les bornes au carré, <b>dans le même ordre</b>.</li><li>Tous négatifs : élève au carré et <b>inverse l'ordre</b> (chaque crochet suit sa borne).</li><li>L'intervalle contient 0 : le minimum de x<sup>2</sup> est <b>0</b> (compris) ; le maximum vient de la borne la plus <b>loin</b> de 0.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : positifs</span><br>2 &lt; x ≤ 4 ⇒ 4 &lt; x<sup>2</sup> ≤ 16 : <b>x<sup>2</sup> ∈ ]4 ; 16]</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : négatifs, puis intervalle contenant 0</span><br>−4 ≤ x &lt; −2 ⇒ 4 &lt; x<sup>2</sup> ≤ 16 (l'ordre s'inverse ; −4 donne 16, compris) : la partie orange de la courbe.<br>−3 &lt; x ≤ 2 ⇒ <b>0 ≤ x<sup>2</sup> &lt; 9</b> (minimum 0 en x = 0 ; maximum vers −3, exclu).</div>
+<div class="warn">⚠️ On ne peut <b>pas</b> « élever au carré » une inégalité sans regarder les signes : −5 &lt; 2 mais 25 &gt; 4 !<br>⚠️ Si l'intervalle contient 0, ne prends pas les carrés des bornes comme bornes : le plus petit carré est 0.</div>
+<div class="retenir">À retenir : carré croissant sur les positifs, décroissant sur les négatifs.</div>`}
 
 /* ---------- 10 ---------- */
 function L10(d){
@@ -255,11 +281,14 @@ function L10(d){
     afterVisual:realLine(S,a?[{x:a,l:M(a),c:'#5f3dc4'}]:[])+plot({fs:[{f:x=>(x-a)**2,l:a?'':'y = x²'}],xr:[a-n-3,a+n+3],yr:[-2,k+6],h:{y:k,l:`y = ${k}`},xset:S})};
 }
 function C10(){return `<h2>10. Inéquations avec des carrés</h2>
-<div class="def">Pour k &gt; 0 : &nbsp; x<sup>2</sup> &lt; k ⇔ |x| &lt; √k ⇔ <b>−√k &lt; x &lt; √k</b><br>x<sup>2</sup> &gt; k ⇔ |x| &gt; √k ⇔ <b>x &lt; −√k ou x &gt; √k</b></div>
-<div class="ex">x<sup>2</sup> ≤ 9 → [−3 ; 3] &nbsp;&nbsp; x<sup>2</sup> &gt; 16 → ]−∞ ; −4[ ∪ ]4 ; +∞[</div>
+<p class="intro">Une inéquation comme x<sup>2</sup> &lt; 9 se ramène à une inéquation avec valeur absolue : on réutilise le niveau 8.</p>
+<div class="def">Pour k &gt; 0 : &nbsp; x<sup>2</sup> &lt; k ⇔ |x| &lt; √k ⇔ <b>−√k &lt; x &lt; √k</b><br>x<sup>2</sup> &gt; k ⇔ |x| &gt; √k ⇔ <b>x &lt; −√k ou x &gt; √k</b><br>Même chose avec ≤ et ≥ (bornes comprises).</div>
+<div class="methode"><b>Méthode</b><ol><li>Isole le carré : (x − a)<sup>2</sup> ≤ k (enlève d'abord le nombre ajouté).</li><li>Si k &lt; 0 : un carré est toujours ≥ 0, la réponse est ∅ ou ℝ.</li><li>Sinon, remplace par |x − a| ≤ √k et résous comme au niveau 8 : entre ou à l'extérieur.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 :</span><br>x<sup>2</sup> ≤ 9 ⇔ |x| ≤ 3 → <b>[−3 ; 3]</b> (la parabole est sous la droite y = 9).<br>x<sup>2</sup> &gt; 16 ⇔ |x| &gt; 4 → <b>]−∞ ; −4[ ∪ ]4 ; +∞[</b></div>
 ${plot({fs:[{f:x=>x*x,l:'y = x²'}],xr:[-5,5],yr:[-1,14],h:{y:9,l:'y = 9'},xset:[I(-3,1,3,1)]})}
-<div class="ex">(x − 1)<sup>2</sup> &lt; 4 ⇔ |x − 1| &lt; 2 ⇔ x ∈ ]−1 ; 3[</div>
-<div class="warn">⚠️ Erreur fréquente : x<sup>2</sup> &lt; 9 ⇔ x &lt; 3 est <b>faux</b> ! x = −10 vérifie x &lt; 3 mais (−10)<sup>2</sup> = 100.<br>⚠️ x<sup>2</sup> &lt; −2 : ∅ &nbsp;&nbsp; x<sup>2</sup> &gt; −2 : ℝ (un carré est toujours ≥ 0).</div>`}
+<div class="ex"><span class="q">Exemple 2 : carré décalé</span><br>(x − 1)<sup>2</sup> + 3 &lt; 7 ⇔ (x − 1)<sup>2</sup> &lt; 4 ⇔ |x − 1| &lt; 2 ⇔ <b>x ∈ ]−1 ; 3[</b><br>x<sup>2</sup> &lt; −2 : <b>∅</b> &nbsp;&nbsp; x<sup>2</sup> &gt; −2 : <b>ℝ</b> (un carré est toujours ≥ 0).</div>
+<div class="warn">⚠️ Erreur fréquente : x<sup>2</sup> &lt; 9 ⇔ x &lt; 3 est <b>faux</b> ! x = −10 vérifie x &lt; 3 mais (−10)<sup>2</sup> = 100.<br>⚠️ x<sup>2</sup> &gt; 16 donne <b>deux</b> intervalles, pas seulement x &gt; 4.</div>
+<div class="retenir">À retenir : X<sup>2</sup> &lt; k ⇔ |X| &lt; √k : on se ramène aux distances.</div>`}
 
 /* ---------- 11 ---------- */
 function prodSet(sg,r1,r2,rel){ // signe de sg(x-r1)(x-r2), r1<r2
@@ -283,15 +312,18 @@ function L11(d){
       afterVisual:realLine(S,[{x:r1,c:'#e03131'},{x:r2,c:'#e03131'}])+plot({fs:[{f:x=>sg*(x-r1)*(x-r2),l:'y = produit'}],xr:[r1-3,r2+3],xset:S})}}
 }
 function C11(){return `<h2>11. Inéquations produits</h2>
-<p>Pour résoudre (x + 2)(x − 3) &lt; 0, on étudie le <b>signe</b> du produit.</p>
+<p class="intro">Pour savoir quand un produit est positif ou négatif, on étudie le signe de chaque facteur dans un <b>tableau de signes</b>.</p>
+<div class="def">Règle des signes : (+) × (+) = (+), (−) × (−) = (+), (+) × (−) = (−).<br>Un facteur x − a est <b>négatif avant a</b>, nul en a, <b>positif après a</b>.</div>
+<div class="methode"><b>Méthode</b><ol><li>Mets tout d'un côté (0 de l'autre) et <b>factorise</b> si besoin.</li><li>Trouve la valeur qui annule chaque facteur ; range-les dans l'ordre.</li><li>Remplis le tableau : signe de chaque facteur, puis règle des signes.</li><li>Lis les intervalles qui conviennent (crochets fermés pour ≤, ≥).</li></ol></div>
 <table class="st"><tr><td>x</td><td class="e">−∞</td><td class="e"></td><td>−2</td><td class="e"></td><td>3</td><td class="e"></td><td class="e">+∞</td></tr>
 <tr><td>x + 2</td><td class="e"></td><td class="e">−</td><td>0</td><td class="e">+</td><td></td><td class="e">+</td><td class="e"></td></tr>
 <tr><td>x − 3</td><td class="e"></td><td class="e">−</td><td></td><td class="e">−</td><td>0</td><td class="e">+</td><td class="e"></td></tr>
 <tr><td><b>produit</b></td><td class="e"></td><td class="e"><b>+</b></td><td>0</td><td class="e"><b>−</b></td><td>0</td><td class="e"><b>+</b></td><td class="e"></td></tr></table>
-<div class="ex">(x + 2)(x − 3) &lt; 0 → <b>]−2 ; 3[</b> &nbsp;&nbsp; (x + 2)(x − 3) ≥ 0 → ]−∞ ; −2] ∪ [3 ; +∞[</div>
+<div class="ex"><span class="q">Exemple 1 :</span><br>(x + 2)(x − 3) &lt; 0 → <b>]−2 ; 3[</b> &nbsp;&nbsp; (x + 2)(x − 3) ≥ 0 → <b>]−∞ ; −2] ∪ [3 ; +∞[</b></div>
 ${plot({fs:[{f:x=>(x+2)*(x-3),l:'y = (x+2)(x−3)'}],xr:[-5,6],xset:[I(-2,0,3,0)]})}
-<h3>Il faut parfois factoriser d'abord</h3><div class="ex">x<sup>2</sup> − 9 &gt; 0 ⇔ (x − 3)(x + 3) &gt; 0<br>x<sup>2</sup> ≤ 5x ⇔ x<sup>2</sup> − 5x ≤ 0 ⇔ x(x − 5) ≤ 0 → [0 ; 5]</div>
-<div class="warn">⚠️ Ne divise jamais par x : x<sup>2</sup> ≤ 5x ⇏ x ≤ 5 (x pourrait être négatif !).<br>⚠️ (2 − x) est <b>positif avant 2</b> et négatif après.</div>`}
+<div class="ex"><span class="q">Exemple 2 : factoriser d'abord</span><br>x<sup>2</sup> − 9 &gt; 0 ⇔ (x − 3)(x + 3) &gt; 0 → ]−∞ ; −3[ ∪ ]3 ; +∞[<br>x<sup>2</sup> ≤ 5x ⇔ x<sup>2</sup> − 5x ≤ 0 ⇔ x(x − 5) ≤ 0 → <b>[0 ; 5]</b><br>(2 − x)(x + 1) &gt; 0 : 2 − x est <b>positif avant 2</b> → ]−1 ; 2[</div>
+<div class="warn">⚠️ Ne divise jamais par x : x<sup>2</sup> ≤ 5x ⇏ x ≤ 5 (x pourrait être négatif !).<br>⚠️ (2 − x) est <b>positif avant 2</b> et négatif après : c'est le contraire de (x − 2).</div>
+<div class="retenir">À retenir : on cherche le signe de chaque facteur, puis la règle des signes donne celui du produit.</div>`}
 
 /* ---------- 12 ---------- */
 function L12(d){
@@ -320,11 +352,14 @@ function L12(d){
     afterVisual:realLine(S,[{x:a,l:M(a),c:'#5f3dc4'}])+plot({fs:[{f:x=>Math.abs(x-a),l:`y = |${xm(a)}|`}],xr:[a-q-2,a+q+2],h:{y:q,l:`y = ${q}`},xset:S})};
 }
 function C12(){return `<h2>12. Défis</h2>
-<p>On combine tout ce qui précède.</p>
-<h3>|2x − 3| ≤ 5</h3><div class="ex">⇔ −5 ≤ 2x − 3 ≤ 5 ⇔ −2 ≤ 2x ≤ 8 ⇔ −1 ≤ x ≤ 4 → [−1 ; 4]</div>
-<h3>|x − 1| &lt; |x − 5|</h3><div class="ex">« x est plus proche de 1 que de 5 ». Le milieu est 3 → x &lt; 3 → ]−∞ ; 3[</div>${realLine([I(-INF,0,3,0)],[{x:1,l:'1',c:'#5f3dc4'},{x:5,l:'5',c:'#e8590c'}])}
-<h3>(x − 1)<sup>2</sup> ≥ (x − 5)<sup>2</sup></h3><div class="ex">x<sup>2</sup> − 2x + 1 ≥ x<sup>2</sup> − 10x + 25 ⇔ 8x ≥ 24 ⇔ x ≥ 3 → [3 ; +∞[</div>
-<h3>1 ≤ |x − 2| &lt; 3</h3><div class="ex">Distance à 2 entre 1 (compris) et 3 (exclu) → ]−1 ; 1] ∪ [3 ; 5[</div>${realLine([I(-1,0,1,1),I(3,1,5,0)],[{x:2,l:'2',c:'#5f3dc4'}])}`}
+<p class="intro">On combine tout ce qui précède. L'astuce est souvent de <b>reconnaître</b> à quel niveau on se ramène.</p>
+<div class="def">• |X| ≤ r ⇔ −r ≤ X ≤ r &nbsp;&nbsp; • |X| ≥ r ⇔ X ≤ −r ou X ≥ r<br>• |x − a| &lt; |x − b| : x est plus <b>proche</b> de a que de b → on coupe au <b>milieu</b> de a et b.<br>• X<sup>2</sup> &lt; Y<sup>2</sup> ⇔ |X| &lt; |Y|.</div>
+<div class="methode"><b>Méthode</b><ol><li>|2x − 3| ≤ 5 : écris l'encadrement −5 ≤ 2x − 3 ≤ 5, puis résous-le (niveau 6).</li><li>Deux valeurs absolues : pense aux distances et au milieu.</li><li>Deux carrés : développe, les x<sup>2</sup> s'éliminent.</li><li>p &lt; |x − a| &lt; q : une zone à gauche de a et une à droite.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : |2x − 3| ≤ 5</span><br>⇔ −5 ≤ 2x − 3 ≤ 5 ⇔ −2 ≤ 2x ≤ 8 ⇔ −1 ≤ x ≤ 4 → <b>[−1 ; 4]</b></div>
+<div class="ex"><span class="q">Exemple 2 : |x − 1| &lt; |x − 5|</span><br>« x est plus proche de 1 que de 5 ». Le milieu est 3 → x &lt; 3 → <b>]−∞ ; 3[</b><br>Même réponse (au sens large) pour (x − 1)<sup>2</sup> ≤ (x − 5)<sup>2</sup> : x<sup>2</sup> − 2x + 1 ≤ x<sup>2</sup> − 10x + 25 ⇔ 8x ≤ 24 ⇔ x ≤ 3.</div>${realLine([I(-INF,0,3,0)],[{x:1,l:'1',c:'#5f3dc4'},{x:5,l:'5',c:'#e8590c'}])}
+<div class="ex"><span class="q">Exemple 3 : 1 ≤ |x − 2| &lt; 3</span><br>Distance à 2 entre 1 (compris) et 3 (exclu) → <b>]−1 ; 1] ∪ [3 ; 5[</b></div>${realLine([I(-1,0,1,1),I(3,1,5,0)],[{x:2,l:'2',c:'#5f3dc4'}])}
+<div class="warn">⚠️ Dans un encadrement, divise les <b>trois</b> membres par 2.<br>⚠️ Dans l'exemple 3, chaque crochet suit sa condition : le « ≤ 1 » donne des crochets fermés en 1 et 3, le « &lt; 3 » des crochets ouverts en −1 et 5.</div>
+<div class="retenir">À retenir : valeur absolue = distance ; carrés → valeurs absolues ; encadrement → trois membres.</div>`}
 
 
 export const LEVELS = LEVELS_;
