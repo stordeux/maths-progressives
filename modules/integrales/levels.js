@@ -142,11 +142,24 @@ function L1(d) {
 }
 function C1() {
   const f = x => (x <= 2 ? 1 + x : 3);
+  const g = x => (x <= 1 ? x + 1 : x <= 2 ? 2 : 6 - 2 * x);
   return `<h2>1. L'aire sous une courbe</h2>
-<div class="def">Si f est <b>positive</b> sur [a ; b], l'<b>intégrale de a à b de f</b> est l'aire du domaine compris entre la courbe, l'axe des abscisses et les droites x = a et x = b. On la note ${INT('a', 'b', 'f(x)')}. Elle se mesure en <b>unités d'aire</b> (u.a.) : l'aire du carreau unité.</div>
-<div class="ex">Ci-dessous, f monte de 1 à 3 sur [0 ; 2], puis reste à 3 sur [2 ; 4].<br>Sur [0 ; 2] : rectangle 2 × 1 = 2 et triangle 2 × 2 ÷ 2 = 2. Sur [2 ; 4] : rectangle 2 × 3 = 6.<br>Aire = 2 + 2 + 6 = <b>10 u.a.</b></div>
-<div class="warn">⚠️ Un triangle n'est pas un rectangle : base × hauteur <b>÷ 2</b>.<br>⚠️ Ne compte que la partie entre x = a et x = b.</div>
-${repere({ eq: true, xr: [-1, 5], yr: [-1, 4], fs: [{ f, dom: [0, 4] }], fill: [{ f, a: 0, b: 4 }], xl: [{ x: 0, l: 'a' }, { x: 4, l: 'b' }] })}`;
+<p class="intro">L'intégrale commence par une question simple : quelle est l'aire « sous » une courbe ? Avec une ligne brisée, tu peux la calculer en découpant le domaine en rectangles et en triangles.</p>
+<div class="def">Si f est <b>positive</b> sur [a ; b], l'<b>intégrale de a à b de f</b> est l'aire du domaine compris entre la courbe, l'axe des abscisses et les droites x = a et x = b. On la note ${INT('a', 'b', 'f(x)')}.<br>Elle se mesure en <b>unités d'aire</b> (u.a.) : l'aire du carreau unité.</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Repère les bornes a et b, et les sommets de la ligne brisée.</li>
+<li>Trace des traits verticaux sous chaque sommet : tu obtiens des bandes.</li>
+<li>Chaque bande est un rectangle, un triangle, ou un rectangle surmonté d'un triangle.</li>
+<li>Rectangle : base × hauteur. Triangle rectangle : base × hauteur ÷ 2.</li>
+<li>Additionne les aires de toutes les bandes.</li></ol></div>
+<div class="cols">
+${repere({ eq: true, xr: [-1, 5], yr: [-1, 4], fs: [{ f, dom: [0, 4] }], fill: [{ f, a: 0, b: 4 }], xl: [{ x: 0, l: '0' }, { x: 4, l: '4' }], aria: 'domaine sous une ligne brisée entre 0 et 4' })}
+${repere({ eq: true, xr: [-2, 4], yr: [-1, 3], fs: [{ f: g, dom: [-1, 3] }], fill: [{ f: g, a: -1, b: 3 }], xl: [{ x: -1, l: '−1' }, { x: 3, l: '3' }], aria: 'domaine sous une ligne brisée entre −1 et 3' })}
+</div>
+<div class="ex"><span class="q">Exemple 1 : à gauche, entre 0 et 4.</span><br>f monte de 1 à 3 sur [0 ; 2], puis reste à 3 sur [2 ; 4].<br>Sur [0 ; 2] : rectangle 2 × 1 = 2 et triangle 2 × 2 ÷ 2 = 2.<br>Sur [2 ; 4] : rectangle 2 × 3 = 6.<br>Aire = 2 + 2 + 6 = <b>10 u.a.</b>, donc ${INT('0', '4', 'f(x)')} = 10.</div>
+<div class="ex"><span class="q">Exemple 2 : à droite, entre −1 et 3 (la courbe touche l'axe).</span><br>Sur [−1 ; 1] : triangle 2 × 2 ÷ 2 = 2.<br>Sur [1 ; 2] : rectangle 1 × 2 = 2.<br>Sur [2 ; 3] : triangle 1 × 2 ÷ 2 = 1.<br>Aire = 2 + 2 + 1 = <b>5 u.a.</b> Une borne négative ne change rien : on compte des carreaux.</div>
+<div class="warn">⚠️ Un triangle n'est pas un rectangle : base × hauteur <b>÷ 2</b>.<br>⚠️ Ne compte que la partie entre x = a et x = b.<br>⚠️ Deux demi-carreaux font un carreau : si tu trouves presque le bon nombre, recompte les morceaux.</div>
+<div class="retenir">À retenir : si f ≥ 0, ${INT('a', 'b', 'f(x)')} est l'aire sous la courbe, en unités d'aire.</div>`;
 }
 
 /* ================= 2. méthode des rectangles ================= */
@@ -196,11 +209,24 @@ function L2(d) {
 function C2() {
   const f = x => x * x;
   const rects = []; for (let i = 0; i < 4; i++) { rects.push({ x: i / 2, w: .5, h: (i / 2) ** 2, k: 'lo' }); rects.push({ x: i / 2, w: .5, h: ((i + 1) / 2) ** 2, k: 'up' }); }
+  const g = x => 12 / x;
+  const rects2 = []; for (let i = 1; i < 4; i++) { rects2.push({ x: i, w: 1, h: g(i + 1), k: 'lo' }); rects2.push({ x: i, w: 1, h: g(i), k: 'up' }); }
   return `<h2>2. Encadrer une aire par des rectangles</h2>
-<div class="def">On découpe [a ; b] en n bandes de même largeur h = (b − a) ÷ n. Sur chaque bande, un rectangle <b>sous</b> la courbe et un rectangle <b>au-dessus</b>.<br>Leurs sommes s et S encadrent l'intégrale : <b>s ≤ ${INT('a', 'b', 'f(x)')} ≤ S</b>. Plus n est grand, plus l'encadrement est fin.</div>
-<div class="ex">f(x) = x<sup>2</sup> sur [0 ; 2], 4 bandes de largeur 0,5 (f croissante) :<br>s = 0,5 × (f(0) + f(0,5) + f(1) + f(1,5)) = 0,5 × 3,5 = 1,75<br>S = 0,5 × (f(0,5) + f(1) + f(1,5) + f(2)) = 0,5 × 7,5 = 3,75</div>
-<div class="warn">⚠️ Si f est <b>décroissante</b>, c'est l'inverse : le petit rectangle prend la valeur de droite.<br>⚠️ Ne pas oublier de multiplier par la largeur h.</div>
-${repere({ xr: [-1, 3], yr: [-1, 5], fs: [{ f, l: 'y = x²' }], rects, xl: [{ x: 0, l: '0' }, { x: 2, l: '2' }] })}`;
+<p class="intro">Quand on ne sait pas calculer une aire exactement, on la coince entre deux sommes de rectangles : une trop petite, une trop grande.</p>
+<div class="def">On découpe [a ; b] en n bandes de même largeur <b>h = (b − a) ÷ n</b>. Sur chaque bande, un rectangle <b>sous</b> la courbe (en vert) et un rectangle <b>au-dessus</b> (en orange).<br>Leurs sommes s et S encadrent l'intégrale : <b>s ≤ ${INT('a', 'b', 'f(x)')} ≤ S</b>. Plus n est grand, plus l'encadrement est fin.</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Calcule la largeur h = (b − a) ÷ n.</li>
+<li>Calcule f aux bornes de chaque bande : f(a), f(a + h), …, f(b).</li>
+<li>f <b>croissante</b> : le rectangle sous la courbe prend la hauteur de <b>gauche</b>, celui au-dessus la hauteur de <b>droite</b>. f <b>décroissante</b> : c'est l'inverse.</li>
+<li>s = h × (somme des petites hauteurs) ; S = h × (somme des grandes hauteurs).</li></ol></div>
+<div class="cols">
+${repere({ xr: [-1, 3], yr: [-1, 5], fs: [{ f, l: 'y = x²' }], rects, xl: [{ x: 0, l: '0' }, { x: 2, l: '2' }], aria: 'rectangles sous et sur la courbe de x²' })}
+${repere({ xr: [-1, 5], yr: [-2, 14], fs: [{ f: g, dom: [0.8, 5] }], rects: rects2, xl: [{ x: 1, l: '1' }, { x: 4, l: '4' }], aria: 'rectangles sous et sur la courbe de 12/x' })}
+</div>
+<div class="ex"><span class="q">Exemple 1 : f(x) = x<sup>2</sup> sur [0 ; 2], 4 bandes (f croissante).</span><br>h = (2 − 0) ÷ 4 = 0,5.<br>s = 0,5 × (f(0) + f(0,5) + f(1) + f(1,5)) = 0,5 × 3,5 = <b>1,75</b><br>S = 0,5 × (f(0,5) + f(1) + f(1,5) + f(2)) = 0,5 × 7,5 = <b>3,75</b></div>
+<div class="ex"><span class="q">Exemple 2 : f(x) = ${F(12, 'x')} sur [1 ; 4], 3 bandes (f décroissante).</span><br>h = 1. Valeurs : f(1) = 12 ; f(2) = 6 ; f(3) = 4 ; f(4) = 3.<br>Petits rectangles (hauteur de droite) : s = 1 × (6 + 4 + 3) = <b>13</b>.<br>Grands rectangles (hauteur de gauche) : S = 1 × (12 + 6 + 4) = <b>22</b>.<br>Donc 13 ≤ ${INT('1', '4', F(12, 'x'))} ≤ 22.</div>
+<div class="warn">⚠️ s est toujours la <b>plus petite</b> des deux sommes : ne les inverse pas.<br>⚠️ Si f est <b>décroissante</b>, le petit rectangle prend la valeur de droite.<br>⚠️ N'oublie pas de multiplier par la largeur h (surtout quand h = 0,5).</div>
+<div class="retenir">À retenir : s ≤ ${INT('a', 'b', 'f(x)')} ≤ S, avec des rectangles de largeur h = (b − a) ÷ n.</div>`;
 }
 
 /* ================= 3. vérifier une primitive ================= */
@@ -271,12 +297,22 @@ function L3(d) {
 function C3() {
   const f = x => 2 * x, G = x => x * x - 1;
   return `<h2>3. Qu'est-ce qu'une primitive ?</h2>
+<p class="intro">Pour calculer des intégrales, on aura besoin de faire « la dérivation à l'envers » : c'est la primitive. Ici, tu apprends d'abord à <b>reconnaître</b> une primitive.</p>
 <div class="def">F est une <b>primitive</b> de f sur un intervalle I quand F est dérivable sur I et <b>F′(x) = f(x)</b> pour tout x de I.<br>Pour vérifier, on <b>dérive</b> F et on compare avec f.</div>
-<div class="ex">f(x) = 6x<sup>2</sup> + 2x − 1 et F(x) = 2x<sup>3</sup> + x<sup>2</sup> − x + 5.<br>F′(x) = 6x<sup>2</sup> + 2x − 1 = f(x) : F est une primitive de f.</div>
-<div class="ex">f(x) = (x + 1)e<sup>x</sup> et F(x) = x e<sup>x</sup> : F′(x) = 1 × e<sup>x</sup> + x e<sup>x</sup> = (x + 1)e<sup>x</sup> = f(x). ✔</div>
-<div class="warn">⚠️ Ne pas confondre : la <b>dérivée</b> de f n'est pas une primitive de f.<br>⚠️ Une fonction a une infinité de primitives : F(x) + 5, F(x) − 2… ont la même dérivée.</div>
-<p>Ci-dessous, F(x) = x<sup>2</sup> − 1 (en vert) : sa pente en chaque point vaut f(x) = 2x (en bleu).</p>
-${repere({ xr: [-3, 3], yr: [-5, 6], fs: [{ f, l: 'y = f(x)' }, { f: G, c: C_G, l: 'y = F(x)', dash: true }] })}`;
+<div class="methode"><b>Méthode</b><ol>
+<li>Ne cherche pas la primitive toi-même : <b>dérive</b> la fonction F proposée.</li>
+<li>Polynôme : (x<sup>3</sup>)′ = 3x<sup>2</sup>, (x<sup>2</sup>)′ = 2x, (x)′ = 1, la constante disparaît.</li>
+<li>Autres formules : (uv)′ = u′v + uv′ ; (e<sup>u</sup>)′ = u′e<sup>u</sup> ; (ln x)′ = ${F(1, 'x')}.</li>
+<li>Compare F′(x) avec f(x) : il faut l'égalité <b>exacte</b>, pour tout x.</li>
+<li>Avec plusieurs propositions : dérive-les une par une, une seule convient.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : f(x) = 6x<sup>2</sup> + 2x − 1.</span><br>F(x) = 2x<sup>3</sup> + x<sup>2</sup> − x + 5 : F′(x) = 6x<sup>2</sup> + 2x − 1 = f(x). <b>Oui</b>, c'est une primitive.<br>G(x) = 6x<sup>3</sup> + 2x<sup>2</sup> − x : G′(x) = 18x<sup>2</sup> + 4x − 1 ≠ f(x). <b>Non</b> (on a oublié de diviser).</div>
+<div class="ex"><span class="q">Exemple 2 : f(x) = ln x sur ]0 ; +∞[. Laquelle : x ln x ou x ln x − x ?</span><br>(x ln x)′ = 1 × ln x + x × ${F(1, 'x')} = ln x + 1 ≠ f(x).<br>(x ln x − x)′ = ln x + 1 − 1 = ln x = f(x). ✔ C'est <b>x ln x − x</b>.<br>De même, (x e<sup>x</sup>)′ = e<sup>x</sup> + x e<sup>x</sup> = (x + 1)e<sup>x</sup>.</div>
+<div class="cols">
+<div><p>F(x) = x<sup>2</sup> − 1 (en vert, pointillés) : en chaque point, sa pente vaut f(x) = 2x (en bleu). Là où f &lt; 0, F descend ; là où f &gt; 0, F monte.</p></div>
+${repere({ xr: [-3, 3], yr: [-5, 6], fs: [{ f, l: 'y = f(x)' }, { f: G, c: C_G, l: 'y = F(x)', dash: true }], aria: 'une fonction et une de ses primitives' })}
+</div>
+<div class="warn">⚠️ Ne confonds pas : la <b>dérivée</b> de f n'est pas une primitive de f.<br>⚠️ Une fonction a une infinité de primitives : F(x) + 5, F(x) − 2… ont la même dérivée.<br>⚠️ Une proposition égale à f elle-même n'est jamais la bonne : sa dérivée n'est pas f.</div>
+<div class="retenir">À retenir : F est une primitive de f quand F′ = f ; pour le vérifier, on dérive F.</div>`;
 }
 
 /* ================= 4. primitives usuelles ================= */
@@ -343,17 +379,27 @@ function L4(d) {
 }
 function C4() {
   return `<h2>4. Primitives usuelles</h2>
+<p class="intro">Comme pour les dérivées, il y a un petit tableau à connaître par cœur. Avec lui, tu trouves directement une primitive des fonctions de référence.</p>
 <div class="def"><table class="st" style="margin:auto"><tr><td><b>f(x)</b></td><td><b>une primitive F(x)</b></td><td><b>sur</b></td></tr>
 <tr><td>k (constante)</td><td>kx</td><td>ℝ</td></tr>
 <tr><td>x<sup>n</sup> (n ≥ 1)</td><td>${F('x<sup>n+1</sup>', 'n + 1')}</td><td>ℝ</td></tr>
 <tr><td>${F(1, 'x<sup>2</sup>')}</td><td>−${F(1, 'x')}</td><td>]0 ; +∞[</td></tr>
 <tr><td>${F(1, '√x')}</td><td>2√x</td><td>]0 ; +∞[</td></tr>
 <tr><td>${F(1, 'x')}</td><td>ln x</td><td>]0 ; +∞[</td></tr>
-<tr><td>${EX}</td><td>${EX}</td><td>ℝ</td></tr></table></div>
-<div class="ex">f(x) = 12x<sup>3</sup> : F(x) = 12 × ${F('x<sup>4</sup>', 4)} = <b>3x<sup>4</sup></b>. Vérification : (3x<sup>4</sup>)′ = 12x<sup>3</sup>. ✔</div>
-<div class="ex">f(x) = ${F(5, 'x<sup>2</sup>')} sur ]0 ; +∞[ : F(x) = 5 × (−${F(1, 'x')}) = <b>−${F(5, 'x')}</b>.</div>
-<div class="warn">⚠️ Une primitive de x<sup>n</sup> n'est pas x<sup>n+1</sup> : il faut <b>diviser par n + 1</b>.<br>⚠️ Ne pas confondre avec la dérivée (nx<sup>n−1</sup>) : en primitivant, l'exposant <b>monte</b>.</div>
-${repere({ xr: [-1, 5], yr: [-3, 4], fs: [{ f: x => 1 / x, dom: [0.2, 5], l: 'y = 1/x' }, { f: Math.log, dom: [0.05, 5], c: C_G, l: 'y = ln x', dash: true }] })}`;
+<tr><td>${EX}</td><td>${EX}</td><td>ℝ</td></tr></table>Un coefficient devant f reste devant F : une primitive de k × f est k × F.</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Repère la forme de f : k x<sup>n</sup>, ${F('k', 'x')}, ${F('k', 'x<sup>2</sup>')}, ${F('k', '√x')} ou k e<sup>x</sup>.</li>
+<li>Pour k x<sup>n</sup> : l'exposant <b>monte</b> de 1 (p = n + 1), et on <b>divise</b> k par ce nouvel exposant (a = k ÷ p).</li>
+<li>Pour les autres : lis la ligne du tableau et garde le coefficient k devant.</li>
+<li>Vérifie en dérivant : tu dois retrouver f(x).</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : f(x) = 12x<sup>3</sup>, puis f(x) = x.</span><br>12x<sup>3</sup> : p = 4 et a = 12 ÷ 4 = 3, donc F(x) = <b>3x<sup>4</sup></b>. Vérification : (3x<sup>4</sup>)′ = 12x<sup>3</sup>. ✔<br>x : p = 2 et a = 1 ÷ 2 = 0,5, donc F(x) = <b>0,5x<sup>2</sup></b>.</div>
+<div class="ex"><span class="q">Exemple 2 : sur ]0 ; +∞[, f(x) = −${F(3, 'x')}, puis f(x) = ${F(4, '√x')}.</span><br>−3 × ${F(1, 'x')} : F(x) = <b>−3 ln x</b>.<br>4 × ${F(1, '√x')} : F(x) = 4 × 2√x = <b>8√x</b>.<br>Et pour ${F(5, 'x<sup>2</sup>')} : F(x) = 5 × (−${F(1, 'x')}) = −${F(5, 'x')}.</div>
+<div class="cols">
+<div><p>La courbe de ln x (en vert) monte, avec une pente égale à ${F(1, 'x')} (en bleu) : forte près de 0, faible ensuite. C'est bien (ln x)′ = ${F(1, 'x')}.</p></div>
+${repere({ xr: [-1, 5], yr: [-3, 4], fs: [{ f: x => 1 / x, dom: [0.2, 5], l: 'y = 1/x' }, { f: Math.log, dom: [0.05, 5], c: C_G, l: 'y = ln x', dash: true }], aria: 'courbes de 1/x et de ln x' })}
+</div>
+<div class="warn">⚠️ Une primitive de x<sup>n</sup> n'est pas x<sup>n+1</sup> : il faut <b>diviser par n + 1</b>.<br>⚠️ Ne dérive pas ! En primitivant, l'exposant <b>monte</b> (la dérivée nx<sup>n−1</sup> le fait descendre).<br>⚠️ Attention au signe du coefficient, et au signe « − » de −${F(1, 'x')}.</div>
+<div class="retenir">À retenir : x<sup>n</sup> a pour primitive ${F('x<sup>n+1</sup>', 'n + 1')} ; ${F(1, 'x')} a pour primitive ln x ; e<sup>x</sup> a pour primitive e<sup>x</sup>.</div>`;
 }
 
 /* ================= 5. primitives de polynômes ================= */
@@ -389,11 +435,22 @@ function L5(d) {
 }
 function C5() {
   return `<h2>5. Primitives d'un polynôme</h2>
-<div class="def">Une primitive d'une somme est la somme des primitives, et un coefficient reste devant : on primitive <b>terme à terme</b>.<br>Toutes les primitives de f s'écrivent <b>F(x) + C</b>, où C est une constante.</div>
-<div class="ex">f(x) = 6x<sup>2</sup> − 4x + 5<br>6x<sup>2</sup> → 6 × ${F('x<sup>3</sup>', 3)} = 2x<sup>3</sup> ; −4x → −4 × ${F('x<sup>2</sup>', 2)} = −2x<sup>2</sup> ; 5 → 5x<br>F(x) = <b>2x<sup>3</sup> − 2x<sup>2</sup> + 5x + C</b></div>
-<div class="warn">⚠️ Ne pas oublier la <b>constante C</b> : « les primitives » sont toutes les F + C.<br>⚠️ Le nombre seul 5 devient 5x (et pas 0 : ça, c'est la dérivée !).</div>
-<p>Les primitives de f(x) = 2x : F(x) = x<sup>2</sup> + C, des paraboles décalées verticalement.</p>
-${repere({ xr: [-3, 3], yr: [-4, 7], fs: [-3, -1, 1, 3].map(C => ({ f: x => x * x + C, c: '#adb5bd', w: 2 })).concat([{ f: x => x * x, c: C_G, l: 'y = x² + C' }]) })}`;
+<p class="intro">Un polynôme est une somme de termes a x<sup>n</sup>. Bonne nouvelle : on primitive chaque terme séparément, avec la règle du niveau 4.</p>
+<div class="def">Une primitive d'une somme est la somme des primitives, et un coefficient reste devant : on primitive <b>terme à terme</b>.<br>a x<sup>n</sup> → a × ${F('x<sup>n+1</sup>', 'n + 1')} ; un nombre seul k → kx.<br>Toutes les primitives de f s'écrivent <b>F(x) + C</b>, où C est une constante.</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Range les termes de f par puissances décroissantes (l'énoncé peut les mélanger).</li>
+<li>Pour chaque terme : exposant + 1, puis divise le coefficient par ce nouvel exposant.</li>
+<li>Dans les cases, écris le coefficient de chaque puissance de F ; écris <b>0</b> si un terme manque.</li>
+<li>Un coefficient peut être décimal : 5x → 5 × ${F('x<sup>2</sup>', 2)} = 2,5x<sup>2</sup>.</li>
+<li>Vérifie en dérivant F : tu dois retrouver f.</li></ol></div>
+<div class="ex"><span class="q">Exemple 1 : f(x) = 6x<sup>2</sup> − 4x + 5.</span><br>6x<sup>2</sup> → 6 × ${F('x<sup>3</sup>', 3)} = 2x<sup>3</sup> ; −4x → −4 × ${F('x<sup>2</sup>', 2)} = −2x<sup>2</sup> ; 5 → 5x.<br>F(x) = <b>2x<sup>3</sup> − 2x<sup>2</sup> + 5x + C</b></div>
+<div class="ex"><span class="q">Exemple 2 : f(x) = 5x + 4 − 12x<sup>3</sup> (termes dans le désordre).</span><br>On range : f(x) = −12x<sup>3</sup> + 5x + 4 (pas de terme en x<sup>2</sup>).<br>−12x<sup>3</sup> → −12 × ${F('x<sup>4</sup>', 4)} = −3x<sup>4</sup> ; 5x → 2,5x<sup>2</sup> ; 4 → 4x.<br>F(x) = <b>−3x<sup>4</sup> + 0x<sup>3</sup> + 2,5x<sup>2</sup> + 4x + C</b> : cases −3 ; 0 ; 2,5 ; 4.</div>
+<div class="cols">
+<div><p>Les primitives de f(x) = 2x sont F(x) = x<sup>2</sup> + C : des paraboles décalées verticalement. Elles ont toutes la même pente en un même x.</p></div>
+${repere({ xr: [-3, 3], yr: [-4, 7], fs: [-3, -1, 1, 3].map(C => ({ f: x => x * x + C, c: '#adb5bd', w: 2 })).concat([{ f: x => x * x, c: C_G, l: 'y = x² + C' }]), aria: 'famille de primitives x² + C' })}
+</div>
+<div class="warn">⚠️ Tu as oublié de diviser si tu recopies les coefficients de f : une primitive de x<sup>n</sup> est x<sup>n+1</sup> ÷ (n + 1).<br>⚠️ Le nombre seul 5 devient 5x (et pas 0 : ça, c'est la dérivée !).<br>⚠️ N'oublie pas la <b>constante C</b> : « les primitives » sont toutes les F + C.</div>
+<div class="retenir">À retenir : on primitive un polynôme terme à terme, et on ajoute une constante C.</div>`;
 }
 
 /* ================= 6. primitive vérifiant F(a) = b ================= */
@@ -464,12 +521,25 @@ function finish6({ fn, G, x0, y0, E, tpl, sol, kind, nm, html, Fof, pos }) {
   };
 }
 function C6() {
+  const L = x => 3 * Math.log(x) - 2 * x;
   return `<h2>6. La primitive qui passe par un point</h2>
+<p class="intro">Parmi toutes les primitives d'une fonction, une seule passe par un point donné. Trouver cette primitive, c'est trouver la bonne constante C.</p>
 <div class="def">Une fonction f a une infinité de primitives F(x) + C. Une condition <b>F(a) = b</b> (la courbe passe par le point (a ; b)) fixe la constante : il y en a <b>une seule</b>.</div>
-<div class="ex">f(x) = 2x + 3 et F(1) = 6.<br>F(x) = x<sup>2</sup> + 3x + C ; F(1) = 1 + 3 + C = 4 + C = 6, donc C = 2.<br>F(x) = <b>x<sup>2</sup> + 3x + 2</b>.</div>
-<div class="ex">f(x) = e<sup>x</sup> et F(0) = 5 : F(x) = e<sup>x</sup> + C, F(0) = 1 + C = 5, donc C = 4.</div>
-<div class="warn">⚠️ C n'est pas égal à b : il faut résoudre F(a) = b.<br>⚠️ e<sup>0</sup> = 1 (et non 0) ; ln 1 = 0.</div>
-${repere({ xr: [-4, 3], yr: [-3, 9], fs: [0, 4, -2].map(C => ({ f: x => x * x + 3 * x + C, c: '#adb5bd', w: 1.8 })).concat([{ f: x => x * x + 3 * x + 2, c: C_G, l: 'y = x² + 3x + 2' }]), pts: [{ x: 1, y: 6, l: '(1 ; 6)' }] })}`;
+<div class="methode"><b>Méthode</b><ol>
+<li>Trouve une primitive terme à terme et ajoute + C.</li>
+<li>Remplace x par a : calcule d'abord la partie sans C.</li>
+<li>Écris l'équation F(a) = b, et isole C : si □ + C = b, alors C = b − □.</li>
+<li>Écris F(x) avec la valeur de C trouvée.</li>
+<li>Rappels utiles : e<sup>0</sup> = 1 et ln 1 = 0.</li></ol></div>
+<div class="cols">
+${repere({ xr: [-4, 3], yr: [-3, 9], fs: [0, 4, -2].map(C => ({ f: x => x * x + 3 * x + C, c: '#adb5bd', w: 1.8 })).concat([{ f: x => x * x + 3 * x + 2, c: C_G, l: 'y = x² + 3x + 2' }]), pts: [{ x: 1, y: 6, l: '(1 ; 6)' }], aria: 'famille de primitives et la courbe passant par (1 ; 6)' })}
+${repere({ xr: [-1, 6], yr: [-3, 9], fs: [2, 4, 8, 10].map(C => ({ f: x => L(x) + C, dom: [0.03, 6], c: '#adb5bd', w: 1.8 })).concat([{ f: x => L(x) + 6, dom: [0.03, 6], c: C_G }]), pts: [{ x: 1, y: 4, l: '(1 ; 4)' }], aria: 'famille de primitives avec ln et la courbe passant par (1 ; 4)' })}
+</div>
+<div class="ex"><span class="q">Exemple 1 : f(x) = 2x + 3 et F(1) = 6.</span><br>F(x) = x<sup>2</sup> + 3x + C ; F(1) = 1 + 3 + C = 4 + C = 6, donc C = 6 − 4 = 2.<br>F(x) = <b>x<sup>2</sup> + 3x + 2</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : f(x) = 4x − 1 et F(−2) = 3 (borne négative).</span><br>F(x) = 2x<sup>2</sup> − x + C ; F(−2) = 2 × 4 + 2 + C = 10 + C = 3, donc C = 3 − 10 = −7.<br>F(x) = <b>2x<sup>2</sup> − x − 7</b>.</div>
+<div class="ex"><span class="q">Exemple 3 : f(x) = ${F(3, 'x')} − 2 sur ]0 ; +∞[ et F(1) = 4.</span><br>F(x) = 3 ln x − 2x + C ; F(1) = 3 × 0 − 2 + C = 4, donc C = 6.<br>F(x) = <b>3 ln x − 2x + 6</b>. C'est la courbe verte du 2<sup>e</sup> dessin. Avec e<sup>x</sup> on utilise F(0), et 3e<sup>0</sup> = 3 (pas 0).</div>
+<div class="warn">⚠️ C n'est pas directement égal à b : il faut résoudre F(a) = b.<br>⚠️ Erreur de signe en isolant C : si □ + C = b, alors C = b − □.<br>⚠️ e<sup>0</sup> = 1 (et non 0) ; ln 1 = 0.</div>
+<div class="retenir">À retenir : la condition F(a) = b donne une équation d'inconnue C, et une seule primitive.</div>`;
 }
 
 /* ================= 7. calcul d'intégrales de polynômes ================= */
@@ -494,12 +564,23 @@ function L7(d) {
 }
 function C7() {
   const f = x => x * x;
+  const g = x => 3 * x * x - 2 * x;
   return `<h2>7. Calculer une intégrale avec une primitive</h2>
-<div class="def">Si F est une primitive de f sur [a ; b] :${big(`${INT('a', 'b', 'f(x)')} = ${BRK('F(x)', 'a', 'b')} = F(b) − F(a)`)}</div>
-<div class="ex">${INT('1', '3', 'x<sup>2</sup>')} = ${BRK(F('x<sup>3</sup>', 3), 1, 3)} = ${F(27, 3)} − ${F(1, 3)} = <b>${F(26, 3)}</b> ≈ 8,67 u.a.</div>
-<div class="ex">${INT('0', '2', '(4x + 1)')} = ${BRK('2x<sup>2</sup> + x', 0, 2)} = (8 + 2) − 0 = <b>10</b></div>
-<div class="warn">⚠️ C'est <b>F(b) − F(a)</b> : borne du haut moins borne du bas, pas l'inverse.<br>⚠️ Une primitive de x<sup>2</sup> est ${F('x<sup>3</sup>', 3)}, pas x<sup>3</sup>.<br>⚠️ Mettre F(a) entre parenthèses quand il est négatif.</div>
-${repere({ xr: [-1, 4], yr: [-1, 10], fs: [{ f, l: 'y = x²' }], fill: [{ f, a: 1, b: 3, signed: true }], xl: [{ x: 1, l: '1' }, { x: 3, l: '3' }] })}`;
+<p class="intro">Compter des carreaux ne marche pas pour une parabole. Le théorème fondamental relie l'intégrale aux primitives : un calcul de deux valeurs suffit.</p>
+<div class="def">Si F est une primitive de f sur [a ; b] :${big(`${INT('a', 'b', 'f(x)')} = ${BRK('F(x)', 'a', 'b')} = F(b) − F(a)`)}Le résultat ne dépend pas de la primitive choisie : on prend celle avec C = 0.</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Trouve une primitive F de f, terme à terme.</li>
+<li>Écris le crochet ${BRK('F(x)', 'a', 'b')}.</li>
+<li>Calcule F(b) (borne du haut), puis F(a) (borne du bas), avec des parenthèses si F(a) est négatif.</li>
+<li>Calcule F(b) − F(a). Si le résultat est une fraction, écris-la simplifiée (le signe − au numérateur).</li></ol></div>
+<div class="cols">
+${repere({ xr: [-1, 4], yr: [-1, 10], fs: [{ f, l: 'y = x²' }], fill: [{ f, a: 1, b: 3, signed: true }], xl: [{ x: 1, l: '1' }, { x: 3, l: '3' }], aria: 'aire sous x² entre 1 et 3' })}
+${repere({ xr: [-2, 3], yr: [-2, 9], fs: [{ f: g }], fill: [{ f: g, a: -1, b: 2, signed: true }], xl: [{ x: -1, l: '−1' }, { x: 2, l: '2' }], aria: 'domaine sous 3x² − 2x entre −1 et 2' })}
+</div>
+<div class="ex"><span class="q">Exemple 1 : un résultat fractionnaire.</span><br>${INT('1', '3', 'x<sup>2</sup>')} = ${BRK(F('x<sup>3</sup>', 3), 1, 3)} = ${F(27, 3)} − ${F(1, 3)} = <b>${F(26, 3)}</b> ≈ 8,67 u.a.<br>${INT('0', '2', '(4x + 1)')} = ${BRK('2x<sup>2</sup> + x', 0, 2)} = (8 + 2) − 0 = <b>10</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : une borne négative.</span><br>${INT('−1', '2', '(3x<sup>2</sup> − 2x)')} = ${BRK('x<sup>3</sup> − x<sup>2</sup>', '−1', '2')}<br>F(2) = 8 − 4 = 4 ; F(−1) = −1 − 1 = −2.<br>I = 4 − (−2) = <b>6</b>. (La petite partie hachurée sous l'axe compte en moins.)</div>
+<div class="warn">⚠️ C'est <b>F(b) − F(a)</b> : borne du haut moins borne du bas, pas l'inverse.<br>⚠️ Une primitive de x<sup>2</sup> est ${F('x<sup>3</sup>', 3)}, pas x<sup>3</sup> : n'oublie pas de diviser.<br>⚠️ Ne t'arrête pas à F(b) : il faut soustraire F(a), même quand a ≠ 0.</div>
+<div class="retenir">À retenir : ${INT('a', 'b', 'f(x)')} = F(b) − F(a), où F est une primitive de f.</div>`;
 }
 
 /* ================= 8. linéarité et relation de Chasles ================= */
@@ -563,13 +644,24 @@ function fin8({ html, val, sol, hint, msgs, vis, ex }) {
 function C8() {
   const f = x => 4 - x * x / 3;
   return `<h2>8. Linéarité et relation de Chasles</h2>
+<p class="intro">Ces règles permettent de calculer une intégrale à partir d'autres intégrales déjà connues, sans jamais chercher de primitive.</p>
 <div class="def"><b>Linéarité</b> : ${INT('a', 'b', '(αf(x) + βg(x))')} = α${INT('a', 'b', 'f(x)')} + β${INT('a', 'b', 'g(x)')}<br>
 <b>Chasles</b> : ${INT('a', 'b', 'f(x)')} + ${INT('b', 'c', 'f(x)')} = ${INT('a', 'c', 'f(x)')}<br>
 <b>Bornes inversées</b> : ${INT('b', 'a', 'f(x)')} = −${INT('a', 'b', 'f(x)')}</div>
-<div class="ex">Si ${INT(0, 2, 'f(x)')} = 7 et ${INT(2, 3, 'f(x)')} = 2, alors ${INT(0, 3, 'f(x)')} = 7 + 2 = <b>9</b>.</div>
-<div class="ex">Si ${INT(1, 4, 'f(x)')} = 5 et ${INT(1, 4, 'g(x)')} = −2, alors ${INT(1, 4, '(3f(x) − g(x))')} = 15 − (−2) = <b>17</b>.</div>
-<div class="warn">⚠️ Pour un morceau : on <b>soustrait</b> (∫ de b à c = ∫ de a à c − ∫ de a à b).<br>⚠️ Échanger les bornes change le signe.</div>
-${repere({ xr: [-1, 4], yr: [-1, 5], fs: [{ f, l: 'y = f(x)' }], fill: [{ f, a: 0, b: 2, signed: true }, { f, a: 2, b: 3, signed: true, c: '#74c0fc' }], xl: [{ x: 0, l: 'a' }, { x: 2, l: 'b' }, { x: 3, l: 'c' }] })}`;
+<div class="methode"><b>Méthode</b><ol>
+<li>Regarde les bornes : sont-elles les mêmes partout (linéarité) ou différentes (Chasles) ?</li>
+<li>Bornes dans le mauvais ordre ? Change le signe pour les remettre dans l'ordre.</li>
+<li>Chasles : deux morceaux qui se suivent s'<b>ajoutent</b> ; pour trouver un morceau, on <b>soustrait</b>.</li>
+<li>Linéarité : sors les coefficients, puis remplace chaque intégrale par sa valeur.</li>
+<li>Calcule, en mettant les nombres négatifs entre parenthèses.</li></ol></div>
+<div class="cols">
+<div><p>Sur le dessin, l'aire orange (de a à b) plus l'aire bleue (de b à c) donne l'aire totale de a à c : c'est la relation de Chasles.</p></div>
+${repere({ xr: [-1, 4], yr: [-1, 5], fs: [{ f, l: 'y = f(x)' }], fill: [{ f, a: 0, b: 2, signed: true }, { f, a: 2, b: 3, signed: true, c: '#74c0fc' }], xl: [{ x: 0, l: 'a' }, { x: 2, l: 'b' }, { x: 3, l: 'c' }], aria: 'relation de Chasles : deux domaines accolés' })}
+</div>
+<div class="ex"><span class="q">Exemple 1 : linéarité.</span><br>Si ${INT(1, 4, 'f(x)')} = 5 et ${INT(1, 4, 'g(x)')} = −2, alors<br>${INT(1, 4, '(3f(x) − g(x))')} = 3 × 5 − (−2) = 15 + 2 = <b>17</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : Chasles, dans les deux sens.</span><br>Si ${INT(0, 2, 'f(x)')} = 7 et ${INT(2, 3, 'f(x)')} = 2, alors ${INT(0, 3, 'f(x)')} = 7 + 2 = <b>9</b>.<br>Si ${INT(0, 3, 'f(x)')} = 9 et ${INT(0, 2, 'f(x)')} = 7, alors ${INT(2, 3, 'f(x)')} = 9 − 7 = <b>2</b>.<br>Si ${INT(3, 2, 'f(x)')} = −2, alors ${INT(2, 3, 'f(x)')} = 2 (bornes échangées).</div>
+<div class="warn">⚠️ Pour un morceau : on <b>soustrait</b>, ∫ de b à c = ∫ de a à c − ∫ de a à b (et dans cet ordre).<br>⚠️ Échanger les bornes change le signe.<br>⚠️ N'oublie pas les coefficients devant f et g, ni le signe devant g.</div>
+<div class="retenir">À retenir : les intégrales s'ajoutent bout à bout (Chasles) et les coefficients sortent de l'intégrale (linéarité).</div>`;
 }
 
 /* ================= 9. signe de l'intégrale, aire d'une fonction négative ================= */
@@ -625,11 +717,23 @@ function L9(d) {
 }
 function C9() {
   const f = x => x - 2;
+  const g = x => 3 * x * x - 3;
   return `<h2>9. Signe d'une intégrale et aire</h2>
-<div class="def">Si a &lt; b : f ≥ 0 sur [a ; b] ⟹ ${INT('a', 'b', 'f(x)')} ≥ 0 ; f ≤ 0 sur [a ; b] ⟹ ${INT('a', 'b', 'f(x)')} ≤ 0.<br>Si f ≤ 0, l'aire du domaine (sous l'axe) vaut <b>𝒜 = −${INT('a', 'b', 'f(x)')}</b>.<br>Si f change de signe, on découpe aux points où f s'annule et on ajoute les aires.</div>
-<div class="ex">f(x) = x − 2 sur [0 ; 4] : ${INT(0, 4, '(x − 2)')} = ${BRK(`${F('x<sup>2</sup>', 2)} − 2x`, 0, 4)} = 0 !<br>Mais l'aire vaut 2 (triangle sous l'axe, sur [0 ; 2]) + 2 (triangle au-dessus, sur [2 ; 4]) = <b>4 u.a.</b></div>
-<div class="warn">⚠️ Une aire n'est <b>jamais négative</b>.<br>⚠️ Quand f change de signe, l'intégrale n'est pas l'aire : les parties sous l'axe comptent « en moins ».</div>
-${repere({ xr: [-1, 5], yr: [-3, 3], eq: true, fs: [{ f, l: 'y = x − 2' }], fill: [{ f, a: 0, b: 4, signed: true }], xl: [{ x: 0, l: '0' }, { x: 4, l: '4' }] })}`;
+<p class="intro">Une intégrale peut être négative, une aire jamais. Ce niveau t'apprend à passer de l'une à l'autre, même quand la courbe traverse l'axe.</p>
+<div class="def">Si a &lt; b : f ≥ 0 sur [a ; b] ⟹ ${INT('a', 'b', 'f(x)')} ≥ 0 ; f ≤ 0 sur [a ; b] ⟹ ${INT('a', 'b', 'f(x)')} ≤ 0.<br>Si f ≤ 0, l'aire du domaine (sous l'axe) vaut <b>𝒜 = −${INT('a', 'b', 'f(x)')}</b>.<br>Si f change de signe, on découpe aux points où f s'annule et on ajoute les aires des morceaux.</div>
+<div class="methode"><b>Méthode</b><ol>
+<li>Signe sans calcul : la courbe est-elle au-dessus (intégrale positive) ou au-dessous (négative) de l'axe entre a et b ?</li>
+<li>Calcule I = F(b) − F(a) avec une primitive.</li>
+<li>Si f ≤ 0 sur tout [a ; b] : 𝒜 = −I.</li>
+<li>Si f change de signe : trouve où f s'annule, calcule l'intégrale de chaque morceau, puis 𝒜 = somme des <b>valeurs absolues</b>.</li></ol></div>
+<div class="cols">
+${repere({ xr: [-1, 5], yr: [-3, 3], eq: true, fs: [{ f }], fill: [{ f, a: 0, b: 4, signed: true }], xl: [{ x: 0, l: '0' }, { x: 4, l: '4' }], aria: 'domaine sous et sur l\'axe pour x − 2' })}
+${repere({ xr: [-1, 3], yr: [-4, 10], fs: [{ f: g }], fill: [{ f: g, a: 0, b: 2, signed: true }], xl: [{ x: 0, l: '0' }, { x: 2, l: '2' }], aria: 'domaine sous et sur l\'axe pour 3x² − 3' })}
+</div>
+<div class="ex"><span class="q">Exemple 1 : f(x) = x − 2 (à gauche).</span><br>Sur [0 ; 2], f ≤ 0 : ${INT(0, 2, '(x − 2)')} = ${BRK(`${F('x<sup>2</sup>', 2)} − 2x`, 0, 2)} = (2 − 4) − 0 = <b>−2</b>, donc 𝒜 = −(−2) = <b>2 u.a.</b><br>Sur [0 ; 4] : l'intégrale vaut 0, car les deux triangles se compensent ; mais l'aire vaut 2 + 2 = 4 u.a.</div>
+<div class="ex"><span class="q">Exemple 2 : f(x) = 3x<sup>2</sup> − 3 sur [0 ; 2] (à droite), qui s'annule en x = 1.</span><br>F(x) = x<sup>3</sup> − 3x. I = F(2) − F(0) = 2 − 0 = <b>2</b>.<br>Morceaux : ${INT(0, 1, 'f(x)')} = −2 − 0 = −2 et ${INT(1, 2, 'f(x)')} = 2 − (−2) = 4.<br>𝒜 = 2 + 4 = <b>6 u.a.</b> (et non 2).</div>
+<div class="warn">⚠️ Une aire est toujours <b>positive</b> : quand f est négative, l'aire est l'<b>opposé</b> de l'intégrale.<br>⚠️ Quand f change de signe, les morceaux se compensent dans l'intégrale : pour l'aire, additionne leurs valeurs absolues.<br>⚠️ Toujours F(b) − F(a), dans cet ordre.</div>
+<div class="retenir">À retenir : l'intégrale compte « en moins » ce qui est sous l'axe ; l'aire compte tout en positif.</div>`;
 }
 
 /* ================= 10. aire entre deux courbes ================= */
@@ -659,11 +763,23 @@ function L10(d) {
 }
 function C10() {
   const f = x => x + 2, g = x => x * x;
+  const p = x => x * x - 2 * x - 1, q = x => 2 * x - 1;
   return `<h2>10. Aire entre deux courbes</h2>
+<p class="intro">L'aire coincée entre deux courbes se calcule avec une seule intégrale : celle de la différence « courbe du haut moins courbe du bas ».</p>
 <div class="def">Si <b>f ≥ g</b> sur [a ; b], l'aire du domaine compris entre 𝒞<sub>f</sub> (en haut), 𝒞<sub>g</sub> (en bas) et les droites x = a, x = b vaut${big(`𝒜 = ${INT('a', 'b', '(f(x) − g(x))')}`)}Souvent, a et b sont les abscisses des points d'intersection : on résout f(x) = g(x).</div>
-<div class="ex">f(x) = x + 2, g(x) = x<sup>2</sup> : x<sup>2</sup> = x + 2 ⟺ x = −1 ou x = 2.<br>𝒜 = ${INT('−1', '2', '(x + 2 − x<sup>2</sup>)')} = ${BRK(`${F('x<sup>2</sup>', 2)} + 2x − ${F('x<sup>3</sup>', 3)}`, '−1', '2')} = ${F(10, 3)} − (−${F(7, 6)}) = <b>${F(9, 2)} u.a.</b></div>
-<div class="warn">⚠️ Toujours <b>haut − bas</b> : dans l'autre sens on trouve un nombre négatif.<br>⚠️ Les axes ne comptent pas ici : peu importe que les courbes passent sous l'axe des abscisses.</div>
-${repere({ xr: [-2, 3], yr: [-1, 5], fs: [{ f, l: 'y = x + 2' }, { f: g, c: C_G, l: 'y = x²' }], fill: [{ f, g, a: -1, b: 2 }], xl: [{ x: -1, l: '−1' }, { x: 2, l: '2' }] })}`;
+<div class="methode"><b>Méthode</b><ol>
+<li>Si les bornes ne sont pas données, résous f(x) = g(x) : les deux solutions sont a et b.</li>
+<li>Repère la courbe du <b>haut</b> (sur le dessin, ou en testant une valeur entre a et b). Attention : ce n'est pas toujours f !</li>
+<li>Calcule la différence haut − bas, simplifiée.</li>
+<li>Intègre cette différence de a à b : F(b) − F(a).</li></ol></div>
+<div class="cols">
+${repere({ xr: [-2, 3], yr: [-1, 5], fs: [{ f, l: 'y = x + 2' }, { f: g, c: C_G, l: 'y = x²' }], fill: [{ f, g, a: -1, b: 2 }], xl: [{ x: -1, l: '−1' }, { x: 2, l: '2' }], aria: 'domaine entre une droite et une parabole' })}
+${repere({ xr: [-1, 5], yr: [-3, 9], fs: [{ f: p, l: '𝒞f' }, { f: q, c: C_G, l: '𝒞g' }], fill: [{ f: q, g: p, a: 0, b: 4 }], xl: [{ x: 0, l: '0' }, { x: 4, l: '4' }], aria: 'domaine entre deux courbes, g au-dessus de f' })}
+</div>
+<div class="ex"><span class="q">Exemple 1 : f(x) = x + 2 et g(x) = x<sup>2</sup> (à gauche).</span><br>x<sup>2</sup> = x + 2 ⟺ x<sup>2</sup> − x − 2 = 0 ⟺ x = −1 ou x = 2. Entre les deux, la droite est au-dessus.<br>𝒜 = ${INT('−1', '2', '(x + 2 − x<sup>2</sup>)')} = ${BRK(`${F('x<sup>2</sup>', 2)} + 2x − ${F('x<sup>3</sup>', 3)}`, '−1', '2')} = ${F(10, 3)} − (−${F(7, 6)}) = <b>${F(9, 2)} u.a.</b></div>
+<div class="ex"><span class="q">Exemple 2 : f(x) = x<sup>2</sup> − 2x − 1 et g(x) = 2x − 1 (à droite).</span><br>f(x) = g(x) ⟺ x<sup>2</sup> − 4x = 0 ⟺ x = 0 ou x = 4.<br>Ici, c'est <b>g</b> qui est en haut : g(x) − f(x) = 4x − x<sup>2</sup>.<br>𝒜 = ${INT('0', '4', '(4x − x<sup>2</sup>)')} = ${BRK(`2x<sup>2</sup> − ${F('x<sup>3</sup>', 3)}`, '0', '4')} = 32 − ${F(64, 3)} = <b>${F(32, 3)} u.a.</b></div>
+<div class="warn">⚠️ Toujours <b>haut − bas</b> : dans l'autre sens on trouve un nombre négatif.<br>⚠️ Intègre la <b>différence</b>, pas une seule des deux fonctions.<br>⚠️ Les axes ne comptent pas ici : peu importe que les courbes passent sous l'axe des abscisses.</div>
+<div class="retenir">À retenir : aire entre deux courbes = ∫ (haut − bas), entre les points d'intersection.</div>`;
 }
 
 /* ================= 11. valeur moyenne ================= */
@@ -688,11 +804,22 @@ function L11(d) {
 }
 function C11() {
   const f = x => x * x;
+  const g = x => 3 * x * x;
   return `<h2>11. Valeur moyenne d'une fonction</h2>
+<p class="intro">Quelle est la hauteur « moyenne » d'une courbe sur un intervalle ? C'est la hauteur du rectangle qui a la même aire que le domaine sous la courbe.</p>
 <div class="def">La <b>valeur moyenne</b> de f sur [a ; b] (a &lt; b) est${big(`μ = ${F(1, 'b − a')} ${INT('a', 'b', 'f(x)')}`)}Le rectangle de base [a ; b] et de hauteur μ a la même aire que le domaine sous la courbe.</div>
-<div class="ex">f(x) = x<sup>2</sup> sur [0 ; 3] : ${INT(0, 3, 'x<sup>2</sup>')} = ${BRK(F('x<sup>3</sup>', 3), 0, 3)} = 9, donc μ = ${F(9, 3)} = <b>3</b>.</div>
-<div class="warn">⚠️ Ne pas oublier de <b>diviser par b − a</b> (la longueur de l'intervalle).<br>⚠️ Ce n'est pas la moyenne de f(a) et f(b) (sauf pour une fonction affine).</div>
-${repere({ xr: [-1, 4], yr: [-1, 10], fs: [{ f, l: 'y = x²' }], fill: [{ f, a: 0, b: 3, signed: true }], h: { y: 3, l: 'y = μ = 3' }, xl: [{ x: 0, l: '0' }, { x: 3, l: '3' }] })}`;
+<div class="methode"><b>Méthode</b><ol>
+<li>Calcule l'intégrale ${INT('a', 'b', 'f(x)')} = F(b) − F(a) avec une primitive.</li>
+<li>Calcule la longueur de l'intervalle b − a (avec a négatif : b − (−3) = b + 3).</li>
+<li>Divise : μ = intégrale ÷ (b − a). Simplifie la fraction si besoin.</li></ol></div>
+<div class="cols">
+${repere({ xr: [-1, 4], yr: [-1, 10], fs: [{ f, l: 'y = x²' }], fill: [{ f, a: 0, b: 3, signed: true }], h: { y: 3, l: 'y = μ = 3' }, xl: [{ x: 0, l: '0' }, { x: 3, l: '3' }], aria: 'valeur moyenne de x² sur [0 ; 3]' })}
+${repere({ xr: [-2, 3], yr: [-1, 13], fs: [{ f: g }], fill: [{ f: g, a: -1, b: 2, signed: true }], h: { y: 3, l: 'y = μ = 3' }, xl: [{ x: -1, l: '−1' }, { x: 2, l: '2' }], aria: 'valeur moyenne de 3x² sur [−1 ; 2]' })}
+</div>
+<div class="ex"><span class="q">Exemple 1 : f(x) = x<sup>2</sup> sur [0 ; 3].</span><br>${INT(0, 3, 'x<sup>2</sup>')} = ${BRK(F('x<sup>3</sup>', 3), 0, 3)} = 9 − 0 = 9 ; b − a = 3.<br>μ = ${F(9, 3)} = <b>3</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : f(x) = 3x<sup>2</sup> sur [−1 ; 2] (borne négative).</span><br>${INT('−1', '2', '3x<sup>2</sup>')} = ${BRK('x<sup>3</sup>', '−1', '2')} = 8 − (−1) = 9.<br>b − a = 2 − (−1) = <b>3</b> (et non 1 !), donc μ = ${F(9, 3)} = <b>3</b>.<br>Remarque : la moyenne de f(−1) = 3 et f(2) = 12 vaudrait 7,5 : ce n'est pas μ.</div>
+<div class="warn">⚠️ L'intégrale seule n'est pas μ : il faut encore <b>diviser par b − a</b>.<br>⚠️ On divise par la <b>longueur</b> b − a, pas par a + b.<br>⚠️ Ce n'est pas la moyenne de f(a) et f(b) (sauf pour une fonction affine).</div>
+<div class="retenir">À retenir : μ = ${F(1, 'b − a')} × ${INT('a', 'b', 'f(x)')}, l'intégrale divisée par la longueur de l'intervalle.</div>`;
 }
 
 /* ================= 12. défis avec e^x et ln ================= */
@@ -747,12 +874,24 @@ function fin12({ fn, a, b, la, lb, E, exact, html, tpl, sol, num, hint }) {
   };
 }
 function C12() {
+  const inv = x => 1 / x;
   return `<h2>12. Défis : e<sup>x</sup> et ln</h2>
+<p class="intro">Tout ce que tu as appris s'applique aussi à e<sup>x</sup> et à ${F(1, 'x')}. Les bornes peuvent s'écrire avec ln ou e : les valeurs utiles simplifient tout.</p>
 <div class="def">Primitives à connaître : e<sup>x</sup> → <b>e<sup>x</sup></b> (sur ℝ) ; ${F(1, 'x')} → <b>ln x</b> (sur ]0 ; +∞[).<br>Valeurs utiles : e<sup>0</sup> = 1, ln 1 = 0, ln e = 1, e<sup>ln k</sup> = k, ln(e<sup>n</sup>) = n.</div>
-<div class="ex">${INT('0', 'ln 3', EX)} = ${BRK(EX, '0', 'ln 3')} = e<sup>ln 3</sup> − e<sup>0</sup> = 3 − 1 = <b>2</b> (valeur exacte)</div>
-<div class="ex">${INT('1', '5', F(2, 'x'))} = ${BRK('2 ln x', '1', '5')} = 2 ln 5 − 0 ≈ 3,218… ≈ <b>3,22</b> (arrondi au centième)</div>
-<div class="warn">⚠️ Lis bien la consigne : <b>valeur exacte</b> ou <b>arrondi au centième</b>.<br>⚠️ On arrondit seulement à la fin : 3,218 → 3,22 (le 3<sup>e</sup> chiffre est 8 ≥ 5).<br>⚠️ F(b) − F(a), et pas F(a) − F(b).</div>
-${repere({ xr: [-1, 3], yr: [-1, 8], fs: [{ f: Math.exp, l: 'y = eˣ' }], fill: [{ f: Math.exp, a: 0, b: Math.log(3), signed: true }], xl: [{ x: 0, l: '0' }, { x: Math.log(3), l: 'ln 3' }] })}`;
+<div class="methode"><b>Méthode</b><ol>
+<li>Trouve une primitive, terme à terme (e<sup>x</sup> → e<sup>x</sup>, ${F(1, 'x')} → ln x, x → ${F('x<sup>2</sup>', 2)}).</li>
+<li>Calcule F(b) − F(a) en simplifiant avec les valeurs utiles.</li>
+<li>Lis la consigne : <b>valeur exacte</b> (souvent un entier) ou <b>arrondi au centième</b>.</li>
+<li>Pour un arrondi : calcule à la calculatrice sans arrondir en route, puis regarde le 3<sup>e</sup> chiffre après la virgule.</li>
+<li>Valeur moyenne : divise par b − a, par exemple e − 1.</li></ol></div>
+<div class="cols">
+${repere({ xr: [-1, 3], yr: [-1, 8], fs: [{ f: Math.exp, l: 'y = eˣ' }], fill: [{ f: Math.exp, a: 0, b: Math.log(3), signed: true }], xl: [{ x: 0, l: '0' }, { x: Math.log(3), l: 'ln 3' }], aria: 'aire sous e puissance x entre 0 et ln 3' })}
+${repere({ xr: [-1, 4], yr: [-1, 4], fs: [{ f: inv, dom: [0.2, 4], l: 'y = 1/x' }], fill: [{ f: inv, a: 1, b: Math.E, signed: true }], h: { y: 1 / (Math.E - 1), l: 'y = μ' }, xl: [{ x: 1, l: '1' }, { x: Math.E, l: 'e' }], aria: 'aire sous 1/x entre 1 et e, et sa valeur moyenne' })}
+</div>
+<div class="ex"><span class="q">Exemple 1 : valeurs exactes.</span><br>${INT('0', 'ln 3', EX)} = ${BRK(EX, '0', 'ln 3')} = e<sup>ln 3</sup> − e<sup>0</sup> = 3 − 1 = <b>2</b>.<br>${INT('1', 'e<sup>2</sup>', F(3, 'x'))} = ${BRK('3 ln x', '1', 'e<sup>2</sup>')} = 3 × 2 − 3 × 0 = <b>6</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : arrondis au centième.</span><br>${INT('1', '5', F(2, 'x'))} = ${BRK('2 ln x', '1', '5')} = 2 ln 5 − 0 = 3,218… ≈ <b>3,22</b>.<br>${INT('0', '1', '(e<sup>x</sup> + 2x)')} = ${BRK('e<sup>x</sup> + x<sup>2</sup>', '0', '1')} = (e + 1) − (1 + 0) = e ≈ <b>2,72</b>.<br>Valeur moyenne de ${F(1, 'x')} sur [1 ; e] : ${INT('1', 'e', F(1, 'x'))} = ln e − ln 1 = 1, donc μ = ${F(1, 'e − 1')} = 0,581… ≈ <b>0,58</b>.</div>
+<div class="warn">⚠️ Lis bien la consigne : <b>valeur exacte</b> ou <b>arrondi au centième</b>.<br>⚠️ On arrondit seulement à la fin : 3,218 → 3,22 (le 3<sup>e</sup> chiffre est 8 ≥ 5, on arrondit au-dessus).<br>⚠️ F(b) − F(a), et pas F(a) − F(b) ; et e<sup>0</sup> = 1, pas 0.</div>
+<div class="retenir">À retenir : e<sup>x</sup> se primitive en e<sup>x</sup>, ${F(1, 'x')} en ln x ; puis F(b) − F(a), en simplifiant e<sup>ln k</sup> = k et ln(e<sup>n</sup>) = n.</div>`;
 }
 
 /* ================= niveaux ================= */
