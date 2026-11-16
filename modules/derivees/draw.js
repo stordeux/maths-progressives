@@ -67,9 +67,17 @@ export function graph(o) {
   });
   // graduations
   const ly = Math.min(T + ph + 22, Math.max(T + 16, oy + 20));
-  for (let x = Math.ceil(xmin / stx) * stx; x <= xmax + 1e-9; x += stx) if (x) s += `<text x="${r1(X(x))}" y="${r1(ly)}" font-size="16" text-anchor="middle" fill="#333" ${HALO}>${M(x)}</text>`;
+  const gbox = []; // rectangles des graduations, que la légende doit éviter
+  const gw = t => 9 * String(t).length;
+  for (let x = Math.ceil(xmin / stx) * stx; x <= xmax + 1e-9; x += stx) if (x) {
+    s += `<text x="${r1(X(x))}" y="${r1(ly)}" font-size="16" text-anchor="middle" fill="#333" ${HALO}>${M(x)}</text>`;
+    gbox.push([X(x) - gw(M(x)) / 2, ly - 12, X(x) + gw(M(x)) / 2, ly + 2]);
+  }
   const lx = Math.max(L - 4, ox - 7);
-  for (let y = Math.ceil(ymin / sty) * sty; y <= ymax + 1e-9; y += sty) if (y) s += `<text x="${r1(lx)}" y="${r1(Y(y) + 5.5)}" font-size="16" text-anchor="end" fill="#333" ${HALO}>${M(y)}</text>`;
+  for (let y = Math.ceil(ymin / sty) * sty; y <= ymax + 1e-9; y += sty) if (y) {
+    s += `<text x="${r1(lx)}" y="${r1(Y(y) + 5.5)}" font-size="16" text-anchor="end" fill="#333" ${HALO}>${M(y)}</text>`;
+    gbox.push([lx - gw(M(y)), Y(y) - 6.5, lx, Y(y) + 7.5]);
+  }
   if (xmin <= 0 && xmax >= 0 && ymin <= 0 && ymax >= 0) s += `<text x="${r1(ox - 6)}" y="${r1(oy + 19)}" font-size="16" text-anchor="end" fill="#333" ${HALO}>0</text>`;
   // étiquettes des courbes et des droites
   // (dans une légende, placée dans le coin le moins encombré, dessinée à la fin)
@@ -80,11 +88,22 @@ export function graph(o) {
     const busy = [];
     (o.fs || []).forEach(F => { const [a, b] = F.dom || [xmin, xmax]; for (let i = 0; i <= 120; i++) { const x = a + (b - a) * i / 120, y = F.f(x); if (isFinite(y)) busy.push([X(x), Y(y)]); } });
     (o.lines || []).forEach(D => { for (let i = 0; i <= 60; i++) { const x = xmin + dx * i / 60; busy.push([X(x), Y(D.y + D.m * (x - D.x))]); } });
-    (o.pts || []).forEach(p => { for (let k = 0; k < 6; k++) busy.push([X(p.x), Y(p.y)]); });
+    (o.pts || []).forEach(p => {
+      for (let k = 0; k < 6; k++) busy.push([X(p.x), Y(p.y)]);
+      if (p.l) { // nom du point (même placement que plus bas) : la légende ne doit pas le cacher
+        const px = X(p.x), py = Y(p.y), an = p.anchor || (px > L + pw - 110 ? 'end' : 'start'), w = 10 * p.l.replace(/<[^>]+>/g, '').length;
+        const tx = px + (an === 'end' ? -10 : 10), ty = Math.max(T + 14, Math.min(T + ph - 6, py + (p.ly !== undefined ? p.ly : -10)));
+        gbox.push([an === 'end' ? tx - w : an === 'middle' ? tx - w / 2 : tx, ty - 14, an === 'end' ? tx : an === 'middle' ? tx + w / 2 : tx + w, ty + 3]);
+      }
+    });
     for (let i = 0; i <= 40; i++) { busy.push([L + pw * i / 40, oy + 10], [L + pw * i / 40, oy - 6]); busy.push([ox - 14, T + ph * i / 40], [ox + 2, T + ph * i / 40]); } // axes et graduations
     if (o.tri) { const t = o.tri; for (let i = 0; i <= 10; i++) busy.push([X(t.x + t.dx * i / 10), Y(t.y)], [X(t.x + t.dx), Y(t.y + t.dy * i / 10)]); }
-    const corners = [[L + pw - lw - 4, T + 4], [L + 4, T + 4], [L + pw - lw - 4, T + ph - lh - 4], [L + 4, T + ph - lh - 4]];
-    const score = ([cx, cy]) => busy.filter(([px, py]) => px > cx - 8 && px < cx + lw + 8 && py > cy - 8 && py < cy + lh + 8).length;
+    // coins du cadre, et places juste à droite / à gauche de l'axe des ordonnées (ses graduations restent visibles)
+    const corners = [[L + pw - lw - 4, T + 4], [L + 4, T + 4], [L + pw - lw - 4, T + ph - lh - 4], [L + 4, T + ph - lh - 4],
+      ...[ox + 8, ox - 46 - lw].filter(x => x >= L + 4 && x + lw <= L + pw - 4).flatMap(x => [[x, T + 4], [x, T + ph - lh - 4]])];
+    // une graduation cachée par la légende compte beaucoup plus qu'un bout de courbe
+    const score = ([cx, cy]) => busy.filter(([px, py]) => px > cx - 8 && px < cx + lw + 8 && py > cy - 8 && py < cy + lh + 8).length
+      + 40 * gbox.filter(g => g[0] < cx + lw + 2 && g[2] > cx - 2 && g[1] < cy + lh + 2 && g[3] > cy - 2).length;
     const [cx, cy] = corners.reduce((best, c) => (score(c) < score(best) ? c : best));
     legend = `<rect x="${r1(cx)}" y="${r1(cy)}" width="${r1(lw)}" height="${lh}" rx="8" fill="#fff" opacity=".9" stroke="#d9d6cd"/>`;
     leg.forEach((e, i) => {
