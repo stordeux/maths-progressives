@@ -6,7 +6,9 @@ import { setSeed } from '../engine/util/rand.js';
 export function texte(html) {
   return String(html || '')
     .replace(/<svg[\s\S]*?<\/svg>/g, ' ')
-    .replace(/<span class="frac"><span>([^<]*)<\/span><span>([^<]*)<\/span><\/span>/g, ' $1/$2 ')
+    // numérateur ou dénominateur composé (« 1 + 3 ») : entre parenthèses, pour ne pas lire « 12/1 + 3 »
+    .replace(/<span class="frac"><span>([^<]*)<\/span><span>([^<]*)<\/span><\/span>/g,
+      (_, n, d) => ` ${/\s/.test(n.trim()) ? `(${n.trim()})` : n}/${/\s/.test(d.trim()) ? `(${d.trim()})` : d} `)
     .replace(/<sup>([^<]*)<\/sup>/g, (_, e) => (/\s/.test(e.trim()) ? `^(${e.trim()})` : '^' + e))
     .replace(/<[^>]+>/g, ' ').replace(/&nbsp;| | /g, ' ')
     .replace(/\s+/g, ' ').trim()
