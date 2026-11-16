@@ -141,7 +141,7 @@ function C4(){return `<h2>4. Inéquations simples</h2>
 <div class="methode"><b>Méthode</b><ol><li>Enlève le nombre ajouté à x (même opération des deux côtés).</li><li>Divise par le nombre devant x ; s'il est <b>négatif</b>, <b>retourne</b> l'inégalité.</li><li>Écris l'intervalle (≤, ≥ → crochet fermé ; &lt;, &gt; → ouvert).</li><li>Vérifie avec une valeur de l'intervalle.</li></ol></div>
 <div class="ex"><span class="q">Exemple 1 :</span><br>x + 4 ≤ 1 ⇔ x ≤ 1 − 4 ⇔ x ≤ −3 → <b>]−∞ ; −3]</b><br>3x &gt; 12 ⇔ x &gt; 4 (÷ 3, positif) → <b>]4 ; +∞[</b></div>
 <div class="ex"><span class="q">Exemple 2 : diviser par un négatif</span><br>−2x + 5 &lt; 11 ⇔ −2x &lt; 6 ⇔ x <b>&gt;</b> −3 (÷ (−2), négatif : on retourne !) → <b>]−3 ; +∞[</b><br>Vérification avec x = 0 : −2 × 0 + 5 = 5 &lt; 11 : vrai, et 0 est bien dans ]−3 ; +∞[ ✓</div>${realLine([I(-3,0,INF,0)])}
-<div class="warn">⚠️ Dans −2x &lt; 6, on divise par −2 : le &lt; devient &gt;. Sans cela, on trouverait x &lt; −3 : faux (x = 0 marche !).<br>⚠️ Retirer 4 n'est pas « changer de signe » : x + 4 ≤ 1 donne x ≤ −3, le sens reste le même.</div>
+<div class="warn">⚠️ Dans −2x &lt; 6, on divise par −2 : le &lt; devient &gt;. Sans cela, on trouverait x &lt; −3 : faux (x = 0 marche !).<br>⚠️ Retirer 4 ne retourne pas l'inégalité, même si le résultat est négatif : x + 4 ≤ 1 donne x ≤ −3, le sens reste le même.</div>
 <div class="retenir">À retenir : on isole x comme dans une équation, et on retourne l'inégalité si on divise par un négatif.</div>`}
 
 /* ---------- 5 ---------- */
@@ -260,7 +260,7 @@ function C9(){return `<h2>9. Carrés et inégalités</h2>
 ${plot({fs:[{f:x=>x*x,l:'y = x²'}],xr:[-5,5],yr:[-1,20],seg:[-4,-2,0]})}
 <div class="methode"><b>Méthode</b> pour trouver où est x<sup>2</sup><ol><li>Regarde le signe des nombres de l'intervalle de x.</li><li>Tous positifs : élève les bornes au carré, <b>dans le même ordre</b>.</li><li>Tous négatifs : élève au carré et <b>inverse l'ordre</b> (chaque crochet suit sa borne).</li><li>L'intervalle contient 0 : le minimum de x<sup>2</sup> est <b>0</b> (compris) ; le maximum vient de la borne la plus <b>loin</b> de 0.</li></ol></div>
 <div class="ex"><span class="q">Exemple 1 : positifs</span><br>2 &lt; x ≤ 4 ⇒ 4 &lt; x<sup>2</sup> ≤ 16 : <b>x<sup>2</sup> ∈ ]4 ; 16]</b>.</div>
-<div class="ex"><span class="q">Exemple 2 : négatifs, puis intervalle contenant 0</span><br>−4 ≤ x &lt; −2 ⇒ 4 &lt; x<sup>2</sup> ≤ 16 (l'ordre s'inverse ; −4 donne 16, compris) : la partie orange de la courbe.<br>−3 &lt; x ≤ 2 ⇒ <b>0 ≤ x<sup>2</sup> &lt; 9</b> (minimum 0 en x = 0 ; maximum vers −3, exclu).</div>
+<div class="ex"><span class="q">Exemple 2 : négatifs, puis intervalle contenant 0</span><br>−4 ≤ x &lt; −2 ⇒ 4 &lt; x<sup>2</sup> ≤ 16 (l'ordre s'inverse ; −4 donne 16, compris) : la partie orange de la courbe.<br>−3 &lt; x ≤ 2 ⇒ <b>0 ≤ x<sup>2</sup> &lt; 9</b> (minimum 0 en x = 0 ; −3 est plus loin de 0 que 2, donc le maximum vient de (−3)<sup>2</sup> = 9, exclu comme −3).</div>
 <div class="warn">⚠️ On ne peut <b>pas</b> « élever au carré » une inégalité sans regarder les signes : −5 &lt; 2 mais 25 &gt; 4 !<br>⚠️ Si l'intervalle contient 0, ne prends pas les carrés des bornes comme bornes : le plus petit carré est 0.</div>
 <div class="retenir">À retenir : carré croissant sur les positifs, décroissant sur les négatifs.</div>`}
 
@@ -358,7 +358,7 @@ function C12(){return `<h2>12. Défis</h2>
 <div class="ex"><span class="q">Exemple 1 : |2x − 3| ≤ 5</span><br>⇔ −5 ≤ 2x − 3 ≤ 5 ⇔ −2 ≤ 2x ≤ 8 ⇔ −1 ≤ x ≤ 4 → <b>[−1 ; 4]</b></div>
 <div class="ex"><span class="q">Exemple 2 : |x − 1| &lt; |x − 5|</span><br>« x est plus proche de 1 que de 5 ». Le milieu est 3 → x &lt; 3 → <b>]−∞ ; 3[</b><br>Même réponse (au sens large) pour (x − 1)<sup>2</sup> ≤ (x − 5)<sup>2</sup> : x<sup>2</sup> − 2x + 1 ≤ x<sup>2</sup> − 10x + 25 ⇔ 8x ≤ 24 ⇔ x ≤ 3.</div>${realLine([I(-INF,0,3,0)],[{x:1,l:'1',c:'#5f3dc4'},{x:5,l:'5',c:'#e8590c'}])}
 <div class="ex"><span class="q">Exemple 3 : 1 ≤ |x − 2| &lt; 3</span><br>Distance à 2 entre 1 (compris) et 3 (exclu) → <b>]−1 ; 1] ∪ [3 ; 5[</b></div>${realLine([I(-1,0,1,1),I(3,1,5,0)],[{x:2,l:'2',c:'#5f3dc4'}])}
-<div class="warn">⚠️ Dans un encadrement, divise les <b>trois</b> membres par 2.<br>⚠️ Dans l'exemple 3, chaque crochet suit sa condition : le « ≤ 1 » donne des crochets fermés en 1 et 3, le « &lt; 3 » des crochets ouverts en −1 et 5.</div>
+<div class="warn">⚠️ Dans un encadrement, divise les <b>trois</b> membres par 2.<br>⚠️ Dans l'exemple 3, chaque crochet suit sa condition : « 1 ≤ |x − 2| » donne des crochets fermés en 1 et 3 (à distance 1 de 2), « |x − 2| &lt; 3 » des crochets ouverts en −1 et 5 (à distance 3 de 2).</div>
 <div class="retenir">À retenir : valeur absolue = distance ; carrés → valeurs absolues ; encadrement → trois membres.</div>`}
 
 
