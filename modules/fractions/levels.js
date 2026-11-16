@@ -300,7 +300,7 @@ function L9(d) {
 function C9() {
   return `<h2>9. Dénominateurs quelconques</h2>
 <p class="intro">Des tiers et des quarts n'ont pas la même taille : on les redécoupe tous en douzièmes pour pouvoir les additionner.</p>
-<div class="def">On cherche un <b>dénominateur commun</b> : un nombre qui est un multiple des deux dénominateurs, le plus petit possible.</div>
+<div class="def">On cherche un <b>dénominateur commun</b> : un nombre qui est un multiple des deux dénominateurs. On choisit de préférence le plus petit.</div>
 <div class="cols"><div class="methode"><b>Méthode</b><ol><li>Récite la table du plus grand dénominateur jusqu'à trouver un multiple de l'autre (4, 8, 12 → 12 est dans la table de 3).</li><li>Écris chaque fraction avec ce dénominateur.</li><li>Additionne (ou soustrais) les numérateurs.</li><li>Simplifie si possible.</li></ol></div>
 ${bars([{ b: 3, segs: [[2, C_BLUE]], l: [2, 3] }, { b: 4, segs: [[1, C_ORA]], l: [1, 4] }, { b: 12, segs: [[8, C_BLUE], [3, C_ORA]], l: [11, 12] }])}</div>
 <div class="ex"><span class="q">Exemple 1 : ${F(2, 3)} + ${F(1, 4)}</span><br>12 est dans la table de 3 et de 4. ${F(2, 3)} = ${F(8, 12)} et ${F(1, 4)} = ${F(3, 12)}, donc la somme vaut ${F(11, 12)}.</div>
