@@ -101,3 +101,80 @@ export function lawChart({ xs, ps, hl = [], show = false, unk = -1, xTitle = 'k'
   s += `<text x="${f1(L + pw / 2)}" y="${H - 6}" font-size="14" text-anchor="middle" fill="#555">${esc(xTitle)}</text>`;
   return s + '</svg>';
 }
+
+/* ================= dessins des encarts de cours ================= */
+let uid = 0;
+const FILLS = ['#e7f5ff', '#f3f0ff', '#ebfbee'];
+
+/**
+ * Carré de population (« mosaïque ») : une bande horizontale par ligne du tableau, de hauteur
+ * proportionnelle à son effectif, découpée en cases de largeur proportionnelle à leurs effectifs.
+ * rows, cols : événements ('S', '!S'…) ; cells : effectifs [ligne][colonne] ;
+ * hl : cases mises en valeur [[i, j], …] ; hlRow : ligne entière mise en valeur ; frame : ligne entourée (« sachant »).
+ */
+export function mosaic({ rows, cols, cells, hl = [], hlRow = -1, frame = -1, cap = true }) {
+  const R = cells.map(r => r.reduce((s, x) => s + x, 0)), N = R[0] + R[1];
+  const L = 44, T = 8, w = 320, h = 210, W = L + w + 12, H = T + h + (cap ? 30 : 10);
+  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis" style="width:${W}px" role="img" aria-label="carré de population : chaque case a une aire proportionnelle à son effectif" ${FONT}>`;
+  let y = T, fr = '';
+  cells.forEach((row, i) => {
+    const rh = R[i] / N * h;
+    let x = L;
+    row.forEach((n, j) => {
+      const cw = n / R[i] * w, on = hlRow === i || hl.some(c => c[0] === i && c[1] === j);
+      s += `<rect x="${f1(x)}" y="${f1(y)}" width="${f1(cw)}" height="${f1(rh)}" fill="${on ? '#ffd8a8' : FILLS[j % 3]}" stroke="#fff" stroke-width="3"/>`;
+      const txt = cw >= 70 ? `${svgEv(cols[j])} : ${n}` : String(n);
+      s += `<text x="${f1(x + cw / 2)}" y="${f1(y + rh / 2 + 6)}" font-size="16" font-weight="${on ? 700 : 400}" text-anchor="middle" fill="${on ? '#c2410c' : '#333'}">${txt}</text>`;
+      x += cw;
+    });
+    s += `<text x="${L - 8}" y="${f1(y + rh / 2 + 7)}" font-size="20" font-weight="700" text-anchor="end" fill="${hlRow === i || frame === i ? HL : '#212529'}">${svgEv(rows[i])}</text>`;
+    if (frame === i) fr = `<rect x="${L - 1}" y="${f1(y + 1)}" width="${w + 2}" height="${f1(rh - 2)}" fill="none" stroke="${HL}" stroke-width="3" stroke-dasharray="8 5" rx="4"/>`;
+    y += rh;
+  });
+  s += fr;
+  if (cap) s += `<text x="${L + w / 2}" y="${H - 8}" font-size="13" text-anchor="middle" fill="#555">${N} individus : aire d'une case ∝ son effectif</text>`;
+  return s + '</svg>';
+}
+
+/**
+ * Diagramme de Venn de deux événements avec les effectifs de chaque zone.
+ * la, lb : noms ; a, b : effectifs de « A seul » et « B seul » ; ab : A ∩ B ; out : ni l'un ni l'autre ;
+ * shade : 'inter' (A ∩ B), 'union' (A ∪ B), 'A' ou 'B' ; cap : légende sous le dessin.
+ */
+export function venn({ la, lb, a, b, ab, out, shade = 'inter', cap = '' }) {
+  const id = `pv${++uid}`, W = 360, H = cap ? 236 : 210, r = 78, ca = [132, 108], cb = [228, 108];
+  const C = (c, fill, stroke, extra = '') => `<circle cx="${c[0]}" cy="${c[1]}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="2.5" ${extra}/>`;
+  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis" style="width:${W}px" role="img" aria-label="diagramme de Venn" ${FONT}>`
+    + `<defs><clipPath id="${id}"><circle cx="${ca[0]}" cy="${ca[1]}" r="${r}"/></clipPath></defs>`
+    + `<rect x="2" y="2" width="${W - 4}" height="206" rx="10" fill="#f8f9fa" stroke="#adb5bd" stroke-width="1.5"/>`;
+  if (shade === 'union' || shade === 'A') s += C(ca, '#ffd8a8', 'none');
+  if (shade === 'union' || shade === 'B') s += C(cb, '#ffd8a8', 'none');
+  if (shade === 'inter') s += C(cb, '#ffd8a8', 'none', `clip-path="url(#${id})"`);
+  s += C(ca, 'none', BLUE) + C(cb, 'none', '#2f9e44');
+  const num = (x, y, n, on) => `<text x="${x}" y="${y}" font-size="20" font-weight="700" text-anchor="middle" fill="${on ? '#c2410c' : '#333'}">${n}</text>`;
+  const onA = shade === 'union' || shade === 'A', onB = shade === 'union' || shade === 'B';
+  s += num(92, 115, a, onA) + num(180, 115, ab, true) + num(268, 115, b, onB) + num(336, 196, out, false);
+  s += `<text x="34" y="34" font-size="22" font-weight="700" fill="${BLUE}">${svgEv(la)}</text><text x="326" y="34" font-size="22" font-weight="700" text-anchor="end" fill="#2f9e44">${svgEv(lb)}</text>`;
+  if (cap) s += `<text x="${W / 2}" y="${H - 6}" font-size="17" font-weight="700" text-anchor="middle" fill="#c2410c">${cap}</text>`;
+  return s + '</svg>';
+}
+
+/**
+ * Triangle de Pascal jusqu'à la ligne n ; hl = [n, k] : coefficient mis en valeur
+ * (ses deux « parents » de la ligne au-dessus sont entourés : leur somme donne le coefficient).
+ */
+export function pascal(n, hl = null) {
+  const dx = 46, dy = 38, W = Math.max(300, (n + 1) * dx + 90), H = (n + 1) * dy + 12, cx = W / 2 + 24;
+  const Cn = (m, k) => { let r = 1; for (let i = 1; i <= k; i++) r = r * (m - k + i) / i; return Math.round(r); };
+  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis" style="width:${W}px" role="img" aria-label="triangle de Pascal" ${FONT}>`;
+  for (let m = 0; m <= n; m++) {
+    const y = 8 + dy * m + dy / 2;
+    s += `<text x="6" y="${f1(y + 5)}" font-size="14" fill="#868e96">n = ${m}</text>`;
+    for (let k = 0; k <= m; k++) {
+      const x = cx + (k - m / 2) * dx, on = hl && hl[0] === m && hl[1] === k, par = hl && hl[0] - 1 === m && (k === hl[1] || k === hl[1] - 1);
+      if (on || par) s += `<circle cx="${f1(x)}" cy="${f1(y)}" r="17" fill="${on ? '#ffd8a8' : '#fff'}" stroke="${on ? HL : BLUE}" stroke-width="2" ${par ? 'stroke-dasharray="4 3"' : ''}/>`;
+      s += `<text x="${f1(x)}" y="${f1(y + 6)}" font-size="17" font-weight="${on ? 700 : 400}" text-anchor="middle" fill="${on ? '#c2410c' : par ? BLUE : '#333'}">${Cn(m, k)}</text>`;
+    }
+  }
+  return s + '</svg>';
+}
