@@ -129,7 +129,7 @@ function C1() {
 ${wide(intLine({ min: -6, max: 6, marks: [{ x: -4, l: 'A' }, { x: 3, l: 'B', c: '#1971c2' }] }))}
 <div class="ex"><span class="q">Exemple 1 : les points A et B</span><br>A est à 4 graduations à <b>gauche</b> de 0 : A a pour abscisse <b>−4</b>.<br>B est à 3 graduations à droite : B a pour abscisse <b>3</b> (on peut écrire +3).</div>
 <div class="ex"><span class="q">Exemple 2 : une droite de −20 à 20</span><br>Les nombres ne sont écrits que de 5 en 5. Un point situé 2 graduations à gauche de −10 a pour abscisse <b>−12</b> : on compte à partir du nombre écrit le plus proche.</div>
-<div class="warn">⚠️ À gauche de 0, on écrit −1, −2, −3… : on s'éloigne de 0, mais le nombre porte le signe −.<br>⚠️ 0 n'est ni positif ni négatif.</div>
+<div class="warn">⚠️ À gauche de 0, on écrit −1, −2, −3… : on s'éloigne de 0, mais le nombre porte le signe&nbsp;−.<br>⚠️ 0 est le seul nombre à la fois positif et négatif : on l'écrit sans signe.</div>
 <div class="retenir">À retenir : à droite de 0, positif ; à gauche de 0, négatif.</div>`;
 }
 
@@ -163,7 +163,7 @@ function C2() {
   return `<h2>2. Comparer des nombres relatifs</h2>
 <p class="intro">Comparer des relatifs, c'est savoir s'il fait plus froid à −6 °C ou à −2 °C, ou quel compte en banque est le moins à découvert.</p>
 <div class="def">Sur la droite graduée, le plus grand de deux nombres est celui qui est le plus à <b>droite</b>.<br>• Un nombre positif est plus grand qu'un nombre négatif.<br>• Entre deux nombres <b>négatifs</b>, le plus grand est celui qui est le plus <b>proche de zéro</b>.</div>
-<div class="methode"><b>Méthode</b><ol><li>Les signes sont différents ? Le positif est le plus grand.</li><li>Les deux sont positifs ? Le plus grand est le plus loin de 0.</li><li>Les deux sont négatifs ? Le plus grand est le plus <b>proche</b> de 0.</li><li>Écris &lt; ou &gt; : la pointe est tournée vers le plus petit.</li></ol></div>
+<div class="methode"><b>Méthode</b><ol><li>Les signes sont différents ? Le positif est le plus grand.</li><li>Les deux sont positifs ? Le plus grand est le plus loin de 0.</li><li>Les deux sont négatifs ? Le plus grand est le plus <b>proche</b> de 0.</li><li>Écris &lt; ou &gt; : la pointe est tournée vers le plus petit (= si les deux nombres sont égaux).</li></ol></div>
 ${wide(intLine({ min: -8, max: 4, marks: [{ x: -6, l: '−6' }, { x: -2, l: '−2', c: '#1971c2' }, { x: 3, l: '3', c: '#2b8a3e' }] }))}
 <div class="ex"><span class="q">Exemple 1 : −6 et −2, puis −2 et 3</span><br>−2 est plus à droite que −6 : −6 &lt; −2. Et un négatif est plus petit qu'un positif : −2 &lt; 3.</div>
 <div class="ex"><span class="q">Exemple 2 : −3,5 et −3,2</span><br>Les deux sont négatifs ; −3,2 est plus proche de 0, donc −3,5 &lt; −3,2.</div>
@@ -453,7 +453,7 @@ ${signChain([-2, 3, -5])}
 <div class="ex"><span class="q">Exemple 1 : (−2) × 3 × (−5)</span><br>2 facteurs négatifs (pair) → positif. 2 × 3 × 5 = 30, donc le produit vaut <b>30</b>. Chaque facteur négatif fait changer le signe.</div>
 <div class="ex"><span class="q">Exemple 2 : (−1) × (−2) × (−3) × 4</span><br>3 facteurs négatifs (impair) → négatif. 1 × 2 × 3 × 4 = 24 : <b>−24</b>.</div>
 <div class="ex"><span class="q">Exemple 3 : 12 × (−7) × 0 × (−3)</span><br>Un facteur vaut 0 : le produit est <b>nul</b>, inutile de calculer le reste !</div>
-<div class="warn">⚠️ On compte les facteurs <b>négatifs</b>, pas tous les facteurs.<br>⚠️ Si un facteur est 0, la réponse est « nul », ni positif ni négatif.</div>
+<div class="warn">⚠️ On compte les facteurs <b>négatifs</b>, pas tous les facteurs.<br>⚠️ Si un facteur est 0, le produit vaut 0 : on répond « nul », sans chercher de signe.</div>
 <div class="retenir">À retenir : nombre pair de signes − → positif ; impair → négatif.</div>`;
 }
 
