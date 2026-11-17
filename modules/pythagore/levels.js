@@ -1,9 +1,11 @@
 // Théorème de Pythagore (4e) : 12 niveaux, une figure SVG générée pour chaque exercice.
 // d = série de réussites en cours : la figure tourne (d ≥ 1), les noms des points changent (d ≥ 2),
 // les longueurs deviennent décimales (d ≥ 3).
-// Vérifications indépendantes : `value` est recalculé avec Math.hypot / Math.sqrt à partir des coordonnées
-// des sommets (ou par une autre formule), `verify` contrôle l'arrondi demandé et, pour la réciproque,
-// l'angle droit par un produit scalaire calculé sur les coordonnées.
+// Vérifications indépendantes (`value`, `verify`) : jamais la formule du générateur (carrés en dixièmes entiers,
+// √(c² − a²)). On reconstruit le triangle en coordonnées à partir des données de l'énoncé : hypoténuse mesurée
+// entre deux points (hypCoord), côté de l'angle droit trouvé par dichotomie sur un axe (legCoord), aires par la
+// formule de Héron, angle droit par produit scalaire ; puis on contrôle l'arrondi au dixième (okRound, qui refuse
+// les cas limites). La cohérence énoncé ↔ figure ↔ réponse est testée à part (tests/unit/pythagore.test.mjs).
 import { ri, pick, shuffle, chance, prenom } from '../../engine/util/rand.js';
 import { M, R } from '../../engine/util/fmt.js';
 import { approx, r6 } from '../../engine/util/arith.js';
@@ -51,6 +53,21 @@ function cosAt(pts, V, A, B) {
   const u = [pts[A][0] - pts[V][0], pts[A][1] - pts[V][1]], v = [pts[B][0] - pts[V][0], pts[B][1] - pts[V][1]];
   return (u[0] * v[0] + u[1] * v[1]) / (Math.hypot(...u) * Math.hypot(...v));
 }
+
+/* ---------- outils des vérifications indépendantes ---------- */
+/** dichotomie : plus grand x de [lo, hi] tel que f(x), pour f vraie puis fausse */
+function bisect(f, lo, hi) {
+  for (let i = 0; i < 200; i++) { const x = (lo + hi) / 2; if (f(x)) lo = x; else hi = x; }
+  return (lo + hi) / 2;
+}
+/** hypoténuse mesurée : angle droit en (0, 0), côtés sur les axes, distance entre (a, 0) et (0, b) */
+const hypCoord = (a, b) => dist([a, 0], [0, b]);
+/** côté de l'angle droit : angle droit en (0, 0), P(a, 0) ; Q(0, y) cherché sur l'axe par dichotomie pour que PQ = c */
+const legCoord = (c, a) => bisect(y => dist([a, 0], [0, y]) < c, 0, c);
+/** aire d'un triangle par la formule de Héron (n'utilise pas l'angle droit) */
+const heron = (a, b, c) => { const s = (a + b + c) / 2; return Math.sqrt(s * (s - a) * (s - b) * (s - c)); };
+/** somme des n premiers nombres impairs (= n², calculé sans multiplication) */
+const sumOdd = n => { let s = 0; for (let k = 0; k < n; k++) s += 2 * k + 1; return s; };
 
 /**
  * Figure d'un triangle rectangle. lab : {a, b, c} textes des côtés [RP], [RQ], [PQ] (null : rien, '?' : cherché).
@@ -150,8 +167,9 @@ function L1(d) {
   let a = ri(3, 9), b = ri(3, 9); while (Math.max(a, b) / Math.min(a, b) > 2.6) b = ri(3, 9);
   const pts = place(T, a, b, O.rot);
   const visual = triFig(T, pts, { flip: O.flip });
-  // vérification : angle droit trouvé par produit scalaire, hypoténuse = côté opposé = plus long côté
-  const cR = cosAt(pts, T.R, T.P, T.Q);
+  // vérification : sommet de l'angle droit cherché parmi les trois par produit scalaire (sans supposer T.R),
+  // hypoténuse = côté qui ne le contient pas = plus long côté mesuré
+  const Vr = rightVertex(T, pts);
   const longest = [S.a, S.b, S.c].sort((x, y) => dist(pts[y[0]], pts[y[1]]) - dist(pts[x[0]], pts[x[1]]))[0];
   const all = [...T.n];
   if (d >= 3 && chance(0.5)) {
@@ -163,7 +181,7 @@ function L1(d) {
       html: `Voici un triangle rectangle. Quels sont les <b>côtés de l'angle droit</b> ?`, visual,
       hint: `Repère le petit carré qui code l'angle droit. Les deux côtés qui partent de ce sommet sont les côtés de l'angle droit.`,
       solution: `L'angle droit est en ${T.R}. Les côtés de l'angle droit sont [${S.a}] et [${S.b}] ; l'hypoténuse est [${S.c}].`,
-      verify: E => Math.abs(cR) < 1e-9 && !E.split('-').includes(longest) && longest === S.c };
+      verify: E => Vr !== null && !longest.includes(Vr) && E.split('-').length === 2 && E.split('-').every(s => s !== longest && s.includes(Vr)) };
   }
   const opts = [S.a, S.b, S.c].sort().map(s => ({ v: s, l: `[${s}]` }));
   const txt = d < 3 ? `Le triangle ${T.n} est rectangle en ${T.R}. Quelle est son <b>hypoténuse</b> ?` : `Voici un triangle rectangle. Quelle est son <b>hypoténuse</b> ?`;
@@ -171,7 +189,7 @@ function L1(d) {
     html: txt, visual,
     hint: `L'hypoténuse est le côté <b>opposé</b> à l'angle droit (celui qui ne touche pas le petit carré). C'est aussi le plus long côté.`,
     solution: `L'angle droit est en ${T.R}. Le côté opposé à ${T.R} est [${S.c}] : c'est l'hypoténuse, le plus long des trois côtés.`,
-    verify: E => Math.abs(cR) < 1e-9 && E === longest };
+    verify: E => Vr !== null && E === longest && !E.includes(Vr) };
 }
 function C1() {
   const T = { n: 'ABC', R: 'A', P: 'B', Q: 'C' }, U = { n: 'RST', R: 'S', P: 'R', Q: 'T' };
@@ -194,7 +212,7 @@ function L2(d) {
   const top = d < 2 ? 12 : 20;
   if (v === 0) {
     const n = ri(2, top);
-    return { type: 'nums', tpl: `${sqn(n)} = {0}`, check: lensCheck([n * n], [{}]), value: Math.pow(n, 2),
+    return { type: 'nums', tpl: `${sqn(n)} = {0}`, check: lensCheck([n * n], [{}]), value: sumOdd(n),
       html: `Calcule le carré :${big(sqn(n))}`, visual: carres([{ c: n, side: String(n), area: '?' }], `carré de côté ${n}`),
       hint: `${sqn(n)} = ${n} × ${n} (et non ${n} × 2).`, solution: `${sqn(n)} = ${n} × ${n} = ${n * n}. C'est l'aire d'un carré de côté ${n}.`,
       verify: E => Math.sqrt(E[0]) === n };
@@ -221,12 +239,13 @@ function L2(d) {
     const a = ri(2, 12), b = ri(2, 12), add = v === 3 || a === b;
     const [p, q] = add ? [a, b] : [Math.max(a, b), Math.min(a, b)];
     const X = add ? p * p + q * q : p * p - q * q;
-    return { type: 'nums', tpl: `${sqn(p)} ${add ? '+' : '−'} ${sqn(q)} = {0}`, check: lensCheck([X], [{}]), value: add ? Math.hypot(p, q) ** 2 : (p - q) * (p + q),
+    // valeur : identités remarquables (a + b)² − 2ab et (a − b)(a + b) ; vérification : sommes d'impairs
+    return { type: 'nums', tpl: `${sqn(p)} ${add ? '+' : '−'} ${sqn(q)} = {0}`, check: lensCheck([X], [{}]), value: add ? (p + q) ** 2 - 2 * p * q : (p - q) * (p + q),
       html: `Calcule :${big(`${sqn(p)} ${add ? '+' : '−'} ${sqn(q)}`)}`,
       visual: carres([{ c: p, side: String(p), area: '?' }, { c: q, side: String(q), area: '?' }], 'deux carrés'),
       hint: `Calcule d'abord chaque carré (${p} × ${p} et ${q} × ${q}), puis ${add ? 'additionne' : 'soustrais'}.`,
       solution: `${sqn(p)} ${add ? '+' : '−'} ${sqn(q)} = ${p * p} ${add ? '+' : '−'} ${q * q} = ${X}`,
-      verify: E => Math.abs(E[0] - (add ? p * p + q * q : p * p - q * q)) < 1e-9 };
+      verify: E => E[0] === (add ? sumOdd(p) + sumOdd(q) : sumOdd(p) - sumOdd(q)) };
   }
   // carré d'un décimal
   let x; do { x = r6(ri(11, 39) / 10); } while (Number.isInteger(x));
@@ -235,7 +254,8 @@ function L2(d) {
     html: `Calcule le carré :${big(sqn(x))}`, visual: carres([{ c: x, side: M(x), area: '?' }], `carré de côté ${M(x)}`),
     hint: `${sqn(x)} = ${M(x)} × ${M(x)}. Calcule ${t10(x)} × ${t10(x)}, puis place la virgule : il y a 2 chiffres après la virgule.`,
     solution: `${sqn(x)} = ${M(x)} × ${M(x)} = ${M(X)} (${t10(x)} × ${t10(x)} = ${t10(x) ** 2}, et deux chiffres après la virgule).`,
-    verify: E => Math.abs(E[0] * 100 - t10(x) ** 2) < 1e-6 };
+    // vérification : (u + t/10)² = u² + 2ut/10 + t²/100, avec u la partie entière et t le chiffre des dixièmes
+    verify: E => { const u = Math.floor(x), t = Math.round((x - u) * 10); return Math.abs(E[0] - (sumOdd(u) + 2 * u * t / 10 + sumOdd(t) / 100)) < 1e-9; } };
 }
 function C2() {
   return `<h2>2. Carrés et racines carrées</h2>
@@ -310,8 +330,9 @@ function lengthQ(d, mode, a, b, c, round, title) {
   const known = mode === 'hyp' ? [a, b] : [c, a];
   const unk = mode === 'hyp' ? S.c : S.b;
   const sym = round ? '≈' : '=';
-  // valeur indépendante : distance entre les sommets tournés (hypoténuse) ou √((c − a)(c + a)) (côté)
-  const raw = mode === 'hyp' ? dist(pts[T.P], pts[T.Q]) : Math.sqrt((c - a) * (c + a));
+  // valeur indépendante, à partir des données de l'énoncé : hypoténuse mesurée entre deux sommets placés sur les
+  // axes, ou côté de l'angle droit trouvé par dichotomie (point de l'axe à la distance c de P)
+  const raw = mode === 'hyp' ? hypCoord(a, b) : legCoord(c, a);
   const value = round ? r1(raw) : raw;
   const info = { exact: G.ex, round, mode, known };
   return { type: 'nums', tpl: `${unk} ${sym} {0} cm`, keys: { comma: dec }, check: lensCheck([G.E], [info]), value,
@@ -322,8 +343,10 @@ function lengthQ(d, mode, a, b, c, round, title) {
       ? `On cherche l'<b>hypoténuse</b> (en face de l'angle droit) : ${sq(S.c)} = ${sq(S.a)} + ${sq(S.b)}. Calcule la somme, puis prends la racine carrée${round ? ' et arrondis au dixième' : ''}.`
       : `On cherche un <b>côté de l'angle droit</b> : ${sq(S.b)} = ${sq(S.c)} − ${sq(S.a)} (hypoténuse² <b>moins</b> l'autre côté²). Puis prends la racine carrée${round ? ' et arrondis au dixième' : ''}.`,
     solution: mode === 'hyp' ? solHyp(T, a, b, G) : solLeg(T, c, a, G),
-    verify: E => okRound(E[0], mode === 'hyp' ? Math.hypot(a, b) : Math.sqrt(c * c - a * a), round)
-      && (mode === 'hyp' || (Math.hypot(a, E[0] - (round ? 0.05 : 0)) <= c + 1e-9 && Math.hypot(a, E[0] + (round ? 0.05 : 0)) >= c - 1e-9)) };
+    // vérification : arrondi (non limite) de la longueur reconstruite ; pour un côté de l'angle droit, en plus,
+    // la réponse encadre c : hypoténuse(a, E − 0,05) ≤ c ≤ hypoténuse(a, E + 0,05), sans aucune soustraction
+    verify: E => okRound(E[0], raw, round)
+      && (mode === 'hyp' || (hypCoord(a, E[0] - (round ? 0.05 : 0)) <= c + 1e-9 && hypCoord(a, E[0] + (round ? 0.05 : 0)) >= c - 1e-9)) };
 }
 /** jambes au hasard selon d (nombres « non pythagoriciens » pour les arrondis) */
 function legsRound(d) {
@@ -364,9 +387,9 @@ function C5() {
 <div class="cols">${triFig(T, place(T, 5, 3, 0), { lab: { a: '5 cm', b: '3 cm', c: '?' } })}${zoomArrondi(5.8, 5.831, '√34 ≈ 5,83')}</div>
 <div class="methode"><b>Méthode</b><ol><li>Écris l'égalité de Pythagore et calcule la somme des carrés.</li><li>Calcule la racine carrée à la calculatrice et écris au moins deux chiffres après la virgule.</li><li>Regarde le chiffre des centièmes pour arrondir au dixième.</li><li>Écris le résultat avec ≈ et l'unité (touche <b>,</b> du pavé pour la virgule).</li></ol></div>
 <div class="ex"><span class="q">Exemple 1 : AB = 5 cm, AC = 3 cm, ABC rectangle en A.</span><br>${sq('BC')} = ${sqn(5)} + ${sqn(3)} = 25 + 9 = 34<br>BC = ${R(34)} ≈ 5,83… Le chiffre des centièmes est 3 : on garde. BC ≈ <b>5,8 cm</b>.</div>
-<div class="ex"><span class="q">Exemple 2 : AB = 4 cm, AC = 7 cm.</span><br>${sq('BC')} = 16 + 49 = 65, BC = ${R(65)} ≈ 8,06…<br>Le chiffre des centièmes est 6 : on augmente. BC ≈ <b>8,1 cm</b>.</div>
-<div class="ex"><span class="q">Exemple 3 (décimaux) : AB = 2,5 cm, AC = 4 cm.</span><br>${sq('BC')} = ${sqn(2.5)} + ${sqn(4)} = 6,25 + 16 = 22,25<br>BC = ${R('22,25')} ≈ 4,71… donc BC ≈ <b>4,7 cm</b>.</div>
-<div class="warn">⚠️ 5,83… arrondi au dixième donne 5,8 ; mais 8,06… donne 8,1 (le chiffre des centièmes est 6).<br>⚠️ Arrondir au dixième, c'est <b>un</b> chiffre après la virgule : ni 5,83 ni 6.<br>⚠️ On arrondit seulement à la fin, sur la racine carrée, pas sur les carrés.</div>
+<div class="ex"><span class="q">Exemple 2 : ABC rectangle en A, AB = 4 cm, AC = 7 cm.</span><br>${sq('BC')} = 16 + 49 = 65, BC = ${R(65)} ≈ 8,06…<br>Le chiffre des centièmes est 6 : on augmente. BC ≈ <b>8,1 cm</b>.</div>
+<div class="ex"><span class="q">Exemple 3 (décimaux) : ABC rectangle en A, AB = 2,5 cm, AC = 4 cm.</span><br>${sq('BC')} = ${sqn(2.5)} + ${sqn(4)} = 6,25 + 16 = 22,25<br>BC = ${R('22,25')} ≈ 4,71… donc BC ≈ <b>4,7 cm</b>.</div>
+<div class="warn">⚠️ 5,83… arrondi au dixième donne 5,8 ; mais 8,06… donne 8,1 (le chiffre des centièmes est 6).<br>⚠️ Arrondir au dixième, c'est <b>un</b> chiffre après la virgule : ni 5,83 ni 6.<br>⚠️ On arrondit seulement à la fin, sur la racine carrée, pas sur les carrés.<br>⚠️ Si le chiffre des dixièmes est 9 et qu'il faut l'augmenter, on passe à l'unité suivante : 7,96… ≈ <b>8,0</b> (tu peux taper 8).</div>
 <div class="retenir">À retenir : on calcule la racine carrée à la calculatrice, puis on regarde le chiffre des centièmes pour arrondir.</div>`;
 }
 
@@ -405,7 +428,7 @@ function C7() {
 <div class="cols">${triFig(T, place(T, 6, 5.3, 0), { lab: { a: '6 cm', b: '?', c: '8 cm' } })}${zoomArrondi(5.2, 5.292, '√28 ≈ 5,29')}</div>
 <div class="methode"><b>Méthode</b><ol><li>Repère l'hypoténuse (connue) et le côté cherché.</li><li>côté² = hypoténuse² − autre côté² : calcule la différence.</li><li>Racine carrée à la calculatrice (ou tape ${R('64 − 36')} avec des parenthèses).</li><li>Arrondis au dixième grâce au chiffre des centièmes, et écris l'unité.</li></ol></div>
 <div class="ex"><span class="q">Exemple 1 : ABC rectangle en A, BC = 8 cm, AB = 6 cm.</span><br>${sq('AC')} = ${sqn(8)} − ${sqn(6)} = 64 − 36 = 28<br>AC = ${R(28)} ≈ 5,29… Le chiffre des centièmes est 9 : on augmente. AC ≈ <b>5,3 cm</b>.</div>
-<div class="ex"><span class="q">Exemple 2 (décimaux) : BC = 7,5 cm, AB = 4,2 cm.</span><br>${sq('AC')} = ${sqn(7.5)} − ${sqn(4.2)} = 56,25 − 17,64 = 38,61<br>AC = ${R('38,61')} ≈ 6,21… donc AC ≈ <b>6,2 cm</b>.</div>
+<div class="ex"><span class="q">Exemple 2 (décimaux) : ABC rectangle en A, BC = 7,5 cm, AB = 4,2 cm. Calcule AC.</span><br>${sq('AC')} = ${sqn(7.5)} − ${sqn(4.2)} = 56,25 − 17,64 = 38,61<br>AC = ${R('38,61')} ≈ 6,21… donc AC ≈ <b>6,2 cm</b>.</div>
 <div class="warn">⚠️ Si tu trouves un côté plus long que l'hypoténuse, tu as additionné au lieu de soustraire.<br>⚠️ Avec des décimaux : ${sqn(2.5)} = 6,25 (pas 4,25 ni 5).<br>⚠️ Si tu tapes ${R(64)} − 36 à la calculatrice, tu obtiens 8 − 36 : mets des parenthèses ou calcule 28 d'abord.</div>
 <div class="retenir">À retenir : soustraire les carrés, prendre la racine carrée, puis arrondir à la toute fin.</div>`;
 }
@@ -436,9 +459,10 @@ function L8(d) {
   const T = { n: 'ABC', R: 'B', P: 'C', Q: 'A' }; // B : coin, C sur l'horizontale, A sur la verticale
   let html, unkSide, G, ex;
   const giveH = mode === 'hyp' ? null : h.give;
-  if (mode === 'hyp') { G = h; unkSide = 'AC'; ex = Math.hypot(x, y); }
-  else if (mode === 'leg') { G = legOf(giveH, x); unkSide = 'AB'; ex = Math.sqrt(giveH * giveH - x * x); }
-  else { G = legOf(giveH, y); unkSide = 'BC'; ex = Math.sqrt(giveH * giveH - y * y); }
+  // ex : longueur cherchée reconstruite en coordonnées (vérification indépendante de hypOf / legOf)
+  if (mode === 'hyp') { G = h; unkSide = 'AC'; ex = hypCoord(x, y); }
+  else if (mode === 'leg') { G = legOf(giveH, x); unkSide = 'AB'; ex = legCoord(giveH, x); }
+  else { G = legOf(giveH, y); unkSide = 'BC'; ex = legCoord(giveH, y); }
   const yy = mode === 'leg' ? G.ex : y, xx = mode === 'leg2' ? G.ex : x;
   const pts = { A: [0, yy], B: [0, 0], C: [xx, 0] };
   const lab = { AB: mode === 'leg' ? '?' : L(y, u), BC: mode === 'leg2' ? '?' : L(x, u), AC: mode === 'hyp' ? '?' : L(giveH, u) };
@@ -488,7 +512,8 @@ function L8(d) {
   return { type: 'nums', tpl: `${unkSide} ${round ? '≈' : '='} {0} ${u}`, keys: { comma: true }, check: lensCheck([G.E], [info]), value,
     html, visual,
     hint: `Repère le triangle rectangle et son angle droit (${v === 'echelle' ? 'entre le mur et le sol' : v === 'cerf' || v === 'toboggan' ? 'entre la verticale et le sol' : 'un coin du rectangle'}). La longueur cherchée est-elle l'hypoténuse (on additionne les carrés) ou un côté de l'angle droit (on soustrait) ?`,
-    solution, verify: E => okRound(E[0], ex, round) };
+    // vérification : arrondi de la longueur reconstruite, et l'hypoténuse donnée est bien la plus longue
+    solution, verify: E => okRound(E[0], ex, round) && (mode === 'hyp' || giveH > (mode === 'leg' ? x : y)) };
 }
 function C8() {
   return `<h2>8. Pythagore en situation</h2>
@@ -640,7 +665,7 @@ function L11(d) {
       visual: triFig(T, pts, { lab: { a: L(a), b: L(b), c: '?' }, flip: O.flip }),
       hint: `Étape 1 : Pythagore pour l'hypoténuse ${S.c}. Étape 2 : le périmètre est la somme des trois côtés.`,
       solution: `${solHyp(T, a, b, H)}<br>Périmètre = ${M(a)} + ${M(b)} + ${S.c} ${sym} <b>${H.exact ? L(Pr) : D1(Pr) + " cm"}</b>.`,
-      verify: E => okRound(E[0], Math.hypot(a, b), !H.exact) && okRound(E[1], a + b + Math.hypot(a, b), !H.exact) };
+      verify: E => okRound(E[0], hypCoord(a, b), !H.exact) && okRound(E[1], a + b + hypCoord(a, b), !H.exact) };
   }
   if (v === 1) { // côté puis aire
     const t = triplet(Math.min(d, 2)); const [a, b] = chance(0.5) ? [t[0], t[1]] : [t[1], t[0]], c = t[2];
@@ -651,9 +676,10 @@ function L11(d) {
       value: dist(pts[T.R], pts[T.P]) * dist(pts[T.R], pts[T.Q]) / 2,
       html: `${T.n} est rectangle en ${T.R}, avec ${S.c} = ${L(c)} et ${S.a} = ${L(a)}.<br>Calcule ${S.b}, puis l'<b>aire</b> du triangle ${T.n}.`,
       visual: triFig(T, pts, { lab: { a: L(a), b: '?', c: L(c) }, flip: O.flip }),
-      hint: `Étape 1 : ${S.b} est un côté de l'angle droit (soustraction). Étape 2 : l'aire d'un triangle rectangle est (côté × côté de l'angle droit) ÷ 2.`,
+      hint: `Étape 1 : ${S.b} est un côté de l'angle droit (soustraction). Étape 2 : l'aire d'un triangle rectangle est (produit des deux côtés de l'angle droit) ÷ 2.`,
       solution: `${solLeg(T, c, a, G)}<br>Aire = ${S.a} × ${S.b} ÷ 2 = ${M(a)} × ${M(G.E)} ÷ 2 = <b>${M(A)} cm²</b>.`,
-      verify: E => okRound(E[0], Math.sqrt(c * c - a * a), false) && Math.abs(E[1] - a * E[0] / 2) < 1e-9 };
+      // vérification : côté par dichotomie, aire par la formule de Héron (les trois côtés, sans l'angle droit)
+      verify: E => okRound(E[0], legCoord(c, a), false) && Math.abs(E[1] - heron(a, c, legCoord(c, a))) < 1e-6 };
   }
   if (v === 2) { // hauteur d'un triangle isocèle
     const t = pick([[3, 4, 5], [5, 12, 13], [6, 8, 10], [8, 15, 17], [9, 12, 15], [4, 3, 5], [8, 6, 10], [12, 5, 13]]).map(x => x * (k === 3 ? 1 : k));
@@ -670,7 +696,8 @@ function L11(d) {
       visual,
       hint: `Le triangle ABH est rectangle en H, d'hypoténuse [AB] ; BH = ${M(2 * m)} ÷ 2 = ${M(m)} cm. Puis aire = base × hauteur ÷ 2.`,
       solution: `${solLeg({ n: 'ABH', R: 'H', P: 'B', Q: 'A' }, c, m, G, 'cm', `H est le milieu de [BC], donc BH = ${M(m)} cm. `)}<br>Aire = BC × AH ÷ 2 = ${M(2 * m)} × ${M(h)} ÷ 2 = <b>${M(Aire)} cm²</b>.`,
-      verify: E => Math.abs(E[0] - Math.sqrt(c * c - m * m)) < 1e-9 && Math.abs(E[1] - 2 * m * E[0] / 2) < 1e-9 };
+      // vérification : hauteur par dichotomie (BH = BC ÷ 2), aire du triangle isocèle par Héron (côtés c, c, BC)
+      verify: E => Math.abs(E[0] - legCoord(c, m)) < 1e-9 && Math.abs(E[1] - heron(c, c, 2 * m)) < 1e-6 };
   }
   // deux triangles accolés : ABC rectangle en B, ACD rectangle en C
   const t = pick([[3, 4, 5], [4, 3, 5], [6, 8, 10], [8, 6, 10], [9, 12, 15], [12, 9, 15]]);
@@ -691,7 +718,13 @@ function L11(d) {
     visual,
     hint: `Étape 1 : dans ABC (rectangle en B), calcule l'hypoténuse AC. Étape 2 : dans ACD (rectangle en C), AC est un côté de l'angle droit et [AD] l'hypoténuse.`,
     solution: `${solHyp({ n: 'ABC', R: 'B', P: 'A', Q: 'C' }, AB, BC, H1)}<br>${solHyp({ n: 'ACD', R: 'C', P: 'A', Q: 'D' }, AC, CD, AD)}`,
-    verify: E => okRound(E[0], Math.hypot(AB, BC), false) && okRound(E[1], Math.hypot(Math.hypot(AB, BC), CD), !AD.exact) && Math.abs(cosAt(pts, 'C', 'A', 'D')) < 1e-9 };
+    // vérification : figure reconstruite à partir de l'énoncé — B(0, 0), A(0, AB), C(BC, 0), D sur la perpendiculaire
+    // à (AC) en C, à la distance CD, du côté opposé à B — puis AC et AD mesurés entre les points
+    verify: E => {
+      const A = [0, AB], C = [BC, 0], u = [A[1] - C[1], C[0] - A[0]], l = Math.hypot(...u);
+      const sg = u[0] * (0 - C[0]) + u[1] * (0 - C[1]) > 0 ? -1 : 1, D = [C[0] + sg * CD * u[0] / l, C[1] + sg * CD * u[1] / l];
+      return okRound(E[0], dist(A, C), false) && okRound(E[1], dist(A, D), !AD.exact) && Math.abs(cosAt(pts, 'C', 'A', 'D')) < 1e-9;
+    } };
 }
 function C11() {
   const pts = { A: [0, 4], B: [-3, 0], C: [3, 0], H: [0, 0] };
@@ -700,7 +733,7 @@ function C11() {
   const two = figure({ pts: P2, polys: [['A', 'B', 'C'], ['A', 'C', 'D']], rights: [['B', 'A', 'C'], ['C', 'A', 'D']], sides: [{ k: 'AB', t: '3 cm', away: 'C' }, { k: 'BC', t: '4 cm', away: 'A' }, { k: 'CD', t: '12 cm', away: 'A' }, { k: 'AD', t: '?', unk: true, away: 'C' }], aria: 'triangles ABC et ACD rectangles accolés' });
   return `<h2>11. Problèmes à deux étapes</h2>
 <p class="intro">Souvent, Pythagore ne donne pas directement la réponse : il fournit une longueur <b>intermédiaire</b> qu'on réutilise ensuite.</p>
-<div class="def">Étape 1 : Pythagore dans un triangle rectangle où deux longueurs sont connues.<br>Étape 2 : on se sert du résultat pour un <b>périmètre</b> (somme des 3 côtés), une <b>aire</b> (triangle rectangle : côté × côté de l'angle droit ÷ 2 ; triangle : base × hauteur ÷ 2) ou un <b>deuxième Pythagore</b>.</div>
+<div class="def">Étape 1 : Pythagore dans un triangle rectangle où deux longueurs sont connues.<br>Étape 2 : on se sert du résultat pour un <b>périmètre</b> (somme des 3 côtés), une <b>aire</b> (triangle rectangle : produit des deux côtés de l'angle droit ÷ 2 ; triangle : base × hauteur ÷ 2) ou un <b>deuxième Pythagore</b>.</div>
 <div class="cols">${iso}${two}</div>
 <div class="methode"><b>Méthode</b><ol><li>Repère le triangle rectangle dans lequel deux longueurs sont connues.</li><li>Calcule la longueur manquante avec Pythagore (addition ou soustraction).</li><li>Utilise-la dans la deuxième étape : périmètre, aire ou autre triangle rectangle.</li><li>Garde la valeur exacte (ou la calculatrice) et n'arrondis qu'à la fin.</li></ol></div>
 <div class="ex"><span class="q">Exemple 1 (périmètre) : ABC rectangle en A, AB = 4 cm, AC = 7 cm.</span><br>${sq('BC')} = 16 + 49 = 65, BC = ${R(65)} ≈ 8,06… ≈ 8,1 cm.<br>Périmètre = 4 + 7 + ${R(65)} ≈ 19,06… ≈ <b>19,1 cm</b>.</div>
@@ -739,13 +772,14 @@ function L12(d) {
     const visual = figure({ pts, polys: [['A', 'B', 'C', 'D']], segs: [{ k: 'AC' }], rights: [['B', 'A', 'C']], sides, rot: d < 2 ? 0 : ri(0, 359), aria: 'carré ABCD et sa diagonale' });
     return { type: 'nums', tpl: inv ? 'côté ≈ {0} cm' : 'AC ≈ {0} cm', keys: { comma: true },
       check: lensCheck([E], [{ exact: ex, round: true, mode: inv ? 'leg' : 'hyp', known: inv ? [D, D] : [c, c] }]),
-      value: r1(inv ? Math.sqrt(D * D / 2) : Math.hypot(c, c)),
+      // valeur : diagonale mesurée entre A(0, c) et C(c, 0), ou côté s cherché par dichotomie (diagonale de s = D)
+      value: r1(inv ? bisect(s => hypCoord(s, s) < D, 0, D) : dist([0, c], [c, 0])),
       html: inv ? `La diagonale d'un carré ABCD mesure ${L(D)}. Quelle est la longueur de son <b>côté</b> (${ROUND}) ?` : `ABCD est un carré de côté ${L(c)}. Calcule la longueur de sa diagonale [AC] (${ROUND}).`,
       visual,
       hint: inv ? `Appelle c le côté : ABC est rectangle en B, donc c² + c² = ${sq('AC')}, soit 2 × c² = ${D * D}.` : `ABC est rectangle en B (angle d'un carré) : ${sq('AC')} = ${sq('AB')} + ${sq('BC')}.`,
       solution: inv ? `ABC est rectangle en B et AB = BC = c : c² + c² = ${sqn(D)} = ${D * D}, donc 2c² = ${D * D}, c² = ${M(D * D / 2)}<br>c = ${R(M(D * D / 2))} ≈ ${M(trunc2(ex))}… ≈ <b>${D1(E)} cm</b>`
         : `ABC est rectangle en B : ${sq('AC')} = ${sqn(c)} + ${sqn(c)} = ${c * c} + ${c * c} = ${2 * c * c}<br>AC = ${R(2 * c * c)} ≈ ${M(trunc2(ex))}… ≈ <b>${D1(E)} cm</b>`,
-      verify: e => okRound(e[0], inv ? Math.hypot(D, 0) / Math.hypot(1, 1) : Math.hypot(c, c), true) };
+      verify: e => okRound(e[0], inv ? bisect(s => hypCoord(s, s) < D, 0, D) : dist([0, c], [c, 0]), true) };
   }
   if (v === 2) { // hauteur d'un triangle équilatéral
     const c = ri(2, 15) * (d >= 3 && chance(0.5) ? 1 : 2), m = c / 2;
@@ -755,10 +789,11 @@ function L12(d) {
       sides: [{ k: 'AB', t: L(c), away: 'C' }, { k: 'AC', t: L(c), away: 'B' }, { k: 'BH', t: L(m), away: 'A' }, { k: 'AH', t: '?', unk: true, away: 'C' }], aria: 'triangle équilatéral et sa hauteur' });
     const G = legOf(c, m);
     return { type: 'nums', tpl: 'AH ≈ {0} cm', keys: { comma: true }, check: lensCheck([G.E], [{ exact: G.ex, round: true, mode: 'leg', known: [c, m] }]),
-      value: r1(dist(pts.A, pts.H) * 1), html: `ABC est un triangle <b>équilatéral</b> de côté ${L(c)}. H est le milieu de [BC]. Calcule la hauteur AH (${ROUND}).`,
+      value: r1(legCoord(c, c / 2)), html: `ABC est un triangle <b>équilatéral</b> de côté ${L(c)}. H est le milieu de [BC]. Calcule la hauteur AH (${ROUND}).`,
       visual, hint: `Dans un triangle équilatéral, la hauteur (AH) tombe au milieu de [BC] : ABH est rectangle en H, avec BH = ${M(m)} cm.`,
       solution: solLeg({ n: 'ABH', R: 'H', P: 'B', Q: 'A' }, c, m, G, 'cm', `H est le milieu de [BC] : BH = ${M(m)} cm. `),
-      verify: e => okRound(e[0], c * Math.sqrt(3) / 2, true) && E === e[0] };
+      // vérification : hauteur = 2 × aire ÷ base, l'aire venant de la formule de Héron (côtés c, c, c)
+      verify: e => okRound(e[0], 2 * heron(c, c, c) / c, true) && E === e[0] };
   }
   if (v === 4) { // pavé droit
     const t = pick([[3, 4, 5], [6, 8, 10], [4, 3, 5], [5, 12, 13], [8, 6, 10]]), [Lg, lg, AC] = t, h = ri(2, 9);
@@ -770,7 +805,9 @@ function L12(d) {
       visual: pave(Lg, lg, h, { L: L(Lg), l: L(lg), h: L(h) }, { diag: true, base: true }),
       hint: `ABC est rectangle en B (dans la base) : calcule AC. Puis ACG est rectangle en C (l'arête [CG] est verticale) : AG est son hypoténuse.`,
       solution: `${solHyp({ n: 'ABC', R: 'B', P: 'A', Q: 'C' }, Lg, lg, hypOf(Lg, lg))}<br>${solHyp({ n: 'ACG', R: 'C', P: 'A', Q: 'G' }, AC, h, G, 'cm', '[CG] est perpendiculaire à la base. ')}`,
-      verify: E => okRound(E[0], Math.hypot(Lg, lg), false) && okRound(E[1], Math.hypot(Lg, lg, h), !G.exact) };
+      // vérification : sommets en coordonnées dans l'espace, A(0, 0, 0), C(AB, BC, 0), G(AB, BC, CG)
+      verify: E => { const A = [0, 0, 0], C = [Lg, lg, 0], Gp = [Lg, lg, h], d3 = (p, q) => Math.hypot(p[0] - q[0], p[1] - q[1], p[2] - q[2]);
+        return okRound(E[0], d3(A, C), false) && okRound(E[1], d3(A, Gp), !G.exact); } };
   }
   // échelle qui glisse
   const t = pick([[3, 4, 5], [6, 8, 10], [1.5, 2, 2.5], [1.8, 2.4, 3], [2.4, 3.2, 4]]);
@@ -778,15 +815,17 @@ function L12(d) {
   const G = legOf(Lc, e2);
   const pts = { A: [0, h1], B: [0, 0], C: [e1, 0], D: [0, G.ex], E: [e2, 0] };
   const visual = figure({ pts, polys: [['A', 'B', 'C']], segs: [{ k: 'DE', c: '#c2255c', dash: true, sw: 2.5 }], rights: [['B', 'A', 'C']],
-    vdir: { D: [1, 0.2] }, sides: [{ k: 'AB', t: L(h1, 'm'), away: 'C', gapU: h1 * 0.06 }, { k: 'AC', t: L(Lc, 'm'), away: 'B' }], decor: decorMur(h1, e2 * 1.3), aria: "échelle qui glisse le long d'un mur" });
+    // C et E sont proches (le pied glisse de quelques décimètres) : C en bas à gauche, E en haut à droite
+    vdir: { D: [1, 0.2], C: [-0.5, 1], E: [1, -0.6] }, sides: [{ k: 'AB', t: L(h1, 'm'), away: 'C', gapU: h1 * 0.06 }, { k: 'AC', t: L(Lc, 'm'), away: 'B' }], decor: decorMur(h1, e2 * 1.3), aria: "échelle qui glisse le long d'un mur" });
   return { type: 'nums', tpl: `<span>BC =</span>{0}<span>m</span><span class="sep">BD ≈</span>{1}<span>m</span>`, labels: ['BC', 'BD'], keys: { comma: true },
     check: lensCheck([e1, G.E], [{ exact: e1, mode: 'leg', known: [Lc, h1] }, { exact: G.ex, round: true, mode: 'leg', known: [Lc, e2] }]),
-    value: r1(Math.sqrt((Lc - e2) * (Lc + e2))),
+    value: r1(legCoord(Lc, legCoord(Lc, h1) + s)),
     html: `Une échelle [AC] de ${L(Lc, 'm')} est appuyée contre un mur ; son sommet A est à ${L(h1, 'm')} du sol (B est le pied du mur). Calcule BC.<br>Le pied de l'échelle glisse de ${L(s, 'm')} en s'éloignant du mur (nouvelle position [DE]). À quelle hauteur BD est maintenant le haut de l'échelle (${ROUND}) ?`,
     visual,
     hint: `Étape 1 : ABC est rectangle en B, calcule BC. Étape 2 : BE = BC + ${M(s)} ; DBE est rectangle en B et DE = ${M(Lc)} m (même échelle).`,
     solution: `${solLeg({ n: 'ABC', R: 'B', P: 'A', Q: 'C' }, Lc, h1, legOf(Lc, h1), 'm')}<br>BE = ${M(e1)} + ${M(s)} = ${M(e2)} m.<br>${solLeg({ n: 'BDE', R: 'B', P: 'E', Q: 'D' }, Lc, e2, G, 'm')}`,
-    verify: E => okRound(E[0], Math.sqrt(Lc * Lc - h1 * h1), false) && okRound(E[1], Math.sqrt(Lc * Lc - (E[0] + s) ** 2), true) };
+    // vérification : chaque position de l'échelle reconstruite par dichotomie (pied sur le sol, haut sur le mur)
+    verify: E => okRound(E[0], legCoord(Lc, h1), false) && okRound(E[1], legCoord(Lc, E[0] + s), true) };
 }
 function C12() {
   return `<h2>12. Défis</h2>
@@ -797,7 +836,8 @@ function C12() {
 <div class="ex"><span class="q">Exemple 1 (repère) : A(−2 ; 2) et B(2 ; 5).</span><br>Horizontalement : 2 − (−2) = 4 carreaux ; verticalement : 5 − 2 = 3 carreaux.<br>${sq('AB')} = ${sqn(4)} + ${sqn(3)} = 16 + 9 = 25, AB = <b>5</b>.</div>
 <div class="ex"><span class="q">Exemple 2 (carré) : la diagonale d'un carré mesure 10 cm. Son côté c ?</span><br>c² + c² = ${sqn(10)}, donc 2c² = 100, c² = 50, c = ${R(50)} ≈ <b>7,1 cm</b>.</div>
 <div class="ex"><span class="q">Exemple 3 (équilatéral) : côté 6 cm, hauteur AH ?</span><br>BH = 3 cm et ABH est rectangle en H : ${sq('AH')} = 36 − 9 = 27, AH = ${R(27)} ≈ 5,19… ≈ <b>5,2 cm</b>.</div>
-<div class="ex"><span class="q">Exemple 4 (pavé) : AB = 4 cm, BC = 3 cm, CG = 4 cm.</span><br>Base : ${sq('AC')} = 16 + 9 = 25, AC = 5 cm. ACG est rectangle en C : ${sq('AG')} = 25 + 16 = 41, AG ≈ <b>6,4 cm</b>.</div>
+<div class="ex"><span class="q">Exemple 4 (pavé) : AB = 4 cm, BC = 3 cm, CG = 4 cm.</span><br>Base : ${sq('AC')} = 16 + 9 = 25, AC = 5 cm. ACG est rectangle en C : ${sq('AG')} = 25 + 16 = 41, AG = ${R(41)} ≈ 6,40… ≈ <b>6,4 cm</b>.</div>
+<div class="ex"><span class="q">Exemple 5 (échelle qui glisse) : une échelle [AC] de 5 m touche le mur à 4 m du sol (B est le pied du mur). Son pied glisse de 0,5 m.</span><br>ABC est rectangle en B : ${sq('BC')} = ${sqn(5)} − ${sqn(4)} = 25 − 16 = 9, donc BC = 3 m.<br>Nouvelle position [DE] : BE = 3 + 0,5 = 3,5 m et l'échelle mesure toujours 5 m. DBE est rectangle en B : ${sq('BD')} = ${sqn(5)} − ${sqn(3.5)} = 25 − 12,25 = 12,75, BD = ${R('12,75')} ≈ 3,57… ≈ <b>3,6 m</b>.</div>
 <div class="warn">⚠️ Une échelle qui glisse garde la même longueur : c'est l'hypoténuse dans les deux positions.<br>⚠️ Avec des coordonnées négatives, compte bien les carreaux : de −2 à 2, il y a 4 carreaux, pas 0.<br>⚠️ N'arrondis pas les résultats intermédiaires.</div>
 <div class="retenir">À retenir : dans chaque défi, il y a un triangle rectangle caché ; trouve-le, et Pythagore fait le reste.</div>`;
 }
