@@ -387,9 +387,9 @@ function C5() {
 <div class="cols">${triFig(T, place(T, 5, 3, 0), { lab: { a: '5 cm', b: '3 cm', c: '?' } })}${zoomArrondi(5.8, 5.831, '√34 ≈ 5,83')}</div>
 <div class="methode"><b>Méthode</b><ol><li>Écris l'égalité de Pythagore et calcule la somme des carrés.</li><li>Calcule la racine carrée à la calculatrice et écris au moins deux chiffres après la virgule.</li><li>Regarde le chiffre des centièmes pour arrondir au dixième.</li><li>Écris le résultat avec ≈ et l'unité (touche <b>,</b> du pavé pour la virgule).</li></ol></div>
 <div class="ex"><span class="q">Exemple 1 : AB = 5 cm, AC = 3 cm, ABC rectangle en A.</span><br>${sq('BC')} = ${sqn(5)} + ${sqn(3)} = 25 + 9 = 34<br>BC = ${R(34)} ≈ 5,83… Le chiffre des centièmes est 3 : on garde. BC ≈ <b>5,8 cm</b>.</div>
-<div class="ex"><span class="q">Exemple 2 : AB = 4 cm, AC = 7 cm.</span><br>${sq('BC')} = 16 + 49 = 65, BC = ${R(65)} ≈ 8,06…<br>Le chiffre des centièmes est 6 : on augmente. BC ≈ <b>8,1 cm</b>.</div>
-<div class="ex"><span class="q">Exemple 3 (décimaux) : AB = 2,5 cm, AC = 4 cm.</span><br>${sq('BC')} = ${sqn(2.5)} + ${sqn(4)} = 6,25 + 16 = 22,25<br>BC = ${R('22,25')} ≈ 4,71… donc BC ≈ <b>4,7 cm</b>.</div>
-<div class="warn">⚠️ 5,83… arrondi au dixième donne 5,8 ; mais 8,06… donne 8,1 (le chiffre des centièmes est 6).<br>⚠️ Arrondir au dixième, c'est <b>un</b> chiffre après la virgule : ni 5,83 ni 6.<br>⚠️ On arrondit seulement à la fin, sur la racine carrée, pas sur les carrés.</div>
+<div class="ex"><span class="q">Exemple 2 : ABC rectangle en A, AB = 4 cm, AC = 7 cm.</span><br>${sq('BC')} = 16 + 49 = 65, BC = ${R(65)} ≈ 8,06…<br>Le chiffre des centièmes est 6 : on augmente. BC ≈ <b>8,1 cm</b>.</div>
+<div class="ex"><span class="q">Exemple 3 (décimaux) : ABC rectangle en A, AB = 2,5 cm, AC = 4 cm.</span><br>${sq('BC')} = ${sqn(2.5)} + ${sqn(4)} = 6,25 + 16 = 22,25<br>BC = ${R('22,25')} ≈ 4,71… donc BC ≈ <b>4,7 cm</b>.</div>
+<div class="warn">⚠️ 5,83… arrondi au dixième donne 5,8 ; mais 8,06… donne 8,1 (le chiffre des centièmes est 6).<br>⚠️ Arrondir au dixième, c'est <b>un</b> chiffre après la virgule : ni 5,83 ni 6.<br>⚠️ On arrondit seulement à la fin, sur la racine carrée, pas sur les carrés.<br>⚠️ Si le chiffre des dixièmes est 9 et qu'il faut l'augmenter, on passe à l'unité suivante : 7,96… ≈ <b>8,0</b> (tu peux taper 8).</div>
 <div class="retenir">À retenir : on calcule la racine carrée à la calculatrice, puis on regarde le chiffre des centièmes pour arrondir.</div>`;
 }
 
@@ -428,7 +428,7 @@ function C7() {
 <div class="cols">${triFig(T, place(T, 6, 5.3, 0), { lab: { a: '6 cm', b: '?', c: '8 cm' } })}${zoomArrondi(5.2, 5.292, '√28 ≈ 5,29')}</div>
 <div class="methode"><b>Méthode</b><ol><li>Repère l'hypoténuse (connue) et le côté cherché.</li><li>côté² = hypoténuse² − autre côté² : calcule la différence.</li><li>Racine carrée à la calculatrice (ou tape ${R('64 − 36')} avec des parenthèses).</li><li>Arrondis au dixième grâce au chiffre des centièmes, et écris l'unité.</li></ol></div>
 <div class="ex"><span class="q">Exemple 1 : ABC rectangle en A, BC = 8 cm, AB = 6 cm.</span><br>${sq('AC')} = ${sqn(8)} − ${sqn(6)} = 64 − 36 = 28<br>AC = ${R(28)} ≈ 5,29… Le chiffre des centièmes est 9 : on augmente. AC ≈ <b>5,3 cm</b>.</div>
-<div class="ex"><span class="q">Exemple 2 (décimaux) : BC = 7,5 cm, AB = 4,2 cm.</span><br>${sq('AC')} = ${sqn(7.5)} − ${sqn(4.2)} = 56,25 − 17,64 = 38,61<br>AC = ${R('38,61')} ≈ 6,21… donc AC ≈ <b>6,2 cm</b>.</div>
+<div class="ex"><span class="q">Exemple 2 (décimaux) : ABC rectangle en A, BC = 7,5 cm, AB = 4,2 cm. Calcule AC.</span><br>${sq('AC')} = ${sqn(7.5)} − ${sqn(4.2)} = 56,25 − 17,64 = 38,61<br>AC = ${R('38,61')} ≈ 6,21… donc AC ≈ <b>6,2 cm</b>.</div>
 <div class="warn">⚠️ Si tu trouves un côté plus long que l'hypoténuse, tu as additionné au lieu de soustraire.<br>⚠️ Avec des décimaux : ${sqn(2.5)} = 6,25 (pas 4,25 ni 5).<br>⚠️ Si tu tapes ${R(64)} − 36 à la calculatrice, tu obtiens 8 − 36 : mets des parenthèses ou calcule 28 d'abord.</div>
 <div class="retenir">À retenir : soustraire les carrés, prendre la racine carrée, puis arrondir à la toute fin.</div>`;
 }
@@ -676,7 +676,7 @@ function L11(d) {
       value: dist(pts[T.R], pts[T.P]) * dist(pts[T.R], pts[T.Q]) / 2,
       html: `${T.n} est rectangle en ${T.R}, avec ${S.c} = ${L(c)} et ${S.a} = ${L(a)}.<br>Calcule ${S.b}, puis l'<b>aire</b> du triangle ${T.n}.`,
       visual: triFig(T, pts, { lab: { a: L(a), b: '?', c: L(c) }, flip: O.flip }),
-      hint: `Étape 1 : ${S.b} est un côté de l'angle droit (soustraction). Étape 2 : l'aire d'un triangle rectangle est (côté × côté de l'angle droit) ÷ 2.`,
+      hint: `Étape 1 : ${S.b} est un côté de l'angle droit (soustraction). Étape 2 : l'aire d'un triangle rectangle est (produit des deux côtés de l'angle droit) ÷ 2.`,
       solution: `${solLeg(T, c, a, G)}<br>Aire = ${S.a} × ${S.b} ÷ 2 = ${M(a)} × ${M(G.E)} ÷ 2 = <b>${M(A)} cm²</b>.`,
       // vérification : côté par dichotomie, aire par la formule de Héron (les trois côtés, sans l'angle droit)
       verify: E => okRound(E[0], legCoord(c, a), false) && Math.abs(E[1] - heron(a, c, legCoord(c, a))) < 1e-6 };
@@ -733,7 +733,7 @@ function C11() {
   const two = figure({ pts: P2, polys: [['A', 'B', 'C'], ['A', 'C', 'D']], rights: [['B', 'A', 'C'], ['C', 'A', 'D']], sides: [{ k: 'AB', t: '3 cm', away: 'C' }, { k: 'BC', t: '4 cm', away: 'A' }, { k: 'CD', t: '12 cm', away: 'A' }, { k: 'AD', t: '?', unk: true, away: 'C' }], aria: 'triangles ABC et ACD rectangles accolés' });
   return `<h2>11. Problèmes à deux étapes</h2>
 <p class="intro">Souvent, Pythagore ne donne pas directement la réponse : il fournit une longueur <b>intermédiaire</b> qu'on réutilise ensuite.</p>
-<div class="def">Étape 1 : Pythagore dans un triangle rectangle où deux longueurs sont connues.<br>Étape 2 : on se sert du résultat pour un <b>périmètre</b> (somme des 3 côtés), une <b>aire</b> (triangle rectangle : côté × côté de l'angle droit ÷ 2 ; triangle : base × hauteur ÷ 2) ou un <b>deuxième Pythagore</b>.</div>
+<div class="def">Étape 1 : Pythagore dans un triangle rectangle où deux longueurs sont connues.<br>Étape 2 : on se sert du résultat pour un <b>périmètre</b> (somme des 3 côtés), une <b>aire</b> (triangle rectangle : produit des deux côtés de l'angle droit ÷ 2 ; triangle : base × hauteur ÷ 2) ou un <b>deuxième Pythagore</b>.</div>
 <div class="cols">${iso}${two}</div>
 <div class="methode"><b>Méthode</b><ol><li>Repère le triangle rectangle dans lequel deux longueurs sont connues.</li><li>Calcule la longueur manquante avec Pythagore (addition ou soustraction).</li><li>Utilise-la dans la deuxième étape : périmètre, aire ou autre triangle rectangle.</li><li>Garde la valeur exacte (ou la calculatrice) et n'arrondis qu'à la fin.</li></ol></div>
 <div class="ex"><span class="q">Exemple 1 (périmètre) : ABC rectangle en A, AB = 4 cm, AC = 7 cm.</span><br>${sq('BC')} = 16 + 49 = 65, BC = ${R(65)} ≈ 8,06… ≈ 8,1 cm.<br>Périmètre = 4 + 7 + ${R(65)} ≈ 19,06… ≈ <b>19,1 cm</b>.</div>
@@ -836,7 +836,8 @@ function C12() {
 <div class="ex"><span class="q">Exemple 1 (repère) : A(−2 ; 2) et B(2 ; 5).</span><br>Horizontalement : 2 − (−2) = 4 carreaux ; verticalement : 5 − 2 = 3 carreaux.<br>${sq('AB')} = ${sqn(4)} + ${sqn(3)} = 16 + 9 = 25, AB = <b>5</b>.</div>
 <div class="ex"><span class="q">Exemple 2 (carré) : la diagonale d'un carré mesure 10 cm. Son côté c ?</span><br>c² + c² = ${sqn(10)}, donc 2c² = 100, c² = 50, c = ${R(50)} ≈ <b>7,1 cm</b>.</div>
 <div class="ex"><span class="q">Exemple 3 (équilatéral) : côté 6 cm, hauteur AH ?</span><br>BH = 3 cm et ABH est rectangle en H : ${sq('AH')} = 36 − 9 = 27, AH = ${R(27)} ≈ 5,19… ≈ <b>5,2 cm</b>.</div>
-<div class="ex"><span class="q">Exemple 4 (pavé) : AB = 4 cm, BC = 3 cm, CG = 4 cm.</span><br>Base : ${sq('AC')} = 16 + 9 = 25, AC = 5 cm. ACG est rectangle en C : ${sq('AG')} = 25 + 16 = 41, AG ≈ <b>6,4 cm</b>.</div>
+<div class="ex"><span class="q">Exemple 4 (pavé) : AB = 4 cm, BC = 3 cm, CG = 4 cm.</span><br>Base : ${sq('AC')} = 16 + 9 = 25, AC = 5 cm. ACG est rectangle en C : ${sq('AG')} = 25 + 16 = 41, AG = ${R(41)} ≈ 6,40… ≈ <b>6,4 cm</b>.</div>
+<div class="ex"><span class="q">Exemple 5 (échelle qui glisse) : une échelle [AC] de 5 m touche le mur à 4 m du sol (B est le pied du mur). Son pied glisse de 0,5 m.</span><br>ABC est rectangle en B : ${sq('BC')} = ${sqn(5)} − ${sqn(4)} = 25 − 16 = 9, donc BC = 3 m.<br>Nouvelle position [DE] : BE = 3 + 0,5 = 3,5 m et l'échelle mesure toujours 5 m. DBE est rectangle en B : ${sq('BD')} = ${sqn(5)} − ${sqn(3.5)} = 25 − 12,25 = 12,75, BD = ${R('12,75')} ≈ 3,57… ≈ <b>3,6 m</b>.</div>
 <div class="warn">⚠️ Une échelle qui glisse garde la même longueur : c'est l'hypoténuse dans les deux positions.<br>⚠️ Avec des coordonnées négatives, compte bien les carreaux : de −2 à 2, il y a 4 carreaux, pas 0.<br>⚠️ N'arrondis pas les résultats intermédiaires.</div>
 <div class="retenir">À retenir : dans chaque défi, il y a un triangle rectangle caché ; trouve-le, et Pythagore fait le reste.</div>`;
 }
