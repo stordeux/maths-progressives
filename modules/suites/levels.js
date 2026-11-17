@@ -155,7 +155,7 @@ ${EXC(`Exemple 1 : ${U(0)} = 1 et ${recAff(2, 3)}. Calcule ${U(1)}, ${U(2)}, ${U
 ${EXC(`Exemple 2 : ${U(0)} = 2 et ${recAff(-3, 1)}.`, `${U(1)} = −3 × 2 + 1 = <b>−5</b> ; ${U(2)} = −3 × (−5) + 1 = 15 + 1 = <b>16</b> ; ${U(3)} = −3 × 16 + 1 = <b>−47</b>.<br>On multiplie d'abord, puis on ajoute.`)}
 ${EXC(`Exemple 3 : ${U(0)} = 4 et ${UN1} = ${UN} + 2n − 1.`, `${U(1)} = ${U(0)} + 2 × 0 − 1 = <b>3</b> (n = 0) ; ${U(2)} = ${U(1)} + 2 × 1 − 1 = <b>4</b> (n = 1) ; ${U(3)} = ${U(2)} + 2 × 2 − 1 = <b>7</b> (n = 2).`)}
 <div class="warn">⚠️ ${UN1} n'est pas ${UN} + 1 : c'est le terme <b>qui suit</b> ${UN}.<br>⚠️ ${U(2)} se calcule à partir de ${U(1)}, pas à partir de ${U(0)}.<br>⚠️ Priorités : 2 × ${UN} + 3, c'est « fois 2 » <b>puis</b> « plus 3 ».</div>
-<div class="cols"><p><b>L'escalier</b> (ici ${U(0)} = 0 et ${UN1} = 0,5${UN} + 4) : on part de ${U(0)} sur l'axe, on monte jusqu'à la courbe y = f(x) (hauteur ${U(1)}), on va à l'horizontale jusqu'à la droite y = x pour reporter ${U(1)} sur l'axe, et on recommence.</p>
+<div class="cols"><p><b>L'escalier</b> (ici ${U(0)} = 0 et ${UN1} = 0,5${UN} + 4) : on part de ${U(0)} sur l'axe horizontal et on monte jusqu'à la droite y = f(x) : on est à la hauteur ${U(1)}. On va à l'horizontale jusqu'à la droite y = x : on est alors au-dessus de ${U(1)} sur l'axe horizontal. On remonte jusqu'à y = f(x) pour obtenir ${U(2)}, et ainsi de suite.</p>
 ${escalier({ f: x => 0.5 * x + 4, u0: 0, k: 3, fl: 'y = 0,5x + 4' })}</div>
 <div class="retenir">À retenir : par récurrence, on avance pas à pas ; chaque terme se calcule avec le précédent.</div>`;
 }
@@ -303,7 +303,7 @@ function C5() {
 ${METH([`Repère le terme connu (${U(0)} ou ${U('p')}) et compte les <b>pas</b> jusqu'au terme cherché : n − p.`, 'Calcule : terme connu + (nombre de pas) × r.', `Pour la formule explicite, il faut ${U(0)} : recule de p pas en retirant r, p fois : ${U(0)} = ${U('p')} − p × r.`, `Si on donne deux termes ${U('p')} et ${U('q')} : ${U('q')} − ${U('p')} = (q − p) × r, donc on divise l'écart par le nombre de pas.`])}
 ${EXC(`Exemple 1 : ${U(0)} = 4 et r = 3. Calcule ${U(20)}.`, `${U(20)} = ${U(0)} + 20 × r = 4 + 20 × 3 = <b>64</b>.`)}
 ${EXC(`Exemple 2 : ${U(2)} = 10 et ${U(7)} = 25. Trouve r et ${U(0)}.`, `De ${U(2)} à ${U(7)}, il y a 7 − 2 = 5 pas, qui font 25 − 10 = 15. Donc r = 15 ÷ 5 = <b>3</b>.<br>${U(0)} = ${U(2)} − 2 × r = 10 − 6 = <b>4</b>, d'où ${UN} = 4 + 3n.`)}
-${EXC(`Exemple 3 : r = −4 et ${U(3)} = 5. Calcule ${U(20)} et donne la formule explicite.`, `${U(20)} = ${U(3)} + (20 − 3) × (−4) = 5 − 68 = <b>−63</b>.<br>${U(0)} = 5 − 3 × (−4) = 5 + 12 = 17, donc <b>${UN} = 17 − 4n</b>.`)}
+${EXC(`Exemple 3 : r = −4 et ${U(3)} = 5. Calcule ${U(20)} et donne la formule explicite.`, `${U(20)} = ${U(3)} + (20 − 3) × (−4) = 5 − 68 = <b>−63</b>.<br>${U(0)} = 5 − 3 × (−4) = 5 + 12 = 17, donc <b>${UN} = 17 − 4n</b>, c'est-à-dire 17 + (−4) × n.`)}
 <div class="cols"><div class="warn">⚠️ De ${U(3)} à ${U(10)}, il y a 10 − 3 = 7 pas, pas 10 : compte les sauts, pas les termes.<br>⚠️ Pour reculer vers ${U(0)}, on <b>retire</b> r ; attention au signe quand r est négatif.<br>⚠️ Avec deux termes, divise l'écart par le nombre de pas (q − p), pas par 1.</div>
 ${FIG(nuage({ pts: pts(0, [4, 7, 10, 13, 16, 19, 22, 25]), vals: true, hl: [2, 7] }), `Exemple 2 : 5 pas de 3 entre ${U(2)} et ${U(7)}.`)}</div>
 <div class="retenir">À retenir : ${UN} = ${U(0)} + n × r, et de ${U('p')} à ${UN} on fait n − p pas.</div>`;
@@ -345,7 +345,7 @@ ${METH(['Calcule le quotient de deux termes consécutifs : q = (terme suivant) �
 ${EXC('Exemple 1 : 3 ; 6 ; 12 ; 24 ; …', `q = 6 ÷ 3 = <b>2</b> (et 12 ÷ 6 = 2, 24 ÷ 12 = 2).<br>Le terme suivant est 24 × 2 = <b>48</b>.`)}
 ${EXC('Exemple 2 : 16 ; −8 ; 4 ; −2 ; …', `q = −8 ÷ 16 = <b>−0,5</b>.<br>Le terme suivant est −2 × (−0,5) = <b>1</b>. Avec q &lt; 0, les signes alternent.`)}
 ${EXC('Exemple 3 : pourcentages.', 'Augmenter de 10 %, c\'est multiplier par <b>1,1</b> ; baisser de 20 %, c\'est multiplier par <b>0,8</b>.<br>1 000 ; 1 100 ; 1 210 ; … : q = 1 100 ÷ 1 000 = <b>1,1</b>.')}
-<div class="warn">⚠️ On divise (q = suivant ÷ précédent), on ne soustrait pas : l'écart 6 − 3 = 3 n'est pas la raison.<br>⚠️ Dans le bon ordre : précédent ÷ suivant donne l'<b>inverse</b> de q.<br>⚠️ Pour le terme suivant, on <b>multiplie</b> par q, on n'ajoute pas.</div>
+<div class="warn">⚠️ On divise (q = suivant ÷ précédent), on ne soustrait pas : l'écart 6 − 3 = 3 n'est pas la raison.<br>⚠️ Attention à l'ordre : précédent ÷ suivant donne l'<b>inverse</b> de q (3 ÷ 6 = 0,5 au lieu de 2).<br>⚠️ Pour le terme suivant, on <b>multiplie</b> par q, on n'ajoute pas.</div>
 <div class="cols">${FIG(nuage({ pts: pts(0, [3, 6, 12, 24, 48]), vals: true }), 'Exemple 1 : q = 2, ça monte de plus en plus vite.')}${FIG(nuage({ pts: pts(0, [16, -8, 4, -2, 1]), vals: true }), 'Exemple 2 : q = −0,5, les signes alternent.')}</div>
 <div class="retenir">À retenir : dans une suite géométrique, on multiplie toujours par q ; q = terme suivant ÷ terme précédent.</div>`;
 }
@@ -471,7 +471,7 @@ ${METH(['Si la suite est donnée par une formule ou une récurrence, calcule ses
 ${EXC(`Exemple 1 : ${UN} = 3n − 1.`, `${UN1} − ${UN} = 3(n + 1) − 1 − (3n − 1) = 3 : <b>arithmétique</b> de raison 3.`)}
 ${EXC(`Exemple 2 : ${UN} = 5 × 2<sup>n</sup>.`, `${UN1} ÷ ${UN} = (5 × 2<sup>n+1</sup>) ÷ (5 × 2<sup>n</sup>) = 2 : <b>géométrique</b> de raison 2.`)}
 ${EXC(`Exemple 3 : ${U(0)} = 2 et ${recAff(2, 1)}.`, `Termes : 2 ; 5 ; 11 ; 23. Écarts : 3 ; 6 ; 12 (pas égaux). Quotients : 2,5 ; 2,2 ; ≈ 2,09 (pas égaux).<br>Elle n'est <b>ni arithmétique, ni géométrique</b> : on multiplie <b>et</b> on ajoute.`)}
-<div class="warn">⚠️ Deux écarts égaux ne suffisent pas : il faut que <b>tous</b> le soient (1 ; 2 ; 4 ; 8 ; 17 n'est pas géométrique).<br>⚠️ 1 ; 4 ; 9 ; 16 (les carrés) n'est ni l'une ni l'autre : les écarts 3 ; 5 ; 7 changent.</div>
+<div class="warn">⚠️ Deux écarts (ou deux quotients) égaux ne suffisent pas : il faut que <b>tous</b> le soient. Pour 1 ; 2 ; 4 ; 8 ; 17, les quotients valent 2 ; 2 ; 2 puis 17 ÷ 8 = 2,125 : la suite n'est pas géométrique.<br>⚠️ 1 ; 4 ; 9 ; 16 (les carrés) n'est ni l'une ni l'autre : les écarts 3 ; 5 ; 7 changent.</div>
 <div class="cols">${FIG(nuage({ pts: pts(0, [1, 4, 7, 10, 13]), vals: true }), 'Arithmétique : points alignés.')}${FIG(nuage({ pts: pts(0, [1, 2, 4, 8, 16]), vals: true }), 'Géométrique : on multiplie par 2.')}${FIG(nuage({ pts: pts(0, [0, 1, 4, 9, 16]), vals: true }), 'Ni l\'une ni l\'autre : n<sup>2</sup>.')}</div>
 <div class="retenir">À retenir : écarts tous égaux → arithmétique ; quotients tous égaux → géométrique.</div>`;
 }
