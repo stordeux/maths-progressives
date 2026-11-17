@@ -843,7 +843,7 @@ function L12(d) {
       check: tolCheck([R.val], [ex], [tol], v2 => {
         const y = v2[0], t = 0.0005;
         if (v === 1 && near(y, P0, t)) return 'Ça, c\'est P(X = 0). « Au moins un succès » est son <b>contraire</b> : 1 − P(X = 0).';
-        if (v === 1 && near(y, 1 - p ** n, t)) return `1 − p<sup>n</sup> est la probabilité de ne pas réussir les ${n} épreuves. Le contraire de « au moins un succès » est « aucun succès » : (1 − p)<sup>n</sup>.`;
+        if (v === 1 && near(y, 1 - p ** n, t)) return `1 − p<sup>n</sup> est la probabilité de ne pas réussir <b>toutes</b> les ${n} épreuves. Le contraire de « au moins un succès » est « aucun succès » : (1 − p)<sup>n</sup>.`;
         if (v === 2 && near(y, P1, t)) return 'X ≤ 1 contient aussi X = 0 : ajoute P(X = 0).';
         if (v === 4 && near(y, 1 - P0, t)) return 'Ça, c\'est P(X ≥ 1). Il faut aussi retirer P(X = 1).';
         if (v === 3 && near(y, ex - bnum(n, p10, ks[ks.length - 1]) / 10 ** n, t)) return `« ${label} » <b>inclut</b> X = ${ks[ks.length - 1]}.`;

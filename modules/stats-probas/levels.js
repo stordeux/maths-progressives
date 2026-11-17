@@ -44,17 +44,22 @@ function numCheck(X, near = []) {
   return numsCheck([X], { msg: v => { const hit = near.find(([y]) => y !== X && approx(v[0], y)); return hit ? hit[1] : ''; } });
 }
 /** check «&nbsp;probabilité&nbsp;» (fraction irréductible ou non) avec messages «&nbsp;presque juste&nbsp;» */
-function probCheck(fav, tot, near = []) {
+function probCheck(fav, tot, near = [], quoi = 'probabilité') {
   const base = fracCheck(fav, tot);
+  const freq = quoi === 'fréquence';
   const fn = v => {
     const r = base(v);
     if (r.ok || r.msg) return r;
     const [n, d] = v, x = n / d;
-    if (x > 1) return { ok: false, msg: '⚠️ Une probabilité est toujours comprise entre 0 et 1 : le numérateur ne peut pas dépasser le dénominateur.' };
+    if (x > 1) return { ok: false, msg: `⚠️ Une ${quoi} est toujours comprise entre 0 et 1 : le numérateur ne peut pas dépasser le dénominateur.` };
     const hit = near.find(([y]) => !approx(y, fav / tot) && approx(x, y));
     if (hit) return { ok: false, msg: hit[1] };
-    if (fav < tot && approx(x, fav / (tot - fav))) return { ok: false, msg: "Tu as divisé par le nombre d'issues <b>défavorables</b> : il faut diviser par le nombre <b>total</b> d'issues." };
-    if (fav < tot && approx(x, (tot - fav) / tot)) return { ok: false, msg: "C'est la probabilité de l'événement <b>contraire</b> : relis bien l'événement demandé." };
+    if (fav < tot && approx(x, fav / (tot - fav))) return { ok: false, msg: freq
+      ? "Tu as divisé par l'effectif des <b>autres</b> valeurs : il faut diviser par l'<b>effectif total</b>."
+      : "Tu as divisé par le nombre d'issues <b>défavorables</b> : il faut diviser par le nombre <b>total</b> d'issues." };
+    if (fav < tot && approx(x, (tot - fav) / tot)) return { ok: false, msg: freq
+      ? "C'est la fréquence de toutes les <b>autres</b> valeurs : relis bien la valeur demandée."
+      : "C'est la probabilité de l'événement <b>contraire</b> : relis bien l'événement demandé." };
     return r;
   };
   fn.expected = base.expected;
@@ -160,7 +165,7 @@ function L2(d) {
   const mxE = Math.max(...effs), gr = mxE > 60 ? 10 : mxE > 30 ? 5 : mxE > 12 ? 2 : 1;
   const visual = barChart({ cats: ctx.vals.map(String), vals: effs, grid: gr, lab: 2 * gr });
   if (v === 1) {
-    return { type: 'frac', check: probCheck(n, N, [[n / k, `Il faut diviser par l'<b>effectif total</b> (${N}), pas par le nombre de valeurs.`]]), value: count / raw.length,
+    return { type: 'frac', check: probCheck(n, N, [[n / k, `Il faut diviser par l'<b>effectif total</b> (${N}), pas par le nombre de valeurs.`]], 'fréquence'), value: count / raw.length,
       html, visual, hint: `Fréquence = ${F('effectif de la valeur', 'effectif total')}. Calcule d'abord l'effectif total en additionnant la ligne des effectifs.`,
       solution: `Effectif total : ${effs.join(' + ')} = ${N}. Fréquence : ${FRs(n, N)}.` };
   }

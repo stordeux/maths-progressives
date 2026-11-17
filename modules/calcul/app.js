@@ -193,6 +193,11 @@ document.addEventListener('keydown', e => {
 });
 
 if (S.level >= LEVELS.length) S.level = 0;
+// « ?niveau=n » (liens des fiches de synthèse) : ouvre directement le niveau n, comme le menu Niveaux
+{
+  const demande = +new URLSearchParams(location.search).get('niveau');
+  if (demande >= 1 && demande <= LEVELS.length && demande - 1 !== S.level) { S.level = demande - 1; S.streak = 0; S.fails = 0; save(); }
+}
 window.__mp = { get state() { return S; }, get question() { return Q; }, levels: LEVELS };
 setMode('train');
 if (!S.seen.includes(S.level)) { S.seen.push(S.level); save(); openCours(); }

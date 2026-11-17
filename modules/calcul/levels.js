@@ -20,7 +20,7 @@ const LEVELS_=[
    if(v===0){const a=ri(1,9);return{q:`${a} + ? = 10`,a:10-a,tip:`Les paires qui font 10 : 1+9, 2+8, 3+7, 4+6, 5+5.`}}
    if(v===1){const a=ri(1,19);return{q:`${a} + ? = 20`,a:20-a,tip:`Va jusqu'à 10 ou 20 par étapes.`}}
    if(v===2){const a=5*ri(1,19);return{q:`${a} + ? = 100`,a:100-a,tip:`Complète les unités jusqu'à la dizaine, puis les dizaines jusqu'à 100.`}}
-   if(v===3){const a=ri(1,99);return{q:`${a} + ? = 100`,a:100-a,tip:`Pour ${a} : les unités vont à 10 (${(10-a%10)%10}), les dizaines à 9… Astuce : dizaines → 9, unités → 10.`}}
+   if(v===3){const a=ri(1,99);return{q:`${a} + ? = 100`,a:100-a,tip:a%10===0?`${a}, c'est ${a/10} dizaines : pour aller à 100 (10 dizaines), il en manque ${10-a/10}.`:`Pour ${a} : les unités vont à 10 (${10-a%10}), les dizaines à 9 (${9-Math.floor(a/10)}). Astuce : dizaines → 9, unités → 10.`}}
    const a=10*ri(1,99);return{q:`${a} + ? = 1000`,a:1000-a,tip:`Comme pour 100, mais avec les centaines : ${a/10} + ${100-a/10} = 100, donc ${a} + ${1000-a} = 1000.`}}},
  { titre: "Tables de 2, 3, 4, 5", T: 5, generate: d => {
    const t=pick(d<1?[2,5]:[2,3,4,5]),n=ri(d<2?1:2,10);
@@ -63,7 +63,7 @@ const LEVELS_=[
    const a=nz(-9,9),b=nz(-9,9);
    if(d<2)return{q:`${P(a)} ${X} ${P(b)}`,a:a*b,tip:`Règle des signes : même signe → +, signes contraires → −. Puis ${Math.abs(a)} × ${Math.abs(b)} = ${Math.abs(a*b)}.`};
    if(d<4)return{q:`${P(a*b)} ${D} ${P(b)}`,a:a,tip:`Même règle des signes pour la division. ${Math.abs(a*b)} ÷ ${Math.abs(b)} = ${Math.abs(a)}.`};
-   const c=nz(-5,5),e=nz(-4,4);return{q:`${P(c)} ${X} ${P(e)} ${X} ${P(b)}`,a:c*e*b,tip:`Compte les signes −: ${[c,e,b].filter(x=>x<0).length} → ${[c,e,b].filter(x=>x<0).length%2?'nombre impair : résultat négatif':'nombre pair : résultat positif'}.`}}},
+   const c=nz(-5,5),e=nz(-4,4);return{q:`${P(c)} ${X} ${P(e)} ${X} ${P(b)}`,a:c*e*b,tip:`Compte les signes − : ${[c,e,b].filter(x=>x<0).length} → ${[c,e,b].filter(x=>x<0).length%2?'nombre impair : résultat négatif':'nombre pair : résultat positif'}.`}}},
  { titre: "Pourcentages", T: 10, generate: d => {
    const v=pick(d<1?[50,10]:d<2?[50,10,25]:d<3?[10,20,25,75,5]:[1,5,20,30,75,150]);
    const base={50:2*ri(5,90),10:10*ri(2,90),25:4*ri(3,50),20:5*ri(2,40),75:4*ri(3,30),5:20*ri(1,25),1:100*ri(1,30),30:10*ri(2,30),150:2*ri(5,50)}[v];

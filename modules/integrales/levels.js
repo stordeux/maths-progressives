@@ -370,7 +370,8 @@ function L4(d) {
   return {
     type: 'choice', opts: opts.map((o, i) => ({ v: String(i), l: `F(x) = ${o.html}` })),
     html: `Sur ]0 ; +∞[, f(x) = ${fh}. Laquelle est une primitive de f ?`,
-    check: choiceCheck(String(ok), { msg: c2 => (opts[+c2].html.includes(fh) ? 'C\'est f elle-même : sa dérivée n\'est pas f.' : 'Dérive ta proposition pour vérifier : on doit retrouver f(x).') }),
+    // « c'est f elle-même » seulement si la proposition EST f (même fonction, pas −f ni 2f), comparée numériquement
+    check: choiceCheck(String(ok), { msg: c2 => (PTS_POS.every(x => Math.abs(opts[+c2].fn(x) - fn(x)) < 1e-9) ? 'C\'est f elle-même : sa dérivée n\'est pas f.' : 'Dérive ta proposition pour vérifier : on doit retrouver f(x).') }),
     verify: e => opts.filter(o => isPrim(o.fn, fn, PTS_POS)).length === 1 && isPrim(opts[+e].fn, fn, PTS_POS),
     afterVisual: repere({ xr: [-1, 5], yr: yWin([fn, good.fn], 0.3, 5, { lim: 7 }), fs: [{ f: fn, dom: [0.05, 5], l: 'y = f(x)' }, { f: good.fn, dom: [0.02, 5], c: C_G, l: 'y = F(x)', dash: true }] }),
     hint: `Retiens le tableau des primitives usuelles : ${TIP}. Un coefficient devant f reste devant F.`,
