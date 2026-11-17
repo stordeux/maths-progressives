@@ -195,7 +195,7 @@ function L6(d){
 function C6(){return `<h2>6. Reconnaître un carré</h2>
 <p class="intro">On lit l'identité remarquable « à l'envers » : on <b>factorise</b> une expression en un carré. C'est la clé de la forme canonique.</p>
 <div class="def">x<sup>2</sup> + <b>2p</b>x + <b>p<sup>2</sup></b> = (x + p)<sup>2</sup> &nbsp; (p peut être négatif)</div>
-<div class="methode"><b>Méthode</b><ol><li>Regarde le terme en x : son coefficient vaut 2p. <b>Divise par 2</b> pour trouver p, avec son signe.</li><li>Vérifie que le nombre seul est bien p<sup>2</sup>.</li><li>Écris (x + p)<sup>2</sup> ; si p est négatif, cela donne (x − …)<sup>2</sup>.</li></ol></div>
+<div class="methode"><b>Méthode</b><ol><li>Regarde le terme en x : son coefficient vaut 2p. <b>Divise par 2</b> pour trouver p, avec son signe.</li><li>Vérifie que le nombre seul est bien p<sup>2</sup>.</li><li>Écris (x + p)<sup>2</sup> ; si p est négatif, cela donne (x − …)<sup>2</sup>. Dans la case de (x + …)<sup>2</sup>, tape p avec son signe : −4 pour (x − 4)<sup>2</sup>.</li></ol></div>
 <div class="ex"><span class="q">Exemple 1 :</span><br>x<sup>2</sup> + 6x + 9 : 6 ÷ 2 = 3 et 3<sup>2</sup> = 9 ✓ → <b>(x + 3)<sup>2</sup></b></div>
 <div class="ex"><span class="q">Exemple 2 : coefficient négatif, case à compléter</span><br>x<sup>2</sup> − 8x + 16 : −8 ÷ 2 = −4 et (−4)<sup>2</sup> = 16 ✓ → <b>(x − 4)<sup>2</sup></b><br>Compléter x<sup>2</sup> + 10x + … = (x + …)<sup>2</sup> : p = 10 ÷ 2 = 5, et il faut p<sup>2</sup> = 25 → x<sup>2</sup> + 10x + <b>25</b> = (x + <b>5</b>)<sup>2</sup>.</div>
 <div class="warn">⚠️ x<sup>2</sup> + 6x + 10 n'est <b>pas</b> un carré : il faudrait 9 au lieu de 10. (On verra au niveau suivant que c'est (x + 3)<sup>2</sup> + 1.)<br>⚠️ p est la <b>moitié</b> du coefficient de x, pas le coefficient lui-même : x<sup>2</sup> + 6x + 9 ≠ (x + 6)<sup>2</sup>.</div>
@@ -216,9 +216,9 @@ function C7(){return `<h2>7. La forme canonique</h2>
 <div class="def">x<sup>2</sup> + bx + c = (x + p)<sup>2</sup> + k &nbsp; avec <b>p = b ÷ 2</b> et <b>k = c − p<sup>2</sup></b></div>
 <div class="methode"><b>Méthode</b><ol><li>p = la moitié du coefficient de x (avec son signe).</li><li>Développe (x + p)<sup>2</sup> = x<sup>2</sup> + bx + p<sup>2</sup> : seul le nombre seul diffère.</li><li>k = c − p<sup>2</sup> : ce qu'il faut ajouter (ou enlever) pour retrouver c.</li></ol></div>
 <div class="ex"><span class="q">Exemple 1 :</span><br>f(x) = x<sup>2</sup> + 6x + 11<br>• p = 6 ÷ 2 = 3, et (x + 3)<sup>2</sup> = x<sup>2</sup> + 6x + 9<br>• Il manque 11 − 9 = 2<br>• Donc <b>f(x) = (x + 3)<sup>2</sup> + 2</b></div>
-<div class="ex"><span class="q">Exemple 2 : k négatif</span><br>g(x) = x<sup>2</sup> − 4x − 1<br>• p = −2, (x − 2)<sup>2</sup> = x<sup>2</sup> − 4x + 4<br>• k = −1 − 4 = −5 → <b>g(x) = (x − 2)<sup>2</sup> − 5</b><br>Vérification : (x − 2)<sup>2</sup> − 5 = x<sup>2</sup> − 4x + 4 − 5 = x<sup>2</sup> − 4x − 1 ✓</div>
+<div class="ex"><span class="q">Exemple 2 : k négatif</span><br>g(x) = x<sup>2</sup> − 4x − 1<br>• p = −2, (x − 2)<sup>2</sup> = x<sup>2</sup> − 4x + 4<br>• k = −1 − 4 = −5 → <b>g(x) = (x − 2)<sup>2</sup> − 5</b><br>Vérification : (x − 2)<sup>2</sup> − 5 = x<sup>2</sup> − 4x + 4 − 5 = x<sup>2</sup> − 4x − 1 ✓<br>Dans les cases (x + …)<sup>2</sup> + … , on tape <b>−2</b> et <b>−5</b>.</div>
 <div class="warn">⚠️ k n'est pas c : il faut retirer p<sup>2</sup>. Dans l'exemple 1, k = 2, pas 11.<br>⚠️ Garde le signe de p : x<sup>2</sup> − 4x donne (x − 2)<sup>2</sup>, donc p = −2.</div>
-<h3>Pourquoi c'est utile ?</h3><p>Un carré est toujours ≥ 0. Donc (x + 3)<sup>2</sup> + 2 est toujours ≥ 2 : le plus bas point de la parabole est à la hauteur 2, pour x = −3.</p>${parabola(1,6,11,{vertex:true})}
+<h3>Pourquoi c'est utile ?</h3><p>Un carré est toujours ≥ 0. Donc (x + 3)<sup>2</sup> + 2 est toujours ≥ 2 : le point le plus bas de la parabole est à la hauteur 2, pour x = −3.</p>${parabola(1,6,11,{vertex:true})}
 <div class="retenir">À retenir : x<sup>2</sup> + bx + c = (x + b÷2)<sup>2</sup> + (c − (b÷2)<sup>2</sup>).</div>`}
 
 /* ---------- 8. sommet ---------- */
