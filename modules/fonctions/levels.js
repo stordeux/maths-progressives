@@ -384,7 +384,7 @@ function L6(d) {
       afterVisual: lineG(a, 0, { x: [0, x4 + 1], y: [a * x4], pts: [...xs.map(x => ({ x, y: a * x, c: VIO })), { x: x4, y: a * x4, px: true, py: true, l: `(${x4} ; ${M(a * x4)})` }] }) };
   }
   // v === 2 : lecture graphique
-  const half = d >= 3 && chance(0.5), a = half ? pick([0.5, -0.5, 1.5, -1.5]) : (d < 3 ? pick([1, 2, 3, -1, -2, 3]) : nz(-3, 3)), p = half ? 2 : 1;
+  const half = d >= 3 && chance(0.5), a = half ? pick([0.5, -0.5, 1.5, -1.5]) : (d < 3 ? pick([1, 2, 3, -1, -2, -3]) : nz(-3, 3)), p = half ? 2 : 1;
   return { type: 'nums', html: `La droite ci-dessous représente une fonction <b>linéaire</b> f(x) = ax.<br>Lis le coefficient a.`, tpl: `a = {0}`,
     check: numsCheck([a], { msg: msgs(a, p, a * p) }), verify: E => near(E[0] * p, a * p) && near(E[0] * 2 * p, a * 2 * p),
     hint: `La droite passe par l'origine. Avance de ${p} carreau${p > 1 ? 'x' : ''} vers la droite à partir de l'origine : de combien la droite monte-t-elle (ou descend-elle) ?${p > 1 ? ' Puis divise par 2.' : ''}`,
@@ -525,7 +525,7 @@ function L10(d) {
   else if (v === 1) { a = pick([1, 2, -1, -2, 0.5]); b = ri(-3, 3); x0 = a === 0.5 ? pick([-4, -2, 2, 4]) : ri(-4, 4); }
   else if (v === 2) { a = nz(-6, -2); b = ri(-9, 9); x0 = ri(-5, 5); }
   else if (chance(0.3)) { cst = true; a = 0; b = nz(-6, 6); x0 = null; }
-  else { a = pick([2, -2, 4, -4]); b = ri(-7, 7); x0 = ri(-4, 3) + (Math.abs(a) === 2 ? 0.5 : pick([0.5, 0.25 * 2])); }
+  else { a = pick([2, -2, 4, -4]); b = ri(-7, 7); x0 = ri(-4, 3) + 0.5; }
   const k = cst ? b + nz(-3, 3) : z(a * x0 + b), E = cst ? [] : [z(x0)], f = x => a * x + b;
   if (Math.abs(k) > 12) return L10(d);
   const graphQ = v === 1, ant = v === 2;

@@ -221,7 +221,7 @@ function L8(d){
   const inside=rel==='lt'||rel==='le';
   return{type:'iv',truth:x=>CMP[rel](Math.abs(x-a),r),html:`Résous :${big(`|${xm(a)}| ${REL[rel]} ${M(r)}`)}`,check:ivCheck(S),
     hint:r<0||r===0?`Une valeur absolue est toujours ≥ 0. Que peut-on dire de |${xm(a)}| ${REL[rel]} ${M(r)} ?`:`Lis : « la distance entre x et ${M(a)} est ${inside?'inférieure':'supérieure'} à ${r} ». Place ${M(a)} et les points ${M(a-r)} et ${M(a+r)} sur la droite.${inside?' Les solutions sont <b>entre</b> ces deux points.':' Les solutions sont <b>à l\'extérieur</b>.'}`,
-    solution:r>0?`Distance de x à ${M(a)} ${inside?'au plus':'au moins'} ${r} (${rel==='lt'||rel==='gt'?'strictement':'au sens large'}) : <b>${fmtSet(S)}</b>`:`Une valeur absolue est toujours ≥ 0, donc : <b>${fmtSet(S)}</b>`,
+    solution:r>0?`Distance de x à ${M(a)} ${rel==='lt'||rel==='gt'?(inside?'strictement inférieure à':'strictement supérieure à'):(inside?'au plus':'au moins')} ${r} : <b>${fmtSet(S)}</b>`:`Une valeur absolue est toujours ≥ 0, donc : <b>${fmtSet(S)}</b>`,
     visual:'',afterVisual:realLine(S,[{x:a,l:M(a),c:'#5f3dc4'}])+(r>0?plot({fs:[{f:x=>Math.abs(x-a),l:`y = |${xm(a)}|`}],xr:[a-r-4,a+r+4],h:{y:r,l:`y = ${r}`},xset:S}):'')};
 }
 function C8(){return `<h2>8. Inéquations avec valeur absolue</h2>
@@ -303,7 +303,7 @@ function L11(d){
   else if(v===1){r1=0;r2=nz(-7,7);if(r1>r2)[r1,r2]=[r2,r1];expr=random()<.5?`${f(r1)}${f(r2)}`:`${f(r2)}${f(r1)}`}
   else if(v===2){if(random()<.5){const n=ri(1,9);r1=-n;r2=n;expr=`x<sup>2</sup> − ${n*n}`;T=x=>CMP[rel](x*x-n*n,0)}else{const k=nz(-7,7);r1=Math.min(0,k);r2=Math.max(0,k);
     return mk(`x<sup>2</sup> ${REL[rel]} ${lin(k,0)}`,`On passe tout à gauche et on factorise : ${terms([[1,'x<sup>2</sup>'],[-k,'x']])} = x(${xm(k)}).`,1,r1,r2,`x(${xm(k)}) ${REL[rel]} 0`,x=>CMP[rel](x*x,k*x))}}
-  else{sg=-1;T=x=>CMP[rel]((r1-x)*(x-r2),0);expr=`(${r1<0?M(r1)+' − x':r1+' − x'})${f(r2)}`;expr=`(${r1===0?'−x':M(r1)+' − x'})${f(r2)}`}
+  else{sg=-1;T=x=>CMP[rel]((r1-x)*(x-r2),0);expr=`(${r1===0?'−x':M(r1)+' − x'})${f(r2)}`}
   return mk(`${expr} ${REL[rel]} 0`,v===2?`x<sup>2</sup> − ${r2*r2} = (x − ${r2})(x + ${r2}) (identité remarquable).`:sg<0?`Attention : (${M(r1)} − x) est positif <b>avant</b> ${M(r1)} et négatif après.`:'',sg,r1,r2,null,T);
   function mk(html,extra,sg,r1,r2,fact,T){const S=prodSet(sg,r1,r2,rel);
     return{type:'iv',truth:T,html:`Résous :${big(html)}`,check:ivCheck(S),
