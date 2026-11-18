@@ -10,6 +10,6 @@ Les tickets du bouton 🐞 sont dans gitlab.inria.fr/tordeux/signalements-exerci
 
 | Point | Décision | Détail |
 |---|---|---|
-| Un cours avant chaque niveau | **déjà en place** | Chaque niveau a son cours, ouvert automatiquement la première fois qu'on arrive au niveau (et à chaque changement de niveau), puis par le bouton 📘 Cours. |
+| Un cours avant chaque niveau | **déjà en place** | Chaque niveau a son cours, ouvert automatiquement la première fois qu'on arrive à ce niveau, puis à la demande par le bouton 📘 Cours. |
 | Relire le cours pendant l'exercice | **à faire (moteur, une fois pour tous les modules)** | Aujourd'hui le cours s'ouvre par-dessus l'exercice et le cache. Prévu : en paysage, cours dans un panneau à côté de l'exercice ; en portrait, un encart « Rappel » repliable (méthode + « À retenir ») au-dessus de la question. |
 | Cours en rapport avec les exercices | **à faire, module par module** (un à la fois, pour les jetons) | Pour chaque niveau : chaque forme d'exercice tirée (à toutes les difficultés `d`) doit avoir un exemple corrigé de la même forme dans le cours, avec la même présentation de la réponse. |
