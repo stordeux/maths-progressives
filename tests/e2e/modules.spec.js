@@ -202,27 +202,16 @@ test('signaler une erreur : capture, texte, envoi', async ({ page }, info) => {
   expect(corps).toContain('name="capture"');
   expect(corps).toContain('image/png');
   expect(corps).toContain('La correction dit 12 mais je trouve 14');
-  await expect(page.locator('#sigSecours')).toBeHidden();
   await expect(page.locator('#sigModal')).not.toHaveClass(/open/, { timeout: 5000 });
-  // relais en panne : l'envoi par messagerie apparaît en secours
+  // relais en panne : pas de messagerie, le message est gardé pour réessayer
   await page.locator('#sigBtn').click();
   await expect(page.locator('#sigApercu')).toHaveAttribute('src', /blob:/);
   await page.locator('#sigTexte').fill('La correction dit 12 mais je trouve 14');
   await page.evaluate(() => { window.__sigRelais = 'https://relais.test/panne'; });
   await page.locator('#sigDirect').click();
   await expect(page.locator('#sigEtat')).toContainText("n'a pas marché");
-  await expect(page.locator('#sigSecours')).toBeVisible();
-  const dl = page.waitForEvent('download');
-  await page.locator('#sigEnvoyer').click();
-  const f = await dl;
-  expect(f.suggestedFilename()).toMatch(/^capture-maths-.*\.png$/);
-  await expect(page.locator('#sigEtat')).toContainText('enregistrée');
-  // « Envoyer sans capture » : e-mail déjà adressé au Service Desk GitLab Inria
-  await page.evaluate(() => { window.__sigOuvrir = u => { window.__lien = u; }; });
-  await page.locator('#sigSansCapture').click();
-  const href = await page.evaluate(() => window.__lien);
-  expect(href.startsWith('mailto:gitlab-reply+tordeux-signalements-exercices-73682-issue-@inria.fr?subject=')).toBe(true);
-  expect(decodeURIComponent(href)).toContain('La correction dit 12 mais je trouve 14');
+  await expect(page.locator('#sigTexte')).toHaveValue('La correction dit 12 mais je trouve 14');
+  await expect(page.locator('#sigDirect')).toBeEnabled();
   expect(errors).toEqual([]);
 });
 
