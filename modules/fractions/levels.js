@@ -80,12 +80,12 @@ function L1(d) {
     const b = ri(2, v ? 8 + d : 6 + d), a = ri(1, b - 1);
     return { ...frac(a, b), html: `Quelle fraction de la figure est coloriée ?${v ? bar(a, b) : disc(a, b)}`,
       hint: `Le <b>dénominateur</b> (en bas) = le nombre total de parts égales : compte-les.<br>Le <b>numérateur</b> (en haut) = le nombre de parts coloriées.`,
-      solution: `Il y a ${b} parts en tout et ${a} coloriées : ${F(a, b)}.` };
+      solution: `Il y a ${b} parts en tout et ${a} ${a > 1 ? 'coloriées' : 'coloriée'} : ${F(a, b)}.` };
   }
   const b = pick([2, 3, 4, 5, 6, 8, 10]); let a; do { a = ri(1, 2 * b - 1); } while (a % b === 0 || (d < 3 && a > b));
   return { ...frac(a, b), html: `Quelle fraction repère le point A ?${fracLine(a, b)}`,
     hint: `Regarde entre 0 et 1 : en combien de parts égales l'unité est-elle partagée ? C'est le dénominateur. Puis compte les graduations de 0 jusqu'à A.`,
-    solution: `L'unité est partagée en ${b} et A est à ${a} graduations de 0 : ${F(a, b)}.` };
+    solution: `L'unité est partagée en ${b} et A est à ${a} ${a > 1 ? 'graduations' : 'graduation'} de 0 : ${F(a, b)}.` };
 }
 function C1() {
   return `<h2>1. Lire une fraction</h2>
@@ -122,6 +122,7 @@ ${bars([{ b: 3, segs: [[2, C_BLUE]], l: [2, 3] }, { b: 12, segs: [[8, C_BLUE]], 
 <div class="ex"><span class="q">Exemple 1 : ${F(2, 3)} = ${F('?', 12)}</span><br>3 × 4 = 12, donc on multiplie aussi le haut par 4 : 2 × 4 = 8. ${F(2, 3)} = ${F(8, 12)}.</div>
 <div class="ex"><span class="q">Exemple 2 : ${F(5, 7)} = ${F(15, '?')}</span><br>5 × 3 = 15, donc 7 × 3 = 21 : ${F(5, 7)} = ${F(15, 21)}.</div>
 <div class="ex"><span class="q">Exemple 3 : ${F(18, 24)} = ${F('?', 4)}</span><br>24 ÷ 6 = 4, donc 18 ÷ 6 = 3 : ${F(18, 24)} = ${F(3, 4)}.</div>
+<div class="ex"><span class="q">Exemple 4 : ${F(7, 4)} = ${F(35, '?')}</span><br>Même méthode quand le numérateur est plus grand : 7 × 5 = 35, donc 4 × 5 = 20 : ${F(7, 4)} = ${F(35, 20)}.</div>
 <div class="warn">⚠️ Ajouter le même nombre en haut et en bas ne marche pas : ${F(1, 2)} ≠ ${F(2, 3)}.<br>⚠️ Multiplie <b>les deux</b> étages, pas seulement celui où il y a le « ? ».</div>
 <div class="retenir">À retenir : même multiplication (ou même division) en haut et en bas.</div>`;
 }
@@ -197,6 +198,7 @@ ${bars([{ b: 7, segs: [[2, C_BLUE]], l: [2, 7] }, { b: 7, segs: [[3, C_ORA]], l:
 <div class="ex"><span class="q">Exemple 1 : ${F(2, 7)} + ${F(3, 7)}</span><br>${F('2 + 3', 7)} = ${F(5, 7)}.</div>
 <div class="ex"><span class="q">Exemple 2 : ${F(11, 9)} − ${F(4, 9)}</span><br>${F('11 − 4', 9)} = ${F(7, 9)}.</div>
 <div class="ex"><span class="q">Exemple 3 : ${F(5, 12)} + ${F(3, 12)}</span><br>${F(8, 12)}, qui se simplifie par 4 : ${F(2, 3)}.</div>
+<div class="ex"><span class="q">Exemple 4 : ${F(4, 5)} + ${F(4, 5)} et ${F(5, 3)} − ${F(2, 3)}</span><br>${F('4 + 4', 5)} = ${F(8, 5)} : le résultat peut dépasser 1, on le laisse ainsi.<br>${F('5 − 2', 3)} = ${F(3, 3)} = <b>1</b> : quand le haut et le bas sont égaux, la fraction vaut 1.</div>
 <div class="warn">⚠️ On n'additionne <b>pas</b> les dénominateurs : ${F(2, 7)} + ${F(3, 7)} n'est pas ${F(5, 14)} ! La taille des parts ne change pas.<br>⚠️ Dans une soustraction, garde bien l'ordre : le premier numérateur moins le deuxième.</div>
 <div class="retenir">À retenir : même dénominateur → j'additionne les numérateurs et je garde le dénominateur.</div>`;
 }
@@ -225,6 +227,7 @@ ${bars([{ b: 3, segs: [[1, C_BLUE]], l: [1, 3] }, { b: 9, segs: [[3, C_BLUE]], l
 <div class="ex"><span class="q">Exemple 1 : ${F(1, 3)} + ${F(4, 9)}</span><br>3 × 3 = 9, donc ${F(1, 3)} = ${F(3, 9)}. Puis ${F(3, 9)} + ${F(4, 9)} = ${F(7, 9)}.</div>
 <div class="ex"><span class="q">Exemple 2 : ${F(5, 4)} − ${F(3, 8)}</span><br>4 × 2 = 8 : ${F(5, 4)} = ${F(10, 8)}. Puis ${F(10, 8)} − ${F(3, 8)} = ${F(7, 8)}.</div>
 <div class="ex"><span class="q">Exemple 3 : ${F(7, 10)} − ${F(1, 5)}</span><br>${F(1, 5)} = ${F(2, 10)}, donc ${F(7, 10)} − ${F(2, 10)} = ${F(5, 10)} = ${F(1, 2)}.</div>
+<div class="ex"><span class="q">Exemple 4 : ${F(6, 4)} + ${F(3, 2)}</span><br>2 × 2 = 4 : ${F(3, 2)} = ${F(6, 4)}. Puis ${F(6, 4)} + ${F(6, 4)} = ${F(12, 4)} = <b>3</b>, car 12 ÷ 4 = 3.</div>
 <div class="warn">⚠️ Quand on multiplie le dénominateur, on multiplie aussi le numérateur : ${F(1, 3)} = ${F(3, 9)}, pas ${F(1, 9)}.<br>⚠️ On ne touche pas à la fraction qui a déjà le grand dénominateur.</div>
 <div class="retenir">À retenir : je transforme la petite fraction pour avoir le même dénominateur, puis j'additionne.</div>`;
 }
@@ -256,8 +259,8 @@ function C7() {
 <div class="cols"><div class="methode"><b>Méthode</b><ol><li>Repère la quantité et la fraction.</li><li>Calcule une part : quantité ÷ dénominateur.</li><li>Multiplie par le numérateur.</li><li>Dans un problème, réponds par une phrase avec l'unité.</li></ol></div>
 ${bars([{ b: 4, segs: [[3, C_ORA]], l: '20', txt: ['5', '5', '5', '5'] }], { cap: '3 parts de 5 : 15' })}</div>
 <div class="ex"><span class="q">Exemple 1 : les ${F(3, 4)} de 20</span><br>Une part : 20 ÷ 4 = 5. Trois parts : 5 × 3 = <b>15</b>.</div>
-<div class="ex"><span class="q">Exemple 2 : un livre de 240 pages, on en a lu les ${F(5, 8)}</span><br>240 ÷ 8 = 30, puis 30 × 5 = 150. On a lu <b>150 pages</b>.</div>
-<div class="ex"><span class="q">Exemple 3 : 5 × ${F(2, 3)}</span><br>On multiplie le numérateur : ${F('5 × 2', 3)} = ${F(10, 3)}.</div>
+<div class="ex"><span class="q">Exemple 2 : un livre de 240 pages, on en a lu les ${F(5, 8)}</span><br>240 ÷ 8 = 30, puis 30 × 5 = 150. On a lu <b>150 pages</b>.<br>Même méthode pour les minutes d'un film ou les élèves d'une classe : on divise par le bas, puis on multiplie par le haut.</div>
+<div class="ex"><span class="q">Exemple 3 : 5 × ${F(2, 3)}</span><br>On multiplie le numérateur : ${F('5 × 2', 3)} = ${F(10, 3)}.<br>Puis on simplifie si c'est possible : 8 × ${F(3, 2)} = ${F(24, 2)} = <b>12</b> ; 4 × ${F(2, 6)} = ${F(8, 6)} = ${F(4, 3)}.</div>
 <div class="warn">⚠️ On divise par le <b>dénominateur</b> : les ${F(3, 4)} de 20, ce n'est pas 20 ÷ 3 × 4.<br>⚠️ 5 × ${F(2, 3)} n'est pas ${F(10, 15)} : on ne multiplie pas le dénominateur.</div>
 <div class="retenir">À retenir : les ${F('a', 'b')} de N, c'est N ÷ b × a.</div>`;
 }
@@ -412,6 +415,8 @@ ${bars([{ b: 6, segs: [[2, C_BLUE], [1, C_ORA], [3, C_GRN]], l: '1', txt: ['vél
 <div class="ex"><span class="q">Exemple 1 : ${F(1, 2)} + ${F(1, 3)} × ${F(3, 4)}</span><br>× d'abord : ${F(1, 3)} × ${F(3, 4)} = ${F(3, 12)} = ${F(1, 4)}. Puis ${F(1, 2)} + ${F(1, 4)} = ${F(2, 4)} + ${F(1, 4)} = ${F(3, 4)}.</div>
 <div class="ex"><span class="q">Exemple 2 : ${F(1, 3)} du trajet à vélo, ${F(1, 6)} en bus, le reste à pied</span><br>1 − ${F(1, 3)} − ${F(1, 6)} = ${F(6, 6)} − ${F(2, 6)} − ${F(1, 6)} = ${F(3, 6)} = ${F(1, 2)}.</div>
 <div class="ex"><span class="q">Exemple 3 : un club de 30 membres, les ${F(2, 5)} sont des filles</span><br>Filles : 30 ÷ 5 × 2 = 12. Garçons : 30 − 12 = <b>18</b>.</div>
+<div class="ex"><span class="q">Exemple 4 : il reste ${F(3, 4)} d'un gâteau, on en mange ${F(1, 12)} (du gâteau entier)</span><br>Il en reste ${F(3, 4)} − ${F(1, 12)} = ${F(9, 12)} − ${F(1, 12)} = ${F(8, 12)} = ${F(2, 3)} du gâteau.</div>
+<div class="ex"><span class="q">Exemple 5 : ${R(F(64, 9))} × ${F(3, 2)}</span><br>${R(F(64, 9))} = ${F(8, 3)}, puis ${F(8, 3)} × ${F(3, 2)} = ${F(24, 6)} = <b>4</b>.</div>
 <div class="warn">⚠️ Une fraction « des filles » se calcule sur le <b>total</b>, pas sur les garçons.<br>⚠️ Dans ${F(1, 2)} + ${F(1, 3)} × ${F(3, 4)}, la multiplication passe avant l'addition.</div>
 <div class="retenir">À retenir : je lis, j'écris le calcul en entier, puis je respecte les priorités.</div>`;
 }
