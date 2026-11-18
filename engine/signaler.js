@@ -9,6 +9,9 @@
 // Service Desk du projet privé gitlab.inria.fr/tordeux/signalements-exercices :
 // chaque e-mail reçu devient un ticket confidentiel (capture jointe comprise).
 export const DESTINATAIRE = 'gitlab-reply+tordeux-signalements-exercices-73682-issue-@inria.fr';
+// Envoi direct, sans messagerie : le relais (dossier relais/, Cloudflare Worker) crée le ticket GitLab.
+// L'e-mail ne sert plus qu'en secours (hors connexion, relais en panne).
+export const RELAIS = 'https://signalements-maths.stordeux.workers.dev/signaler';
 let contexte = () => ({});
 let prefixe = '../../';
 
@@ -114,8 +117,11 @@ export function installerSignalement(opts = {}) {
     <textarea id="sigTexte" rows="4" placeholder="Par exemple : je ne comprends pas pourquoi on change de signe… ou : la correction dit 12 mais je trouve 14…"></textarea>
     <div class="sig-cap"><img id="sigApercu" alt="Aperçu de la capture d'écran"><label class="opt-line"><input type="checkbox" id="sigJoindre" checked> Joindre la capture</label></div>
     <p class="note" id="sigEtat" role="status"></p>
-    <p class="note"><b>📤 Envoyer avec la capture</b> : choisis ta messagerie, puis colle l'adresse dans « À » (bouton <button type="button" class="opt" id="sigCopier">Copier l'adresse</button>).<br><b>✉️ Envoyer sans capture</b> : un e-mail s'ouvre, déjà adressé ; il n'y a plus qu'à l'envoyer.</p>
-    <div class="actions"><button type="button" class="btn ghost" id="sigAnnuler">Annuler</button><button type="button" class="btn ghost" id="sigSansCapture">✉️ Envoyer sans capture</button><button type="button" class="btn" id="sigEnvoyer">📤 Envoyer avec la capture</button></div>
+    <div class="actions"><button type="button" class="btn ghost" id="sigAnnuler">Annuler</button><button type="button" class="btn" id="sigDirect">📤 Envoyer</button></div>
+    <div id="sigSecours" hidden>
+    <p class="note"><b>L'envoi direct n'a pas marché</b> (pas de connexion ?). Tu peux réessayer plus tard, ou passer par ta messagerie :<br><b>📤 Avec la capture</b> : choisis ta messagerie, puis colle l'adresse dans « À » (bouton <button type="button" class="opt" id="sigCopier">Copier l'adresse</button>).<br><b>✉️ Sans capture</b> : un e-mail s'ouvre, déjà adressé ; il n'y a plus qu'à l'envoyer.</p>
+    <div class="actions"><button type="button" class="btn ghost" id="sigSansCapture">✉️ Sans capture</button><button type="button" class="btn ghost" id="sigEnvoyer">📤 Avec la capture</button></div>
+    </div>
   </div>`;
   document.body.appendChild(dlg);
   const $ = s => dlg.querySelector(s);
@@ -128,6 +134,7 @@ export function installerSignalement(opts = {}) {
     $('#sigEtat').textContent = '📸 Capture de l\'écran…';
     $('#sigApercu').removeAttribute('src'); $('#sigApercu').hidden = true;
     $('#sigJoindre').checked = true; $('#sigJoindre').disabled = false;
+    $('#sigSecours').hidden = true; $('#sigDirect').disabled = false;
     try {
       fichier = await capturerPage();
       $('#sigApercu').src = URL.createObjectURL(fichier); $('#sigApercu').hidden = false;
@@ -175,7 +182,33 @@ export function installerSignalement(opts = {}) {
     allerA(mailto(sujet, corps));
     $('#sigEtat').innerHTML = avecImage ? `✅ La capture est enregistrée (<b>${fichier.name}</b>) et un e-mail s'ouvre : joins-y la capture. Merci !` : '✅ Un e-mail s\'ouvre avec ton message. Merci !';
   }
+  // envoi direct au relais (remplaçable par les tests via window.__sigRelais)
+  async function direct() {
+    const { texte, sujet } = message();
+    const msg = $('#sigTexte').value.trim();
+    if (!msg && !(fichier && $('#sigJoindre').checked)) { $('#sigEtat').textContent = "Écris d'abord ta question ou ce qui ne va pas."; $('#sigTexte').focus(); return; }
+    const fd = new FormData();
+    fd.append('titre', sujet + (msg ? ' : ' + msg.slice(0, 80) : ''));
+    fd.append('message', msg);
+    fd.append('contexte', texte.split('— Contexte —\n')[1] || texte);
+    if (fichier && $('#sigJoindre').checked) fd.append('capture', fichier, fichier.name);
+    $('#sigDirect').disabled = true;
+    $('#sigEtat').textContent = '📤 Envoi en cours…';
+    try {
+      const r = await fetch(window.__sigRelais || RELAIS, { method: 'POST', body: fd });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok || !j.ok) throw new Error(j.erreur || 'HTTP ' + r.status);
+      $('#sigEtat').innerHTML = '✅ Message envoyé, merci ! Il sera lu et pris en compte.';
+      $('#sigTexte').value = '';
+      setTimeout(fermer, 2500);
+    } catch (e) {
+      $('#sigEtat').textContent = "⚠️ L'envoi n'a pas marché (" + (e.message || 'erreur') + ').';
+      $('#sigSecours').hidden = false;
+      $('#sigDirect').disabled = false;
+    }
+  }
   fab.onclick = ouvrir;
+  $('#sigDirect').onclick = direct;
   $('#sigAnnuler').onclick = fermer;
   $('#sigEnvoyer').onclick = envoyer;
   $('#sigSansCapture').onclick = sansCapture;

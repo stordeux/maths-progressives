@@ -185,6 +185,33 @@ test('signaler une erreur : capture, texte, envoi', async ({ page }, info) => {
   // les chiffres tapés dans le texte ne doivent pas aller dans les cases de réponse
   expect(await page.locator('#answer .box').first().textContent()).toBe('');
   await page.screenshot({ path: `tests/e2e/captures/signaler-${info.project.name}.png` });
+  // envoi direct : le relais reçoit le message, le contexte et la capture
+  let recu = null;
+  await page.route('https://relais.test/**', async route => {
+    const req = route.request();
+    const h = { 'Access-Control-Allow-Origin': '*' };
+    if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: h });
+    recu = req.postDataBuffer();
+    if (req.url().endsWith('/panne')) return route.fulfill({ status: 502, headers: h, contentType: 'application/json', body: '{"ok":false,"erreur":"GitLab a refusé le ticket (500)"}' });
+    return route.fulfill({ status: 201, headers: h, contentType: 'application/json', body: '{"ok":true,"numero":7}' });
+  });
+  await page.evaluate(() => { window.__sigRelais = 'https://relais.test/signaler'; });
+  await page.locator('#sigDirect').click();
+  await expect(page.locator('#sigEtat')).toContainText('Message envoyé');
+  const corps = recu.toString('utf8');
+  expect(corps).toContain('name="capture"');
+  expect(corps).toContain('image/png');
+  expect(corps).toContain('La correction dit 12 mais je trouve 14');
+  await expect(page.locator('#sigSecours')).toBeHidden();
+  await expect(page.locator('#sigModal')).not.toHaveClass(/open/, { timeout: 5000 });
+  // relais en panne : l'envoi par messagerie apparaît en secours
+  await page.locator('#sigBtn').click();
+  await expect(page.locator('#sigApercu')).toHaveAttribute('src', /blob:/);
+  await page.locator('#sigTexte').fill('La correction dit 12 mais je trouve 14');
+  await page.evaluate(() => { window.__sigRelais = 'https://relais.test/panne'; });
+  await page.locator('#sigDirect').click();
+  await expect(page.locator('#sigEtat')).toContainText("n'a pas marché");
+  await expect(page.locator('#sigSecours')).toBeVisible();
   const dl = page.waitForEvent('download');
   await page.locator('#sigEnvoyer').click();
   const f = await dl;
