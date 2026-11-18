@@ -7,7 +7,7 @@
 // sont possibles. Le brouillon (canvas) est bien repris : l'élève peut y entourer l'erreur avant.
 
 // Les tickets arrivent, confidentiels et capture jointe, dans le projet privé gitlab.inria.fr/tordeux/signalements-exercices.
-export const RELAIS = 'https://signalements-maths.stordeux.workers.dev/signaler';
+export const RELAIS = 'https://signalements-maths.sebastien-tordeux.workers.dev/signaler';
 let contexte = () => ({});
 let prefixe = '../../';
 
