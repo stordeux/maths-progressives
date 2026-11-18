@@ -47,6 +47,31 @@ async function answer(page, good) {
   await page.locator('#okBtn').click();
 }
 
+// La fenêtre d'accueil (première ouverture) est testée à part ; ailleurs on la considère déjà vue.
+test.beforeEach(async ({ page }, info) => {
+  if (!info.title.startsWith("fenêtre d'accueil")) await page.addInitScript(() => { try { localStorage.setItem('mp:bienvenue', '1'); } catch (e) { /* rien */ } });
+});
+
+test("fenêtre d'accueil : une seule fois, montre le bouton 🐞", async ({ page }, info) => {
+  const errors = [];
+  page.on('pageerror', e => errors.push(e.message));
+  await page.goto('./');
+  const dlg = page.locator('#bienvenueModal');
+  await expect(dlg).toBeVisible();
+  await expect(dlg).toContainText('en cours de développement');
+  await expect(dlg).toContainText('explication supplémentaire');
+  await expect(dlg).toContainText('en bas à droite');
+  await expect(page.locator('#sigBtn')).toHaveClass(/sig-fab-montre/);
+  await page.screenshot({ path: `tests/e2e/captures/bienvenue-${info.project.name}.png` });
+  await page.locator('#bienvenueOk').click();
+  await expect(dlg).toHaveCount(0);
+  await expect(page.locator('#sigBtn')).not.toHaveClass(/sig-fab-montre/);
+  await page.goto('modules/fractions/');
+  await expect(page.locator('#coursModal')).toHaveClass(/open/);
+  await expect(page.locator('#bienvenueModal')).toHaveCount(0);
+  expect(errors).toEqual([]);
+});
+
 for (const m of MODULES.filter(m => m.id !== 'revision')) {
   test(`${m.id} : parcours complet`, async ({ page }, info) => {
     const errors = [], external = [];

@@ -98,8 +98,8 @@ export function installerSignalement(opts = {}) {
   const fab = document.createElement('button');
   fab.type = 'button'; fab.className = 'sig-fab'; fab.id = 'sigBtn';
   fab.setAttribute('data-capture-exclude', '');
-  fab.setAttribute('aria-label', 'Signaler une erreur');
-  fab.title = 'Signaler une erreur';
+  fab.setAttribute('aria-label', 'Demander une explication ou signaler une erreur');
+  fab.title = 'Demander une explication ou signaler une erreur';
   fab.innerHTML = '🐞<span>Signaler</span>';
   document.body.appendChild(fab);
 
@@ -108,10 +108,10 @@ export function installerSignalement(opts = {}) {
   dlg.setAttribute('role', 'dialog'); dlg.setAttribute('aria-modal', 'true'); dlg.setAttribute('aria-labelledby', 'sigTitre');
   dlg.setAttribute('data-capture-exclude', '');
   dlg.innerHTML = `<div class="card sig">
-    <h2 id="sigTitre">🐞 Signaler une erreur</h2>
-    <p class="note">Une erreur dans un exercice, une correction fausse, un affichage cassé ? Explique ce qui ne va pas : la capture de l'écran et l'exercice en cours sont joints automatiquement.</p>
-    <label for="sigTexte"><b>Qu'est-ce qui ne va pas ?</b></label>
-    <textarea id="sigTexte" rows="4" placeholder="Par exemple : la correction dit 12 mais je trouve 14…"></textarea>
+    <h2 id="sigTitre">🐞 Une question, une erreur ?</h2>
+    <p class="note">Tu veux une explication en plus sur un exercice ou un cours ? Tu as trouvé une erreur, une correction fausse, un affichage cassé ? Écris-le : la capture de l'écran et l'exercice en cours sont joints automatiquement.</p>
+    <label for="sigTexte"><b>Ta question, ou ce qui ne va pas :</b></label>
+    <textarea id="sigTexte" rows="4" placeholder="Par exemple : je ne comprends pas pourquoi on change de signe… ou : la correction dit 12 mais je trouve 14…"></textarea>
     <div class="sig-cap"><img id="sigApercu" alt="Aperçu de la capture d'écran"><label class="opt-line"><input type="checkbox" id="sigJoindre" checked> Joindre la capture</label></div>
     <p class="note" id="sigEtat" role="status"></p>
     <p class="note"><b>📤 Envoyer avec la capture</b> : choisis ta messagerie, puis colle l'adresse dans « À » (bouton <button type="button" class="opt" id="sigCopier">Copier l'adresse</button>).<br><b>✉️ Envoyer sans capture</b> : un e-mail s'ouvre, déjà adressé ; il n'y a plus qu'à l'envoyer.</p>
@@ -143,7 +143,7 @@ export function installerSignalement(opts = {}) {
     let ctx = {};
     try { ctx = contexte() || {}; } catch (e) { /* contexte indisponible */ }
     const texte = texteSignalement($('#sigTexte').value.trim(), ctx);
-    const sujet = `Maths progressives : erreur${ctx.Module ? ' — ' + ctx.Module : ''}${ctx.Niveau ? ', niveau ' + String(ctx.Niveau).split(' ')[0] : ''}`;
+    const sujet = `Maths progressives : question ou erreur${ctx.Module ? ' — ' + ctx.Module : ''}${ctx.Niveau ? ', niveau ' + String(ctx.Niveau).split(' ')[0] : ''}`;
     return { texte, sujet };
   }
   const mailto = (sujet, corps) => `mailto:${DESTINATAIRE}?subject=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps.slice(0, 1800))}`;
@@ -182,5 +182,39 @@ export function installerSignalement(opts = {}) {
   $('#sigCopier').onclick = async () => { try { await navigator.clipboard.writeText(DESTINATAIRE); $('#sigCopier').textContent = 'Copiée ✔'; } catch (e) { $('#sigCopier').textContent = DESTINATAIRE; } };
   dlg.addEventListener('click', e => { if (e.target === dlg) fermer(); });
   dlg.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); fermer(); } });
+  bienvenue(fab);
   return { ouvrir, fermer, get fichier() { return fichier; } };
+}
+
+// Fenêtre d'accueil, montrée une seule fois par appareil (clé « mp:bienvenue ») : la ressource est en
+// développement, et le bouton 🐞 (en bas à droite) sert à demander une explication ou une correction.
+const CLE_BIENVENUE = 'mp:bienvenue';
+function bienvenue(fab) {
+  try { if (localStorage.getItem(CLE_BIENVENUE)) return; } catch (e) { return; }
+  const dlg = document.createElement('div');
+  dlg.className = 'modal open'; dlg.id = 'bienvenueModal';
+  dlg.setAttribute('role', 'dialog'); dlg.setAttribute('aria-modal', 'true'); dlg.setAttribute('aria-labelledby', 'bienvenueTitre');
+  dlg.setAttribute('data-capture-exclude', '');
+  dlg.innerHTML = `<div class="card bienvenue">
+    <h2 id="bienvenueTitre">👋 Bienvenue dans Maths progressives !</h2>
+    <p class="warn">🚧 Ce site est <b>en cours de développement</b> : il reste sûrement des erreurs, et des explications peuvent manquer.</p>
+    <p>Le bouton rond <span class="bv-btn">🐞</span> (avec le mot « Signaler » sur un grand écran), <b>en bas à droite de l'écran</b>, toujours au même endroit sur chaque page, sert à :</p>
+    <ul>
+      <li>💬 <b>demander une explication supplémentaire</b> quand un cours ou une correction n'est pas clair ;</li>
+      <li>🛠️ <b>demander une correction</b> quand un énoncé, une réponse ou un affichage est faux.</li>
+    </ul>
+    <p class="note">Une capture de l'écran et l'exercice en cours sont joints automatiquement : il suffit d'écrire ta question.</p>
+    <div class="actions"><button type="button" class="btn" id="bienvenueOk">J'ai compris</button></div>
+  </div>
+  <div class="bv-fleche" aria-hidden="true">le bouton est ici <span>↓</span></div>`;
+  document.body.appendChild(dlg);
+  fab.classList.add('sig-fab-montre');
+  const fermer = () => {
+    try { localStorage.setItem(CLE_BIENVENUE, '1'); } catch (e) { /* rien */ }
+    dlg.remove(); fab.classList.remove('sig-fab-montre');
+  };
+  dlg.querySelector('#bienvenueOk').onclick = fermer;
+  dlg.addEventListener('click', e => { if (e.target === dlg) fermer(); });
+  dlg.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); fermer(); } });
+  dlg.querySelector('#bienvenueOk').focus();
 }
