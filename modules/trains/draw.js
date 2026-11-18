@@ -134,7 +134,7 @@ export function deuxTrains(o) {
   let s = ln(xa - 20, yr, xb + 10, yr, INK, 4) + gare(xa, yr, o.a, GRN);
   s += trainIcon(x1, yr, ACC, 1) + tx(x1, yr - 42, `train 1 : ${o.v1}`, { b: 1, c: ACC }) + tx(x1, yr - 58, `parti à ${o.h1}`, { fs: 13, c: ACC });
   s += trainIcon(xa + 10, yr, GRN, 1) + tx(xa + 10, yr - 42, `train 2 : ${o.v2}`, { b: 1, c: GRN }) + tx(xa + 10, yr - 58, `part à ${o.h2}`, { fs: 13, c: GRN });
-  s += accolade(xa + 44, x1 - 34, 34, 'avance du train 1', ORA, 13);
+  s += accolade(xa + 44, x1 - 34, 22, 'avance du train 1', ORA, 13);
   s += `<path d="M${xb - 30},${yr - 14} h26 m-8,-6 l8,6 l-8,6" fill="none" stroke="${INK}" stroke-width="2.5"/>` + tx(xb - 20, yr + 30, 'rattrapage ?', { b: 1, c: ORA, fs: 13 });
   return svg(W, 150, `deux trains partent de ${o.a} dans le même sens, le train 2 plus tard`, s, 500);
 }
@@ -162,7 +162,7 @@ const nice = y1 => [10, 20, 25, 50, 100, 200, 250].find(k => y1 / k <= 10) || 50
  * o.lines : [{ pts: [[t, km], …], c, l (nom), side: -1 | 1 }] ; o.marks : [{ t, y, c }] repères en pointillés vers les axes.
  */
 export function graphe(o) {
-  const W = 470, H = 310, L = 56, R = 16, T = 24, B = 44, { t0, t1, y1 } = o, step = o.step || nice(y1);
+  const W = 470, H = 310, L = 56, R = 26, T = 24, B = 44, { t0, t1, y1 } = o, step = o.step || nice(y1);
   const X = t => L + (t - t0) / (t1 - t0) * (W - L - R), Y = y => H - B - y / y1 * (H - B - T);
   let s = '';
   for (let t = t0; t <= t1; t += 30) s += ln(X(t), T, X(t), H - B, t % 60 === 0 ? '#ced4da' : '#e9ecef', t % 60 === 0 ? 1.4 : 1);
@@ -173,14 +173,14 @@ export function graphe(o) {
   }
   s += ln(L, T - 8, L, H - B, INK, 2) + `<path d="M${L},${T - 12} l-5,9 h10 z" fill="${INK}"/>`;
   s += `<path d="M${W - R + 8},${H - B} l-9,-5 v10 z" fill="${INK}"/>`;
-  for (let t = t0; t <= t1; t += 60) s += ln(X(t), H - B, X(t), H - B + 5, INK, 2) + tx(X(t), H - B + 20, `${t / 60} h`, { fs: 13, b: 1 });
+  for (let t = t0; t <= t1; t += 60) s += ln(X(t), H - B, X(t), H - B + 5, INK, 2) + tx(X(t), H - B + 20, t % 60 ? `${Math.floor(t / 60)} h 30` : `${t / 60} h`, { fs: 12, b: 1 });
   s += tx(L + 6, T - 8, 'distance (km)', { a: 'start', fs: 12, c: '#495057' }) + tx(W - R, H - 6, 'heure', { a: 'end', fs: 12, c: '#495057' });
   (o.lines || []).forEach(l => {
     s += `<polyline points="${l.pts.map(([t, y]) => `${f1(X(t))},${f1(Y(y))}`).join(' ')}" fill="none" stroke="${l.c || ACC}" stroke-width="3.5" stroke-linejoin="round"/>`;
     l.pts.forEach(([t, y]) => { s += `<circle cx="${f1(X(t))}" cy="${f1(Y(y))}" r="3.5" fill="${l.c || ACC}"/>`; });
     if (l.l) {
       const m = l.pts[Math.min(1, l.pts.length - 1)], p0 = l.pts[0], sd = l.side || -1;
-      s += tx(X((m[0] + p0[0]) / 2) + sd * 10, Y((m[1] + p0[1]) / 2) - 10, l.l, { a: sd < 0 ? 'end' : 'start', b: 1, fs: 14, c: l.c || ACC, halo: 1 });
+      s += tx(X(p0[0] + (m[0] - p0[0]) * 0.3) + sd * 10, Y(p0[1] + (m[1] - p0[1]) * 0.3) - 10, l.l, { a: sd < 0 ? 'end' : 'start', b: 1, fs: 14, c: l.c || ACC, halo: 1 });
     }
   });
   (o.marks || []).forEach(m => {

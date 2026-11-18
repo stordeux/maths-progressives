@@ -576,7 +576,7 @@ function L12(d) {
   const { v1, v2, dl, g, tmin, p } = s, [A] = gares(1), T1 = ri(6, 16) * 60 + 5 * ri(0, 11), T2 = T1 + dl, tc = T2 + tmin, clock = d >= 3;
   const p1 = [[T1, 0], [tc + 30, v1 * (tc + 30 - T1) / 60]], p2 = [[T2, 0], [tc + 30, v2 * (tc + 30 - T2) / 60]];
   const ymax = p2[1][1], stp = [10, 20, 25, 50, 100, 200, 250].find(k => ymax / k <= 10) || 500;
-  const after = V.graphe({ t0: Math.floor(T1 / 30) * 30, t1: Math.ceil((tc + 30) / 30) * 30, y1: Math.ceil(ymax / stp) * stp, step: stp, lines: [{ pts: p1, c: '#1d4ed8', l: 'train 1', side: 1 }, { pts: p2, c: '#2b8a3e', l: 'train 2', side: -1 }], marks: [{ t: tc, y: p, lt: hm(tc).replace(/&nbsp;/g, ' '), ly: `${p} km` }] });
+  const after = V.graphe({ t0: Math.floor(T1 / 30) * 30, t1: Math.ceil((tc + 30) / 30) * 30, y1: Math.ceil(ymax / stp) * stp, step: stp, lines: [{ pts: p1, c: '#1d4ed8', l: 'train 1', side: -1 }, { pts: p2, c: '#2b8a3e', l: 'train 2', side: 1 }], marks: [{ t: tc, y: p, lt: hm(tc).replace(/&nbsp;/g, ' '), ly: `${p} km` }] });
   const info = `Le train 1 (vitesse constante ${kmh(v1)}) part ${de(A)} à <b>${hm(T1)}</b>. Le train 2, plus rapide (${kmh(v2)}), part ${de(A)} <b>${dur(dl)}</b> plus tard, à <b>${hm(T2)}</b>, sur la même voie et dans le même sens.`;
   const visual = V.deuxTrains({ mode: 'rattrape', a: A, v1: `${v1} km/h`, v2: `${v2} km/h`, h1: hm(T1).replace(/&nbsp;/g, ' '), h2: hm(T2).replace(/&nbsp;/g, ' ') });
   const sim = () => { for (let t = T2; t <= T2 + 3000; t++) { const a1 = v1 * (t - T1) / 60, a2 = v2 * (t - T2) / 60; if (a2 >= a1 - 1e-9) return { t, pos: a2 }; } return null; };
@@ -607,7 +607,7 @@ function L12(d) {
     html: info + (clock ? `<br>À quelle heure le train 2 rattrape-t-il le train 1, et à quelle distance ${de(A)} ?` : `<br>Combien de temps après son départ le train 2 rattrape-t-il le train 1, et à quelle distance ${de(A)} ?`) };
 }
 function C12() {
-  const g = V.graphe({ t0: 480, t1: 660, y1: 300, step: 50, lines: [{ pts: [[480, 0], [660, 180]], c: '#1d4ed8', l: 'train 1', side: 1 }, { pts: [[540, 0], [660, 240]], c: '#2b8a3e', l: 'train 2', side: -1 }], marks: [{ t: 600, y: 120, lt: '10 h', ly: '120 km' }] });
+  const g = V.graphe({ t0: 480, t1: 660, y1: 300, step: 50, lines: [{ pts: [[480, 0], [660, 180]], c: '#1d4ed8', l: 'train 1', side: -1 }, { pts: [[540, 0], [660, 240]], c: '#2b8a3e', l: 'train 2', side: 1 }], marks: [{ t: 600, y: 120, lt: '10 h', ly: '120 km' }] });
   return `<h2>12. Rattrapage</h2>
 <p class="intro">Un train lent part le premier. Un train plus rapide part ensuite, sur la même voie et dans le même sens : va-t-il rattraper le premier, et où ?</p>
 <div class="def">Quand le train rapide démarre, le train lent a une <b>avance</b> : <b>avance = v₁ × (retard au départ)</b>.<br>Ensuite le train rapide gagne <b>v₂ − v₁</b> km chaque heure (les vitesses se soustraient, car ils vont dans le même sens).<br><b>durée du rattrapage = avance ÷ (v₂ − v₁)</b>.</div>
