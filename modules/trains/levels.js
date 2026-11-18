@@ -27,28 +27,71 @@ const hOf = t => Math.floor(t / 60), mOf = t => t % 60;
 /** la durée tmin donne-t-elle au plus 2 décimales en heures ? */
 const decimalOK = m => m % 3 === 0;
 
-const REGIONS = [
-  ['Tarbes', 'Lourdes', 'Pau', 'Orthez', 'Dax', 'Bayonne', 'Biarritz', 'Hendaye'],
-  ['Toulouse', 'Montauban', 'Agen', 'Marmande', 'Libourne', 'Bordeaux', 'Langon'],
-  ['Lille', 'Douai', 'Arras', 'Lens', 'Béthune', 'Valenciennes', 'Amiens', 'Calais'],
-  ['Rennes', 'Vitré', 'Laval', 'Sablé', 'Angers', 'Nantes', 'Vannes', 'Lorient', 'Quimper'],
-  ['Metz', 'Nancy', 'Épinal', 'Strasbourg', 'Sélestat', 'Colmar', 'Mulhouse', 'Belfort'],
-  ['Lyon', 'Vienne', 'Valence', 'Montélimar', 'Orange', 'Avignon', 'Nîmes', 'Marseille'],
-  ['Tours', 'Blois', 'Orléans', 'Vierzon', 'Bourges', 'Poitiers', 'Limoges'],
-  ['Perpignan', 'Narbonne', 'Béziers', 'Sète', 'Montpellier', 'Nîmes', 'Carcassonne'],
-  ['Rouen', 'Évreux', 'Lisieux', 'Caen', 'Dieppe', 'Cherbourg'],
+/* Lignes réelles : [gare, kilomètre depuis la 1re gare] (distances approximatives par le rail, arrondies).
+   Les distances entre deux gares d'une même ligne servent à rendre les énoncés plausibles. */
+export const LIGNES = [
+  [['Hendaye', 0], ['Biarritz', 30], ['Bayonne', 35], ['Dax', 85]],
+  [['Dax', 0], ['Orthez', 45], ['Pau', 85], ['Lourdes', 125], ['Tarbes', 145]],
+  [['Bordeaux', 0], ['Libourne', 35], ['Marmande', 90], ['Agen', 140], ['Montauban', 200], ['Toulouse', 250]],
+  [['Toulouse', 0], ['Carcassonne', 90], ['Narbonne', 150], ['Béziers', 180], ['Sète', 215], ['Montpellier', 240]],
+  [['Perpignan', 0], ['Narbonne', 65], ['Béziers', 95], ['Montpellier', 150], ['Nîmes', 205], ['Avignon', 250]],
+  [['Lyon', 0], ['Vienne', 30], ['Valence', 105], ['Montélimar', 150], ['Orange', 210], ['Avignon', 230], ['Marseille', 335]],
+  [['Lille', 0], ['Douai', 35], ['Arras', 50], ['Amiens', 120]],
+  [['Rennes', 0], ['Vannes', 115], ['Lorient', 155], ['Quimper', 235]],
+  [['Nantes', 0], ['Angers', 90], ['Saumur', 130], ['Tours', 200], ['Blois', 260], ['Orléans', 320]],
+  [['Strasbourg', 0], ['Sélestat', 50], ['Colmar', 70], ['Mulhouse', 115], ['Belfort', 160]],
+  [['Paris', 0], ['Orléans', 120], ['Blois', 180], ['Tours', 235], ['Poitiers', 335], ['Bordeaux', 580]],
+  [['Paris', 0], ['Le Mans', 210], ['Angers', 305], ['Nantes', 395]],
+  [['Paris', 0], ['Le Mans', 210], ['Rennes', 350]],
+  [['Paris', 0], ['Évreux', 100], ['Lisieux', 175], ['Caen', 235], ['Cherbourg', 360]],
+  [['Paris', 0], ['Amiens', 130], ['Arras', 180], ['Lille', 230]],
+  [['Paris', 0], ['Rouen', 135], ['Le Havre', 225]],
+  [['Paris', 0], ['Reims', 145]],
+  [['Paris', 0], ['Metz', 330]],
+  [['Paris', 0], ['Strasbourg', 490]],
+  [['Paris', 0], ['Dijon', 315]],
+  [['Paris', 0], ['Lyon', 465]],
+  [['Dijon', 0], ['Besançon', 95]],
+  [['Dijon', 0], ['Lyon', 195]],
+  [['Metz', 0], ['Nancy', 55]],
+  [['Nancy', 0], ['Strasbourg', 150]],
+  [['Lyon', 0], ['Grenoble', 115]],
+  [['Calais', 0], ['Lille', 110]],
+  [['Rouen', 0], ['Le Havre', 90]],
+  [['Cherbourg', 0], ['Caen', 125]],
 ];
-/** n gares d'une même région, dans un ordre au hasard (les noms ne sont que du décor : les distances sont celles de l'énoncé) */
+/** toutes les paires de gares d'une même ligne (au moins 20 km) : { A, B, km } */
+export const PAIRS = LIGNES.flatMap(L => L.flatMap((a, i) => L.slice(i + 1).map(b => ({ A: a[0], B: b[0], km: b[1] - a[1] })))).filter(p => p.km >= 20);
+/** vitesses moyennes plausibles (km/h) par type de train */
+export const RANGES = { TER: [60, 130], 'Intercités': [110, 180], TGV: [180, 300] };
+/** types de train qui desservent réellement une liaison de km kilomètres */
+const typesFor = k => [k <= 250 ? 'TER' : null, k >= 150 && k <= 500 ? 'Intercités' : null, k >= 250 ? 'TGV' : null].filter(Boolean);
+/** villes imaginaires (niveaux 10 et 12 : distances et vitesses libres) */
+export const FICTIVES = ['Pont-Morin', 'Val-Clairet', 'Beaulac', 'Roche-Sablon', 'Bois-Joli', 'Saint-Aubin', 'Port-Larive', 'Mont-Royal', 'Villebrée', 'Sainte-Orne'];
+const fict = n => shuffle([...FICTIVES]).slice(0, n);
+let META = {};
 /** « de Pau », « d'Agen » */
 const de = n => (/^[AEIOUÉH]/.test(n) ? `d'${n}` : `de ${n}`);
 const asH = m => (m % 60 === 0 ? `${m / 60}${NB}h` : m < 60 ? `${m}${NB}min` : decimalOK(m) ? `${M(r6(m / 60))}${NB}h = ${dur(m)}` : `${m}${NB}min = ${dur(m)}`);
-const gares = n => shuffle([...pick(REGIONS)]).slice(0, n);
-const RAILS = [
-  { n: 'TER', vs: [60, 70, 80, 90, 100, 110, 120] },
-  { n: 'Intercités', vs: [120, 130, 140, 150, 160, 170, 180, 190] },
-  { n: 'TGV', vs: [240, 250, 260, 270, 280, 290, 300, 310, 320] },
-];
-const pickRail = d => (d < 1 ? RAILS[0] : d < 2 ? pick(RAILS.slice(0, 2)) : pick(RAILS));
+/** une liaison réelle (A, B, km) et une durée entière de [lo ; hi] minutes (par pas st) dont la vitesse moyenne est plausible pour le type de train ; null si le tirage échoue */
+function trip(lo, hi, st = 1) {
+  const p = pick(PAIRS), n = pick(typesFor(p.km)), [vlo, vhi] = RANGES[n];
+  const k0 = Math.ceil(Math.max(lo, Math.ceil(p.km / vhi * 60)) / st), k1 = Math.floor(Math.min(hi, Math.floor(p.km / vlo * 60)) / st);
+  if (k0 > k1) return null;
+  const sw = chance(0.5);
+  return { A: sw ? p.B : p.A, B: sw ? p.A : p.B, km: p.km, n, D: st * ri(k0, k1) };
+}
+/** liaison réelle, type de train, vitesse (multiple de 5) et durée de pool tels que d = v × t soit un entier à moins de 7 % de la distance réelle */
+function fitTrip(pool, terOnly) {
+  return search(() => {
+    const p = pick(PAIRS), ts = typesFor(p.km).filter(n => !terOnly || n === 'TER');
+    if (!ts.length) return null;
+    const n = pick(ts), [lo, hi] = RANGES[n], v = 5 * ri(Math.ceil(lo / 5), Math.floor(hi / 5)), t = pick(pool);
+    if ((v * t) % 60) return null;
+    const dist = v * t / 60, sw = chance(0.5);
+    return Math.abs(dist - p.km) <= 0.07 * p.km ? { A: sw ? p.B : p.A, B: sw ? p.A : p.B, km: p.km, n, v, tmin: t, dist } : null;
+  }, 300000);
+}
 const range = (a, b, s) => { const r = []; for (let x = a; x <= b; x += s) r.push(x); return r; };
 /** tire jusqu'à ce que f() renvoie quelque chose (les contraintes « tombe juste » rejettent beaucoup de tirages) */
 function search(f, n = 5000) { for (let i = 0; i < n; i++) { const r = f(); if (r) return r; } throw new Error('trains : aucun tirage valide'); }
@@ -73,9 +116,10 @@ const ex = (q, body) => `<div class="ex"><span class="q">${q}</span><br>${body}<
 
 /* ================= 1. Durée dans la même heure ================= */
 function L1(d) {
-  const gap = d < 1 ? 5 * ri(1, 9) : d < 2 ? ri(6, 55) : ri(7, 58);
+  const tr = search(() => (d < 1 ? trip(5, 45, 5) : d < 2 ? trip(6, 55) : trip(7, 58))), gap = tr.D;
   const m1 = d < 1 ? 5 * ri(0, Math.floor((59 - gap) / 5)) : ri(0, 59 - gap), m2 = m1 + gap, h = ri(6, 21), t1 = h * 60 + m1, t2 = h * 60 + m2;
-  const [A, B] = gares(2), n = pickRail(1).n;
+  const { A, B, n } = tr;
+  META = { segs: [{ km: tr.km, tmin: gap, n }], tmin: gap, m1, m2 };
   const visual = d < 2 && chance(0.5) ? V.horloges(t1, t2) : V.frise(t1, t2, { dur: '?' });
   return {
     type: 'nums', tpl: 'Durée : {0} min', keys: {},
@@ -101,15 +145,18 @@ ${ex('Exemple 2 : de 14 h 05 à 14 h 40', '40 − 5 = 35 : le trajet dure 35 min
 
 /* ================= 2. Durée qui passe l'heure ================= */
 function L2(d) {
-  let t1, t2, D;
+  let t1, t2, D, tr;
   search(() => {
-    D = d < 1 ? ri(25, 59) : d < 2 ? ri(61, 150) : d < 3 ? ri(61, 270) : ri(61, 400);
+    tr = d < 1 ? trip(25, 59) : d < 2 ? trip(61, 150) : d < 3 ? trip(61, 270) : trip(61, 400);
+    if (!tr) return null;
+    D = tr.D;
     t1 = ri(6, 19) * 60 + (d < 2 ? 5 * ri(0, 11) : ri(0, 59)); t2 = t1 + D;
     return t2 < 1440 && mOf(t1) !== mOf(t2) && (D < 60 ? hOf(t1) !== hOf(t2) : true) && (mOf(t2) < mOf(t1) || chance(0.3));
   });
-  const [A, B] = gares(2), pile = (hOf(t1) + 1) * 60, p1 = pile - t1, p2 = t2 - pile;
+  const { A, B } = tr, pile = (hOf(t1) + 1) * 60, p1 = pile - t1, p2 = t2 - pile;
+  META = { segs: [{ km: tr.km, tmin: D, n: tr.n }], tmin: D, t1, t2 };
   const h0 = hOf(t2) - hOf(t1), m0 = Math.abs(mOf(t2) - mOf(t1));
-  const html = `${prenom()} part ${de(A)} à <b>${hm(t1)}</b> et arrive à ${B} à <b>${hm(t2)}</b>.<br>Combien de temps dure le trajet ?`;
+  const html = `${prenom()} prend un ${tr.n} qui part ${de(A)} à <b>${hm(t1)}</b> et arrive à ${B} à <b>${hm(t2)}</b>.<br>Combien de temps dure le trajet ?`;
   const common = { html, visual: V.frise(t1, t2, { dur: '?' }) };
   const err = 'Attention : tu as soustrait les minutes « dans le mauvais sens ». Quand les minutes d\'arrivée sont plus petites, passe par l\'heure pile.';
   if (D < 60) {
@@ -140,18 +187,21 @@ ${ex('Exemple 2 : de 16 h 50 à 17 h 25', 'De 16 h 50 à 17 h : 10 min. De 17 h 
 
 /* ================= 3. Horaire d'arrivée ================= */
 function L3(d) {
-  let t1, D;
+  let t1, D, tr;
   search(() => {
-    D = d < 1 ? 5 * ri(2, 11) : d < 2 ? ri(15, 59) : d < 3 ? ri(61, 180) : ri(61, 360);
+    tr = d < 1 ? trip(10, 55, 5) : d < 2 ? trip(15, 59) : d < 3 ? trip(61, 180) : trip(61, 360);
+    if (!tr) return null;
+    D = tr.D;
     t1 = ri(6, 17) * 60 + (d < 2 ? 5 * ri(0, 11) : ri(0, 59));
     const carry = mOf(t1) + D >= 60;
     return t1 + D < 1440 && (d < 1 ? !carry : carry || chance(0.15));
   });
-  const t2 = t1 + D, H2 = hOf(t2), M2 = mOf(t2), [A, B] = gares(2), carry = mOf(t1) + (D % 60) >= 60;
+  const t2 = t1 + D, H2 = hOf(t2), M2 = mOf(t2), { A, B } = tr, carry = mOf(t1) + (D % 60) >= 60;
+  META = { segs: [{ km: tr.km, tmin: D, n: tr.n }], tmin: D, carry, E: [H2, M2] };
   const e = new Date(Date.UTC(2026, 0, 1, hOf(t1), mOf(t1) + D));
   return {
     type: 'nums', tpl: 'Arrivée à {0} h {1}', keys: {},
-    html: `Un ${pickRail(d).n} part ${de(A)} à <b>${hm(t1)}</b>. Le trajet jusqu'à ${B} dure <b>${dur(D)}</b>.<br>À quelle heure arrive-t-il ?`,
+    html: `Un ${tr.n} part ${de(A)} à <b>${hm(t1)}</b>. Le trajet jusqu'à ${B} dure <b>${dur(D)}</b>.<br>À quelle heure arrive-t-il ?`,
     visual: V.frise(t1, t2, { endUnknown: true, dur: V.dureeTxt(D) }),
     check: numsCheck([H2, M2], { msg: v => {
       if (v[1] > 59) return v[0] * 60 + v[1] === t2 ? 'L\'horaire est juste, mais on n\'écrit pas plus de 59 minutes : 60 min = 1 h, reporte l\'heure.' : MSG60;
@@ -179,11 +229,28 @@ ${ex('Exemple 2 : 13 h 10 + 45 min', 'Minutes : 10 + 45 = 55, moins de 60. Arriv
 
 /* ================= 4. Lire une fiche horaire ================= */
 function L4(d) {
-  const n = d < 1 ? 3 : d < 3 ? 4 : 5, names = gares(n), t0 = ri(6, 18) * 60 + 5 * ri(0, 11);
+  const n = d < 1 ? 3 : d < 3 ? 4 : 5;
+  // gares réelles d'une ligne, au moins 15 km entre deux arrêts ; vitesse commerciale d'un TER (60 à 120 km/h) entre deux arrêts
+  const { stops, segs } = search(() => {
+    const L = pick(LIGNES.filter(l => l.length >= n)), ids = shuffle([...L.keys()]).slice(0, n).sort((a, b) => a - b);
+    let st = ids.map(i => L[i]);
+    if (chance(0.5)) st = st.map(([g, k]) => [g, L[L.length - 1][1] - k]).reverse();
+    const sg = [];
+    for (let i = 1; i < n; i++) {
+      const kmi = st[i][1] - st[i - 1][1];
+      if (kmi < 15) return null;
+      const tmin = Math.round(kmi / (5 * ri(12, 24)) * 60), v = kmi / tmin * 60;
+      if (v < RANGES.TER[0] || v > RANGES.TER[1]) return null;
+      sg.push({ km: kmi, tmin, n: 'TER' });
+    }
+    return { stops: st, segs: sg };
+  });
+  const names = stops.map(x => x[0]), t0 = ri(6, 18) * 60 + 5 * ri(0, 11);
+  META = { segs, tmin: segs.reduce((a, x) => a + x.tmin, 0) };
   const rows = [];
   let t = t0;
   for (let i = 0; i < n; i++) {
-    const seg = d < 2 ? ri(12, 64) : ri(18, 78), arr = i ? t + seg : null, stop = ri(2, 5);
+    const arr = i ? t + segs[i - 1].tmin : null, stop = ri(2, 5);
     rows.push({ g: names[i], arr, dep: i < n - 1 ? (i ? arr + stop : t0) : null });
     t = rows[i].dep;
   }
@@ -205,7 +272,7 @@ function L4(d) {
   if (kind === 1 && n === 3) { i = 0; j = 2; }
   const from = rows[i].dep, to = rows[j].arr, D = to - from;
   const alt = [i ? to - rows[i].arr : null, j < n - 1 ? rows[j].dep - from : null].filter(x => x !== null && x !== D);
-  const txt = kind === 0 ? `Combien de temps le train met-il pour aller de <b>${names[i]}</b> à <b>${names[j]}</b> ?`
+  const txt = kind === 0 ? `Combien de temps le train met-il pour aller ${/^[AEIOUÉH]/.test(names[i]) ? "d'" : 'de '}<b>${names[i]}</b> à <b>${names[j]}</b> ?`
     : `${p} monte dans le train à <b>${names[i]}</b> et descend à <b>${names[j]}</b>. Combien de temps dure son trajet dans le train ?`;
   return { type: 'nums', tpl: TPL_DUR, keys: {}, visual: V.ficheHoraire(rows, { hl: [i, j] }),
     html: `Voici la fiche horaire d'un train.<br>${txt}`,
@@ -232,6 +299,7 @@ function L5(d) {
   const kind = pick(d < 1 ? [0, 1] : d < 2 ? [0, 1, 2] : d < 3 ? [0, 1, 2, 3] : [0, 1, 2, 3, 4]);
   const fr = d < 1 ? [15, 30, 45] : d < 2 ? [6, 12, 15, 18, 24, 30, 36, 42, 45, 48, 54] : range(3, 57, 3);
   const hh = kind === 2 || kind === 3 ? ri(1, 5) : ri(d < 2 ? 0 : 1, d < 1 ? 3 : 5), mm = pick(fr), tot = hh * 60 + mm, X = r6(tot / 60);
+  META = { kind, hh, mm, tot };
   const visual = V.barreHeures(tot);
   const dec100 = Math.round(mm / 60 * 100);
   const hintDec = `Une heure = 60 minutes. Pour passer des minutes à la partie décimale, divise par 60 (30 min = 30 ÷ 60 h) ; dans l'autre sens, multiplie la partie décimale par 60.`;
@@ -285,22 +353,16 @@ ${ex('Exemple 2 : 2 h 15 min en heures', '15 ÷ 60 = 0,25. Donc 2 h 15 min = 2,2
 /* ================= 6, 7, 8 : d = v × t ================= */
 function tPool6(d) { return d < 1 ? range(60, 240, 60) : d < 2 ? [15, 30, 45, 75, 90, 105, 135, 150, 210] : d < 3 ? [...range(15, 240, 15), 20, 40, 80, 100] : range(10, 300, 5); }
 function tPool78(d) { return d < 1 ? range(60, 300, 60) : d < 2 ? [30, 90, 150, 210, 270] : d < 3 ? range(30, 300, 15) : range(20, 300, 5); }
-function pickVT(d, pool) {
-  return search(() => {
-    const r = pickRail(d), v = pick(r.vs), t = pick(pool);
-    return (v * t) % 60 === 0 ? { r, v, tmin: t, dist: v * t / 60 } : null;
-  });
-}
 function L6(d) {
-  const { r, v, tmin, dist } = pickVT(d, tPool6(d));
+  const { A, B, n, v, tmin, dist, km: real } = fitTrip(tPool6(d), d < 1);
+  META = { n, v, tmin, dist, real, dir: 0 };
   const tTxt = d < 2 && d >= 1 ? hdec(tmin) : dur(tmin), h = hOf(tmin), m = mOf(tmin), tH = M(r6(tmin / 60));
-  const [A, B] = gares(2);
   const conv = d < 1 ? '' : decimalOK(tmin) ? `${tmin === 60 * h ? '' : `${dur(tmin)} = ${tH} h.<br>`}` : `${dur(tmin)} = ${tmin} ÷ 60 h.<br>`;
   const calc = `d = v × t = ${prod(v, tmin)} = ${dist}`;
   let acc = 0; for (let i = 0; i < tmin; i++) acc += v / 60;
   return {
     type: 'nums', tpl: 'Distance : {0} km', keys: {}, visual: V.ligne({ a: A, b: B, dist: '', dur: V.dureeTxt(tmin), v: `${v} km/h`, inconnu: 'dist' }),
-    html: `Un ${r.n} roule à la vitesse constante de <b>${kmh(v)}</b> pendant <b>${tTxt}</b>.<br>Quelle distance parcourt-il ?`,
+    html: `Un ${n} relie ${A} à ${B}. Il roule à la vitesse constante de <b>${kmh(v)}</b> pendant <b>${tTxt}</b>.<br>Quelle distance parcourt-il ?`,
     check: numsCheck([dist], { msg: u => diag(u[0], [[v * (h + m / 100), `${dur(tmin)} ne s'écrit pas ${M(h + m / 100)} h : convertis les minutes en heures (÷ 60).`], [v * tmin, 'Tu as multiplié par des minutes. La vitesse est en km/h : il faut une durée en heures.'], [v / (tmin / 60), 'Pour une distance, on multiplie la vitesse par la durée (d = v × t), on ne divise pas.']]) }),
     value: acc,
     hint: `Utilise d = v × t, avec v en km/h et t en <b>heures</b>.${d >= 2 ? ' Convertis d\'abord la durée en heures (30 min = 0,5 h).' : ''}`,
@@ -320,11 +382,12 @@ ${ex('Exemple 2 : un TGV à 300 km/h pendant 1 h 30 min', '1 h 30 min = 1,5 h. d
 }
 
 function L7(d) {
-  const { r, v, tmin, dist } = pickVT(d, tPool78(d));
-  const h = hOf(tmin), m = mOf(tmin), tH = M(r6(tmin / 60)), [A, B] = gares(2);
+  const { A, B, n, v, tmin, dist, km: real } = fitTrip(tPool78(d), d < 1);
+  META = { n, v, tmin, dist, real };
+  const h = hOf(tmin), m = mOf(tmin), tH = M(r6(tmin / 60));
   return {
     type: 'nums', tpl: 'Vitesse moyenne : {0} km/h', keys: {}, visual: V.ligne({ a: A, b: B, dist: `${dist} km`, dur: V.dureeTxt(tmin), v: '', inconnu: 'v' }),
-    html: `Un ${r.n} parcourt <b>${km(dist)}</b> entre ${A} et ${B} en <b>${dur(tmin)}</b>.<br>Quelle est sa vitesse moyenne ?`,
+    html: `Un ${n} parcourt <b>${km(dist)}</b> entre ${A} et ${B} en <b>${dur(tmin)}</b>.<br>Quelle est sa vitesse moyenne ?`,
     check: numsCheck([v], { msg: u => diag(u[0], [[dist / (h + m / 100), `${dur(tmin)} ne s'écrit pas ${M(h + m / 100)} h : convertis les minutes en heures (÷ 60) avant de diviser.`], [dist / tmin, 'Tu as divisé par des minutes : une vitesse en km/h demande une durée en heures.'], [dist * tmin / 60, 'Pour une vitesse, on divise la distance par la durée (v = d ÷ t), on ne multiplie pas.']]) }),
     value: (() => { let s = 0; while (s * (tmin / 60) < dist - 1e-9 && s < 1000) s++; return s; })(),
     hint: `Utilise v = d ÷ t, avec d en km et t en <b>heures</b>.${tmin % 60 ? ' Convertis d\'abord la durée en heures.' : ''}`,
@@ -344,13 +407,14 @@ ${ex('Exemple 2 : 195 km en 1 h 30 min', '1 h 30 min = 1,5 h. v = 195 ÷ 1,5 = 1
 }
 
 function L8(d) {
-  const { r, v, tmin, dist } = pickVT(d, tPool78(d));
-  const H = hOf(tmin), Mi = mOf(tmin), [A, B] = gares(2);
+  const { A, B, n, v, tmin, dist, km: real } = fitTrip(tPool78(d), d < 1);
+  META = { n, v, tmin, dist, real };
+  const H = hOf(tmin), Mi = mOf(tmin);
   let m2 = 0; while (v * m2 < 60 * dist) m2++; // simulation : minutes écoulées quand la distance est atteinte
   const x = r6(tmin / 60);
   return {
     type: 'nums', tpl: TPL_DUR, keys: {}, visual: V.ligne({ a: A, b: B, dist: `${dist} km`, dur: '', v: `${v} km/h`, inconnu: 'dur' }),
-    html: `Un ${r.n} doit parcourir <b>${km(dist)}</b> ${de(A)} à ${B} à la vitesse moyenne de <b>${kmh(v)}</b>.<br>Combien de temps dure le trajet ?`,
+    html: `Un ${n} doit parcourir <b>${km(dist)}</b> ${de(A)} à ${B} à la vitesse moyenne de <b>${kmh(v)}</b>.<br>Combien de temps dure le trajet ?`,
     check: hmCheck(H, Mi, (h, m) => (Mi && h === H && m === Math.round((x - H) * 100) ? `Attention : ${M(x)} h, ce n'est pas ${H} h ${Math.round((x - H) * 100)} min. La partie décimale se multiplie par 60 pour obtenir les minutes.` : '')),
     verify: E => E[0] * 60 + E[1] === m2,
     hint: `Utilise t = d ÷ v : le résultat est en heures. Si le résultat est décimal, convertis la partie décimale en minutes (× 60).`,
@@ -375,14 +439,15 @@ function L9(d) {
   const dir = d < 1 ? 0 : d < 2 ? 1 : pick([0, 1]);
   let vk, vm;
   if (dir === 0) {
-    vk = d < 1 ? pick([36, 72, 108, 144, 180]) : d < 3 ? 18 * ri(2, 20) : 9 * ri(4, 40);
+    vk = d < 1 ? pick([36, 72, 108, 144, 180]) : d < 3 ? 18 * ri(2, 16) : 9 * ri(4, 33);
     vm = vk * 1000 / 3600;
   } else {
-    vm = d < 2 ? pick([10, 15, 20, 25, 30, 40, 50]) : d < 3 ? 5 * ri(2, 18) : ri(5, 90);
+    vm = d < 2 ? pick([10, 15, 20, 25, 30, 40, 50]) : d < 3 ? 5 * ri(2, 16) : ri(5, 83);
     vk = vm * 3600 / 1000;
   }
   vk = r6(vk); vm = r6(vm);
-  const nom = vk < 60 ? 'train de marchandises' : vk <= 130 ? 'TER' : vk <= 200 ? 'Intercités' : 'TGV';
+  const nom = vk < 60 ? 'train de marchandises' : vk <= 130 ? 'TER' : vk <= 180 ? 'Intercités' : 'TGV';
+  META = { n: nom, v: vk, dir, vk, vm };
   const ans = dir === 0 ? vm : vk, given = dir === 0 ? vk : vm;
   const u1 = dir === 0 ? 'km/h' : 'm/s', u2 = dir === 0 ? 'm/s' : 'km/h';
   const other = dir === 0 ? vk * 3.6 : vm / 3.6;
@@ -421,7 +486,7 @@ const graph10 = (lines, T0, marks = []) => {
 };
 function L10(d) {
   const kind = d < 1 ? 0 : d < 2 ? pick([0, 1, 1]) : d < 3 ? pick([1, 2, 3, 2]) : pick([2, 3, 4, 5, 4]);
-  const T0 = ri(6, 17) * 60 + pick([0, 30]), [A, B] = gares(2);
+  const T0 = ri(6, 17) * 60 + pick([0, 30]), [A, B] = fict(2);
   if (kind <= 1) {
     const { v, n } = search(() => { const v = pick(VS10), n = ri(2, 5); return v * n / 2 <= 320 ? { v, n } : null; });
     const pts = trace(T0, [{ dur: 30 * n, v }]), D = pts[1][1];
@@ -468,8 +533,9 @@ function L10(d) {
     }
     const first = chance(0.5), vv = first ? s.v1 : s.v2, [ta, tb] = first ? [pts[0], pts[1]] : [pts[2], pts[3]];
     const moy = pts[3][1] / ((pts[3][0] - T0) / 60);
+    META = { kind: 3, moy, vv };
     return { type: 'nums', tpl: 'Vitesse : {0} km/h', keys: {}, visual: vis,
-      html: `Le graphique montre le trajet d'un train avec un arrêt.<br>Quelle est la vitesse du train ${first ? 'entre le départ et l\'arrêt' : 'après l\'arrêt, jusqu\'à l\'arrivée'} ?`,
+      html: `Le graphique montre le trajet d'un train ${de(A)} à ${B}, avec un arrêt.<br>Quelle est la vitesse du train ${first ? 'entre le départ et l\'arrêt' : 'après l\'arrêt, jusqu\'à l\'arrivée'} ?`,
       check: numsCheck([vv], { msg: u => (Math.abs(u[0] - moy) < 1e-6 ? 'Tu as calculé la vitesse moyenne de tout le trajet, arrêt compris. Ici, on demande la vitesse sur un seul morceau.' : u[0] === tb[1] - ta[1] ? 'Tu as donné la distance parcourue. Pour la vitesse, divise-la par la durée (en heures).' : '') }),
       value: (tb[1] - ta[1]) / ((tb[0] - ta[0]) / 60),
       hint: `Lis sur le graphique la distance parcourue et la durée de ce morceau, puis calcule v = d ÷ t (durée en heures).`,
@@ -518,15 +584,17 @@ ${ex('Exemple 2 : l\'arrêt', 'Le morceau horizontal va de 9 h à 9 h 30 : l\'ar
 /* ================= 11. Croisement de deux trains ================= */
 const MSGPLACE = (B, A) => `La durée est juste, mais cette distance se compte depuis ${B}. On demande la distance depuis ${A}.`;
 function L11(d) {
-  const pool = d < 2 ? [60, 80, 100, 120] : d < 3 ? range(60, 160, 10) : [...range(60, 200, 10), 250, 300];
   const s = search(() => {
-    const tmin = d < 1 ? 60 * ri(1, 3) : d < 2 ? 30 * ri(2, 6) : d < 3 ? 15 * ri(3, 12) : 5 * ri(6, 36), v1 = pick(pool), v2 = pick(pool);
-    const D = (v1 + v2) * tmin / 60, p = v1 * tmin / 60;
-    return v1 !== v2 && Number.isInteger(D) && Number.isInteger(p) && D <= 900 && D >= 60 ? { tmin, v1, v2, D, p } : null;
-  });
-  const { tmin, v1, v2, D, p } = s, [A, B] = gares(2), clock = d >= 2, T0 = clock ? ri(6, 18) * 60 + 5 * ri(0, 11) : 0;
+    const p = pick(PAIRS), n = pick(typesFor(p.km)), [lo, hi] = RANGES[n];
+    const tmin = d < 1 ? 60 * ri(1, 3) : d < 2 ? 30 * ri(2, 6) : d < 3 ? 15 * ri(3, 12) : 5 * ri(6, 36);
+    const v1 = 10 * ri(Math.ceil(lo / 10), Math.floor(hi / 10)), v2 = 10 * ri(Math.ceil(lo / 10), Math.floor(hi / 10));
+    const D = (v1 + v2) * tmin / 60, pp = v1 * tmin / 60, sw = chance(0.5);
+    return v1 !== v2 && Number.isInteger(D) && Number.isInteger(pp) && Math.abs(D - p.km) <= 0.08 * p.km ? { tmin, v1, v2, D, p: pp, n, A: sw ? p.B : p.A, B: sw ? p.A : p.B, real: p.km } : null;
+  }, 300000);
+  const { tmin, v1, v2, D, p, A, B, n } = s, clock = d >= 2, T0 = clock ? ri(6, 18) * 60 + 5 * ri(0, 11) : 0;
+  META = { n, v1, v2, D, real: s.real, tmin, T0, clock, p };
   const sameTime = clock ? ` à <b>${hm(T0)}</b>` : ' en même temps';
-  const html = `Un train part ${de(A)} vers ${B} à <b>${kmh(v1)}</b>. Au même moment, un autre part ${de(B)} vers ${A} à <b>${kmh(v2)}</b>. ${A} et ${B} sont distantes de <b>${km(D)}</b>.<br>Les deux trains partent${sameTime}${clock ? '' : ' et roulent à vitesse constante'}.`;
+  const html = `Un ${n} part ${de(A)} vers ${B} à <b>${kmh(v1)}</b>. Au même moment, un autre ${n} part ${de(B)} vers ${A} à <b>${kmh(v2)}</b>. ${A} et ${B} sont distantes de <b>${km(D)}</b>.<br>Les deux trains partent${sameTime}${clock ? '' : ' et roulent à vitesse constante'}.`;
   const tEnd = T0 + tmin;
   const E = d < 1 ? [hOf(tmin), mOf(tmin)] : clock ? [hOf(tEnd), mOf(tEnd), p] : [hOf(tmin), mOf(tmin), p];
   const msg = u => {
@@ -573,7 +641,10 @@ function L12(d) {
     const g = v1 * dl / 60, tmin = 60 * g / (v2 - v1), p = v2 * tmin / 60;
     return Number.isInteger(g) && Number.isInteger(tmin) && Number.isInteger(p) && tmin >= 20 && tmin <= 360 && p <= 900 ? { v1, v2, dl, g, tmin, p } : null;
   });
-  const { v1, v2, dl, g, tmin, p } = s, [A] = gares(1), T1 = ri(6, 16) * 60 + 5 * ri(0, 11), T2 = T1 + dl, tc = T2 + tmin, clock = d >= 3;
+  const { v1, v2, dl, g, tmin, p } = s;
+  META = { v1, v2, dl, g, tmin, p, fictif: true };
+  const [A] = fict(1), T1 = ri(6, 16) * 60 + 5 * ri(0, 11), T2 = T1 + dl, tc = T2 + tmin, clock = d >= 3;
+  Object.assign(META, { T2, clock });
   const p1 = [[T1, 0], [tc + 30, v1 * (tc + 30 - T1) / 60]], p2 = [[T2, 0], [tc + 30, v2 * (tc + 30 - T2) / 60]];
   const ymax = p2[1][1], stp = [10, 20, 25, 50, 100, 200, 250].find(k => ymax / k <= 10) || 500;
   const after = V.graphe({ t0: Math.floor(T1 / 30) * 30, t1: Math.ceil((tc + 30) / 30) * 30, y1: Math.ceil(ymax / stp) * stp, step: stp, lines: [{ pts: p1, c: '#1d4ed8', l: 'train 1', side: -1 }, { pts: p2, c: '#2b8a3e', l: 'train 2', side: 1 }], marks: [{ t: tc, y: p, lt: hm(tc).replace(/&nbsp;/g, ' '), ly: `${p} km` }] });
@@ -620,17 +691,25 @@ ${ex('Sur le graphique horaire', 'La courbe du train 2 part plus tard mais est p
 <div class="retenir">À retenir : avance = v₁ × retard ; durée = avance ÷ (v₂ − v₁).</div>`;
 }
 
+/** appelle le générateur et joint les données de plausibilité (q.meta) ; villes imaginaires signalées */
+const w = f => d => {
+  META = {};
+  const q = f(d);
+  if (f === L10 || f === L12) { q.html += '<br><i class="small">(Villes imaginaires.)</i>'; META.fictif = true; }
+  q.meta = META;
+  return q;
+};
 export const LEVELS = [
-  { titre: 'Durée dans la même heure', generate: L1, cours: C1, classe: '6e' },
-  { titre: 'Durée qui passe l\'heure', generate: L2, cours: C2, classe: '6e' },
-  { titre: 'Horaire d\'arrivée', generate: L3, cours: C3, classe: '6e' },
-  { titre: 'Lire une fiche horaire', generate: L4, cours: C4, classe: '5e' },
-  { titre: 'Heures, minutes et durées décimales', generate: L5, cours: C5, classe: '5e' },
-  { titre: 'Distance parcourue : d = v × t', generate: L6, cours: C6, classe: '5e' },
-  { titre: 'Vitesse moyenne : v = d ÷ t', generate: L7, cours: C7, classe: '4e' },
-  { titre: 'Durée d\'un trajet : t = d ÷ v', generate: L8, cours: C8, classe: '4e' },
-  { titre: 'km/h et m/s', generate: L9, cours: C9, classe: '4e' },
-  { titre: 'Lire un graphique horaire', generate: L10, cours: C10, classe: '4e – 3e' },
-  { titre: 'Croisement de deux trains', generate: L11, cours: C11, classe: '3e' },
-  { titre: 'Rattrapage', generate: L12, cours: C12, classe: '3e' },
+  { titre: 'Durée dans la même heure', generate: w(L1), cours: C1, classe: '6e' },
+  { titre: 'Durée qui passe l\'heure', generate: w(L2), cours: C2, classe: '6e' },
+  { titre: 'Horaire d\'arrivée', generate: w(L3), cours: C3, classe: '6e' },
+  { titre: 'Lire une fiche horaire', generate: w(L4), cours: C4, classe: '5e' },
+  { titre: 'Heures, minutes et durées décimales', generate: w(L5), cours: C5, classe: '5e' },
+  { titre: 'Distance parcourue : d = v × t', generate: w(L6), cours: C6, classe: '5e' },
+  { titre: 'Vitesse moyenne : v = d ÷ t', generate: w(L7), cours: C7, classe: '4e' },
+  { titre: 'Durée d\'un trajet : t = d ÷ v', generate: w(L8), cours: C8, classe: '4e' },
+  { titre: 'km/h et m/s', generate: w(L9), cours: C9, classe: '4e' },
+  { titre: 'Lire un graphique horaire', generate: w(L10), cours: C10, classe: '4e – 3e' },
+  { titre: 'Croisement de deux trains', generate: w(L11), cours: C11, classe: '3e' },
+  { titre: 'Rattrapage', generate: w(L12), cours: C12, classe: '3e' },
 ];
