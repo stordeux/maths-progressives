@@ -21,7 +21,7 @@ export const MODULES = [
   // ---
   { id: 'stats-probas', titre: 'Statistiques et probabilités', emoji: '🎲', classes: '5e – 3e', groupe: 'Proportionnalité et données', couleur: '#087f5b', couleur2: '#e6fcf5', resume: 'Moyenne, médiane, étendue ; dés, urnes et arbres.' },
   // ---
-  { id: 'trains', titre: 'Trains, durées et vitesses', emoji: '🚆', classes: '5e – 3e', groupe: 'Proportionnalité et données', couleur: '#1d4ed8', couleur2: '#e8efff', resume: 'Horaires et durées, vitesse moyenne, graphique horaire, rattrapage et croisement de trains.', etat: 'bientot' },
+  { id: 'trains', titre: 'Trains, durées et vitesses', emoji: '🚆', classes: '5e – 3e', groupe: 'Proportionnalité et données', couleur: '#1d4ed8', couleur2: '#e8efff', resume: 'Horaires et durées, vitesse moyenne, graphique horaire, rattrapage et croisement de trains.' },
   // --- géométrie
   { id: 'pythagore', titre: 'Théorème de Pythagore', emoji: '📐', classes: '4e', groupe: 'Géométrie', couleur: '#c2255c', couleur2: '#fff0f6', resume: 'Repérer l\'hypoténuse, calculer une longueur, la réciproque.' },
   // ---
