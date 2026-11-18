@@ -71,7 +71,12 @@ export const FICTIVES = ['Pont-Morin', 'Val-Clairet', 'Beaulac', 'Roche-Sablon',
 const fict = n => shuffle([...FICTIVES]).slice(0, n);
 let META = {};
 /** « de Pau », « d'Agen » */
-const de = n => (/^[AEIOUÉH]/.test(n) ? `d'${n}` : `de ${n}`);
+// « de » et « à » devant un nom de gare : d'Arras, du Mans, des Aubrais ; à Lyon, au Havre, aux Aubrais
+const de = n => (/^Les /.test(n) ? `des ${n.slice(4)}` : /^Le /.test(n) ? `du ${n.slice(3)}` : /^[AEIOUÉH]/.test(n) ? `d'${n}` : `de ${n}`);
+const a = n => (/^Les /.test(n) ? `aux ${n.slice(4)}` : /^Le /.test(n) ? `au ${n.slice(3)}` : `à ${n}`);
+// mêmes tournures, nom de la gare en gras : « du <b>Havre</b> »
+const gras = f => n => f(n).replace(/^(\S+ |d')(.*)$/, '$1<b>$2</b>');
+const deB = gras(de), aB = gras(a);
 const asH = m => (m % 60 === 0 ? `${m / 60}${NB}h` : m < 60 ? `${m}${NB}min` : decimalOK(m) ? `${M(r6(m / 60))}${NB}h = ${dur(m)}` : `${m}${NB}min = ${dur(m)}`);
 /** une liaison réelle (A, B, km) et une durée entière de [lo ; hi] minutes (par pas st) dont la vitesse moyenne est plausible pour le type de train ; null si le tirage échoue */
 function trip(lo, hi, st = 1) {
@@ -123,7 +128,7 @@ function L1(d) {
   const visual = d < 2 && chance(0.5) ? V.horloges(t1, t2) : V.frise(t1, t2, { dur: '?' });
   return {
     type: 'nums', tpl: 'Durée : {0} min', keys: {},
-    html: `${prenom()} prend un ${n} pour aller ${de(A)} à ${B}.<br>Départ : <b>${hm(t1)}</b>. Arrivée : <b>${hm(t2)}</b>.<br>Quelle est la durée du trajet ?`,
+    html: `${prenom()} prend un ${n} pour aller ${de(A)} ${a(B)}.<br>Départ : <b>${hm(t1)}</b>. Arrivée : <b>${hm(t2)}</b>.<br>Quelle est la durée du trajet ?`,
     visual,
     check: numsCheck([gap], { msg: v => (v[0] === m2 ? 'Tu as recopié les minutes de l\'arrivée. Une durée, c\'est l\'écart entre le départ et l\'arrivée.' : v[0] === m1 + m2 ? 'On n\'additionne pas les deux horaires : la durée est l\'écart entre eux.' : v[0] > 59 ? 'Dans la même heure, la durée est inférieure à 60 min.' : '') }),
     value: dt(h, m2) - dt(h, m1),
@@ -156,7 +161,7 @@ function L2(d) {
   const { A, B } = tr, pile = (hOf(t1) + 1) * 60, p1 = pile - t1, p2 = t2 - pile;
   META = { segs: [{ km: tr.km, tmin: D, n: tr.n }], tmin: D, t1, t2 };
   const h0 = hOf(t2) - hOf(t1), m0 = Math.abs(mOf(t2) - mOf(t1));
-  const html = `${prenom()} prend un ${tr.n} qui part ${de(A)} à <b>${hm(t1)}</b> et arrive à ${B} à <b>${hm(t2)}</b>.<br>Combien de temps dure le trajet ?`;
+  const html = `${prenom()} prend un ${tr.n} qui part ${de(A)} à <b>${hm(t1)}</b> et arrive ${a(B)} à <b>${hm(t2)}</b>.<br>Combien de temps dure le trajet ?`;
   const common = { html, visual: V.frise(t1, t2, { dur: '?' }) };
   const err = 'Attention : tu as soustrait les minutes « dans le mauvais sens ». Quand les minutes d\'arrivée sont plus petites, passe par l\'heure pile.';
   if (D < 60) {
@@ -201,7 +206,7 @@ function L3(d) {
   const e = new Date(Date.UTC(2026, 0, 1, hOf(t1), mOf(t1) + D));
   return {
     type: 'nums', tpl: 'Arrivée à {0} h {1}', keys: {},
-    html: `Un ${tr.n} part ${de(A)} à <b>${hm(t1)}</b>. Le trajet jusqu'à ${B} dure <b>${dur(D)}</b>.<br>À quelle heure arrive-t-il ?`,
+    html: `Un ${tr.n} part ${de(A)} à <b>${hm(t1)}</b>. Le trajet jusqu'${a(B)} dure <b>${dur(D)}</b>.<br>À quelle heure arrive-t-il ?`,
     visual: V.frise(t1, t2, { endUnknown: true, dur: V.dureeTxt(D) }),
     check: numsCheck([H2, M2], { msg: v => {
       if (v[1] > 59) return v[0] * 60 + v[1] === t2 ? 'L\'horaire est juste, mais on n\'écrit pas plus de 59 minutes : 60 min = 1 h, reporte l\'heure.' : MSG60;
@@ -259,11 +264,11 @@ function L4(d) {
   if (kind === 2) {
     const i = ri(1, n - 2), S = rows[i].dep - rows[i].arr;
     return { type: 'nums', tpl: 'Durée de l\'arrêt : {0} min', keys: {}, visual: V.ficheHoraire(rows, { hl: [i] }),
-      html: `Voici la fiche horaire d'un train. Combien de temps le train reste-t-il arrêté à <b>${names[i]}</b> ?`,
+      html: `Voici la fiche horaire d'un train. Combien de temps le train reste-t-il arrêté ${aB(names[i])} ?`,
       check: numsCheck([S], { msg: v => (v[0] === rows[i].arr - rows[i - 1].dep ? 'Tu as calculé le temps de roulage depuis la gare précédente ; l\'arrêt, c\'est le temps entre l\'arrivée et le départ dans la même gare.' : '') }),
       value: dt(hOf(rows[i].dep), mOf(rows[i].dep)) - dt(hOf(rows[i].arr), mOf(rows[i].arr)),
-      hint: `Pendant l'arrêt, le train est dans la même gare : regarde la ligne de ${names[i]}, colonne « Arrivée » puis colonne « Départ ».`,
-      solution: `À ${names[i]}, le train arrive à ${hm(rows[i].arr)} et repart à ${hm(rows[i].dep)} : ${S} min d'arrêt.` };
+      hint: `Pendant l'arrêt, le train est dans la même gare : regarde la ligne ${de(names[i])}, colonne « Arrivée » puis colonne « Départ ».`,
+      solution: `${a(names[i]).replace(/^./, c => c.toUpperCase())}, le train arrive à ${hm(rows[i].arr)} et repart à ${hm(rows[i].dep)} : ${S} min d'arrêt.` };
   }
   let i, j;
   if (kind === 0) { i = ri(0, n - 2); j = i + 1; }
@@ -272,14 +277,14 @@ function L4(d) {
   if (kind === 1 && n === 3) { i = 0; j = 2; }
   const from = rows[i].dep, to = rows[j].arr, D = to - from;
   const alt = [i ? to - rows[i].arr : null, j < n - 1 ? rows[j].dep - from : null].filter(x => x !== null && x !== D);
-  const txt = kind === 0 ? `Combien de temps le train met-il pour aller ${/^[AEIOUÉH]/.test(names[i]) ? "d'" : 'de '}<b>${names[i]}</b> à <b>${names[j]}</b> ?`
-    : `${p} monte dans le train à <b>${names[i]}</b> et descend à <b>${names[j]}</b>. Combien de temps dure son trajet dans le train ?`;
+  const txt = kind === 0 ? `Combien de temps le train met-il pour aller ${deB(names[i])} ${aB(names[j])} ?`
+    : `${p} monte dans le train ${aB(names[i])} et descend ${aB(names[j])}. Combien de temps dure son trajet dans le train ?`;
   return { type: 'nums', tpl: TPL_DUR, keys: {}, visual: V.ficheHoraire(rows, { hl: [i, j] }),
     html: `Voici la fiche horaire d'un train.<br>${txt}`,
     check: hmCheck(hOf(D), mOf(D), (h, m) => (alt.includes(h * 60 + m) ? 'Presque : tu as pris la mauvaise colonne. On part à l\'heure de la colonne « Départ » de la gare de départ, et on arrive à l\'heure de la colonne « Arrivée » de la gare d\'arrivée.' : '')),
     verify: E => E[0] * 60 + E[1] === dt(hOf(to), mOf(to)) - dt(hOf(from), mOf(from)),
-    hint: `Lis la bonne colonne : on quitte ${names[i]} à l'heure de la colonne « Départ », et on arrive à ${names[j]} à l'heure de la colonne « Arrivée ». Puis calcule l'écart (par l'heure pile si besoin).`,
-    solution: `Départ de ${names[i]} : ${hm(from)}. Arrivée à ${names[j]} : ${hm(to)}.<br>De ${hm(from)} à ${hm(to)} : ${dur(D)}.` };
+    hint: `Lis la bonne colonne : on quitte ${names[i]} à l'heure de la colonne « Départ », et on arrive ${a(names[j])} à l'heure de la colonne « Arrivée ». Puis calcule l'écart (par l'heure pile si besoin).`,
+    solution: `Départ ${de(names[i])} : ${hm(from)}. Arrivée ${a(names[j])} : ${hm(to)}.<br>De ${hm(from)} à ${hm(to)} : ${dur(D)}.` };
 }
 function C4() {
   const rows = [{ g: 'Pau', arr: null, dep: 7 * 60 + 52 }, { g: 'Tarbes', arr: 8 * 60 + 33, dep: 8 * 60 + 36 }, { g: 'Lourdes', arr: 8 * 60 + 55, dep: 8 * 60 + 58 }, { g: 'Toulouse', arr: 10 * 60 + 5, dep: null }];
@@ -362,7 +367,7 @@ function L6(d) {
   let acc = 0; for (let i = 0; i < tmin; i++) acc += v / 60;
   return {
     type: 'nums', tpl: 'Distance : {0} km', keys: {}, visual: V.ligne({ a: A, b: B, dist: '', dur: V.dureeTxt(tmin), v: `${v} km/h`, inconnu: 'dist' }),
-    html: `Un ${n} relie ${A} à ${B}. Il roule à la vitesse constante de <b>${kmh(v)}</b> pendant <b>${tTxt}</b>.<br>Quelle distance parcourt-il ?`,
+    html: `Un ${n} relie ${A} ${a(B)}. Il roule à la vitesse constante de <b>${kmh(v)}</b> pendant <b>${tTxt}</b>.<br>Quelle distance parcourt-il ?`,
     check: numsCheck([dist], { msg: u => diag(u[0], [[v * (h + m / 100), `${dur(tmin)} ne s'écrit pas ${M(h + m / 100)} h : convertis les minutes en heures (÷ 60).`], [v * tmin, 'Tu as multiplié par des minutes. La vitesse est en km/h : il faut une durée en heures.'], [v / (tmin / 60), 'Pour une distance, on multiplie la vitesse par la durée (d = v × t), on ne divise pas.']]) }),
     value: acc,
     hint: `Utilise d = v × t, avec v en km/h et t en <b>heures</b>.${d >= 2 ? ' Convertis d\'abord la durée en heures (30 min = 0,5 h).' : ''}`,
@@ -414,7 +419,7 @@ function L8(d) {
   const x = r6(tmin / 60);
   return {
     type: 'nums', tpl: TPL_DUR, keys: {}, visual: V.ligne({ a: A, b: B, dist: `${dist} km`, dur: '', v: `${v} km/h`, inconnu: 'dur' }),
-    html: `Un ${n} doit parcourir <b>${km(dist)}</b> ${de(A)} à ${B} à la vitesse moyenne de <b>${kmh(v)}</b>.<br>Combien de temps dure le trajet ?`,
+    html: `Un ${n} doit parcourir <b>${km(dist)}</b> ${de(A)} ${a(B)} à la vitesse moyenne de <b>${kmh(v)}</b>.<br>Combien de temps dure le trajet ?`,
     check: hmCheck(H, Mi, (h, m) => (Mi && h === H && m === Math.round((x - H) * 100) ? `Attention : ${M(x)} h, ce n'est pas ${H} h ${Math.round((x - H) * 100)} min. La partie décimale se multiplie par 60 pour obtenir les minutes.` : '')),
     verify: E => E[0] * 60 + E[1] === m2,
     hint: `Utilise t = d ÷ v : le résultat est en heures. Si le résultat est décimal, convertis la partie décimale en minutes (× 60).`,
@@ -510,7 +515,7 @@ function L10(d) {
     }
     const Dm = 30 * n;
     return { type: 'nums', tpl: TPL_DUR, keys: {}, visual: graph10([line], T0), afterVisual: graph10([line], T0, [{ t: T0 + Dm, y: D, lt: hm(T0 + Dm).replace(/&nbsp;/g, ' '), ly: `${D} km` }]), replaceVisual: true,
-      html: `Le graphique montre le trajet d'un train ${de(A)} à ${B}.<br>Combien de temps dure le trajet ?`,
+      html: `Le graphique montre le trajet d'un train ${de(A)} ${a(B)}.<br>Combien de temps dure le trajet ?`,
       check: hmCheck(hOf(Dm), mOf(Dm)),
       verify: E => E[0] * 60 + E[1] === pts[1][0] - pts[0][0],
       hint: `Le train part quand la courbe quitte l'axe, et arrive quand elle s'arrête. Lis ces deux heures sur l'axe horizontal, puis calcule l'écart.`,
@@ -525,7 +530,7 @@ function L10(d) {
     const vis = graph10([line], T0);
     if (kind === 2) {
       return { type: 'nums', tpl: TPL_DUR, keys: {}, visual: vis,
-        html: `Le graphique montre le trajet d'un train ${de(A)} à ${B}, avec un arrêt en route.<br>Combien de temps dure l'arrêt ?`,
+        html: `Le graphique montre le trajet d'un train ${de(A)} ${a(B)}, avec un arrêt en route.<br>Combien de temps dure l'arrêt ?`,
         check: hmCheck(hOf(s.st), mOf(s.st), (h, m) => (h * 60 + m === s.d1 || h * 60 + m === s.d2 ? 'Tu as lu la durée d\'un morceau de trajet. L\'arrêt, c\'est le morceau <b>horizontal</b> de la courbe : la distance ne change pas.' : '')),
         verify: E => E[0] * 60 + E[1] === pts[2][0] - pts[1][0] && pts[2][1] === pts[1][1],
         hint: `Pendant l'arrêt, la distance ne change pas : la courbe est horizontale. Lis l'heure où commence ce morceau horizontal et l'heure où il finit.`,
@@ -535,7 +540,7 @@ function L10(d) {
     const moy = pts[3][1] / ((pts[3][0] - T0) / 60);
     META = { kind: 3, moy, vv };
     return { type: 'nums', tpl: 'Vitesse : {0} km/h', keys: {}, visual: vis,
-      html: `Le graphique montre le trajet d'un train ${de(A)} à ${B}, avec un arrêt.<br>Quelle est la vitesse du train ${first ? 'entre le départ et l\'arrêt' : 'après l\'arrêt, jusqu\'à l\'arrivée'} ?`,
+      html: `Le graphique montre le trajet d'un train ${de(A)} ${a(B)}, avec un arrêt.<br>Quelle est la vitesse du train ${first ? 'entre le départ et l\'arrêt' : 'après l\'arrêt, jusqu\'à l\'arrivée'} ?`,
       check: numsCheck([vv], { msg: u => (Math.abs(u[0] - moy) < 1e-6 ? 'Tu as calculé la vitesse moyenne de tout le trajet, arrêt compris. Ici, on demande la vitesse sur un seul morceau.' : u[0] === tb[1] - ta[1] ? 'Tu as donné la distance parcourue. Pour la vitesse, divise-la par la durée (en heures).' : '') }),
       value: (tb[1] - ta[1]) / ((tb[0] - ta[0]) / 60),
       hint: `Lis sur le graphique la distance parcourue et la durée de ce morceau, puis calcule v = d ÷ t (durée en heures).`,
@@ -616,7 +621,7 @@ function L11(d) {
   if (d < 1) return { ...base, type: 'nums', tpl: 'Ils se croisent au bout de {0} h {1} min', html: html + '<br>Au bout de combien de temps se croisent-ils ?' };
   const steps = (l1t) => ({ ...base, type: 'steps', labels: ['heures', 'minutes', 'kilomètres'],
     tpl: `<div class="stepline">${l1t}</div><div class="stepline">Distance depuis ${A} : {2} km</div>` });
-  if (!clock) return { ...steps('Durée avant la rencontre : {0} h {1} min'), html: html + '<br>Combien de temps après le départ se croisent-ils, et à quelle distance de ' + A + ' ?' };
+  if (!clock) return { ...steps('Durée avant la rencontre : {0} h {1} min'), html: html + '<br>Combien de temps après le départ se croisent-ils, et à quelle distance ' + de(A) + ' ?' };
   return { ...steps('Heure de la rencontre : {0} h {1}'), html: html + `<br>À quelle heure se croisent-ils, et à quelle distance ${de(A)} ?` };
 }
 function C11() {

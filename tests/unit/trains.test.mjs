@@ -11,7 +11,8 @@ const REELLES = [...new Set(LIGNES.flat().map(g => g[0]))];
 const vit = s => s.km / s.tmin * 60;
 const dans = (v, n) => v >= RANGES[n][0] - 1e-9 && v <= RANGES[n][1] + 1e-9;
 const gen = (L, d, seed) => { setSeed(seed); return LEVELS[L].generate(d); };
-const mentionne = (txt, noms) => noms.filter(n => new RegExp(`(^|[^\\p{L}])${n}([^\\p{L}]|$)`, 'u').test(txt));
+// « Le Havre » peut s'écrire « du Havre », « au Havre » : on cherche aussi le nom sans l'article
+const mentionne = (txt, noms) => noms.filter(n => new RegExp(`(^|[^\\p{L}])(${n}|${n.replace(/^Les? /, '')})([^\\p{L}]|$)`, 'u').test(txt));
 
 test('les distances de la table de lignes sont plausibles', () => {
   assert.ok(PAIRS.length > 100);
