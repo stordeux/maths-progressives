@@ -12,9 +12,9 @@ Légende : ✅ couvert par un module · 🟡 en partie · ❌ absent.
 ## Nombres et calculs
 | Notion | Classe | État | Où / ce qui manque |
 |---|---|---|---|
-| Numération décimale, comparer, ranger, encadrer des décimaux | 6e | ❌ | aucun module « nombres décimaux » |
+| Numération décimale, comparer, ranger, encadrer des décimaux | 6e | ✅ | Nombres décimaux N1 à N6 |
 | × et ÷ par 10, 100, 1 000 ; calcul mental | 6e | ✅ | Calcul mental |
-| Multiplication de deux décimaux, division décimale (partage, quotition) | 6e | 🟡 | seulement en calcul mental ; pas d'opérations posées ni de problèmes |
+| Multiplication de deux décimaux, division décimale (partage, quotition) | 6e | ✅ | Nombres décimaux N7 à N12 |
 | Fraction quotient (a/b × b = a), fraction d'un nombre, pourcentage d'une quantité | 6e | 🟡 | Fractions N7, Proportionnalité N8 ; le sens « quotient » n'est pas travaillé |
 | Comparer, additionner des fractions | 6e–5e | ✅ | Fractions N4 à N6, N9 |
 | Multiples, diviseurs, critères de divisibilité (2, 3, 5, 9) | 5e–3e | ❌ | |

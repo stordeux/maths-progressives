@@ -55,3 +55,9 @@ Les tickets du bouton 🐞 sont dans gitlab.inria.fr/tordeux/signalements-exerci
 ## 2026-11-19 · S. Tordeux : « je veux un bouton réinitialiser »
 
 **Repris** : bouton **🔄 Réinitialiser** sur l'accueil (section « Ma progression »), avec une confirmation dans la page. Il efface niveaux, étoiles et scores de tous les modules ; les réglages et la fenêtre d'accueil déjà vue sont gardés. Le bouton « Remettre ce module à zéro » du menu Niveaux de chaque module existait déjà et reste.
+
+## 2026-11-19 · Nouveaux modules (programmes du collège)
+
+| Module | Repris | Relecture |
+|---|---|---|
+| Nombres décimaux (6e) | 12 niveaux : chiffres, fractions décimales, droite graduée, comparer, ranger, arrondir, opérations, ×/÷ 10…0,01, multiplication, division, ordre de grandeur, problèmes. | Indices relus sur échantillon (ils citent les nombres de l'exercice) ; corrigé « Un gomme » et « 1 dixièmes ». À trancher : la division par un décimal (niveau 10) relève peut-être de la 5e. |
