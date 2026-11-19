@@ -25,6 +25,8 @@ export const MODULES = [
   // ---
   { id: 'stats-probas', titre: 'Statistiques et probabilités', emoji: '🎲', classes: '5e – 3e', groupe: 'Proportionnalité et données', couleur: '#087f5b', couleur2: '#e6fcf5', resume: 'Moyenne, médiane, étendue ; dés, urnes et arbres.' },
   // ---
+  { id: 'stats3e', titre: 'Statistiques de 3e', emoji: '📦', classes: '4e – 3e', groupe: 'Proportionnalité et données', couleur: '#6d28d9', couleur2: '#f1ebff', resume: 'Effectifs et fréquences cumulés, médiane, quartiles, boîtes à moustaches, comparaison de séries.' },
+  // ---
   { id: 'trains', titre: 'Trains, durées et vitesses', emoji: '🚆', classes: '5e – 3e', groupe: 'Proportionnalité et données', couleur: '#1d4ed8', couleur2: '#e8efff', resume: 'Horaires et durées, vitesse moyenne, graphique horaire, rattrapage et croisement de trains.' },
   // ---
   { id: 'ratios', titre: 'Ratios et fractions', emoji: '🍰', classes: '4e – 3e', groupe: 'Proportionnalité et données', couleur: '#7b3fa0', couleur2: '#f5ecfa', resume: 'Fraction-quotient, inverse, division de fractions, puis ratios et partages proportionnels en deux ou trois parts.' },
