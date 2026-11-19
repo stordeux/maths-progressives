@@ -45,6 +45,7 @@ accueil → **Ma progression** → **Exporter** (code à recopier ou fichier `.j
 | ➗ Arithmétique | 5e – 3e | Calcul |
 | 📊 Proportionnalité et pourcentages | 6e – 3e | Proportionnalité et données |
 | 🎲 Statistiques et probabilités | 5e – 3e | Proportionnalité et données |
+| 📦 Statistiques de 3e | 4e – 3e | Proportionnalité et données |
 | 🚆 Trains, durées et vitesses | 5e – 3e | Proportionnalité et données |
 | 📐 Théorème de Pythagore | 4e | Géométrie |
 | 🔺 Thalès et trigonométrie | 3e | Géométrie |
