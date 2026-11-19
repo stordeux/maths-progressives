@@ -37,6 +37,9 @@ export function position(S) {
   // anciennes progressions (avant les étoiles) : la série de réussites en cours tient lieu d'étoiles, comme dans bouger()
   const brut = S.stars === undefined ? Math.min(ETOILES_PAR_NIVEAU - 1, entier(S.streak)) : entier(S.stars);
   const etoiles = Math.max(0, Math.min(ETOILES_PAR_NIVEAU, brut));
+  // Le titre suit les étoiles gagnées en jouant dans ce module (60 au plus) : il ne redescend pas après une faute
+  // et ne monte pas quand on choisit un niveau dans le menu. Progressions anciennes : position courante.
+  if (S.gagnees !== undefined) return Math.max(0, Math.min(POSITION_MAX, entier(S.gagnees)));
   return Math.min(POSITION_MAX, niveau * ETOILES_PAR_NIVEAU + etoiles);
 }
 

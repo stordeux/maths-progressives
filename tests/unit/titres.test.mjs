@@ -49,7 +49,17 @@ test('la position suit bouger() pas à pas, de 0 à 60', () => {
   const S = { level: 0, stars: 0 };
   for (let p = 1; p <= 60; p++) { bouger(S, 1, 12); assert.equal(position(S), p); }
   bouger(S, 1, 12); assert.equal(position(S), 60);
-  bouger(S, -2, 12); assert.equal(position(S), 58);
+  bouger(S, -2, 12); assert.equal(position(S), 60); // étoiles gagnées : une faute ne fait pas redescendre le titre
+});
+
+test('le menu Niveaux ne fait pas monter le titre : seules les étoiles gagnées en jouant comptent', () => {
+  const S = { level: 0, stars: 0 };
+  bouger(S, 1, 12); bouger(S, 1, 12);
+  assert.equal(position(S), 2);
+  S.level = 11; S.stars = 0; // choix du niveau 12 dans le menu
+  assert.equal(position(S), 2);
+  bouger(S, 1, 12); // une réussite au niveau 12 : une étoile gagnée de plus, pas 56
+  assert.equal(position(S), 3);
 });
 
 test('score global = somme sur tous les modules ; un module jamais ouvert compte 0', () => {

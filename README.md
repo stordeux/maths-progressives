@@ -25,7 +25,7 @@ accueil → **Ma progression** → **Exporter** (code à recopier ou fichier `.j
   suivant, sous 0 on revient au niveau précédent avec le reste (niveau 3 et 1 ★, une faute → niveau 2 et 4 ★).
   Le niveau et les étoiles sont affichés en haut de l'écran ; un bandeau annonce chaque changement de niveau.
 - **Un titre par élève** (sur l'appareil), qui récompense toute la progression : on additionne les étoiles de tous les modules
-  (niveau × 5 + étoiles en cours, 60 au plus par module). Dix titres : Stagiaire (0 ★), Novice (10), Apprenti (30), Confirmé (60),
+  (étoiles gagnées en jouant, 60 au plus par module ; une faute ou le menu Niveaux ne changent pas le titre). Dix titres : Stagiaire (0 ★), Novice (10), Apprenti (30), Confirmé (60),
   Expérimenté (120), Expert (240), Maître (420), Grand maître (600), Grandiose (840), International (1 080). L'accueil affiche le titre,
   le total d'étoiles et une barre vers le titre suivant ; dans un module, un bandeau « 🎖️ Tu deviens … ! » annonce chaque nouveau titre.
   Le titre n'est pas stocké : il se recalcule (`engine/titres.js`), donc il suit l'export / import et revient à Stagiaire avec « Réinitialiser ».

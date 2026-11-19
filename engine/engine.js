@@ -39,6 +39,8 @@ export function bouger(S, delta, nbNiveaux) {
   S.level = Math.min(nbNiveaux - 1, Math.floor(p / ETOILES));
   S.stars = p - S.level * ETOILES;
   S.streak = S.stars; // compatibilité (difficulté, contexte des signalements)
+  // étoiles gagnées en jouant (jamais retirées, pas changées par le menu Niveaux) : c'est ce qui compte pour le titre
+  if (delta > 0) S.gagnees = (S.gagnees || 0) + delta;
   return Math.sign(S.level - avant);
 }
 export const etoilesHTML = n => Array.from({ length: ETOILES }, (_, i) => `<i class="${i < n ? 'on' : ''}">${i < n ? '★' : '☆'}</i>`).join('');
