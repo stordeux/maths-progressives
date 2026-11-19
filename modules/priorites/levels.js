@@ -765,18 +765,41 @@ ${demo(() => sub(mul(N(-2), B(add(N(3), sq(N(-1))))), fr(add(N(-6), N(2)), N(-2)
 <div class="retenir">À retenir : groupes, carrés, × ÷, + − : toujours dans cet ordre.</div>`;
 }
 
+
+// Après 2 réussites, les exercices passent en « trouve toi-même les calculs » : chaque cours en montre un exemple
+// (retour d'élève 2026-11-18 : les cours doivent ressembler aux exercices).
+const LIBRE = {
+  1: ['30 + 4 × 9 − 4', ['4 × 9 = 36', '30 + 36 = 66'], '66 − 4 = 62'],
+  2: ['20 − 7 + 5 − 3', ['20 − 7 = 13', '13 + 5 = 18'], '18 − 3 = 15'],
+  3: ['48 ÷ 6 × 2 ÷ 4', ['48 ÷ 6 = 8', '8 × 2 = 16'], '16 ÷ 4 = 4'],
+  4: ['6 × 5 − 12 ÷ 3', ['6 × 5 = 30', '12 ÷ 3 = 4'], '30 − 4 = 26'],
+  5: ['40 ÷ (13 − 5)', ['13 − 5 = 8'], '40 ÷ 8 = 5'],
+  6: ['3 × (2 × 4 + 1) − 5', ['2 × 4 = 8', '8 + 1 = 9', '3 × 9 = 27'], '27 − 5 = 22'],
+  7: ['2 + 3 × [10 − (1 + 4)]', ['1 + 4 = 5', '10 − 5 = 5', '3 × 5 = 15'], '2 + 15 = 17'],
+  8: ['(18 + 6) ÷ (2 × 4), écrit avec un trait de fraction', ['18 + 6 = 24 (le haut)', '2 × 4 = 8 (le bas)'], '24 ÷ 8 = 3'],
+  9: ['5 + 3<sup>2</sup> × 2', ['3<sup>2</sup> = 9', '9 × 2 = 18'], '5 + 18 = 23'],
+  10: ['−3 + (−2) × 5 − 4', ['(−2) × 5 = −10', '−3 + (−10) = −13'], '−13 − 4 = −17'],
+  11: ['le programme « Choisis 3. Ajoute 2. Multiplie par 4. Soustrais 5. », écrit (3 + 2) × 4 − 5', ['3 + 2 = 5', '5 × 4 = 20'], '20 − 5 = 15'],
+};
+const libre = n => {
+  const [e, etapes, fin] = LIBRE[n];
+  return `<h3>Quand l'exercice dit « Trouve toi-même les calculs »</h3>
+<p>Après deux réussites, les calculs ne sont plus mis en couleur : c'est toi qui choisis le calcul à faire à chaque ligne, en respectant les priorités. Écris le résultat de chaque calcul dans sa case, dans l'ordre où tu les fais.</p>
+<div class="ex"><span class="q">Exemple : ${e}</span><br>${etapes.map((t, i) => `Calcul n° ${i + 1} : ${t}`).join('<br>')}<br>Résultat final : <b>${fin}</b></div>`;
+};
+
 export const LEVELS = [
-  { titre: '× avant + et −', generate: L1, cours: C1, classe: '5e' },
-  { titre: '+ et − : de gauche à droite', generate: L2, cours: C2, classe: '5e' },
-  { titre: '× et ÷ : de gauche à droite', generate: L3, cours: C3, classe: '5e' },
-  { titre: 'Les quatre opérations', generate: L4, cours: C4, classe: '5e' },
-  { titre: 'Parenthèses', generate: L5, cours: C5, classe: '5e' },
-  { titre: 'Parenthèses et priorités mêlées', generate: L6, cours: C6, classe: '5e' },
-  { titre: 'Crochets, parenthèses imbriquées', generate: L7, cours: C7, classe: '5e / 4e' },
-  { titre: 'Traits de fraction', generate: L8, cours: C8, classe: '4e' },
-  { titre: 'Carrés', generate: L9, cours: C9, classe: '4e' },
-  { titre: 'Avec des nombres relatifs', generate: L10, cours: C10, classe: '4e' },
-  { titre: 'Programme de calcul → expression', generate: L11, cours: C11, classe: '4e' },
+  { titre: '× avant + et −', generate: L1, cours: () => C1() + libre(1), classe: '5e' },
+  { titre: '+ et − : de gauche à droite', generate: L2, cours: () => C2() + libre(2), classe: '5e' },
+  { titre: '× et ÷ : de gauche à droite', generate: L3, cours: () => C3() + libre(3), classe: '5e' },
+  { titre: 'Les quatre opérations', generate: L4, cours: () => C4() + libre(4), classe: '5e' },
+  { titre: 'Parenthèses', generate: L5, cours: () => C5() + libre(5), classe: '5e' },
+  { titre: 'Parenthèses et priorités mêlées', generate: L6, cours: () => C6() + libre(6), classe: '5e' },
+  { titre: 'Crochets, parenthèses imbriquées', generate: L7, cours: () => C7() + libre(7), classe: '5e / 4e' },
+  { titre: 'Traits de fraction', generate: L8, cours: () => C8() + libre(8), classe: '4e' },
+  { titre: 'Carrés', generate: L9, cours: () => C9() + libre(9), classe: '4e' },
+  { titre: 'Avec des nombres relatifs', generate: L10, cours: () => C10() + libre(10), classe: '4e' },
+  { titre: 'Programme de calcul → expression', generate: L11, cours: () => C11() + libre(11), classe: '4e' },
   { titre: 'Défis', generate: L12, cours: C12, classe: '4e' },
 ];
 export const OPTIONS = { need: 4, keys: { neg: false } };
