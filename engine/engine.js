@@ -13,15 +13,34 @@ const PRAISE = ['Bravo !', 'Excellent !', 'Parfait !', 'Bien joué !', 'Super !'
 const $ = (s, r = document) => r.querySelector(s);
 
 /**
- * Difficulté d passée aux générateurs (0 à 5). La série de réussites ne va que de 0 à NEED − 1
- * (au NEED-ième succès on change de niveau) : on l'étale sur 0…5, avec un peu de hasard pour que
- * chaque valeur de d soit atteinte (NEED = 4 : série 0 → d 0 ou 1, 1 → 1 ou 2, 2 → 3 ou 4, 3 → 5).
+ * Difficulté d passée aux générateurs (0 à 5). Le nombre d'étoiles du niveau va de 0 à 4 (à 5 on monte) :
+ * on l'étale sur 0…5, avec un peu de hasard pour que chaque valeur de d soit atteinte
+ * (difficulte(étoiles, 5) : 0 → d 0 ou 1, 1 → 1 ou 2, 2 → 2 ou 3, 3 → 3 ou 4, 4 → 5).
  * (Relecture Codex : sans cela, les variantes d ≥ 4 n'apparaissaient jamais.)
  */
 export function difficulte(streak, need) {
   const base = Math.floor(streak * 5 / Math.max(1, need - 1));
   return Math.min(5, base + (base < 5 && chance(0.5) ? 1 : 0));
 }
+
+/**
+ * Étoiles (décision de S. Tordeux, 2026-11-19) : 5 étoiles par niveau, en continu.
+ * Une réussite (du premier coup, sans indice) donne +1 étoile ; une faute (première réponse fausse) en retire 2.
+ * À 5 étoiles on passe au niveau suivant avec 0 étoile ; sous 0 on redescend au niveau précédent avec le reste
+ * (niveau 3, 1 étoile, une faute → niveau 2, 4 étoiles). Plancher : niveau 1, 0 étoile ; au dernier niveau, 5 au plus.
+ * Renvoie le changement de niveau (+1, −1 ou 0).
+ */
+export const ETOILES = 5;
+export function bouger(S, delta, nbNiveaux) {
+  if (S.stars === undefined) S.stars = Math.min(ETOILES - 1, S.streak || 0);
+  const avant = S.level, max = (nbNiveaux - 1) * ETOILES + ETOILES;
+  let p = Math.max(0, Math.min(max, S.level * ETOILES + S.stars + delta));
+  S.level = Math.min(nbNiveaux - 1, Math.floor(p / ETOILES));
+  S.stars = p - S.level * ETOILES;
+  S.streak = S.stars; // compatibilité (difficulté, contexte des signalements)
+  return Math.sign(S.level - avant);
+}
+export const etoilesHTML = n => Array.from({ length: ETOILES }, (_, i) => `<i class="${i < n ? 'on' : ''}">${i < n ? '★' : '☆'}</i>`).join('');
 
 /** normalise la sortie d'un générateur (champs du contrat) */
 export function normalize(q) {
@@ -151,27 +170,27 @@ export function startModule(id, LEVELS, opts = {}) {
   const NEED = opts.need || 4;
   shell(meta, { scratchpad: opts.scratchpad !== false });
   registerSW();
-  const def = { level: 0, streak: 0, fails: 0, good: 0, total: 0, n: 0, seen: [], max: 0 };
+  const def = { level: 0, streak: 0, stars: 0, fails: 0, good: 0, total: 0, n: 0, seen: [], max: 0 };
   let S = store.load(id, def);
   if (S.level >= LEVELS.length) S.level = 0;
   const save = () => { S.max = Math.max(S.max || 0, S.level); store.save(id, S); };
   // « ?niveau=n » (liens des fiches de synthèse) : ouvre directement le niveau n, comme le menu Niveaux
   const demande = +new URLSearchParams(location.search).get('niveau');
   if (demande >= 1 && demande <= LEVELS.length && demande - 1 !== S.level) {
-    S.level = demande - 1; S.streak = 0; S.fails = 0; save();
+    S.level = demande - 1; S.streak = 0; S.stars = 0; S.fails = 0; save();
   }
 
-  $('#dots').innerHTML = '<i></i>'.repeat(NEED);
-  $('#menuNote').innerHTML = `Le niveau monte après <b>${NEED} bonnes réponses d'affilée</b> (du premier coup, sans indice) ; les exercices se corsent un peu à chaque réussite. Il redescend après <b>2 exercices ratés de suite</b>.`;
+  if (S.stars === undefined) S.stars = Math.min(ETOILES - 1, S.streak || 0);
+  $('#menuNote').innerHTML = `Chaque réussite (du premier coup, sans indice) donne <b>une étoile ★</b> ; chaque faute en retire <b>deux</b>. À <b>${ETOILES} étoiles</b> on passe au niveau suivant ; sous zéro on revient au niveau précédent, sans repartir de zéro. Les exercices se corsent un peu à chaque réussite. Il redescend après <b>2 exercices ratés de suite</b>.`;
 
   const pad = createKeypad($('#pad'), k => key(k));
   const sp = opts.scratchpad !== false ? createScratchpad($('#scratch')) : null;
   const cours = modal('coursModal'), menu = modal('menu');
-  let Q, ui, attempt, usedHint, done, pending = 0;
+  let Q, ui, attempt, usedHint, done, pending = 0, fauteFaite = false;
 
   function newQ() {
-    Q = normalize(LEVELS[S.level].generate(difficulte(S.streak, NEED)));
-    attempt = 1; usedHint = false; done = false; S.n++;
+    Q = normalize(LEVELS[S.level].generate(difficulte(S.stars, ETOILES)));
+    attempt = 1; usedHint = false; done = false; fauteFaite = false; S.n++;
     $('#q').innerHTML = Q.html;
     $('#vis').innerHTML = Q.visual;
     const fb = $('#fb'); fb.className = ''; fb.innerHTML = '';
@@ -206,24 +225,22 @@ export function startModule(id, LEVELS, opts = {}) {
     ui.mark(r.bad || []);
     if (r.ok) {
       S.total++; S.good++; S.fails = 0;
-      if (attempt === 1 && !usedHint) S.streak++;
+      const auMax = S.level === LEVELS.length - 1 && S.stars === ETOILES;
+      if (attempt === 1 && !usedHint) pending = bouger(S, 1, LEVELS.length);
       let m = `<b>✅ ${pick(PRAISE)}</b>`;
       if (attempt > 1 || usedHint) m += ` <span class="note">(réussi avec de l'aide : on s'entraîne encore un peu à ce niveau)</span>`;
       if (r.msg) m += `<br>${r.msg}`;
       m += `<div class="sol">${Q.solution}</div>`;
       fb.className = 'good'; fb.innerHTML = m; finish();
-      if (S.streak >= NEED) {
-        if (S.level < LEVELS.length - 1) pending = 1;
-        else { S.streak = 0; banner(`🏆 Bravo, tu maîtrises tout le module « ${meta.titre} » !`); }
-      }
+      if (!auMax && S.level === LEVELS.length - 1 && S.stars === ETOILES) banner(`🏆 Bravo, tu maîtrises tout le module « ${meta.titre} » !`);
     } else if (attempt === 1) {
       attempt = 2; usedHint = true; $('#hintBtn').hidden = true;
+      if (!fauteFaite) { fauteFaite = true; pending = bouger(S, -2, LEVELS.length); }
       fb.className = 'bad';
       fb.innerHTML = `<b>Pas tout à fait…</b> ${r.msg || ''}<br>💡 ${Q.hint}<br><span class="note">Essaie encore une fois.</span>`;
     } else {
-      S.total++; S.streak = 0; S.fails++;
+      S.total++; S.fails++;
       fb.className = 'bad'; fb.innerHTML = `<b>Voici la correction :</b>${r.msg ? `<br>${r.msg}` : ''}<div class="sol">${Q.solution}</div>`; finish();
-      if (S.fails >= 2 && S.level > 0) pending = -1;
     }
     save(); renderHead();
   }
@@ -236,8 +253,8 @@ export function startModule(id, LEVELS, opts = {}) {
   }
 
   function next() {
-    if (pending === 1) { S.level++; S.streak = 0; S.fails = 0; banner(`🎉 Niveau ${S.level + 1} débloqué : ${LEVELS[S.level].titre}`); }
-    else if (pending === -1) { S.level--; S.streak = 0; S.fails = 0; banner(`On revient au niveau ${S.level + 1} pour consolider 💪`); }
+    if (pending === 1) banner(`🎉 Niveau ${S.level + 1} débloqué : ${LEVELS[S.level].titre}`);
+    else if (pending === -1) banner(`On revient au niveau ${S.level + 1} (${S.stars} ★) pour consolider 💪`);
     pending = 0; save(); newQ();
     $('#q').focus({ preventScroll: true });
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -245,11 +262,12 @@ export function startModule(id, LEVELS, opts = {}) {
 
   function renderHead() {
     $('#lvlName').textContent = `· Niveau ${S.level + 1} : ${LEVELS[S.level].titre}`;
-    [...$('#dots').children].forEach((d, i) => d.classList.toggle('on', i < S.streak));
+    $('#dots').innerHTML = etoilesHTML(S.stars);
+    $('#dots').setAttribute('aria-label', `${S.stars} étoile${S.stars > 1 ? 's' : ''} sur ${ETOILES}`);
     $('#score').textContent = `✔ ${S.good} / ${S.total}`;
     $('#qnum').textContent = `Exercice ${S.n}`;
-    const r = NEED - S.streak;
-    $('#help').textContent = S.level < LEVELS.length - 1 ? `${r} réussite${r > 1 ? 's' : ''} pour monter` : 'Dernier niveau';
+    const r = ETOILES - S.stars;
+    $('#help').textContent = S.level < LEVELS.length - 1 ? `★ ${S.stars}/${ETOILES} · encore ${r} pour monter` : `★ ${S.stars}/${ETOILES} · dernier niveau`;
   }
 
   // cours du niveau dans la page, au-dessus de l'exercice : fermé par défaut, déplié par l'élève, sans cacher l'exercice
@@ -266,7 +284,7 @@ export function startModule(id, LEVELS, opts = {}) {
   function renderMenu() {
     $('#lvlist').innerHTML = LEVELS.map((L, i) => `<button type="button" data-l="${i}" class="${i === S.level ? 'cur' : ''}" ${i === S.level ? 'aria-current="true"' : ''}><span class="tag">${i + 1}</span><span>${L.titre}</span>${L.classe ? `<small>${L.classe}</small>` : ''}</button>`).join('');
     $('#lvlist').querySelectorAll('[data-l]').forEach(b => {
-      b.onclick = () => { S.level = +b.dataset.l; S.streak = 0; S.fails = 0; pending = 0; save(); menu.close(); newQ(); };
+      b.onclick = () => { S.level = +b.dataset.l; S.streak = 0; S.stars = 0; S.fails = 0; pending = 0; save(); menu.close(); newQ(); };
     });
   }
 
@@ -282,7 +300,7 @@ export function startModule(id, LEVELS, opts = {}) {
   $('#resetYes').onclick = () => { S = JSON.parse(JSON.stringify(def)); pending = 0; save(); $('#resetConfirm').hidden = true; menu.close(); newQ(); };
 
   setContexte(() => ({
-    Module: meta.titre, Niveau: `${S.level + 1} – ${LEVELS[S.level].titre}`, 'Exercice n°': S.n, 'Série en cours (d)': S.streak,
+    Module: meta.titre, Niveau: `${S.level + 1} – ${LEVELS[S.level].titre}`, 'Exercice n°': S.n, 'Étoiles': S.stars,
     'Énoncé': Q ? strip(Q.html) : '', 'Réponse attendue': Q ? JSON.stringify(Q.expected) : '', 'Essai': attempt,
   }));
 

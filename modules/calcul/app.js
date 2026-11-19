@@ -2,7 +2,7 @@
 //  • Entraînement : adaptatif, barre de temps ; 5 réussites RAPIDES (⚡) d'affilée pour monter, 2 erreurs de suite pour redescendre.
 //  • Défi 60 s : score, record par niveau, liste des erreurs à la fin.
 // Pas de brouillon dans ce module.
-import { shell, registerSW, banner, modal, speak, setContexte } from '../../engine/engine.js';
+import { shell, registerSW, banner, modal, speak, setContexte, bouger, etoilesHTML, ETOILES } from '../../engine/engine.js';
 import { createKeypad, physicalKey } from '../../engine/keypad.js';
 import { edit, show, parse } from '../../engine/answers/fields.js';
 import * as store from '../../engine/storage.js';
@@ -42,7 +42,7 @@ $('#main').innerHTML = `
   <div class="actions"><button type="button" class="btn" id="againBtn">Rejouer</button><button type="button" class="btn ghost" id="backTrain">Retour à l'entraînement</button></div>
 </section>`;
 
-const def = { level: 0, streak: 0, fails: 0, good: 0, total: 0, seen: [], best: {}, max: 0 };
+const def = { level: 0, streak: 0, stars: 0, fails: 0, good: 0, total: 0, seen: [], best: {}, max: 0 };
 let S = store.load(ID, def);
 const save = () => { S.max = Math.max(S.max || 0, S.level); store.save(ID, S); };
 let mode = 'train', Q, val = '', t0, raf, locked = false, pending = 0, lastQ = '';
@@ -57,19 +57,19 @@ const pad = createKeypad($('#pad'), k => key(k), [
   ['0', '0', '', true], ['ok', 'OK', 'valider', true],
 ]);
 
-$('#dots').innerHTML = '<i></i>'.repeat(NEED);
-$('#menuNote').innerHTML = `Entraînement : <b>${NEED} bonnes réponses rapides</b> d'affilée (⚡ avant la fin de la barre) pour monter ; <b>2 erreurs de suite</b> pour redescendre. Les calculs se corsent à chaque réussite.`;
+if (S.stars === undefined) S.stars = Math.min(ETOILES - 1, S.streak || 0);
+$('#menuNote').innerHTML = `Entraînement : chaque bonne réponse <b>rapide</b> (⚡ avant la fin de la barre) donne <b>une étoile ★</b>, chaque erreur en retire <b>deux</b>. À <b>${ETOILES} étoiles</b> on passe au niveau suivant ; sous zéro on revient au niveau précédent, sans repartir de zéro. Les calculs se corsent à chaque étoile.`;
 
 function renderHead() {
   $('#lvlName').textContent = `· Niveau ${S.level + 1} : ${LEVELS[S.level].titre}`;
-  [...$('#dots').children].forEach((d, i) => d.classList.toggle('on', i < S.streak));
+  $('#dots').innerHTML = etoilesHTML(S.stars);
   $('#dots').style.visibility = mode === 'train' ? 'visible' : 'hidden';
   $('#score').textContent = `✔ ${S.good} / ${S.total}`;
-  if (mode === 'train') { $('#info1').textContent = `✔ ${S.good} / ${S.total}`; $('#info2').textContent = S.level < LEVELS.length - 1 ? `${NEED - S.streak} ⚡ pour monter` : 'Dernier niveau'; }
+  if (mode === 'train') { $('#info1').textContent = `✔ ${S.good} / ${S.total}`; $('#info2').textContent = S.level < LEVELS.length - 1 ? `★ ${S.stars}/${ETOILES} · encore ${ETOILES - S.stars} pour monter` : `★ ${S.stars}/${ETOILES} · dernier niveau`; }
 }
 function newQ() {
   let g, k = 0;
-  do { g = LEVELS[S.level].generate(mode === 'train' ? S.streak : 4); k++; } while (g.q === lastQ && k < 10);
+  do { g = LEVELS[S.level].generate(mode === 'train' ? S.stars : 4); k++; } while (g.q === lastQ && k < 10);
   Q = g; lastQ = g.q; val = ''; locked = false;
   $('#mq').innerHTML = Q.q.includes('?') ? Q.q : Q.q + ' <span class="eq">=</span>';
   $('#disp').className = ''; showVal();
@@ -96,22 +96,21 @@ function submit() {
   const fast = dt <= LEVELS[S.level].T, sec = dt.toFixed(1).replace('.', ',');
   if (ok) {
     S.good++; S.fails = 0; $('#disp').className = 'ok';
-    if (fast) { S.streak++; $('#fb').className = 'good'; $('#fb').innerHTML = `✅ ⚡ ${sec} s`; }
+    if (fast) { pending = bouger(S, 1, LEVELS.length); $('#fb').className = 'good'; $('#fb').innerHTML = `✅ ⚡ ${sec} s`; }
     else { $('#fb').className = 'good'; $('#fb').innerHTML = `✅ Juste ! <span class="note">(${sec} s — essaie d'être plus rapide pour gagner un ⚡)</span>`; }
-    if (S.streak >= NEED) { if (S.level < LEVELS.length - 1) pending = 1; else { S.streak = 0; banner('🏆 Champion du calcul mental !'); } }
+    if (fast && S.level === LEVELS.length - 1 && S.stars === ETOILES) banner('🏆 Champion du calcul mental !');
     save(); renderHead(); setTimeout(next, fast ? 750 : 1500);
   } else {
-    S.streak = 0; S.fails++; $('#disp').className = 'ko';
+    S.fails++; pending = bouger(S, -2, LEVELS.length); $('#disp').className = 'ko';
     $('#fb').className = 'bad';
     $('#fb').innerHTML = `<b>${Q.q.includes('?') ? Q.q.replace('?', '<u>' + fmt(Q.a) + '</u>') : Q.q + ' = ' + fmt(Q.a)}</b><br>💡 ${Q.tip}<div class="actions"><button type="button" class="btn" id="nextBtn">Suivant →</button></div>`;
     $('#nextBtn').onclick = next; $('#nextBtn').focus();
-    if (S.fails >= 2 && S.level > 0) pending = -1;
     save(); renderHead();
   }
 }
 function next() {
-  if (pending === 1) { S.level++; S.streak = 0; S.fails = 0; banner(`🎉 Niveau ${S.level + 1} débloqué : ${LEVELS[S.level].titre}`); }
-  else if (pending === -1) { S.level--; S.streak = 0; S.fails = 0; banner(`On revient au niveau ${S.level + 1} pour consolider 💪`); }
+  if (pending === 1) banner(`🎉 Niveau ${S.level + 1} débloqué : ${LEVELS[S.level].titre}`);
+  else if (pending === -1) banner(`On revient au niveau ${S.level + 1} (${S.stars} ★) pour consolider 💪`);
   pending = 0; save(); renderHead(); newQ();
 }
 
@@ -165,7 +164,7 @@ function renderMenu() {
   $('#lvlist').innerHTML = LEVELS.map((L, i) => `<button type="button" data-l="${i}" class="${i === S.level ? 'cur' : ''}"><span class="tag">${i + 1}</span><span>${L.titre}</span><small>${S.best[i] != null ? '⏱️ record ' + S.best[i] : ''}</small></button>`).join('');
   $('#lvlist').querySelectorAll('[data-l]').forEach(b => {
     b.onclick = () => {
-      S.level = +b.dataset.l; S.streak = 0; S.fails = 0; pending = 0; save(); menu.close(); setMode(mode);
+      S.level = +b.dataset.l; S.streak = 0; S.stars = 0; S.fails = 0; pending = 0; save(); menu.close(); setMode(mode);
     };
   });
 }
@@ -194,7 +193,7 @@ if (S.level >= LEVELS.length) S.level = 0;
 // « ?niveau=n » (liens des fiches de synthèse) : ouvre directement le niveau n, comme le menu Niveaux
 {
   const demande = +new URLSearchParams(location.search).get('niveau');
-  if (demande >= 1 && demande <= LEVELS.length && demande - 1 !== S.level) { S.level = demande - 1; S.streak = 0; S.fails = 0; save(); }
+  if (demande >= 1 && demande <= LEVELS.length && demande - 1 !== S.level) { S.level = demande - 1; S.streak = 0; S.stars = 0; S.fails = 0; save(); }
 }
 window.__mp = { get state() { return S; }, get question() { return Q; }, levels: LEVELS };
 setMode('train');

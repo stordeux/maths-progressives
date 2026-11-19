@@ -37,7 +37,7 @@ function render() {
         <span class="t">${m.emoji} ${m.titre}</span><span class="cl">${m.classes}</span>
         <span class="r">${m.resume}</span>
         <span class="st">${started
-          ? `<span class="pill">Niveau ${(S.level || 0) + 1} / 12</span>${S.max > S.level ? `<span class="pill">max ${S.max + 1}</span>` : ''}${recs !== null ? `<span class="pill">⏱️ record ${recs}</span>` : ''}${S.total ? `<span class="pill">✔ ${S.good || 0} / ${S.total}</span>` : ''}<span class="new">${quand(S.last)}</span>`
+          ? `<span class="pill">Niveau ${(S.level || 0) + 1} / 12${S.stars != null ? ` · ${'★'.repeat(S.stars)}${'☆'.repeat(5 - S.stars)}` : ''}</span>${S.max > S.level ? `<span class="pill">max ${S.max + 1}</span>` : ''}${recs !== null ? `<span class="pill">⏱️ record ${recs}</span>` : ''}${S.total ? `<span class="pill">✔ ${S.good || 0} / ${S.total}</span>` : ''}<span class="new">${quand(S.last)}</span>`
           : '<span class="new">Pas encore commencé</span>'}
           <span class="bar" aria-hidden="true"><i style="width:${pct}%"></i></span></span></a>`;
     }).join('')}</div></section>`;

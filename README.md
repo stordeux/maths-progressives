@@ -20,9 +20,10 @@ accueil → **Ma progression** → **Exporter** (code à recopier ou fichier `.j
 
 - **12 niveaux par module**, chacun n'ajoute qu'une difficulté nouvelle.
 - **Dans un niveau aussi**, les exercices se corsent à chaque réussite (nombres négatifs, coefficients, termes dans le désordre…).
-- **On monte** d'un niveau après **4 réussites d'affilée** (5 réussites *rapides* ⚡ en calcul mental).
-  Une réussite ne compte que si elle est obtenue du premier coup et sans indice.
-- **On redescend** d'un niveau après **2 exercices ratés de suite**. Un bandeau annonce chaque changement.
+- **Étoiles** : chaque réussite (du premier coup, sans indice ; *rapide* ⚡ en calcul mental) donne **une étoile ★**,
+  chaque faute (première réponse fausse) en retire **deux**. **5 étoiles par niveau**, en continu : à 5 on passe au niveau
+  suivant, sous 0 on revient au niveau précédent avec le reste (niveau 3 et 1 ★, une faute → niveau 2 et 4 ★).
+  Le niveau et les étoiles sont affichés en haut de l'écran ; un bandeau annonce chaque changement de niveau.
 - **Erreur → indice → deuxième essai → correction détaillée.** Quand la réponse est « presque juste »
   (bonnes bornes mais mauvais crochets, fraction égale mais pas simplifiée…), le message le dit.
 - **Un cours par niveau** (définition, exemples, erreurs classiques ⚠️, visuel), **replié au-dessus de l'exercice** : l'élève le déplie quand il en a envie (bandeau 📘 ou bouton 📘 Cours) et le relit sans quitter l'exercice.
