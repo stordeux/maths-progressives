@@ -62,9 +62,9 @@ export function partition(total, k, min = 1) {
 /* ---------- contextes de séries en liste ---------- */
 export const SERIES = [
   { id: 'notes', lo: 5, hi: 19, u: '', axe: 'note (sur 20)', un: 'note', pl: 'notes',
-    intro: (n, p) => `Voici les notes (sur 20) de ${p} à ses ${n} derniers contrôles de maths.` },
+    intro: (n, p) => `Voici les notes (sur 20) ${/^[AEIOUÉH]/.test(p) ? `d'${p}` : `de ${p}`} à ses ${n} derniers contrôles de maths.` },
   { id: 'trajet', lo: 5, hi: 45, u: ' min', axe: 'durée (min)', un: 'durée', pl: 'durées de trajet',
-    intro: (n, p) => `Voici la durée (en minutes) du trajet de ${p} jusqu'au collège pendant ${n} jours.` },
+    intro: (n, p) => `Voici la durée (en minutes) du trajet ${/^[AEIOUÉH]/.test(p) ? `d'${p}` : `de ${p}`} jusqu'au collège pendant ${n} jours.` },
   { id: 'taille', lo: 152, hi: 182, u: ' cm', axe: 'taille (cm)', un: 'taille', pl: 'tailles',
     intro: n => `Voici la taille (en cm) de ${n} élèves d'une classe de 3<sup>e</sup>.` },
   { id: 'points', lo: 6, hi: 32, u: ' points', axe: 'points marqués', un: 'nombre de points', pl: 'nombres de points',

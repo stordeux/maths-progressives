@@ -178,9 +178,9 @@ const EXT = [
   { id: 'sal', n: [5, 7], lo: 1400, hi: 2100, st: 50, u: ' €', axe: 'salaire mensuel (€)', ex: () => ri(55, 90) * 100, mode: 'haut',
     intro: n => `Voici les salaires mensuels (en €) de ${n} employés d'une petite entreprise.`, extra: x => `Le directeur, qui gagne ${M(x)} €, est ajouté à la liste.`, typ: 'le salaire d\'un employé', incl: 'La liste comprend le salaire du directeur.' },
   { id: 'note', n: [5, 7], lo: 11, hi: 16, st: 1, u: '', axe: 'note (sur 20)', ex: () => 0, mode: 'bas',
-    intro: (n, p) => `Voici les notes (sur 20) de ${p} à ses ${n} premiers contrôles de maths.`, extra: x => `Au contrôle suivant, l'élève est absent : on ajoute la note ${M(x)}.`, typ: 'le niveau habituel de l\'élève', incl: '' },
+    intro: (n, p) => `Voici les notes (sur 20) ${/^[AEIOUÉH]/.test(p) ? `d'${p}` : `de ${p}`} à ses ${n} premiers contrôles de maths.`, extra: x => `Au contrôle suivant, l'élève est absent : on ajoute la note ${M(x)}.`, typ: 'le niveau habituel de l\'élève', incl: '' },
   { id: 'trajet', n: [5, 7], lo: 12, hi: 25, st: 1, u: ' min', axe: 'durée (min)', ex: () => ri(7, 11) * 10, mode: 'haut',
-    intro: (n, p) => `Voici la durée (en minutes) du trajet de ${p} jusqu'au collège pendant ${n} jours.`, extra: x => `Un jour de grève de bus, le trajet dure ${M(x)} min : on l'ajoute à la liste.`, typ: 'la durée habituelle du trajet', incl: 'La liste comprend un jour de grève de bus.' },
+    intro: (n, p) => `Voici la durée (en minutes) du trajet ${/^[AEIOUÉH]/.test(p) ? `d'${p}` : `de ${p}`} jusqu'au collège pendant ${n} jours.`, extra: x => `Un jour de grève de bus, le trajet dure ${M(x)} min : on l'ajoute à la liste.`, typ: 'la durée habituelle du trajet', incl: 'La liste comprend un jour de grève de bus.' },
 ];
 /** série de base de n valeurs du contexte E (multiples du pas), puis valeur extrême x telle que la nouvelle moyenne ait au plus 1 décimale */
 function baseEt(E, n, needMeanOk = true) {
