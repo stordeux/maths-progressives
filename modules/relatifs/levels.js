@@ -343,6 +343,7 @@ ${wide(chain([2, -5]))}
 <div class="ex"><span class="q">Exemple 1 : (+2) − (+5)</span><br>(+2) + (−5) = <b>−3</b> : sur la droite, 2 pas à droite puis 5 pas à gauche.</div>
 <div class="ex"><span class="q">Exemple 2 : (−4) − (−6)</span><br>(−4) + (+6) = <b>2</b> : enlever une dette de 6, c'est comme gagner 6.</div>
 <div class="ex"><span class="q">Exemple 3 : à 8 h il fait −3 °C, à 14 h il fait 5 °C</span><br>Variation : 5 − (−3) = 5 + 3 = <b>8 °C</b> (la température a monté de 8 °C).</div>
+<div class="ex"><span class="q">Exemple 4 : sans parenthèses, 2 − 4 et −16 − 20</span><br>Même règle : 2 − 4 = 2 + (−4) = <b>−2</b> ; −16 − 20 = −16 + (−20) = <b>−36</b>.</div>
 <div class="warn">⚠️ On ne change que le signe du nombre <b>soustrait</b> (le deuxième), jamais celui du premier.<br>⚠️ (−4) − (−6) n'est pas −10 : − (−6) devient + 6.</div>
 <div class="retenir">À retenir : soustraire un nombre, c'est ajouter son opposé.</div>`;
 }
@@ -550,6 +551,7 @@ function C11() {
 <div class="ex" style="line-height:2"><span class="q">Exemple 1 : −5 + 3 × (−4)</span><br>−5 + ${hl('3 × (−4)')}<br>= ${hl('−5 + (−12)')}<br>= <b>−17</b></div>
 ${wide(intLine({ min: -20, max: 2, arrows: [{ from: 0, to: -5, l: '−5', c: '#1971c2' }, { from: -5, to: -17, l: '+ (−12)', c: '#e8590c' }], marks: [{ x: -17, l: '−17' }] }))}
 <div class="ex" style="line-height:2"><span class="q">Exemple 2 : 2 − 3 × (−1 − 4)</span><br>2 − 3 × ${hl('(−1 − 4)')}<br>= 2 − ${hl('3 × (−5)')}<br>= ${hl('2 − (−15)')}<br>= 2 + 15 = <b>17</b></div>
+<div class="ex" style="line-height:2"><span class="q">Exemple 3 : −8 ÷ (−4) − 7 × (−3)</span><br>Deux calculs prioritaires : ${hl('−8 ÷ (−4)')} − ${hl('7 × (−3)')}<br>= ${hl('2 − (−21)')}<br>= 2 + 21 = <b>23</b></div>
 <div class="warn">⚠️ −5 + 3 × (−4) n'est pas (−2) × (−4) = 8 : la multiplication passe avant l'addition.<br>⚠️ 2 − (−15) : soustraire −15, c'est ajouter 15.</div>
 <div class="retenir">À retenir : parenthèses, puis × et ÷, puis + et −.</div>`;
 }
@@ -619,6 +621,7 @@ ${wide(chain([-12, 5]))}
 <div class="ex"><span class="q">Exemple 1 : un plongeur à −12 m remonte de 5 m</span><br>−12 + 5 = <b>−7</b> : il est à 7 m sous la surface.</div>
 <div class="ex"><span class="q">Exemple 2 : moyenne de −4, 2, −1 et −5</span><br>Somme : −4 + 2 − 1 − 5 = −8. Moyenne : −8 ÷ 4 = <b>−2</b>.</div>
 <div class="ex"><span class="q">Exemple 3 : 3 − (−2 − 4 × (−1))</span><br>Dans la parenthèse : −2 − (−4) = 2. Puis 3 − 2 = <b>1</b>.</div>
+<div class="ex"><span class="q">Exemple 4 : calcule A = 9x + 5 pour x = −2</span><br>On remplace x par (−2), entre parenthèses : A = 9 × (−2) + 5 = −18 + 5 = <b>−13</b>.<br>Avec deux lettres, A = −8x − 4y pour x = 6 et y = 4 : A = −8 × 6 − 4 × 4 = −48 − 16 = <b>−64</b>.</div>
 <div class="warn">⚠️ 4x avec x = −3 n'est pas 4 − 3 : c'est 4 <b>×</b> (−3).<br>⚠️ « − ( … ) » : on soustrait tout le résultat de la parenthèse.</div>
 <div class="retenir">À retenir : je traduis, je mets les négatifs entre parenthèses, je respecte les priorités.</div>`;
 }
