@@ -75,8 +75,10 @@ export function C2() {
     ex(`Exemple 2 : quels sont les signes de l'abscisse et de l'ordonnée du point B ?`, `B est à droite de l'axe vertical et en dessous de l'axe horizontal.<br>${rep('abscisse positive et ordonnée négative')}`),
     fig([{ n: 'C', p: [-4, 0] }, { n: 'D', p: [0, 3] }], 5, null),
     ex(`Exemple 3 : le point C est situé sur un des axes (à 4 carreaux à gauche de O)`, `C est sur l'axe horizontal : son ordonnée est 0. Son abscisse est −4.<br>${rep('C( −4 ; 0 )')}`),
+    ex(`Exemple 3 bis : le point D est situé sur un des axes (à 3 carreaux au-dessus de O)`, `D est sur l'axe vertical : son abscisse est 0. Son ordonnée est 3.<br>${rep('D( 0 ; 3 )')}`),
     sy,
     ex(`Exemple 4 : B′ est le symétrique de A(−3 ; 2) par rapport à l'axe des ordonnées`, `On traverse l'axe vertical : l'ordonnée 2 ne change pas, l'abscisse −3 devient 3.<br>${rep('B′( 3 ; 2 )')}`),
+    ex(`Exemple 5 : B″ est le symétrique de A(−3 ; 2) par rapport à l'axe des abscisses`, `On traverse l'axe horizontal : l'abscisse −3 ne change pas, l'ordonnée 2 devient −2.<br>${rep('B″( −3 ; −2 )')}`),
     warn(`Un point sur un axe a une coordonnée <b>nulle</b> : (−4 ; 0) est sur l'axe horizontal, (0 ; 3) sur l'axe vertical.`, `Compte toujours dans le bon sens : vers la gauche ou vers le bas, le nombre est <b>négatif</b>.`),
     retenir(`gauche ou bas : négatif ; droite ou haut : positif ; sur un axe, une coordonnée vaut 0.`));
 }

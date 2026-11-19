@@ -89,6 +89,8 @@ export function C12() {
     carte(pp),
     ex(`Exemple 7 : Paris a pour latitude 49° nord et Le Cap 34° sud ; écart de latitude`, `De part et d'autre de l'équateur : 49° + 34° = 83°.<br>${rep('83°')}`),
     ex(`Exemple 8 : Paris a pour longitude 2° est et Le Cap 18° est ; écart de longitude`, `Du même côté de Greenwich : 18° − 2° = 16°.<br>${rep('16°')}`),
+    ex(`Exemple 9 : Paris a pour latitude 49° nord et Le Caire 30° nord ; écart de latitude`, `Même côté de l'équateur : 49° − 30° = 19°.<br>${rep('19°')}`),
+    ex(`Exemple 10 : Paris a pour longitude 2° est et New York 74° ouest ; écart de longitude`, `De part et d'autre de Greenwich : 2° + 74° = 76°.<br>${rep('76°')}`),
     warn(`Pour une section à distance du centre, ne soustrais pas les longueurs (5 − 3) : utilise Pythagore, 5² − 3².`, `Deux villes de part et d'autre de l'équateur (ou de Greenwich) : on <b>additionne</b> les degrés ; du même côté : on <b>soustrait</b>.`),
     retenir(`section par un plan : disque ; R² = r² + OO′² ; latitude (équateur) et longitude (Greenwich) repèrent un point de la Terre.`));
 }

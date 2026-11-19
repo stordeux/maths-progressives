@@ -106,6 +106,10 @@ export function C6() {
     ex(`Exemple 8 : combien de faces latérales a une pyramide dont la base a 5 côtés ?`, `Une face triangulaire par côté de la base : 5 faces latérales (et 6 faces en tout avec la base). Pour un prisme dont la base a 5 côtés, il y aurait aussi 5 faces latérales (rectangles).<br>${rep('5 faces latérales')}`),
     ex(`Exemple 9 : combien de sommets a cette pyramide dont la base a 4 côtés ?`, `4 sommets dans la base, plus le sommet S : 5. Arêtes : 4 dans la base et 4 vers le sommet, soit 8 ; faces : 1 + 4 = 5.<br>${rep('5 sommets')}`),
     ex(`Exemple 10 : quelle est la forme des deux bases de ce prisme droit ? (bases à 5 côtés)`, `Les bases sont les deux faces identiques et parallèles : ici 5 côtés, c'est un pentagone.<br>${rep('un pentagone')}`),
+    ex(`Exemple 11 : combien d'arêtes a cette pyramide dont la base a 4 côtés ?`, `4 arêtes dans la base et 4 arêtes qui partent du sommet S : 4 + 4.<br>${rep('8 arêtes')}`),
+    ex(`Exemple 12 : combien de sommets a ce prisme droit dont la base a 3 côtés ?`, `Chaque base triangulaire a 3 sommets, et il y a 2 bases : 2 × 3.<br>${rep('6 sommets')}`),
+    ex(`Exemple 13 : combien de faces a cette pyramide dont la base a 4 côtés ?`, `1 base + 4 faces triangulaires.<br>${rep('5 faces')}`),
+    ex(`Exemple 14 : combien de faces latérales (autres que les bases) a ce prisme droit ? (bases à 3 côtés)`, `Une face latérale rectangulaire par côté de la base : 3 (et les 2 bases font 5 faces en tout).<br>${rep('3 faces latérales')}`),
     warn(`Un solide à surface courbe (cylindre, cône, boule) n'a pas de « faces » comme un pavé : on parle de bases et de surface latérale.`, `N'oublie jamais les faces, arêtes et sommets <b>cachés</b> (arêtes en pointillés) quand tu comptes.`),
     retenir(`cube et pavé : 6 faces, 12 arêtes, 8 sommets ; prisme à n côtés : n + 2 faces, 3n arêtes, 2n sommets ; pyramide à n côtés : n + 1 faces, 2n arêtes, n + 1 sommets.`));
 }

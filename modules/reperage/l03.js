@@ -82,6 +82,7 @@ export function C3() {
     ex(`Exemple 1 : quel point a pour coordonnées (−3 ; 2) ?`, `De O : 3 carreaux vers la gauche, puis 2 vers le haut : on est sur A. (Le point B(2 ; 3) est un piège : abscisse et ordonnée ne sont pas dans le même ordre.)<br>${rep('A')}`),
     f2,
     ex(`Exemple 2 : quel point est situé sur l'axe des abscisses ?`, `L'axe des abscisses est la droite horizontale qui passe par O. Un point posé dessus a une ordonnée égale à 0 : c'est B. (C est sur l'autre axe, l'axe vertical.)<br>${rep('B')}`),
+    ex(`Exemple 2 bis : quel point est situé sur l'axe des ordonnées ?`, `L'axe des ordonnées est la droite verticale qui passe par O. Un point posé dessus a une abscisse égale à 0 : c'est C (le point B est sur l'autre axe).<br>${rep('C')}`),
     f3,
     ex(`Exemple 3 : quel point a la même ordonnée que le point B ?`, `Même ordonnée : même hauteur, sur une droite horizontale. B est à la hauteur 3, comme le point A.<br>${rep('A')}`),
     f4,

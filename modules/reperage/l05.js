@@ -77,8 +77,10 @@ export function C5() {
     ex(`Exemple 3 : milieu de [AB] avec A(1 ; 2) et B(4 ; 5) (résultat décimal)`, `Abscisse : (1 + 4) ÷ 2 = 2,5. Ordonnée : (2 + 5) ÷ 2 = 3,5. Le milieu n'est pas forcément sur une graduation entière.<br>${rep('M( 2,5 ; 3,5 )')}`),
     f3,
     ex(`Exemple 4 : distance AB avec A(−3 ; 2) et B(4 ; 2) (en carreaux)`, `A et B ont la même ordonnée : [AB] est horizontal. On compte de −3 à 4 : 4 − (−3) = 7 carreaux. Attention : on <b>soustrait</b>, on n'additionne pas −3 et 4.<br>${rep('AB = 7')}`),
+    ex(`Exemple 4 bis : distance CD avec C(2 ; −3) et D(2 ; 4) (en carreaux)`, `C et D ont la même abscisse : [CD] est vertical. On compte de −3 à 4 : 4 − (−3) = 7 carreaux.<br>${rep('CD = 7')}`),
     f4,
     ex(`Exemple 5 : ABCD est un rectangle dont les côtés sont parallèles aux axes, avec A(−2 ; −1) et C(3 ; 3) ; coordonnées de B`, `B est sur la même ligne horizontale que A (ordonnée −1) et dans la même colonne que C (abscisse 3).<br>${rep('B( 3 ; −1 )')}`),
+    ex(`Exemple 6 : ABCD est un rectangle dont les côtés sont parallèles aux axes, avec A(−2 ; −1) et C(3 ; 3) ; coordonnées de D`, `D est dans la même colonne que A (abscisse −2) et sur la même ligne horizontale que C (ordonnée 3).<br>${rep('D( −2 ; 3 )')}`),
     warn(`Pour un milieu, ne pas oublier de <b>diviser par 2</b> la somme.`, `Une distance est <b>positive</b> : on soustrait le plus petit nombre du plus grand (avec des relatifs, 4 − (−3) = 7).`),
     retenir(`milieu : moyenne des abscisses et moyenne des ordonnées ; distance sur une ligne horizontale ou verticale : différence des coordonnées qui changent.`));
 }

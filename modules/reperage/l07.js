@@ -113,6 +113,8 @@ export function C7() {
     dessinS(Sp),
     ex(`Exemple 3 : combien d'arêtes de ce solide sont cachées (en pointillés) ? (pyramide ABCDS à base carrée)`, `On compte les traits en pointillés de la figure : ${cachees(Sp).hid.map(e => '[' + Sp.N[e.a] + Sp.N[e.b] + ']').join(', ')}. Tous arrivent au sommet caché.<br>${rep(cachees(Sp).n + ' arêtes cachées')}`),
     ex(`Exemple 3 bis : combien d'arêtes de ce solide sont visibles (en trait plein) ? (pyramide ABCDS)`, `La pyramide a 8 arêtes en tout (4 dans la base, 4 vers le sommet S) ; ${cachees(Sp).n} sont cachées : 8 − ${cachees(Sp).n} = ${8 - cachees(Sp).n}.<br>${rep((8 - cachees(Sp).n) + ' arêtes visibles')}`),
+    ex(`Exemple 3 ter : quel sommet de cette pyramide est caché (aucune de ses arêtes n'est en trait plein) ? (pyramide ABCDS)`, `Au sommet D, toutes les arêtes sont en pointillés : D est caché derrière la pyramide.<br>${rep('D')}`),
+    ex(`Exemple 3 quater : combien d'arêtes de ce pavé sont visibles (en trait plein) ? (pavé ABCDEFGH)`, `Le pavé a 12 arêtes, dont 3 cachées : 12 − 3.<br>${rep('9 arêtes visibles')}`),
     ex(`Exemple 4 : quelle face du pavé est parallèle à la face ABFE ?`, `Les faces parallèles sont opposées : sans sommet commun. ABFE contient A, B, E, F : la face qui n'en contient aucun est CDHG.<br>${rep('CDHG')}`),
     seg(EDGES[0]),
     ex(`Exemple 5 : quelle arête du pavé est parallèle à l'arête [AB] ?`, `[AB] est une arête de face, horizontale sur le dessin. Les arêtes de même direction sont [DC], [EF] et [HG] : par exemple [DC].<br>${rep('[DC]')}`),

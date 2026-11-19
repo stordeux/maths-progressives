@@ -95,6 +95,7 @@ export function C11() {
     meth(`Repère la position du plan par rapport à une face ou à l'axe.`, `Applique la règle : parallèle à une face (même forme que la face) ; perpendiculaire à l'axe (disque) ; parallèle à l'axe (rectangle).`),
     ex(`Exemple 1 : on coupe un cylindre par un plan parallèle à son axe ; nature de la section`, `Le plan découpe la surface latérale selon des droites : on obtient un rectangle.<br>${rep('un rectangle')}`),
     ex(`Exemple 2 : on coupe un cône par un plan qui contient son sommet et son axe ; nature de la section`, `La section est limitée par deux génératrices et un diamètre de la base : un triangle.<br>${rep('un triangle')}`),
+    ex(`Exemple 2 quater : on coupe un pavé droit par un plan parallèle à la face de devant ; nature de la section`, `La section est identique à la face de devant, qui est un rectangle.<br>${rep('un rectangle')}`),
     ex(`Exemple 2 bis : on coupe un cube par un plan parallèle à la face du dessus ; nature de la section`, `La section est identique à une face du cube : un carré.<br>${rep('un carré')}`),
     ex(`Exemple 2 ter : on coupe un cône par un plan perpendiculaire à son axe ; nature de la section`, `Le plan est parallèle à la base : la section est un disque, plus petit que la base.<br>${rep('un disque')}`),
     dessin('cylindre', { r: 3, h: 6, sec: { t: 'perp', y: 3 } }),
