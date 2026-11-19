@@ -1,0 +1,4 @@
+/* Styles propres au module angles (chargés aussi par la révision brevet). */
+/* nom d'angle avec son chapeau : ABC surmonté d'un accent circonflexe large */
+.ang { display: inline-block; padding-top: .34em; line-height: 1.05; font-style: italic; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10' preserveAspectRatio='none'%3E%3Cpolyline points='4,9 50,1.5 96,9' fill='none' stroke='%23333' stroke-width='1.8' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") top center / 100% .34em no-repeat; }
+.choices button.sel .ang { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10' preserveAspectRatio='none'%3E%3Cpolyline points='4,9 50,1.5 96,9' fill='none' stroke='%23fff' stroke-width='1.8' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E"); }

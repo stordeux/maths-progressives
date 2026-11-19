@@ -50,6 +50,7 @@ accueil → **Ma progression** → **Exporter** (code à recopier ou fichier `.j
 | 🔺 Thalès et trigonométrie | 3e | Géométrie |
 | 🧊 Aires, périmètres, volumes | 6e – 3e | Géométrie |
 | 📏 Angles | 6e – 5e | Géométrie |
+| 🔷 Géométrie plane | 6e – 4e | Géométrie |
 | 〰️ Fonctions | 3e – 2de | Vers le lycée |
 | ↔️ Inégalités | 3e – 2de | Vers le lycée |
 | 📈 Second degré | 2de – 1re | Vers le lycée |

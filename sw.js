@@ -1,6 +1,6 @@
 // Service worker : met tout le site en cache pour qu'il marche hors ligne.
 // La liste ASSETS et VERSION sont régénérées par « node tools/sw-assets.mjs » (vérifié par les tests).
-const VERSION = 'bc1fca850d01';
+const VERSION = '6e65d82064f5';
 const ASSETS = [
   './',
   './assets/css/base.css',
@@ -71,6 +71,23 @@ const ASSETS = [
   './modules/fonctions/levels.js',
   './modules/fractions/index.html',
   './modules/fractions/levels.js',
+  './modules/geometrie/draw.js',
+  './modules/geometrie/index.html',
+  './modules/geometrie/l01.js',
+  './modules/geometrie/l02.js',
+  './modules/geometrie/l03.js',
+  './modules/geometrie/l04.js',
+  './modules/geometrie/l05.js',
+  './modules/geometrie/l06.js',
+  './modules/geometrie/l07.js',
+  './modules/geometrie/l08.js',
+  './modules/geometrie/l09.js',
+  './modules/geometrie/l10.js',
+  './modules/geometrie/l11.js',
+  './modules/geometrie/l12.js',
+  './modules/geometrie/levels.js',
+  './modules/geometrie/style.css',
+  './modules/geometrie/util.js',
   './modules/inegalites/index.html',
   './modules/inegalites/levels.js',
   './modules/integrales/draw.js',
@@ -132,6 +149,7 @@ const ASSETS = [
   './modules/exp-ln/',
   './modules/fonctions/',
   './modules/fractions/',
+  './modules/geometrie/',
   './modules/inegalites/',
   './modules/integrales/',
   './modules/litteral/',

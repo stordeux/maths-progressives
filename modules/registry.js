@@ -34,6 +34,8 @@ export const MODULES = [
   { id: 'aires-volumes', titre: 'Aires, périmètres, volumes', emoji: '🧊', classes: '6e – 3e', groupe: 'Géométrie', couleur: '#1971c2', couleur2: '#e7f5ff', resume: 'Des carreaux aux cônes et aux sphères, avec les conversions d\'unités.' },
   // ---
   { id: 'angles', titre: 'Angles', emoji: '📏', classes: '6e – 5e', groupe: 'Géométrie', couleur: '#9a3412', couleur2: '#fff7ed', resume: 'Rapporteur virtuel, somme des angles d\'un triangle, angles alternes-internes.', css: true },
+  // ---
+  { id: 'geometrie', titre: 'Géométrie plane', emoji: '🔷', classes: '6e – 4e', groupe: 'Géométrie', couleur: '#0f766e', couleur2: '#e6fffb', resume: 'Symétries, médiatrice, triangles, parallélogrammes, aires et droite des milieux.', css: true },
   // --- vers le lycée
   { id: 'fonctions', titre: 'Fonctions', emoji: '〰️', classes: '3e – 2de', groupe: 'Vers le lycée', couleur: '#343a40', couleur2: '#f1f3f5', resume: 'Image et antécédent sur un graphique, fonctions linéaires et affines.' },
   // ---
