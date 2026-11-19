@@ -388,6 +388,7 @@ ${tab(['Minutes', 'Heures'], [15, 20, 30, 45, 90], ['0,25', `${F(1, 3)}`, '0,5',
 <li>Si on demande des minutes, multiplie la durée en heures par 60.</li></ol></div>
 <div class="ex"><span class="q">Exemple 1 : 80 km/h pendant 1 h 30 min.</span><br>1 h 30 min = 1,5 h, donc d = 80 × 1,5 = <b>120 km</b>.</div>
 <div class="ex"><span class="q">Exemple 2 : une vitesse et une durée.</span><br>• 45 km en 45 min : 45 min = 0,75 h, donc v = 45 ÷ 0,75 = <b>60 km/h</b> (1 km par minute).<br>• 18 km à 12 km/h : t = 18 ÷ 12 = 1,5 h = 1,5 × 60 = <b>90 min</b>.</div>
+<div class="ex"><span class="q">Exemple 3 : des durées qui ne tombent pas juste (20 min, 40 min, 1 h 20 min).</span><br>• 37 km en 20 min : en 1 h il y a 3 fois 20 min, donc v = 37 × 3 = <b>111 km/h</b>.<br>• 140 km en 1 h 20 min = 80 min : 140 ÷ 80 = 1,75 km par minute, donc v = 1,75 × 60 = <b>105 km/h</b>.<br>• 48 km/h pendant 1 h 20 min : 48 km en 1 h, plus 48 ÷ 3 = 16 km en 20 min, donc d = <b>64 km</b>.</div>
 <div class="warn">⚠️ <b>1 h 30 min ≠ 1,30 h</b> : 30 min = une demi-heure, donc 1 h 30 min = 1,5 h.<br>⚠️ Les unités doivent aller ensemble : avec des km/h, la durée est en <b>heures</b>.<br>⚠️ v = d ÷ t, pas t ÷ d.</div>
 <div class="retenir">À retenir : d = v × t, avec t en heures.</div>`;
 }
