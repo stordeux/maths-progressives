@@ -19,7 +19,7 @@ function medScene(nm, c, x, t, o = {}) {
   P._f = far; P._t = top; f.hide = ['_f', '_t'];
   if (!o.noM) f.segs.push({ a: A, b: Mp, c: COL.b, w: 2.4 }, { a: B, b: Mp, c: COL.b, w: 2.4 });
   const cen = rot([0, hh / 3], t);
-  for (const [p, q, s, col] of o.lens || []) f.len.push(lenOut(P[p], P[q], cen, s, col || COL.b));
+  for (const [p, q, s, col] of o.lens || []) f.len.push({ ...lenOut(P[p], P[q], cen, s, col || COL.b), pos: p === a && q === b ? 0.8 : undefined });
   return { svg: figure(f), A, B, I, Mp };
 }
 /** triangle MAB à l'échelle (M défini par MA, MB, AB), sans médiatrice */

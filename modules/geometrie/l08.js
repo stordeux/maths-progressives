@@ -47,7 +47,7 @@ const OPT = [{ v: 'haut', l: '<b>une hauteur</b>' }, { v: 'med', l: '<b>une méd
 
 /** triangle inscrit dans un cercle de rayon r cm ; renvoie points et centre */
 function circScene(nm, r, t, o = {}) {
-  const [a, b, c] = nm, k = ri(0, 359), g = [ri(80, 130), ri(100, 140)], ang = [k, k + g[0], k + g[0] + g[1]];
+  const [a, b, c] = nm, k = o.fix ? 20 : ri(0, 359), g = o.fix ? [100, 120] : [ri(80, 130), ri(100, 140)], ang = [k, k + g[0], k + g[0] + g[1]];
   const A = pol([0, 0], r * S, ang[0] + t), B = pol([0, 0], r * S, ang[1] + t), C = pol([0, 0], r * S, ang[2] + t), O = [0, 0];
   const P = { [a]: A, [b]: B, [c]: C, O };
   const f = { P, polys: [{ p: nm, c: COL.ink }], circles: [{ c: O, r: r * S, col: COL.g }], segs: [], len: [], ticks: [], rights: [], lines: [], ext: 0, maxW: 400, maxH: 300, colors: { O: COL.a }, aria: 'triangle et son cercle circonscrit' };
@@ -127,7 +127,7 @@ export function L8(d) {
 export function C8() {
   const nm = ['A', 'B', 'C'], T = { A: [2.2, 3], B: [0, 0], C: [5, 0] }, Ob = { A: [7.2, 2.6], B: [0, 0], C: [5, 0] };
   const sH = lineScene(nm, T, 0, 'haut', 0).svg, sM = lineScene(nm, T, 0, 'med', 0).svg, sD = lineScene(nm, T, 0, 'mdt', 0).svg, sO = lineScene(nm, Ob, 0, 'haut', 0).svg;
-  const cc = circScene(nm, 4, 0, { med: true }), cr = circScene(nm, 4, 0, { rad: [['A', 'OA = 4 cm', COL.a], ['B', 'OB = ?', COL.g]] });
+  const cc = circScene(nm, 4, 0, { med: true, fix: true }), cr = circScene(nm, 4, 0, { fix: true, rad: [['A', 'OA = 4 cm', COL.a], ['B', 'OB = ?', COL.g]] });
   const hAngle = figure({ P: { A: T.A, B: T.B, C: T.C, H: [T.A[0], 0] }, polys: [{ p: nm, c: COL.ink }], segs: [{ a: T.A, b: [T.A[0], 0], c: COL.a }], rights: [{ v: 'H', a: 'A', b: 'C', size: 12 }], ext: 0, maxW: 360, colors: { H: COL.a }, aria: 'hauteur' });
   const mm = figure({ P: { A: T.A, B: T.B, C: T.C, M: [2.5, 0] }, polys: [{ p: nm, c: COL.ink }], segs: [{ a: T.A, b: [2.5, 0], c: COL.a }], ticks: [{ a: T.B, b: [2.5, 0] }, { a: [2.5, 0], b: T.C }], len: [{ a: T.B, b: T.C, s: 'BC = 10 cm', side: -1, c: COL.b, off: 14 }], ext: 0, maxW: 360, colors: { M: COL.a }, aria: 'médiane' });
   return cours('8. Droites remarquables du triangle', `Dans un triangle, trois sortes de droites sont particulières. Il faut savoir les reconnaître sur une figure grâce à leurs <b>codages</b> et à leur place.`,
