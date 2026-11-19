@@ -120,7 +120,7 @@ export function L9(d) {
       E: Dp, tpl: `${e}( {0} ; {1} )`, neg: true, html: `Dans le repère, ${a}(${M(Ap[0])} ; ${M(Ap[1])}), ${b}(${M(Bp[0])} ; ${M(Bp[1])}) et ${c}(${M(Cp[0])} ; ${M(Cp[1])}). Donne les coordonnées du point ${e} tel que ${a}${b}${c}${e} soit un parallélogramme.`,
       visual: mk(false), after: mk(true),
       hint: `Dans le parallélogramme ${a}${b}${c}${e}, les côtés opposés [${b}${a}] et [${c}${e}] sont parallèles et de même longueur : pour passer de ${b} à ${a}, on se déplace de ${M(Ap[0] - Bp[0])} horizontalement et de ${M(Ap[1] - Bp[1])} verticalement. Que fais-tu à partir de ${c} ?`,
-      solution: `De ${b} à ${a} : déplacement (${M(Ap[0] - Bp[0])} ; ${M(Ap[1] - Bp[1])}). Les côtés opposés sont parallèles et égaux : on refait ce déplacement à partir de ${c} : ${e}(${M(Cp[0])} + ${M(Ap[0] - Bp[0])} ; ${M(Cp[1])} + ${M(Ap[1] - Bp[1])}) = ${e}(${M(Dp[0])} ; ${M(Dp[1])}). (Contrôle : les diagonales [${a}${c}] et [${b}${e}] ont le même milieu.)`,
+      solution: (`De ${b} à ${a} : déplacement (${M(Ap[0] - Bp[0])} ; ${M(Ap[1] - Bp[1])}). Les côtés opposés sont parallèles et égaux : on refait ce déplacement à partir de ${c} : ${e}(${M(Cp[0])} + ${M(Ap[0] - Bp[0])} ; ${M(Cp[1])} + ${M(Ap[1] - Bp[1])}) = ${e}(${M(Dp[0])} ; ${M(Dp[1])}). (Contrôle : les diagonales [${a}${c}] et [${b}${e}] ont le même milieu.)`).replace(/\+ −/g, '− '),
       msg: v => (v[0] === Ap[0] + Cp[0] && v[1] === Ap[1] + Cp[1] ? `Tu as additionné les coordonnées de ${a} et ${c} : il faut aussi retrancher celles de ${b}.` : ''),
       verify: E => Math.abs((Ap[0] + Cp[0]) / 2 - (Bp[0] + E[0]) / 2) < 1e-9 && Math.abs((Ap[1] + Cp[1]) / 2 - (Bp[1] + E[1]) / 2) < 1e-9,
     });

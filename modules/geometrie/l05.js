@@ -53,7 +53,7 @@ export function L5(d) {
       E: C, tpl: `${cname}( {0} ; {1} )`, neg: true, html: `Le point ${a2}(${M(A2[0])} ; ${M(A2[1])}) est le symétrique de ${a}(${M(A[0])} ; ${M(A[1])}) par rapport à un point ${cname}. Quelles sont les coordonnées de ${cname} ?`,
       visual: scene('?', null, { [a]: A, [a2]: A2 }, { [a]: COL.b, [a2]: COL.g }, { segs: [{ a: A, b: A2, c: COL.g, dash: true, w: 2 }] }),
       hint: `Le centre ${cname} est le milieu de [${a}${a2}] : il est à mi-chemin entre ${a}(${M(A[0])} ; ${M(A[1])}) et ${a2}(${M(A2[0])} ; ${M(A2[1])}). Pour chaque coordonnée, que fais-tu avec les deux nombres ?`,
-      solution: `${cname} est le milieu de [${a}${a2}] : abscisse (${M(A[0])} + ${M(A2[0])}) ÷ 2 = ${M(C[0])}, ordonnée (${M(A[1])} + ${M(A2[1])}) ÷ 2 = ${M(C[1])}. Donc ${cname}(${M(C[0])} ; ${M(C[1])}).`,
+      solution: (`${cname} est le milieu de [${a}${a2}] : abscisse (${M(A[0])} + ${M(A2[0])}) ÷ 2 = ${M(C[0])}, ordonnée (${M(A[1])} + ${M(A2[1])}) ÷ 2 = ${M(C[1])}. Donc ${cname}(${M(C[0])} ; ${M(C[1])}).`).replace(/\+ −/g, '− '),
       msg: v => (v[0] === A[0] + A2[0] && v[1] === A[1] + A2[1] ? `Tu as additionné sans diviser par 2 : le milieu est à mi-chemin.` : ''),
       verify: E => Math.abs(2 * E[0] - A[0] - A2[0]) < 1e-9 && Math.abs(2 * E[1] - A[1] - A2[1]) < 1e-9,
     });

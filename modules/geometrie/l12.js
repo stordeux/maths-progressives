@@ -116,7 +116,7 @@ export function L12(d) {
   return numQ({
     E: [E], tpl: `Périmètre de IJKL : {0} cm`, html: `${qa}${qb}${qc}${qd} est un quadrilatère ; I, J, K et L sont les milieux de [${qa}${qb}], [${qb}${qc}], [${qc}${qd}] et [${qd}${qa}]. On a ${qa}${qc} = ${ac} cm et ${qb}${qd} = ${bd} cm. Quel est le périmètre de IJKL ?`, visual: fig,
     hint: `Dans les triangles ${qa}${qb}${qc} et ${qa}${qc}${qd}, [IJ] et [LK] joignent des milieux de côtés et sont liés à la diagonale [${qa}${qc}] ; de même [IL] et [JK] avec la diagonale [${qb}${qd}]. Chaque côté de IJKL vaut combien par rapport à la diagonale correspondante ?`,
-    solution: `Dans ${qa}${qb}${qc} : IJ = ${qa}${qc} ÷ 2 = ${ac / 2}. Dans ${qa}${qc}${qd} : LK = ${qa}${qc} ÷ 2 = ${ac / 2}. De même IL = JK = ${qb}${qd} ÷ 2 = ${bd / 2}. Périmètre = 2 × ${ac / 2} + 2 × ${bd / 2} = ${ac} + ${bd} = <b>${E} cm</b>.`,
+    solution: `Dans ${qa}${qb}${qc} : IJ = ${qa}${qc} ÷ 2 = ${fr(ac / 2)}. Dans ${qa}${qc}${qd} : LK = ${qa}${qc} ÷ 2 = ${fr(ac / 2)}. De même IL = JK = ${qb}${qd} ÷ 2 = ${fr(bd / 2)}. Périmètre = 2 × ${fr(ac / 2)} + 2 × ${fr(bd / 2)} = ${fr(ac)} + ${fr(bd)} = <b>${fr(E)} cm</b>.`,
     msg: v => (v[0] === (ac + bd) / 2 ? `Il y a <b>quatre</b> côtés : IJ et LK valent chacun ${ac / 2}, IL et JK valent chacun ${bd / 2}.` : ''),
     value: (dist(I, J) + dist(J, K) + dist(K, L) + dist(L, I)) / S,
   });
