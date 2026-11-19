@@ -351,6 +351,7 @@ ${V.barreHeures(90)}
 <table class="data"><tr><th>min</th><td>15</td><td>30</td><td>45</td><td>6</td><td>12</td></tr><tr><th>h</th><td>0,25</td><td>0,5</td><td>0,75</td><td>0,1</td><td>0,2</td></tr></table></div>
 ${ex('Exemple 1 : 1,5 h en heures et minutes', '0,5 × 60 = 30. Donc 1,5 h = 1 h 30 min (et surtout pas 1 h 50 min).')}
 ${ex('Exemple 2 : 2 h 15 min en heures', '15 ÷ 60 = 0,25. Donc 2 h 15 min = 2,25 h.')}
+${ex('Exemple 3 : les autres sens', '258 min en heures et minutes : 258 = 4 × 60 + 18, donc 4 h 18 min.<br>3 h 45 min en minutes : 3 × 60 + 45 = 225 min.<br>45 min en heures décimales : 45 ÷ 60 = 0,75 h.')}
 <div class="warn">⚠️ 1,5 h ≠ 1 h 50 min et 2 h 15 min ≠ 2,15 h : 100 n'est pas 60.<br>⚠️ Avant de calculer une vitesse, convertis toute la durée en heures.</div>
 <div class="retenir">À retenir : partie décimale × 60 = minutes ; minutes ÷ 60 = partie décimale.</div>`;
 }
@@ -382,6 +383,7 @@ ${V.ligne({ a: 'Pau', b: 'Dax', dist: '', dur: '2 h 30 min', v: '90 km/h', incon
 <div class="methode"><b>Méthode</b><ol><li>Convertis la durée en heures (30 min = 0,5 h ; 15 min = 0,25 h).</li><li>Vérifie les unités : km/h avec des h.</li><li>Multiplie : d = v × t.</li></ol></div>
 ${ex('Exemple 1 : un TER à 90 km/h pendant 2 h', 'd = 90 × 2 = 180 km.')}
 ${ex('Exemple 2 : un TGV à 300 km/h pendant 1 h 30 min', '1 h 30 min = 1,5 h. d = 300 × 1,5 = 450 km.')}
+${ex('Exemple 3 : une durée en minutes seulement', 'Un TER à 90 km/h pendant 40 min : en 1 min il fait 90 ÷ 60 = 1,5 km, donc en 40 min 1,5 × 40 = 60 km.')}
 <div class="warn">⚠️ N'écris pas 300 × 1,30 : 1 h 30 min = 1,5 h (pas 1,30 h).<br>⚠️ Ne multiplie pas la vitesse par des minutes : 90 × 150 n'a pas de sens.</div>
 <div class="retenir">À retenir : d = v × t, avec la durée en heures.</div>`;
 }
@@ -407,6 +409,7 @@ ${V.ligne({ a: 'Lyon', b: 'Dijon', dist: '195 km', dur: '1 h 30 min', v: '', inc
 <div class="methode"><b>Méthode</b><ol><li>Convertis la durée en heures (1 h 30 min = 1,5 h).</li><li>Divise la distance par la durée.</li><li>Écris l'unité : km/h.</li></ol></div>
 ${ex('Exemple 1 : 270 km en 3 h', 'v = 270 ÷ 3 = 90 km/h.')}
 ${ex('Exemple 2 : 195 km en 1 h 30 min', '1 h 30 min = 1,5 h. v = 195 ÷ 1,5 = 130 km/h.')}
+${ex('Exemple 3 : 45 km en 30 min, puis 50 km en 40 min', '30 min, c\'est une demi-heure : en 1 h on ferait 2 × 45 = 90 km, donc v = 90 km/h.<br>40 min : 50 ÷ 40 = 1,25 km par minute, et 1,25 × 60 = 75 km/h.')}
 <div class="warn">⚠️ 195 ÷ 1,30 est faux : 1 h 30 min = 1,5 h.<br>⚠️ Ne divise pas par les minutes : 195 ÷ 90 donne des km par minute, pas des km/h.</div>
 <div class="retenir">À retenir : v = d ÷ t, durée en heures, résultat en km/h.</div>`;
 }
@@ -582,6 +585,7 @@ ${g}
 <div class="methode"><b>Méthode</b><ol><li>Pour une distance à une heure donnée : horizontal → courbe → vertical.</li><li>Pour une heure à une distance donnée : vertical → courbe → horizontal.</li><li>Vitesse d'un morceau : v = (distance parcourue) ÷ (durée en heures).</li></ol></div>
 ${ex('Exemple 1 : à 9 h', 'On monte depuis 9 h jusqu\'à la courbe : 80 km. À 9 h, le train est à 80 km du départ.')}
 ${ex('Exemple 2 : l\'arrêt', 'Le morceau horizontal va de 9 h à 9 h 30 : l\'arrêt dure 30 min.')}
+${ex('Exemple 3 : la vitesse sur un morceau', 'Le train passe de 0 km à 8 h à 60 km à 8 h 30 : il fait 60 km en 30 min, soit 120 km en 1 h. Sa vitesse sur ce morceau est 120 km/h. Plus le morceau est raide, plus le train va vite.')}
 <div class="warn">⚠️ Ne confonds pas les axes : l'heure est en bas, la distance sur le côté.<br>⚠️ Un morceau horizontal ne veut pas dire « le train roule vite » : il est arrêté.</div>
 <div class="retenir">À retenir : courbe raide = train rapide ; morceau horizontal = arrêt ; intersection = même lieu, même heure.</div>`;
 }
