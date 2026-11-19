@@ -793,7 +793,7 @@ ${meth(['Parité : calcule f(−x) avec cos(−x) = cos x, sin(−x) = −sin x,
 <div class="cols">
 ${exq('Exemple 1 : périodicité', `${nw(`cos(${F('9π', 2)})`)} = cos(${H2} + 2 × 2π) = cos(${H2}) = <b>0</b>.<br>${nw(`sin(−${F('7π', 2)})`)} = sin(${H2} − 2 × 2π) = sin(${H2}) = <b>1</b>.`)}
 ${exq('Exemple 2 : parité', 'f(x) = x sin x : f(−x) = (−x) × (−sin x) = x sin x = f(x), donc f est <b>paire</b>.<br>g(x) = x cos x : g(−x) = (−x) cos x = −g(x), donc g est <b>impaire</b>.')}
-</div>
+<br>Ni l'un ni l'autre : h(x) = sin x + cos x donne h(−x) = −sin x + cos x, qui n'est ni h(x) ni −h(x). Pour en être sûr, un seul contre-exemple suffit : h(π/4) = √2 mais h(−π/4) = 0. Même chose pour sin x + 2 ou x<sup>2</sup> + sin x : la fonction n'est <b>ni paire ni impaire</b>.</div>
 ${courbe({ xr: [-2 * PI, 2 * PI], fs: [{ f: Math.cos, l: 'y = cos x', c: COL.cos }, { f: Math.sin, l: 'y = sin x', c: COL.sin }], xl: XL2 })}
 <div class="cols">${exq('Exemple 3 : cos x = 0,4 dans [0 ; 3π]', 'La droite y = 0,4 coupe la courbe de cos 2 fois sur [0 ; 2π], puis encore 1 fois entre 2π et 3π : <b>3 solutions</b>.')}
 ${courbe({ xr: [0, 3 * PI], fs: [{ f: Math.cos, l: 'y = cos x', c: COL.cos }], h: { y: 0.4, l: 'y = 0,4' }, pts: [Math.acos(0.4), 2 * PI - Math.acos(0.4), 2 * PI + Math.acos(0.4)].map(x => ({ x, y: 0.4, c: COL.A })) })}</div>
