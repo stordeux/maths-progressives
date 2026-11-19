@@ -51,3 +51,7 @@ Les tickets du bouton 🐞 sont dans gitlab.inria.fr/tordeux/signalements-exerci
 
 **Repris** (tous les modules, Calcul mental compris) : `bouger()` dans `engine/engine.js`, tests dans `tests/unit/etoiles.test.mjs`. Étoiles en haut de l'écran, à côté du niveau (★★☆☆☆), rappel « ★ 2/5 · encore 3 pour monter », étoiles aussi sur les cartes de l'accueil. Les anciennes progressions sont reprises (série en cours → étoiles).
 **Choix faits** (validés par S. Tordeux le 2026-11-19) : une réussite ne compte que du premier coup et sans indice (rapide ⚡ en calcul mental) ; la faute est la **première** réponse fausse d'un exercice (−2 une seule fois, même si le deuxième essai est faux) ; un exercice réussi avec l'indice ne change rien ; plancher : niveau 1 et 0 étoile ; au dernier niveau, 5 étoiles au plus.
+
+## 2026-11-19 · S. Tordeux : « je veux un bouton réinitialiser »
+
+**Repris** : bouton **🔄 Réinitialiser** sur l'accueil (section « Ma progression »), avec une confirmation dans la page. Il efface niveaux, étoiles et scores de tous les modules ; les réglages et la fenêtre d'accueil déjà vue sont gardés. Le bouton « Remettre ce module à zéro » du menu Niveaux de chaque module existait déjà et reste.

@@ -140,6 +140,25 @@ for (const m of MODULES.filter(m => m.id !== 'revision')) {
   });
 }
 
+test('accueil : réinitialiser toute la progression (réglages gardés)', async ({ page }) => {
+  await page.goto('./');
+  await page.evaluate(() => {
+    localStorage.setItem('mp:fractions', JSON.stringify({ level: 4, stars: 3, good: 9, total: 12, last: Date.now() }));
+    localStorage.setItem('mp:reglages', JSON.stringify({ grand: true }));
+  });
+  await page.reload();
+  await expect(page.locator('.mcard').filter({ hasText: 'Fractions' })).toContainText('Niveau 5');
+  await page.locator('#rstBtn').click();
+  await expect(page.locator('#rstBox')).toBeVisible();
+  await page.locator('#rstYes').click();
+  await expect(page.locator('#rstMsg')).toContainText('remis à zéro');
+  const reste = await page.evaluate(() => ({ f: localStorage.getItem('mp:fractions'), r: localStorage.getItem('mp:reglages'), b: localStorage.getItem('mp:bienvenue') }));
+  expect(reste.f).toBeNull();
+  expect(reste.r).not.toBeNull();
+  expect(reste.b).not.toBeNull();
+  await expect(page.locator('.mcard').filter({ hasText: 'Fractions' })).not.toContainText('Niveau 5');
+});
+
 test('accueil, export / import, hors ligne', async ({ page, context }, info) => {
   const errors = [];
   page.on('pageerror', e => errors.push(e.message));

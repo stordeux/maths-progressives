@@ -47,6 +47,18 @@ export function importAll(obj) {
   });
   return n;
 }
+/** efface la progression de tous les modules (garde les réglages et la fenêtre d'accueil déjà vue) ; renvoie le nombre effacé */
+export function resetAll() {
+  const garder = new Set(['reglages', 'bienvenue']);
+  let n = 0;
+  try {
+    const cles = [];
+    for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith(PREFIX) && !garder.has(k.slice(PREFIX.length))) cles.push(k); }
+    cles.forEach(k => { localStorage.removeItem(k); n++; });
+  } catch (e) { /* stockage indisponible */ }
+  Object.keys(mem).forEach(k => { if (!garder.has(k)) { delete mem[k]; } });
+  return n;
+}
 /** code compact (base64 de l'UTF-8) pour recopier à la main d'un appareil à l'autre */
 export const toCode = obj => btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
 export const fromCode = code => JSON.parse(decodeURIComponent(escape(atob(code.trim()))));

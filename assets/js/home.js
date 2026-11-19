@@ -49,7 +49,7 @@ function render() {
   $('#global').textContent = debut ? `${debut} module${debut > 1 ? 's' : ''} commencé${debut > 1 ? 's' : ''} · ${tot} niveau${tot > 1 ? 'x' : ''} atteint${tot > 1 ? 's' : ''} en tout` : 'Choisis un module pour commencer 👇';
 }
 
-function toggle(id) { ['#expBox', '#impBox', '#setBox'].forEach(b => { $(b).hidden = b === id ? !$(b).hidden : true; }); }
+function toggle(id) { ['#expBox', '#impBox', '#setBox', '#rstBox'].forEach(b => { $(b).hidden = b === id ? !$(b).hidden : true; }); }
 $('#expBtn').onclick = () => { $('#expCode').value = store.toCode(store.exportAll()); toggle('#expBox'); };
 $('#copyBtn').onclick = async () => {
   try { await navigator.clipboard.writeText($('#expCode').value); $('#copyBtn').textContent = 'Copié ✔'; }
@@ -62,6 +62,9 @@ $('#dlBtn').onclick = () => {
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
 };
 $('#impBtn').onclick = () => toggle('#impBox');
+$('#rstBtn').onclick = () => { $('#rstMsg').textContent = ''; toggle('#rstBox'); };
+$('#rstNo').onclick = () => toggle('#rstBox');
+$('#rstYes').onclick = () => { const n = store.resetAll(); render(); $('#rstMsg').textContent = `✅ Tout est remis à zéro (${n} module${n > 1 ? 's' : ''} effacé${n > 1 ? 's' : ''}).`; };
 function doImport(obj) {
   try { const n = store.importAll(obj); $('#impMsg').textContent = `✅ Progression importée (${n} élément${n > 1 ? 's' : ''}).`; render(); }
   catch (e) { $('#impMsg').textContent = '❌ ' + e.message; }
