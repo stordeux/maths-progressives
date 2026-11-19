@@ -68,9 +68,9 @@ function C1() {
 ${numTable([{ s: '38,745' }], { hi: -2 })}
 ${ex('Exemple 1 : dans 38,745, quel est le chiffre des centièmes ?', `Le 2<sup>e</sup> chiffre après la virgule est 4.<br>Le chiffre des centièmes est <b>4</b>.`)}
 ${ex('Exemple 2 : dans 4 256,38, quel est le chiffre des centaines ?', `À gauche de la virgule : 6 (unités), 5 (dizaines), 2 (centaines).<br>Le chiffre des centaines est <b>2</b>. Le chiffre des centièmes est 8.`)}
-${ex('Exemple 3 : dans 38,745, le chiffre 7 est le chiffre des…', `Le 7 est à droite de la virgule, au 1<sup>er</sup> rang.<br>Le 7 est le chiffre des <b>dixièmes</b>.`)}
-${ex('Exemple 4 : combien y a-t-il de dixièmes dans 3,7 ?', `3 unités = 3 × 10 = 30 dixièmes, et 7 dixièmes de plus : 30 + 7 = <b>37</b> dixièmes.`)}
-${ex('Exemple 5 : combien y a-t-il de centièmes dans 2,5 ?', `2 unités = 200 centièmes ; 5 dixièmes = 50 centièmes. Au total : 200 + 50 = <b>250</b> centièmes.`)}
+${ex('Exemple 3 : dans 38,745, le chiffre 7 est le chiffre des…', `Le 7 est à droite de la virgule, au 1<sup>er</sup> rang.<br>Réponse : <b>dixièmes</b>.`)}
+${ex('Exemple 4 : combien y a-t-il de dixièmes dans 3,7 ?', `3 unités = 3 × 10 = 30 dixièmes, et 7 dixièmes de plus : 30 + 7 = 37.<br>Il y a <b>37</b> dixièmes.`)}
+${ex('Exemple 5 : combien y a-t-il de centièmes dans 2,5 ?', `2 unités = 200 centièmes ; 5 dixièmes = 50 centièmes. Au total : 200 + 50 = 250.<br>Il y a <b>250</b> centièmes.`)}
 <div class="warn">⚠️ Ne confonds pas <b>dixièmes</b> et <b>dizaines</b>, <b>centièmes</b> et <b>centaines</b> : les « -ièmes » sont à droite de la virgule.<br>⚠️ Dans 3,07, le chiffre des dixièmes est 0.</div>
 <div class="retenir">À retenir : à droite de la virgule, le 1er chiffre est celui des dixièmes, le 2<sup>e</sup> celui des centièmes, le 3<sup>e</sup> celui des millièmes.</div>`;
 }
@@ -161,7 +161,7 @@ function L3(d) {
   if (form === 'LL' && d >= 5 && chance(0.5)) { min = r6(ri(1, 9) + ri(1, 8) / 10); max = r6(min + 0.1); step = 0.01; }
   const N = Math.round((max - min) / step), k = nd(step), idx = () => ri(1, N - 1);
   const pos = i => r6(min + i * step);
-  const sx = x => fx(x, k);
+  const sx = x => f(x);
   const winTxt = `entre ${sx(min)} et ${sx(max)}`;
   if (form === 'P1' || form === 'PC') {
     const ids = shuffle([...Array(N - 1).keys()].map(i => i + 1)).slice(0, 4), L = ['A', 'B', 'C', 'D'], tgt = ri(0, 3);
@@ -206,10 +206,12 @@ function C3() {
 <div class="def">Quand l'unité est partagée en <b>10 parts égales</b>, une graduation vaut <b>0,1</b> (un dixième). Quand un dixième est lui-même partagé en 10, une graduation vaut <b>0,01</b> (un centième).</div>
 <div class="methode"><b>Méthode</b><ol><li>Lis les deux nombres écrits aux extrémités.</li><li>Compte les parts entre eux : cela donne la valeur d'une graduation.</li><li>Compte les graduations depuis l'extrémité de gauche jusqu'au point.</li><li>Ajoute : abscisse = nombre de gauche + (graduations × valeur d'une graduation).</li></ol></div>
 ${a}
-${ex('Exemple 1 : lis l\'abscisse du point A (entre 3 et 4)', `La droite est partagée en 10 parts : une graduation vaut 0,1. A est à 4 graduations de 3.<br>A a pour abscisse 3 + 4 × 0,1 = <b>3,4</b>.`)}
-${ex('Exemple 2 : lis l\'abscisse du point A (entre 6,3 et 6,4)', `Entre 6,3 et 6,4, la droite est partagée en 10 parts : une graduation vaut 0,01. A est à 7 graduations de 6,3.<br>A a pour abscisse 6,3 + 7 × 0,01 = <b>6,37</b>.`)}
-${ex('Exemple 3 : lis les abscisses de A et B', `Entre 8 et 9, une graduation vaut 0,1. A est à 2 graduations de 8 : A = <b>8,2</b>. B est à 7 graduations : B = <b>8,7</b>.`)}
-${ex('Exemple 4 : quel point a pour abscisse 4,3 (entre 4 et 5) ?', `Une graduation vaut 0,1. 4,3 est à 3 graduations de 4 : on compte 3 graduations depuis 4 et on repère le point : c'est le point <b>C</b> (celui qui est à 3 graduations de 4).`)}
+${ex('Exemple 1 : lis l\'abscisse du point A (entre 3 et 4)', `La droite est partagée en 10 parts : une graduation vaut 0,1. A est à 4 graduations de 3.<br>3 + 4 × 0,1 = 3,4.<br>A a pour abscisse <b>3,4</b>.`)}
+${ex('Exemple 2 : lis l\'abscisse du point A (entre 6,3 et 6,4)', `Entre 6,3 et 6,4, la droite est partagée en 10 parts : une graduation vaut 0,01. A est à 7 graduations de 6,3.<br>6,3 + 7 × 0,01 = 6,37.<br>A a pour abscisse <b>6,37</b>.`)}
+${ex('Exemple 3 : lis les abscisses de A et B', `Entre 8 et 9, une graduation vaut 0,1. A est à 2 graduations de 8 : 8 + 2 × 0,1 = 8,2. B est à 7 graduations : 8 + 7 × 0,1 = 8,7.<br>A : <b>8,2</b> et B : <b>8,7</b>.`)}
+${ex('Exemple 4 : quel point a pour abscisse 4,3 (entre 4 et 5) ?', `Une graduation vaut 0,1. 4,3 est à 3 graduations de 4 : on compte 3 graduations depuis 4 et on cherche le point à cette distance.<br>Réponse : le point <b>C</b>.`)}
+${decLine({ min: 4, max: 5, step: 0.1, marks: [{ x: 4.6, l: 'A', c: '#e03131' }, { x: 4.1, l: 'B', c: '#1971c2' }, { x: 4.3, l: 'C', c: '#2b8a3e' }, { x: 4.8, l: 'D', c: '#9c36b5' }], lab: 'ends' })}
+${ex('Exemple 5 : lis l\'abscisse du point A (entre 2 et 4), puis quel point a pour abscisse 7,45 (entre 7,4 et 7,5) ?', `Entre 2 et 4 il y a 20 graduations : une graduation vaut encore 0,1. Si A est à 13 graduations de 2 : 2 + 13 × 0,1 = 3,3. A a pour abscisse <b>3,3</b>.<br>Entre 7,4 et 7,5, une graduation vaut 0,01 : 7,45 est à 5 graduations de 7,4 (au milieu). C'est le point situé au milieu du segment.`)}
 <div class="warn">⚠️ Ne confonds pas dixièmes et centièmes : entre 3 et 4 une graduation vaut 0,1 (pas 0,01).<br>⚠️ Le point à 4 graduations après 3 est 3,4 et non 3,04 ni 4.</div>
 <div class="retenir">À retenir : on commence toujours par trouver la valeur d'une graduation.</div>`;
 }

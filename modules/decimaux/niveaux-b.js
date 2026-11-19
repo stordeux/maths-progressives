@@ -76,7 +76,7 @@ ${ex('Exemple 2 : encadre 7,38 au dixième', `On garde 1 décimale : 7,3. La bor
 ${ex('Exemple 3 : encadre 3,472 au centième', `On garde 2 décimales : 3,47 ; puis 3,47 + 0,01 = 3,48.<br><b>3,47 ${lt} 3,472 ${lt} 3,48</b>`)}
 ${ex('Exemple 4 : range dans l\'ordre croissant 4,5 ; 4,05 ; 4,45', `Avec 2 décimales : 4,50 ; 4,05 ; 4,45. Du plus petit au plus grand : 4,05 ; 4,45 ; 4,50.<br><b>4,05 ${lt} 4,45 ${lt} 4,5</b>`)}
 ${ex('Exemple 5 : range dans l\'ordre décroissant 0,8 ; 0,08 ; 0,75 ; 0,805', `Avec 3 décimales : 0,800 ; 0,080 ; 0,750 ; 0,805. Du plus grand au plus petit :<br><b>0,805 ${gt} 0,8 ${gt} 0,75 ${gt} 0,08</b>`)}
-${ex('Exemple 6 : trouve un nombre entre 2,3 et 2,4', `On écrit 2,30 et 2,40 : on peut prendre 2,35.<br><b>2,3 ${lt} 2,35 ${lt} 2,4</b> (d'autres réponses conviennent : 2,31 ; 2,399…)`)}
+${ex('Exemple 6 : trouve un nombre entre 2,3 et 2,4', `On écrit 2,30 et 2,40 : on peut prendre 2,35.<br><b>2,3 ${lt} 2,35 ${lt} 2,4</b> (d'autres réponses conviennent : 2,31 ; 2,399…)<br>Entre 5 et 6 : 5,5 convient. Entre 2,71 et 2,72 : 2,715 convient.`)}
 <div class="warn">⚠️ Encadrer n'est pas arrondir : on garde les chiffres, on n'arrondit pas.<br>⚠️ Entre 2,3 et 2,4 il y a des nombres : il y en a une infinité !<br>⚠️ 4,5 n'est pas plus petit que 4,45 « parce qu'il a moins de chiffres ».</div>
 <div class="retenir">À retenir : pour ranger, on écrit les nombres avec le même nombre de décimales.</div>`;
 }
@@ -135,7 +135,7 @@ ${ex('Exemple 1 : arrondis 7,38 à l\'unité', `Chiffre des unités : 7 ; chiffr
 ${ex('Exemple 2 : arrondis 7,38 au dixième', `Chiffre des dixièmes : 3 ; chiffre suivant : 8 (≥ 5). On ajoute 1 : 4.<br>7,38 ≈ <b>7,4</b>`)}
 ${ex('Exemple 3 : arrondis 3,478 au centième', `Chiffre des centièmes : 7 ; chiffre suivant : 8 (≥ 5). On ajoute 1 : 8.<br>3,478 ≈ <b>3,48</b>`)}
 ${ex('Exemple 4 : arrondis 3,96 au dixième (le chiffre est un 9)', `Chiffre des dixièmes : 9 ; chiffre suivant : 6 (≥ 5). 9 + 1 = 10 : on retient 1 pour les unités.<br>3,96 ≈ <b>4</b> (on peut écrire 4,0).`)}
-${ex('Exemple 5 : valeur approchée de 3,478 au centième, par défaut puis par excès', `3,47 ${lt} 3,478 ${lt} 3,48.<br>Par défaut : <b>3,47</b>. Par excès : <b>3,48</b>.`)}
+${ex('Exemple 5 : valeur approchée de 3,478 au centième, par défaut puis par excès', `3,47 ${lt} 3,478 ${lt} 3,48.<br>Valeur approchée par défaut : <b>3,47</b>.<br>Valeur approchée par excès : <b>3,48</b>.`)}
 <div class="warn">⚠️ Arrondir n'est pas couper : 3,478 au centième n'est pas 3,47, mais 3,48.<br>⚠️ On ne regarde que le chiffre juste après, pas tous les suivants : 2,349 au dixième → on regarde 4, donc 2,3.<br>⚠️ Par défaut et par excès ne sont pas toujours l'arrondi.</div>
 <div class="retenir">À retenir : on regarde le chiffre suivant : 0 à 4 on garde, 5 à 9 on augmente.</div>`;
 }
@@ -197,11 +197,11 @@ function C7() {
 <div class="def">On écrit les nombres <b>l'un sous l'autre, virgule sous virgule</b>. On complète avec des zéros pour avoir le même nombre de décimales. Puis on calcule colonne par colonne, de droite à gauche, et on place la virgule du résultat sous les autres.</div>
 <div class="methode"><b>Méthode</b><ol><li>Aligne les virgules (unités sous unités, dixièmes sous dixièmes…).</li><li>Ajoute des zéros pour avoir autant de décimales.</li><li>Calcule colonne par colonne, avec les retenues.</li><li>Place la virgule dans le résultat, sous les autres.</li></ol></div>
 ${posed('+', '3,5', '2,48', '5,98')}
-${ex('Exemple 1 : calcule 3,5 + 2,48', `On écrit 3,50 + 2,48. Centièmes : 0 + 8 = 8. Dixièmes : 5 + 4 = 9. Unités : 3 + 2 = 5.<br>3,5 + 2,48 = <b>5,98</b>`)}
-${ex('Exemple 2 : calcule 7,2 − 3,45 (avec retenue)', `On écrit 7,20 − 3,45. Centièmes : 0 − 5 impossible, on emprunte : 10 − 5 = 5. Dixièmes : 1 − 4 impossible, on emprunte : 11 − 4 = 7. Unités : 6 − 3 = 3.<br>7,2 − 3,45 = <b>3,75</b>`)}
-${ex('Exemple 3 : calcule 12 + 3,45 (un nombre entier)', `Un entier a une virgule « cachée » : 12 = 12,00. On écrit 12,00 + 3,45 = <b>15,45</b>.<br>Autre cas : 10 − 3,6 = 10,0 − 3,6 = <b>6,4</b>.`)}
-${ex('Exemple 4 : complète 4,6 + … = 10', `Ce qu'il manque se calcule par une soustraction : 10 − 4,6 = 10,0 − 4,6 = <b>5,4</b>. Vérification : 4,6 + 5,4 = 10.`)}
-${ex('Exemple 5 : calcule 3,5 + 12,07 + 0,248', `On additionne deux nombres à la fois : 3,5 + 12,07 = 15,57, puis 15,57 + 0,248 = <b>15,818</b>.`)}
+${ex('Exemple 1 : calcule 3,5 + 2,48', `On écrit 3,50 + 2,48. Centièmes : 0 + 8 = 8. Dixièmes : 5 + 4 = 9. Unités : 3 + 2 = 5.<br>3,5 + 2,48 = 5,98.<br>Résultat : <b>5,98</b>`)}
+${ex('Exemple 2 : calcule 7,2 − 3,45 (avec retenue)', `On écrit 7,20 − 3,45. Centièmes : 0 − 5 impossible, on emprunte : 10 − 5 = 5. Dixièmes : 1 − 4 impossible, on emprunte : 11 − 4 = 7. Unités : 6 − 3 = 3.<br>7,2 − 3,45 = 3,75.<br>Résultat : <b>3,75</b>`)}
+${ex('Exemple 3 : calcule 12 + 3,45 (un nombre entier)', `Un entier a une virgule « cachée » : 12 = 12,00. On écrit 12,00 + 3,45.<br>Résultat : <b>15,45</b>.<br>Autre cas : 10 − 3,6 = 10,0 − 3,6.<br>Résultat : <b>6,4</b>.`)}
+${ex('Exemple 4 : complète 4,6 + … = 10', `Ce qu'il manque se calcule par une soustraction : 10 − 4,6 = 10,0 − 4,6 = 5,4.<br>4,6 + <b>5,4</b> = 10. (De même : 0,35 + <b>0,65</b> = 1 et 7,1 + <b>92,9</b> = 100.)`)}
+${ex('Exemple 5 : calcule 3,5 + 12,07 + 0,248', `On additionne deux nombres à la fois : 3,5 + 12,07 = 15,57, puis 15,57 + 0,248.<br>Résultat : <b>15,818</b>.`)}
 <div class="warn">⚠️ 3,5 + 2,48 n'est pas 2,83 : 5 dixièmes ne s'additionnent pas avec 8 centièmes. Il faut écrire 3,50.<br>⚠️ Ne soustrais pas « le petit chiffre au grand » : s'il manque, emprunte 1 à la colonne de gauche.</div>
 <div class="retenir">À retenir : virgule sous virgule, et des zéros pour compléter.</div>`;
 }
@@ -268,12 +268,12 @@ function C8() {
 <div class="def"><b>× 10, × 100, × 1 000</b> : chaque chiffre se décale de 1, 2, 3 rangs vers la <b>gauche</b> (la virgule avance vers la droite).<br><b>÷ 10, ÷ 100, ÷ 1 000</b> : chaque chiffre se décale vers la <b>droite</b> (la virgule recule).<br>Multiplier par <b>0,1</b> revient à diviser par 10 ; par <b>0,01</b>, à diviser par 100. Diviser par 0,1 revient à multiplier par 10.</div>
 <div class="methode"><b>Méthode</b><ol><li>Repère le nombre de zéros (ou de rangs : 0,01 → 2).</li><li>× : décale la virgule vers la droite ; ÷ : vers la gauche.</li><li>Ajoute des zéros s'il manque des chiffres.</li></ol></div>
 ${numTable([{ s: '3,45' }, { s: '345' }], { links: true, cap: '× 100 : chaque chiffre se décale de 2 rangs vers la gauche' })}
-${ex('Exemple 1 : calcule 3,45 × 100', `La virgule avance de 2 rangs vers la droite : 3,45 → 345.<br>3,45 × 100 = <b>345</b>.<br>Autre cas (il manque des chiffres) : 7,5 × 1 000 = <b>7 500</b>.`)}
-${ex('Exemple 2 : calcule 72,5 ÷ 10', `La virgule recule de 1 rang : 72,5 → 7,25.<br>72,5 ÷ 10 = <b>7,25</b>.<br>Autre cas (on ajoute des zéros) : 4 ÷ 100 = <b>0,04</b> et 45 ÷ 1 000 = <b>0,045</b>.`)}
-${ex('Exemple 3 : calcule 4,5 × 0,1', `× 0,1 revient à ÷ 10 : la virgule recule de 1 rang.<br>4,5 × 0,1 = <b>0,45</b>.<br>Et 36 × 0,01 = 36 ÷ 100 = <b>0,36</b>.`)}
-${ex('Exemple 4 : calcule 4,5 ÷ 0,1', `÷ 0,1 revient à × 10 : la virgule avance de 1 rang.<br>4,5 ÷ 0,1 = <b>45</b>.<br>Et 0,36 ÷ 0,01 = 0,36 × 100 = <b>36</b>.`)}
-${ex('Exemple 5 : complète 4,56 × … = 456', `La virgule a avancé de 2 rangs : on a multiplié par <b>100</b>.`)}
-${ex('Exemple 6 : complète 3 400 ÷ … = 3,4', `La virgule a reculé de 3 rangs : on a divisé par <b>1 000</b>.`)}
+${ex('Exemple 1 : calcule 3,45 × 100', `La virgule avance de 2 rangs vers la droite : 3,45 → 345.<br>Résultat : <b>345</b>.<br>Autre cas (il manque des chiffres) : 7,5 × 1 000. Résultat : <b>7 500</b>.`)}
+${ex('Exemple 2 : calcule 72,5 ÷ 10', `La virgule recule de 1 rang : 72,5 → 7,25.<br>Résultat : <b>7,25</b>.<br>Autre cas (on ajoute des zéros) : 4 ÷ 100 donne <b>0,04</b> et 45 ÷ 1 000 donne <b>0,045</b>.`)}
+${ex('Exemple 3 : calcule 4,5 × 0,1', `× 0,1 revient à ÷ 10 : la virgule recule de 1 rang.<br>Résultat : <b>0,45</b>.<br>Et 36 × 0,01 = 36 ÷ 100 : résultat <b>0,36</b>.`)}
+${ex('Exemple 4 : calcule 4,5 ÷ 0,1', `÷ 0,1 revient à × 10 : la virgule avance de 1 rang.<br>Résultat : <b>45</b>.<br>Et 0,36 ÷ 0,01 = 0,36 × 100 : résultat <b>36</b>.`)}
+${ex('Exemple 5 : complète 4,56 × … = 456', `La virgule a avancé de 2 rangs : on a multiplié par 100 : 4,56 × <b>100</b> = 456.`)}
+${ex('Exemple 6 : complète 3 400 ÷ … = 3,4', `La virgule a reculé de 3 rangs : on a divisé par 1 000 : 3 400 ÷ <b>1 000</b> = 3,4.`)}
 <div class="warn">⚠️ 3,45 × 10 n'est pas 3,450 : on ne « rajoute pas un zéro », on décale les chiffres.<br>⚠️ 4,5 × 0,1 n'est pas 45 : multiplier par 0,1 rend le nombre <b>plus petit</b>.</div>
 <div class="retenir">À retenir : × 10 → la virgule avance ; ÷ 10 → la virgule recule ; × 0,1 = ÷ 10.</div>`;
 }

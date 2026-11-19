@@ -40,7 +40,7 @@ export function numTable(rows, { hi = null, links = false, cap = '', ptsDec = 3 
       const ch = pw >= 0 ? p.ip[p.ip.length - 1 - pw] : p.dp[-pw - 1];
       if (ch !== undefined) s += tx(x0 + c * cw + cw / 2, y + rh / 2 + 8, ch, { fs: 24, b: 1, c: col });
     }
-    if (p.dp.length || nD) s += tx(x0 + nI * cw, y + rh - 5, ',', { fs: 30, b: 1, c: RED });
+    s += `<circle cx="${x0 + nI * cw}" cy="${y + rh - 9}" r="4.5" fill="${RED}"/><path d="M${x0 + nI * cw},${y + rh - 6} l-3,9 h4z" fill="${RED}"/>`;
     // chiffres significatifs (du premier non nul au dernier chiffre écrit)
     const all = [];
     for (let c = 0; c < n; c++) {
@@ -66,14 +66,14 @@ export function numTable(rows, { hi = null, links = false, cap = '', ptsDec = 3 
  */
 export function decLine({ min, max, step, marks = [], segs = [], lab = 'ends' } = {}) {
   const W = 480, pad = 30, y = 62, H = 100, N = Math.round((max - min) / step), sx = (W - 2 * pad) / N;
-  const X = x => pad + (x - min) / step * sx, k = Math.max(nd(step), nd(min), nd(max));
+  const X = x => pad + (x - min) / step * sx;
   let s = `<line x1="${pad - 14}" y1="${y}" x2="${W - pad + 12}" y2="${y}" stroke="#333" stroke-width="2"/><path d="M${W - pad + 20},${y} l-10,-5 v10z" fill="#333"/>`;
   segs.forEach(g => { s += `<rect x="${X(g.a).toFixed(1)}" y="${y - 4}" width="${(X(g.b) - X(g.a)).toFixed(1)}" height="8" rx="3" fill="${g.c || '#74c0fc'}" opacity=".75"/>`; });
   for (let i = 0; i <= N; i++) {
     const big = i === 0 || i === N || i % 5 === 0 ? 11 : 7;
     s += `<line x1="${(pad + i * sx).toFixed(1)}" y1="${y - big}" x2="${(pad + i * sx).toFixed(1)}" y2="${y + big}" stroke="#333" stroke-width="${i === 0 || i === N ? 2.4 : 1.4}"/>`;
     const lb = lab === 'all' || (lab === 'ends' && (i === 0 || i === N)) || (lab === 'half' && (i === 0 || i === N || i * 2 === N)) || (typeof lab === 'number' && i % lab === 0);
-    if (lb) s += tx((pad + i * sx).toFixed(1), y + 32, fx(r6(min + i * step), k), { fs: 15, c: '#495057' });
+    if (lb) s += tx((pad + i * sx).toFixed(1), y + 32, f(r6(min + i * step)), { fs: 15, c: '#495057' });
   }
   marks.forEach(m => {
     s += `<circle cx="${X(m.x).toFixed(2)}" cy="${y}" r="6.5" fill="${m.c || RED}"/>`;
@@ -173,7 +173,7 @@ export function divPosed(D, b, extra = 0) {
     for (let t = 0; t < str.length; t++) s += tx(end - (str.length - 1 - t) * 17, y, str[t], { fs: 24, b: 1, m: 1, c: ACC });
     if (j + 1 < chars.length) s += tx(xc(j + 1), y, chars[j + 1], { fs: 24, b: 1, m: 1, c: j + 1 >= ip.length + dp.length ? '#74c0fc' : BLUE });
   });
-  return svg(W, H + 40, `division posée de ${D} par ${b}, quotient ${quo}`, s, `style="max-width:${Math.max(W, 300)}px"`);
+  return svg(W, H, `division posée de ${D} par ${b}, quotient ${quo}`, s, `style="max-width:${Math.max(W, 300)}px"`);
 }
 
 /** schéma de la multiplication de deux décimaux : produit des entiers, puis virgule placée au bon rang */
@@ -206,7 +206,7 @@ export function approxBoxes(items, op, res, rres = null) {
     s += tx(x - gap / 2, 115, '=', { fs: 24, b: 1, c: ACC }) + `<rect x="${x}" y="88" width="${bw}" height="40" rx="9" fill="#fff3bf" stroke="${ACC}" stroke-width="2"/>` + tx(x + bw / 2, 115, res, { fs: 20, b: 1, c: ACC });
     if (rres) s += tx(x + bw / 2, 38, rres, { fs: 13, c: '#868e96' });
   }
-  s += tx(8, 70, 'on arrondit', { fs: 12, c: ORG, a: 'start' });
+  s += tx(12 + bw / 2 + 12, 74, 'on arrondit', { fs: 12, c: ORG, a: 'start' });
   return svg(W, 142, 'ordre de grandeur : on arrondit chaque nombre puis on calcule', s, `style="max-width:${Math.max(W, 300)}px"`);
 }
 

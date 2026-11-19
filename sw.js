@@ -1,6 +1,6 @@
 // Service worker : met tout le site en cache pour qu'il marche hors ligne.
 // La liste ASSETS et VERSION sont régénérées par « node tools/sw-assets.mjs » (vérifié par les tests).
-const VERSION = 'a5345a0732a8';
+const VERSION = '70c70e0d7f74';
 const ASSETS = [
   './',
   './assets/css/base.css',
@@ -44,6 +44,13 @@ const ASSETS = [
   './modules/calcul/app.js',
   './modules/calcul/index.html',
   './modules/calcul/levels.js',
+  './modules/decimaux/draw.js',
+  './modules/decimaux/index.html',
+  './modules/decimaux/levels.js',
+  './modules/decimaux/niveaux-a.js',
+  './modules/decimaux/niveaux-b.js',
+  './modules/decimaux/niveaux-c.js',
+  './modules/decimaux/num.js',
   './modules/derivees/draw.js',
   './modules/derivees/index.html',
   './modules/derivees/levels.js',
@@ -112,6 +119,7 @@ const ASSETS = [
   './modules/aires-volumes/',
   './modules/angles/',
   './modules/calcul/',
+  './modules/decimaux/',
   './modules/derivees/',
   './modules/equations/',
   './modules/exp-ln/',
