@@ -124,6 +124,10 @@ table.data th { background: var(--acc2); }
 
 #banner { position: fixed; left: 50%; top: 84px; transform: translate(-50%, -30px); opacity: 0; background: var(--ink); color: #fff; padding: 14px 22px; border-radius: 14px; font-size: 1em; font-weight: 600; transition: .35s; z-index: 40; pointer-events: none; text-align: center; max-width: 92vw; }
 #banner.show { opacity: 1; transform: translate(-50%, 0); }
+#banner .ligne + .ligne { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, .3); }
+body.calcul #banner { top: 6px; }
+.menu-titre { font-weight: 600; }
+.menu-titre:empty { display: none; }
 
 /* ---------- brouillon ---------- */
 .drawhead { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }

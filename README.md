@@ -24,6 +24,11 @@ accueil → **Ma progression** → **Exporter** (code à recopier ou fichier `.j
   chaque faute (première réponse fausse) en retire **deux**. **5 étoiles par niveau**, en continu : à 5 on passe au niveau
   suivant, sous 0 on revient au niveau précédent avec le reste (niveau 3 et 1 ★, une faute → niveau 2 et 4 ★).
   Le niveau et les étoiles sont affichés en haut de l'écran ; un bandeau annonce chaque changement de niveau.
+- **Un titre par élève** (sur l'appareil), qui récompense toute la progression : on additionne les étoiles de tous les modules
+  (niveau × 5 + étoiles en cours, 60 au plus par module). Dix titres : Stagiaire (0 ★), Novice (10), Apprenti (30), Confirmé (60),
+  Expérimenté (120), Expert (240), Maître (420), Grand maître (600), Grandiose (840), International (1 080). L'accueil affiche le titre,
+  le total d'étoiles et une barre vers le titre suivant ; dans un module, un bandeau « 🎖️ Tu deviens … ! » annonce chaque nouveau titre.
+  Le titre n'est pas stocké : il se recalcule (`engine/titres.js`), donc il suit l'export / import et revient à Stagiaire avec « Réinitialiser ».
 - **Erreur → indice → deuxième essai → correction détaillée.** Quand la réponse est « presque juste »
   (bonnes bornes mais mauvais crochets, fraction égale mais pas simplifiée…), le message le dit.
 - **Un cours par niveau** (définition, exemples, erreurs classiques ⚠️, visuel), **replié au-dessus de l'exercice** : l'élève le déplie quand il en a envie (bandeau 📘 ou bouton 📘 Cours) et le relit sans quitter l'exercice.
@@ -72,6 +77,7 @@ Les modules ES exigent un serveur (GitHub Pages, ou `npm run serve` en local) : 
 index.html, manifest.webmanifest, sw.js   accueil, PWA hors ligne
 assets/css/base.css                        thème commun (variables CSS, grands boutons tactiles)
 engine/engine.js                           boucle d'exercice, adaptation, bandeaux, cours, menu
+engine/titres.js                           titre de l'élève : score global (toutes les étoiles), 10 titres et leurs seuils
 engine/answers/                            types de réponse (nums, frac, steps, roots, choice, cmp, iv, table) et fonctions check
 engine/keypad.js, scratchpad.js            pavé numérique, brouillon
 engine/draw/                               SVG : droite graduée, droite réelle, courbes, figures

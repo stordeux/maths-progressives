@@ -187,6 +187,134 @@ test('accueil, export / import, hors ligne', async ({ page, context }, info) => 
   expect(errors).toEqual([]);
 });
 
+// Titre de l'élève (ticket n° 6) : un titre par appareil, calculé sur toute la progression.
+const progression = (page, data) => page.addInitScript(d => {
+  if (sessionStorage.getItem('mp-test-pose')) return; // une seule fois : les rechargements gardent ce que la page a écrit
+  sessionStorage.setItem('mp-test-pose', '1');
+  for (const [k, v] of Object.entries(d)) localStorage.setItem('mp:' + k, JSON.stringify(v));
+}, data);
+
+test("accueil : titre de l'élève, barre vers le titre suivant, Réinitialiser → Stagiaire, import", async ({ page }, info) => {
+  // 60 + 60 + 43 + 22 + 60 + 9 = 254 étoiles : Expert (240), Maître à 420 → il en manque 166, barre à 7 %
+  await progression(page, {
+    fractions: { level: 11, stars: 5, good: 70, total: 80, last: 1 }, relatifs: { level: 11, stars: 5, total: 70, last: 1 },
+    calcul: { level: 8, stars: 3, total: 50, last: 1 }, equations: { level: 4, stars: 2, total: 30, last: 1 },
+    pythagore: { level: 11, stars: 5, total: 66, last: 1 }, angles: { level: 1, stars: 4, total: 9, last: 1 },
+    revision: { sessions: 2, best: 80, last: 1 },
+  });
+  await page.goto('./');
+  await expect(page.locator('#titreNom')).toHaveText('Expert');
+  await expect(page.locator('#titre')).toContainText('🎖️ Ton titre : Expert');
+  await expect(page.locator('#titreTotal')).toContainText('254 étoiles');
+  await expect(page.locator('#titreSuite')).toContainText('Encore 166 étoiles pour devenir Maître');
+  const barre = page.locator('#titre [role="progressbar"]');
+  await expect(barre).toHaveAttribute('aria-valuenow', '7');
+  const larg = await barre.evaluate(b => b.firstElementChild.getBoundingClientRect().width / b.getBoundingClientRect().width);
+  expect(larg).toBeGreaterThan(0.06); expect(larg).toBeLessThan(0.09);
+  await expect(page.locator('#titre .techelle li')).toHaveCount(10);
+  await expect(page.locator('#titre .techelle li.ici')).toHaveText('Expert');
+  await expect(page.locator('#titre .techelle li.fait')).toHaveCount(5);
+  // bien visible : au-dessus des modules, dans le premier écran, sans débordement
+  const boite = await page.locator('#titre').boundingBox(), carte = await page.locator('.mcard').first().boundingBox();
+  expect(boite.y + boite.height).toBeLessThanOrEqual(carte.y);
+  expect(boite.y + boite.height).toBeLessThan(page.viewportSize().height);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(1);
+  await page.screenshot({ path: `tests/e2e/captures/accueil-titre-${info.project.name}.png`, fullPage: true });
+  // l'export garde de quoi recalculer le titre
+  await page.locator('#expBtn').click();
+  const code = await page.locator('#expCode').inputValue();
+  // Réinitialiser → Stagiaire
+  await page.locator('#rstBtn').click();
+  await page.locator('#rstYes').click();
+  await expect(page.locator('#rstMsg')).toContainText('remis à zéro');
+  await expect(page.locator('#titreNom')).toHaveText('Stagiaire');
+  await expect(page.locator('#titreTotal')).toContainText('0 étoile en tout');
+  await expect(page.locator('#titreSuite')).toContainText('Encore 10 étoiles pour devenir Novice');
+  await expect(barre).toHaveAttribute('aria-valuenow', '0');
+  await page.screenshot({ path: `tests/e2e/captures/accueil-titre-${info.project.name}-stagiaire.png` });
+  await page.reload();
+  await expect(page.locator('#titreNom')).toHaveText('Stagiaire');
+  // Importer → le titre revient
+  await page.locator('#impBtn').click();
+  await page.locator('#impCode').fill(code);
+  await page.locator('#impGo').click();
+  await expect(page.locator('#impMsg')).toContainText('✅');
+  await expect(page.locator('#titreNom')).toHaveText('Expert');
+  await expect(page.locator('#titreTotal')).toContainText('254 étoiles');
+});
+
+test('accueil : dernier titre (International), message de fin', async ({ page }, info) => {
+  const plein = { level: 11, stars: 5, total: 70, last: 1 };
+  await progression(page, Object.fromEntries(MODULES.filter(m => m.id !== 'revision').slice(0, 18).map(m => [m.id, plein])));
+  await page.goto('./');
+  await expect(page.locator('#titreNom')).toHaveText('International');
+  await expect(page.locator('#titreTotal')).toContainText('1080 étoiles');
+  await expect(page.locator('#titreSuite')).toContainText('plus haut titre');
+  await expect(page.locator('#titre [role="progressbar"]')).toHaveAttribute('aria-valuenow', '100');
+  await expect(page.locator('#titre .techelle li.ici')).toHaveText('International');
+  await page.screenshot({ path: `tests/e2e/captures/accueil-titre-${info.project.name}-international.png` });
+});
+
+test('fractions : bandeau « Tu deviens … » avec le bandeau de niveau, sans se cacher', async ({ page }, info) => {
+  const errors = [];
+  page.on('pageerror', e => errors.push(e.message));
+  // 9 étoiles en tout (niveau 2, 4 ★) : la prochaine réussite donne la 10e → Novice, et débloque le niveau 3
+  await progression(page, { fractions: { level: 1, stars: 4, good: 9, total: 9, n: 9, last: 1 } });
+  await page.goto('modules/fractions/');
+  await page.locator('#openMenu').click();
+  await expect(page.locator('#menuTitre')).toContainText('Ton titre : Stagiaire · 9 étoiles en tout · encore 1 pour devenir Novice');
+  await page.locator('#menu [data-close]').click();
+  await expect(page.locator('#banner')).not.toHaveClass(/show/);
+  await answer(page, true);
+  await expect(page.locator('#fb')).toHaveClass(/good/);
+  await expect(page.locator('#banner')).toHaveClass(/show/);
+  await expect(page.locator('#banner')).toContainText('🎖️ Tu deviens Novice !');
+  await page.locator('#nextBtn').click();
+  // les deux messages sont affichés ensemble, l'un sous l'autre
+  await expect(page.locator('#banner .ligne')).toHaveCount(2);
+  await expect(page.locator('#banner')).toContainText('🎖️ Tu deviens Novice !');
+  await expect(page.locator('#banner')).toContainText('Niveau 3 débloqué');
+  const [a, b] = await page.locator('#banner .ligne').evaluateAll(ls => ls.map(l => { const r = l.getBoundingClientRect(); return { y: r.y, h: r.height }; }));
+  expect(b.y).toBeGreaterThanOrEqual(a.y + a.h);
+  await page.screenshot({ path: `tests/e2e/captures/titre-bandeau-${info.project.name}.png` });
+  // le bandeau finit par s'effacer et se vider ; une faute fait redescendre sous le seuil : pas d'annonce
+  await expect(page.locator('#banner')).not.toHaveClass(/show/, { timeout: 8000 });
+  await expect(page.locator('#banner .ligne')).toHaveCount(0);
+  await answer(page, false);
+  await expect(page.locator('#fb')).toHaveClass(/bad/);
+  await expect(page.locator('#banner .ligne')).toHaveCount(0);
+  await page.locator('#openMenu').click();
+  await expect(page.locator('#menuTitre')).toContainText('Ton titre : Stagiaire · 8 étoiles');
+  await page.locator('#menu [data-close]').click();
+  // l'accueil affiche le même total
+  await page.goto('./');
+  await expect(page.locator('#titreNom')).toHaveText('Stagiaire');
+  await expect(page.locator('#titreTotal')).toContainText('8 étoiles');
+  expect(errors).toEqual([]);
+});
+
+test('calcul : bandeau « Tu deviens … » en calcul mental (progression des autres modules comptée)', async ({ page }, info) => {
+  const errors = [];
+  page.on('pageerror', e => errors.push(e.message));
+  // 25 (fractions) + 4 (calcul) = 29 étoiles : la prochaine réussite rapide donne la 30e → Apprenti, et le niveau 2 du calcul
+  await progression(page, { fractions: { level: 5, stars: 0, total: 30, last: 1 }, calcul: { level: 0, stars: 4, good: 4, total: 4, last: 1 } });
+  await page.goto('modules/calcul/');
+  await expect(page.locator('#disp')).not.toHaveClass(/ok|ko/);
+  const a = await page.evaluate(() => window.__mp.question.a);
+  await typeNumber(page, a); await page.locator('#pad [data-k="ok"]').click();
+  await expect(page.locator('#banner')).toContainText('🎖️ Tu deviens Apprenti !');
+  await expect(page.locator('#banner')).toContainText('Niveau 2 débloqué');
+  await expect(page.locator('#banner .ligne')).toHaveCount(2);
+  // le bandeau (une fois en place) ne cache pas le calcul chronométré
+  await page.waitForTimeout(500);
+  const bas = await page.locator('#banner').evaluate(b => b.getBoundingClientRect().bottom), haut = await page.locator('#mq').evaluate(q => q.getBoundingClientRect().top);
+  expect(bas).toBeLessThanOrEqual(haut);
+  await page.screenshot({ path: `tests/e2e/captures/titre-bandeau-calcul-${info.project.name}.png` });
+  await page.locator('#openMenu').click();
+  await expect(page.locator('#menuTitre')).toContainText('Ton titre : Apprenti · 30 étoiles');
+  expect(errors).toEqual([]);
+});
+
 test('révision brevet : séance de 5 exercices et bilan', async ({ page }, info) => {
   const errors = [];
   page.on('pageerror', e => errors.push(e.message));

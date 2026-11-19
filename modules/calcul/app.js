@@ -2,7 +2,7 @@
 //  • Entraînement : adaptatif, barre de temps ; 5 réussites RAPIDES (⚡) d'affilée pour monter, 2 erreurs de suite pour redescendre.
 //  • Défi 60 s : score, record par niveau, liste des erreurs à la fin.
 // Pas de brouillon dans ce module.
-import { shell, registerSW, banner, modal, speak, setContexte, bouger, etoilesHTML, ETOILES } from '../../engine/engine.js';
+import { shell, registerSW, banner, modal, speak, setContexte, bouger, etoilesHTML, ETOILES, annonceTitre, titreMenu } from '../../engine/engine.js';
 import { createKeypad, physicalKey } from '../../engine/keypad.js';
 import { edit, show, parse } from '../../engine/answers/fields.js';
 import * as store from '../../engine/storage.js';
@@ -16,6 +16,7 @@ const fmt = x => show(String(Math.round(x * 1e6) / 1e6).replace('.', ','));
 
 shell(meta, { scratchpad: false, headerExtra: `<div class="modes" role="tablist" aria-label="Mode"><button type="button" role="tab" id="mTrain" class="on" aria-selected="true">Entraînement</button><button type="button" role="tab" id="mChrono" aria-selected="false">Défi 60 s</button></div>` });
 registerSW();
+document.body.classList.add('calcul'); // bandeaux par-dessus l'en-tête : ils ne doivent pas cacher le calcul chronométré
 $('#coursBtn').textContent = '💡 Astuces';
 $('#score').hidden = true;
 // remplacer la colonne d'exercice par l'interface du calcul mental
@@ -48,6 +49,7 @@ const save = () => { S.max = Math.max(S.max || 0, S.level); store.save(ID, S); }
 let mode = 'train', Q, val = '', t0, raf, locked = false, pending = 0, lastQ = '';
 let C = { score: 0, errs: [], end: 0, timer: null };
 const cours = modal('coursModal'), menu = modal('menu');
+const titre = annonceTitre(); // titre de l'élève (tous modules confondus)
 cours.onclose = () => { if (mode === 'train' && !locked) { t0 = performance.now(); cancelAnimationFrame(raf); tick(); } };
 
 const pad = createKeypad($('#pad'), k => key(k), [
@@ -99,13 +101,13 @@ function submit() {
     if (fast) { pending = bouger(S, 1, LEVELS.length); $('#fb').className = 'good'; $('#fb').innerHTML = `✅ ⚡ ${sec} s`; }
     else { $('#fb').className = 'good'; $('#fb').innerHTML = `✅ Juste ! <span class="note">(${sec} s — essaie d'être plus rapide pour gagner un ⚡)</span>`; }
     if (fast && S.level === LEVELS.length - 1 && S.stars === ETOILES) banner('🏆 Champion du calcul mental !');
-    save(); renderHead(); setTimeout(next, fast ? 750 : 1500);
+    save(); renderHead(); titre(); setTimeout(next, fast ? 750 : 1500);
   } else {
     S.fails++; pending = bouger(S, -2, LEVELS.length); $('#disp').className = 'ko';
     $('#fb').className = 'bad';
     $('#fb').innerHTML = `<b>${Q.q.includes('?') ? Q.q.replace('?', '<u>' + fmt(Q.a) + '</u>') : Q.q + ' = ' + fmt(Q.a)}</b><br>💡 ${Q.tip}<div class="actions"><button type="button" class="btn" id="nextBtn">Suivant →</button></div>`;
     $('#nextBtn').onclick = next; $('#nextBtn').focus();
-    save(); renderHead();
+    save(); renderHead(); titre();
   }
 }
 function next() {
@@ -164,14 +166,14 @@ function renderMenu() {
   $('#lvlist').innerHTML = LEVELS.map((L, i) => `<button type="button" data-l="${i}" class="${i === S.level ? 'cur' : ''}"><span class="tag">${i + 1}</span><span>${L.titre}</span><small>${S.best[i] != null ? '⏱️ record ' + S.best[i] : ''}</small></button>`).join('');
   $('#lvlist').querySelectorAll('[data-l]').forEach(b => {
     b.onclick = () => {
-      S.level = +b.dataset.l; S.streak = 0; S.stars = 0; S.fails = 0; pending = 0; save(); menu.close(); setMode(mode);
+      S.level = +b.dataset.l; S.streak = 0; S.stars = 0; S.fails = 0; pending = 0; save(); titre(false); menu.close(); setMode(mode);
     };
   });
 }
-$('#openMenu').onclick = () => { renderMenu(); menu.open(); };
+$('#openMenu').onclick = () => { renderMenu(); titreMenu(); menu.open(); };
 $('#resetBtn').onclick = () => { $('#resetConfirm').hidden = false; };
 $('#resetNo').onclick = () => { $('#resetConfirm').hidden = true; };
-$('#resetYes').onclick = () => { S = JSON.parse(JSON.stringify(def)); pending = 0; save(); $('#resetConfirm').hidden = true; menu.close(); setMode('train'); };
+$('#resetYes').onclick = () => { S = JSON.parse(JSON.stringify(def)); pending = 0; save(); titre(false); $('#resetConfirm').hidden = true; menu.close(); setMode('train'); };
 
 setContexte(() => ({ Module: meta.titre, Mode: mode === 'train' ? 'Entraînement' : 'Défi 60 s', Niveau: `${S.level + 1} – ${LEVELS[S.level].titre}`, Calcul: Q ? Q.q.replace(/<[^>]+>/g, ' ') : '', 'Réponse attendue': Q ? Q.a : '', 'Réponse tapée': val }));
 document.addEventListener('keydown', e => {

@@ -1,6 +1,6 @@
 // Révision brevet : exercices tirés de tous les modules du collège déjà en ligne, chronométrés,
 // une seule tentative par exercice, puis un bilan des points forts et des points faibles.
-import { shell, registerSW, banner, modal, speak, normalize, setContexte } from '../../engine/engine.js';
+import { shell, registerSW, banner, modal, speak, normalize, setContexte, titreMenu } from '../../engine/engine.js';
 import { strip } from '../../engine/util/fmt.js';
 import { ANSWERS } from '../../engine/answers/index.js';
 import { numsCheck } from '../../engine/answers/checks.js';
@@ -162,7 +162,7 @@ $('#coursBtn').onclick = () => {
   cours.open();
 };
 $('#speakBtn').onclick = () => Q && speak(Q.html);
-$('#openMenu').onclick = () => menu.open();
+$('#openMenu').onclick = () => { titreMenu(); menu.open(); };
 $('#resetBtn').textContent = 'Effacer l\'historique des révisions';
 $('#resetBtn').onclick = () => { $('#resetConfirm').hidden = false; };
 $('#resetNo').onclick = () => { $('#resetConfirm').hidden = true; };
