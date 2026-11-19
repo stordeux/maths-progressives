@@ -67,7 +67,7 @@ test("fenêtre d'accueil : une seule fois, montre le bouton 🐞", async ({ page
   await expect(dlg).toHaveCount(0);
   await expect(page.locator('#sigBtn')).not.toHaveClass(/sig-fab-montre/);
   await page.goto('modules/fractions/');
-  await expect(page.locator('#coursModal')).toHaveClass(/open/);
+  await expect(page.locator('#coursToggle')).toBeVisible();
   await expect(page.locator('#bienvenueModal')).toHaveCount(0);
   expect(errors).toEqual([]);
 });
@@ -79,9 +79,24 @@ for (const m of MODULES.filter(m => m.id !== 'revision')) {
     page.on('pageerror', e => errors.push(e.message));
     page.on('request', r => { const u = new URL(r.url()); if (u.hostname !== 'localhost') external.push(r.url()); });
     await page.goto(`modules/${m.id}/`);
-    await expect(page.locator('#coursModal')).toHaveClass(/open/);
-    await page.screenshot({ path: `tests/e2e/captures/${m.id}-${info.project.name}-cours.png` });
-    await page.locator('#coursModal [data-close]').click();
+    if (m.id === 'calcul') {
+      // calcul mental : cours dans une fenêtre, ouverte seulement par le bouton
+      await expect(page.locator('#coursModal')).not.toHaveClass(/open/);
+      await page.locator('#coursBtn').click();
+      await expect(page.locator('#coursModal')).toHaveClass(/open/);
+      await page.screenshot({ path: `tests/e2e/captures/${m.id}-${info.project.name}-cours.png` });
+      await page.locator('#coursModal [data-close]').click();
+    } else {
+      // le cours est replié à l'arrivée ; l'élève le déplie, l'exercice reste visible, puis il le replie
+      await expect(page.locator('#coursInline')).toBeHidden();
+      await expect(page.locator('#q')).toBeVisible();
+      await page.locator('#coursToggle').click();
+      await expect(page.locator('#coursInline')).toBeVisible();
+      await expect(page.locator('#coursInline h2')).toBeVisible();
+      await page.screenshot({ path: `tests/e2e/captures/${m.id}-${info.project.name}-cours.png` });
+      await page.locator('#coursToggle').click();
+      await expect(page.locator('#coursInline')).toBeHidden();
+    }
     if (m.id === 'calcul') {
       for (let k = 0; k < 3; k++) {
         await expect(page.locator('#disp')).not.toHaveClass(/ok|ko/);
@@ -175,7 +190,6 @@ test('signaler une erreur : capture, texte, envoi', async ({ page }, info) => {
   const errors = [];
   page.on('pageerror', e => errors.push(e.message));
   await page.goto('modules/fractions/');
-  await page.locator('#coursModal [data-close]').click();
   await page.locator('#sigBtn').click();
   await expect(page.locator('#sigModal')).toHaveClass(/open/);
   await expect(page.locator('#sigApercu')).toHaveAttribute('src', /blob:/);

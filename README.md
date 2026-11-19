@@ -25,7 +25,7 @@ accueil → **Ma progression** → **Exporter** (code à recopier ou fichier `.j
 - **On redescend** d'un niveau après **2 exercices ratés de suite**. Un bandeau annonce chaque changement.
 - **Erreur → indice → deuxième essai → correction détaillée.** Quand la réponse est « presque juste »
   (bonnes bornes mais mauvais crochets, fraction égale mais pas simplifiée…), le message le dit.
-- **Un cours par niveau** (définition, exemples, erreurs classiques ⚠️, visuel), ouvert automatiquement la première fois, puis par le bouton 📘.
+- **Un cours par niveau** (définition, exemples, erreurs classiques ⚠️, visuel), **replié au-dessus de l'exercice** : l'élève le déplie quand il en a envie (bandeau 📘 ou bouton 📘 Cours) et le relit sans quitter l'exercice.
 - **Brouillon** au stylet (pression prise en compte, rouge, gomme) ; **pavé numérique** à l'écran : le clavier système ne s'ouvre jamais. Le clavier physique marche aussi.
 - Réglages : police plus lisible, caractères plus grands ; bouton 🔊 pour lire la consigne à voix haute.
 

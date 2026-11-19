@@ -10,8 +10,8 @@ Les tickets du bouton 🐞 sont dans gitlab.inria.fr/tordeux/signalements-exerci
 
 | Point | Décision | Détail |
 |---|---|---|
-| Un cours avant chaque niveau | **déjà en place** | Chaque niveau a son cours, ouvert automatiquement la première fois qu'on arrive à ce niveau, puis à la demande par le bouton 📘 Cours. |
-| Relire le cours pendant l'exercice | **à faire (moteur, une fois pour tous les modules)** | Aujourd'hui le cours s'ouvre par-dessus l'exercice et le cache. Prévu : en paysage, cours dans un panneau à côté de l'exercice ; en portrait, un encart « Rappel » repliable (méthode + « À retenir ») au-dessus de la question. |
+| Un cours avant chaque niveau | **déjà en place**, puis modifié | Chaque niveau a son cours, ouvert automatiquement la première fois qu'on arrive à ce niveau, puis à la demande par le bouton 📘 Cours. |
+| Relire le cours pendant l'exercice | **repris** (2026-11-19, tous les modules sauf Calcul mental) | Bandeau « 📘 Cours du niveau n » replié au-dessus de l'exercice ; l'élève le déplie et le replie, l'exercice reste dans la page. Décision de S. Tordeux : **plus d'ouverture automatique**, c'est l'élève qui demande le cours. **Pas repris** : panneau côte à côte en paysage (le bandeau suffit pour l'instant) ; Calcul mental garde sa fenêtre de cours (exercices chronométrés), ouverte seulement par le bouton. |
 | Cours en rapport avec les exercices | **à faire, module par module** (un à la fois, pour les jetons) | Pour chaque niveau : chaque forme d'exercice tirée (à toutes les difficultés `d`) doit avoir un exemple corrigé de la même forme dans le cours, avec la même présentation de la réponse. |
 
 ### Suivi, module par module

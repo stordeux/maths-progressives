@@ -90,6 +90,10 @@ export function shell(meta, { scratchpad = true, headerExtra = '' } = {}) {
 </header>
 <main class="${scratchpad ? 'withpad' : 'nopad'}" id="main">
   <div class="col">
+    <section class="card cours-panel" id="coursPanel">
+      <button type="button" class="cours-toggle" id="coursToggle" aria-expanded="false" aria-controls="coursInline"><span id="coursLabel"></span><span class="cours-etat" id="coursEtat">Ouvrir ▾</span></button>
+      <div class="cours" id="coursInline" hidden></div>
+    </section>
     <section class="card" id="qcard" aria-labelledby="qnum">
       <div class="qhead"><span id="qnum"></span><span id="help"></span><button type="button" class="speak" id="speakBtn" aria-label="Lire la consigne à voix haute" title="Lire à voix haute">🔊</button></div>
       <div id="q" tabindex="-1"></div>
@@ -178,7 +182,8 @@ export function startModule(id, LEVELS, opts = {}) {
     pad.configure({ neg: k.neg, comma: k.comma, inf: Q.type === 'iv', nav: !!(ui.fields && ui.fields.list.length > 1) || Q.type === 'iv' });
     sp && sp.clear();
     renderHead();
-    if (!S.seen.includes(S.level)) { S.seen.push(S.level); save(); openCours(); }
+    // le cours n'est jamais ouvert d'office : c'est l'élève qui le déplie (retour d'élève, 2026-11-18)
+    if (coursNiveau !== S.level) { coursNiveau = S.level; setCours(false); }
   }
 
   function key(k) {
@@ -247,10 +252,16 @@ export function startModule(id, LEVELS, opts = {}) {
     $('#help').textContent = S.level < LEVELS.length - 1 ? `${r} réussite${r > 1 ? 's' : ''} pour monter` : 'Dernier niveau';
   }
 
-  function openCours() {
-    $('#coursBody').innerHTML = LEVELS[S.level].cours();
-    cours.open();
+  // cours du niveau dans la page, au-dessus de l'exercice : fermé par défaut, déplié par l'élève, sans cacher l'exercice
+  let coursNiveau = -1;
+  function setCours(ouvert) {
+    $('#coursLabel').textContent = `📘 Cours du niveau ${S.level + 1} : ${LEVELS[S.level].titre}`;
+    $('#coursEtat').textContent = ouvert ? 'Fermer ▴' : 'Ouvrir ▾';
+    $('#coursToggle').setAttribute('aria-expanded', String(ouvert));
+    if (ouvert) $('#coursInline').innerHTML = LEVELS[S.level].cours();
+    $('#coursInline').hidden = !ouvert;
   }
+  function openCours() { setCours(true); $('#coursPanel').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
 
   function renderMenu() {
     $('#lvlist').innerHTML = LEVELS.map((L, i) => `<button type="button" data-l="${i}" class="${i === S.level ? 'cur' : ''}" ${i === S.level ? 'aria-current="true"' : ''}><span class="tag">${i + 1}</span><span>${L.titre}</span>${L.classe ? `<small>${L.classe}</small>` : ''}</button>`).join('');
@@ -263,6 +274,7 @@ export function startModule(id, LEVELS, opts = {}) {
   $('#nextBtn').onclick = next;
   $('#hintBtn').onclick = () => { usedHint = true; const fb = $('#fb'); fb.className = 'bad'; fb.innerHTML = `💡 ${Q.hint}`; $('#hintBtn').hidden = true; };
   $('#coursBtn').onclick = openCours;
+  $('#coursToggle').onclick = () => setCours($('#coursInline').hidden);
   $('#speakBtn').onclick = () => speak(Q.html);
   $('#openMenu').onclick = () => { renderMenu(); menu.open(); };
   $('#resetBtn').onclick = () => { $('#resetConfirm').hidden = false; };

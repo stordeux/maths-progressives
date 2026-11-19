@@ -113,7 +113,6 @@ function next() {
   if (pending === 1) { S.level++; S.streak = 0; S.fails = 0; banner(`🎉 Niveau ${S.level + 1} débloqué : ${LEVELS[S.level].titre}`); }
   else if (pending === -1) { S.level--; S.streak = 0; S.fails = 0; banner(`On revient au niveau ${S.level + 1} pour consolider 💪`); }
   pending = 0; save(); renderHead(); newQ();
-  if (!S.seen.includes(S.level)) { S.seen.push(S.level); save(); openCours(); }
 }
 
 /* ---------- défi chrono ---------- */
@@ -167,7 +166,6 @@ function renderMenu() {
   $('#lvlist').querySelectorAll('[data-l]').forEach(b => {
     b.onclick = () => {
       S.level = +b.dataset.l; S.streak = 0; S.fails = 0; pending = 0; save(); menu.close(); setMode(mode);
-      if (mode === 'train' && !S.seen.includes(S.level)) { S.seen.push(S.level); save(); openCours(); }
     };
   });
 }
@@ -200,4 +198,4 @@ if (S.level >= LEVELS.length) S.level = 0;
 }
 window.__mp = { get state() { return S; }, get question() { return Q; }, levels: LEVELS };
 setMode('train');
-if (!S.seen.includes(S.level)) { S.seen.push(S.level); save(); openCours(); }
+// le cours ne s'ouvre plus tout seul : bouton 📘 Cours (retour d'élève, 2026-11-18)
