@@ -507,6 +507,7 @@ function C9() {
 <div class="ex"><span class="q">Exemple 2 : roue de 10 secteurs numérotés de 1 à 10.</span><br>« Strictement supérieur à 7 » : 8, 9, 10, soit <b>3 issues</b>.<br>« Supérieur ou égal à 7 » : 7, 8, 9, 10, soit <b>4 issues</b>.</div>
 <div class="ex"><span class="q">Exemple 3 : une urne contient 3 boules rouges et 2 bleues ; on note la couleur.</span><br>Il y a <b>2 issues</b> : rouge et bleu (pas 5 : on note la couleur, pas la boule).</div>
 <div class="warn">⚠️ « Supérieur ou égal à 4 » : 4, 5, 6. « Strictement supérieur à 4 » : 5, 6 seulement.<br>⚠️ Si on note la <b>couleur</b> d'une boule, les issues sont les couleurs, pas les boules.<br>⚠️ « Ni certain ni impossible » : certaines issues le réalisent, d'autres non.</div>
+<div class="ex"><span class="q">Les mots des événements (avec un dé à 6 faces).</span><br>• « nombre <b>pair</b> » : 2, 4, 6 ; « <b>impair</b> » : 1, 3, 5.<br>• « <b>multiple de 3</b> » : dans la table de 3 : 3 et 6.<br>• « nombre <b>premier</b> » : il a exactement deux diviseurs, 1 et lui-même : 2, 3 et 5 (1 n'est pas premier).<br>• « supérieur <b>ou égal</b> à 4 » : 4, 5, 6 ; « <b>strictement</b> supérieur à 4 » : 5, 6 (sans le 4).<br>• « entier <b>entre 1 et 3</b> » : 1, 2, 3 (les deux bornes comprises).<br>• « pair <b>et</b> strictement supérieur à 3 » : les deux à la fois : 4, 6. « impair <b>ou</b> strictement supérieur à 4 » : au moins l'un des deux : 1, 3, 5, 6.</div>
 <div class="retenir">À retenir : issue = un résultat possible ; événement = un ensemble d'issues.</div>`;
 }
 
