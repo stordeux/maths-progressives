@@ -262,7 +262,7 @@ function L12(d) {
     return steps(E, ['Nombre acheté : {}', 'Argent restant : {} €'], ['le nombre acheté', "l'argent restant"], (B * 100 - k * Math.round(p * 100)) / 100,
       `Cherche le plus grand nombre de fois que ${eu(p)} € tient dans ${B} € : essaie ${k - 1}, ${k}, ${k + 1} fois ${eu(p)} € (ou calcule ${B} ÷ ${f(p)} et garde la partie entière). L'argent restant est ${B} € moins le prix de ce nombre d'objets.`,
       `${k} × ${eu(p)} = ${f(r6(k * p))} € (≤ ${B} €) et ${k + 1} × ${eu(p)} = ${f(r6((k + 1) * p))} € (&gt; ${B} €) : on peut acheter <b>${k}</b> ${k > 1 ? o2 : o1}.<br>Argent restant : ${B} − ${eu(r6(k * p))} = <b>${f(rest)} €</b>.`,
-      { html: `${P} a ${B} €. Un ${o1} coûte ${eu(p)} €. Combien de ${o2} peut-on acheter au maximum ? Combien lui reste-t-il ?` });
+      { html: `${P} a ${B} €. ${/^(gomme|bouteille)/.test(o1) ? 'Une' : 'Un'} ${o1} coûte ${eu(p)} €. Combien de ${o2} peut-on acheter au maximum ? Combien lui reste-t-il ?` });
   }
   if (form === 'car') {
     let c, D, pr, L, cost;

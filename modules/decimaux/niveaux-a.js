@@ -133,7 +133,7 @@ function L2(d) {
     value: strDigit(x, -k), keys: undefined,
     html: `Complète la décomposition de ${f(x)} :`,
     hint: `Les chiffres après la virgule de ${f(x)} se lisent dans l'ordre : le 1er est le nombre de dixièmes, le 2<sup>e</sup> le nombre de centièmes${k === 3 ? ', le 3<sup>e</sup> le nombre de millièmes' : ''}.`,
-    solution: `${f(x)} = ${U} + ${a} dixièmes + ${b} centièmes${k === 3 ? ` + ${c} millièmes` : ''} = ${U} + ${F(a, 10)} + ${F(b, 100)}${k === 3 ? ' + ' + F(c, 1000) : ''}.`,
+    solution: `${f(x)} = ${U} + ${a} dixième${a > 1 ? 's' : ''} + ${b} centième${b > 1 ? 's' : ''}${k === 3 ? ` + ${c} millième${c > 1 ? 's' : ''}` : ''} = ${U} + ${F(a, 10)} + ${F(b, 100)}${k === 3 ? ' + ' + F(c, 1000) : ''}.`,
     afterVisual: numTable([{ s: fx(x, k) }]), replaceVisual: true };
 }
 function C2() {
