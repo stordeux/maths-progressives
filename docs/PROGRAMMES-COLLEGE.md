@@ -32,20 +32,20 @@ Légende : ✅ couvert par un module · 🟡 en partie · ❌ absent.
 ## Espace et géométrie
 | Notion | Classe | État | Où / ce qui manque |
 |---|---|---|---|
-| Vocabulaire et constructions (droites parallèles, perpendiculaires, cercle, médiatrice) | 6e | ❌ | |
-| Symétrie axiale | 6e | ❌ | |
+| Vocabulaire et constructions (droites parallèles, perpendiculaires, cercle, médiatrice) | 6e | 🟡 | Géométrie plane N1, N4 (reconnaître, calculer ; pas de construction à main levée) |
+| Symétrie axiale | 6e | ✅ | Géométrie plane N2, N3 |
 | Périmètres, aires (rectangle, triangle, disque), conversions | 6e–5e | ✅ | Aires, périmètres, volumes |
 | Durées, horaires | 6e | ✅ | Trains, durées et vitesses |
 | Angles : mesure, rapporteur, construction | 6e | ✅ | Angles N1 à N5 |
 | Solides, patrons, perspective cavalière, déplacements | 6e–5e | ❌ | |
 | Repérage : droite graduée, coordonnées dans le plan | 5e | 🟡 | Relatifs N1 (droite) ; pas de lecture / placement de points dans un repère |
-| Symétrie centrale (demi-tour) | 5e | ❌ | |
+| Symétrie centrale (demi-tour) | 5e | ✅ | Géométrie plane N5, N6 |
 | Angles alternes-internes, correspondants ; somme des angles du triangle | 5e | ✅ | Angles N9 à N12 |
-| Triangle : constructions, inégalité triangulaire, médiatrices et cercle circonscrit, hauteurs, médianes | 5e | ❌ | |
-| Parallélogrammes (propriétés, particuliers, aire) | 5e | ❌ | |
+| Triangle : constructions, inégalité triangulaire, médiatrices et cercle circonscrit, hauteurs, médianes | 5e | ✅ | Géométrie plane N7, N8 |
+| Parallélogrammes (propriétés, particuliers, aire) | 5e | ✅ | Géométrie plane N9 à N11 |
 | Volumes : cube, pavé, prisme, cylindre, pyramide, cône, boule | 5e–3e | ✅ | Aires, périmètres, volumes |
 | Translation (effet, lien avec le parallélogramme), vecteurs égaux, opposés | 4e–3e | 🟡 | Vecteurs (niveau 2de, avec coordonnées) ; pas la translation « géométrique » du collège |
-| **Droite des milieux** (trois théorèmes) | 4e | ❌ | |
+| **Droite des milieux** (trois théorèmes) | 4e | ✅ | Géométrie plane N12 |
 | Pythagore, réciproque, contraposée ; triangle rectangle et cercle | 4e | ✅ | Pythagore ; fiche « triangle rectangle » |
 | Thalès (emboîtés, papillon), réciproque ; cos, sin, tan | 3e | ✅ | Thalès et trigonométrie |
 | Sphère, grands cercles, sections de solides | 3e | 🟡 | volume de la boule seulement ; sections absentes |
