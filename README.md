@@ -35,6 +35,7 @@ accueil → **Ma progression** → **Exporter** (code à recopier ou fichier `.j
 | Module | Classes | Domaine |
 |---|---|---|
 | ⚡ Calcul mental | 6e – 3e | Calcul |
+| 🔟 Nombres décimaux | 6e | Calcul |
 | 🍕 Fractions | 6e – 4e | Calcul |
 | 🌡️ Nombres relatifs | 5e – 4e | Calcul |
 | 🪜 Priorités opératoires | 5e – 4e | Calcul |

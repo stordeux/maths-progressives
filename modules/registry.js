@@ -5,6 +5,8 @@ export const MODULES = [
   // --- calcul
   { id: 'calcul', titre: 'Calcul mental', emoji: '⚡', classes: '6e – 3e', groupe: 'Calcul', couleur: '#c2410c', couleur2: '#fff0e6', resume: 'Tables, astuces, relatifs, pourcentages : en entraînement ou en défi de 60 s.' },
   // ---
+  { id: 'decimaux', titre: 'Nombres décimaux', emoji: '🔟', classes: '6e', groupe: 'Calcul', couleur: '#0f766e', couleur2: '#e6f7f4', resume: 'Valeur des chiffres, droite graduée, comparer, arrondir, les quatre opérations et les problèmes.' },
+  // ---
   { id: 'fractions', titre: 'Fractions', emoji: '🍕', classes: '6e – 4e', groupe: 'Calcul', couleur: '#3b5bdb', couleur2: '#e7ecff', resume: 'Lire, simplifier, comparer, additionner, multiplier… jusqu\'aux racines carrées.' },
   // ---
   { id: 'relatifs', titre: 'Nombres relatifs', emoji: '🌡️', classes: '5e – 4e', groupe: 'Calcul', couleur: '#c92a2a', couleur2: '#fff5f5', resume: 'Droite graduée, additions et soustractions, règle des signes, calculs enchaînés.' },
