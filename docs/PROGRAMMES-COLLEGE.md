@@ -17,15 +17,15 @@ Légende : ✅ couvert par un module · 🟡 en partie · ❌ absent.
 | Multiplication de deux décimaux, division décimale (partage, quotition) | 6e | ✅ | Nombres décimaux N7 à N12 |
 | Fraction quotient (a/b × b = a), fraction d'un nombre, pourcentage d'une quantité | 6e | 🟡 | Fractions N7, Proportionnalité N8 ; le sens « quotient » n'est pas travaillé |
 | Comparer, additionner des fractions | 6e–5e | ✅ | Fractions N4 à N6, N9 |
-| Multiples, diviseurs, critères de divisibilité (2, 3, 5, 9) | 5e–3e | ❌ | |
-| Nombres premiers, décomposition en facteurs premiers, fraction irréductible par décomposition | 3e | ❌ | Fractions N3 simplifie, sans décomposition |
+| Multiples, diviseurs, critères de divisibilité (2, 3, 5, 9) | 5e–3e | ✅ | Arithmétique N1 à N5 |
+| Nombres premiers, décomposition en facteurs premiers, fraction irréductible par décomposition | 3e | ✅ | Arithmétique N6 à N11 |
 | Relatifs : addition, soustraction, multiplication, division, enchaînements | 5e–4e | ✅ | Nombres relatifs, Priorités N10 |
 | Priorités, distributivité simple sur des nombres | 5e | ✅ | Priorités opératoires |
 | Fraction d'une fraction, inverse, **division de fractions** | 4e | 🟡 | Fractions N8 multiplie ; l'inverse et la division manquent |
 | Puissances (carré, cube, puissances de 10, exposants négatifs) | 5e–3e | ✅ | Puissances |
 | Racine carrée, encadrement | 4e | ✅ | Pythagore N2, Fractions N10 |
 | Calcul littéral, identités, factorisation | 5e–3e | ✅ | Calcul littéral |
-| Nombres pairs / impairs écrits 2n, 2n + 1 ; preuves algébriques | 4e–3e | ❌ | |
+| Nombres pairs / impairs écrits 2n, 2n + 1 ; preuves algébriques | 4e–3e | ✅ | Arithmétique N12 |
 | Équations ax + b = cx + d, produit nul, x² = a, mise en équation | 4e–3e | ✅ | Équations |
 | Inéquation du premier degré ax ≥ b | 3e | ✅ | Inégalités (N4) |
 

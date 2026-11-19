@@ -61,3 +61,4 @@ Les tickets du bouton 🐞 sont dans gitlab.inria.fr/tordeux/signalements-exerci
 | Module | Repris | Relecture |
 |---|---|---|
 | Nombres décimaux (6e) | 12 niveaux : chiffres, fractions décimales, droite graduée, comparer, ranger, arrondir, opérations, ×/÷ 10…0,01, multiplication, division, ordre de grandeur, problèmes. | Indices relus sur échantillon (ils citent les nombres de l'exercice) ; corrigé « Un gomme » et « 1 dixièmes ». À trancher : la division par un décimal (niveau 10) relève peut-être de la 5e. |
+| Arithmétique (5e–3e) | 12 niveaux : multiples, diviseurs, critères 2/5/10 et 3/9, division euclidienne, nombres premiers, décomposition, PGCD, fractions irréductibles, partages, PPCM, défis 2n et 2n + 1. | Indices relus sur échantillon ; corrigé les accords (« 14 boîtes pleines », « 1 œuf », « il ne reste aucun ») et la phrase des critères ; emoji ➗ (🔢 était déjà celui des Suites). |
