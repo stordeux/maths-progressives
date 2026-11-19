@@ -135,13 +135,13 @@ export function arbre(n, facteurs) {
 /** deux ensembles de diviseurs : la partie commune au milieu */
 export function venn(a, b, da, db) {
   const com = da.filter(x => db.includes(x)), A = da.filter(x => !com.includes(x)), B = db.filter(x => !com.includes(x));
-  const W = 480, H = 190;
+  const W = 480, H = 214;
   let s = open(W, H, `Diviseurs de ${a} et de ${b} ; diviseurs communs : ${com.join(', ')}`);
-  s += `<ellipse cx="170" cy="92" rx="140" ry="76" fill="${TEAL_L}" fill-opacity=".55" stroke="${TEAL}" stroke-width="2"/><ellipse cx="310" cy="92" rx="140" ry="76" fill="${ORA_L}" fill-opacity=".6" stroke="${ORA}" stroke-width="2"/>`;
-  s += T(110, 20, `Diviseurs de ${a}`, { c: TEAL, b: 1, fs: 14 }) + T(370, 20, `Diviseurs de ${b}`, { c: ORA, b: 1, fs: 14 });
+  s += `<ellipse cx="170" cy="110" rx="140" ry="76" fill="${TEAL_L}" fill-opacity=".55" stroke="${TEAL}" stroke-width="2"/><ellipse cx="310" cy="110" rx="140" ry="76" fill="${ORA_L}" fill-opacity=".6" stroke="${ORA}" stroke-width="2"/>`;
+  s += T(110, 18, `Diviseurs de ${a}`, { c: TEAL, b: 1, fs: 14 }) + T(370, 18, `Diviseurs de ${b}`, { c: ORA, b: 1, fs: 14 });
   const put = (list, cx, cy, wrapN) => { const rows = Math.ceil(list.length / wrapN); list.forEach((v, i) => { s += T(cx + ((i % wrapN) - (Math.min(wrapN, list.length) - 1) / 2) * 30, cy + (Math.floor(i / wrapN) - (rows - 1) / 2) * 24, v, { b: 1 }); }); };
-  put(A, 100, 98, 3); put(B, 380, 98, 3); put(com, 240, 98, 2);
-  s += T(240, 176, 'diviseurs communs', { fs: 12 });
+  put(A, 100, 116, 3); put(B, 380, 116, 3); put(com, 240, 116, 2);
+  s += T(240, 206, 'diviseurs communs', { fs: 12 });
   return s + '</svg>';
 }
 
