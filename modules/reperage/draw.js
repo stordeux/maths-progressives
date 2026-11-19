@@ -28,7 +28,8 @@ class Cv {
     const pts = []; for (let i = 0; i <= 48; i++) { const t = t1 + (t2 - t1) * i / 48; pts.push([c[0] + rx * Math.cos(t), c[1] + ry * Math.sin(t)]); }
     this.poly(pts, { open: !o.fill, ...o }, z);
   }
-  dot(p, r = 4, c = COL.ink, z = 2, n) { this.grow(p[0], p[1], r); this.put(z, `<circle cx="${r1(p[0])}" cy="${r1(p[1])}" r="${r}" fill="${c}"${n ? ` data-n="${n}"` : ''}/>`); }
+  dot(p, r = 4, c = COL.ink, z = 2, n) { this.grow(p[0], p[1], r); const q = n ? [p[0].toFixed(3), p[1].toFixed(3)] : [r1(p[0]), r1(p[1])];
+    this.put(z, `<circle cx="${q[0]}" cy="${q[1]}" r="${r}" fill="${c}"${n ? ` data-n="${n}"` : ''}/>`); }
   text(p, s, o = {}, z = 2) {
     const fs = o.fs || 17, w = String(s).replace(/<[^>]+>/g, '').length * fs * 0.56;
     const anc = o.anchor || 'middle', xl = anc === 'start' ? p[0] : anc === 'end' ? p[0] - w : p[0] - w / 2;
@@ -65,8 +66,8 @@ export function repere(o) {
   c.line([0, Y(ya)], [0, Y(Y1) - ext], { c: COL.axis, w: 1.8 }, 1); c.arrow([0, Y(Y1) - ext], [0, -1]);
   c.text([X(X1) + ext - 2, -13], 'x', { c: COL.axis, fs: 15, it: true, w: 600 });
   c.text([13, Y(Y1) - ext + 2], 'y', { c: COL.axis, fs: 15, it: true, w: 600 });
-  for (let i = Math.ceil(X0 / ls - 1e-9); i * ls <= X1 + 1e-9; i++) if (i !== 0) c.text([X(i * ls), 13], lab(i * ls), { c: '#57534e', fs: 12, w: 600 });
-  for (let i = Math.ceil(Y0 / ls - 1e-9); i * ls <= Y1 + 1e-9; i++) if (i !== 0) c.text([-8, Y(i * ls)], lab(i * ls), { c: '#57534e', fs: 12, w: 600, anchor: 'end' });
+  for (let i = Math.ceil(X0 / ls - 1e-9); i * ls <= X1 + 1e-9; i++) if (i !== 0) c.text([X(i * ls), 13], lab(i * ls, 'x'), { c: '#57534e', fs: 12, w: 600 });
+  for (let i = Math.ceil(Y0 / ls - 1e-9); i * ls <= Y1 + 1e-9; i++) if (i !== 0) c.text([-8, Y(i * ls)], lab(i * ls, 'y'), { c: '#57534e', fs: 12, w: 600, anchor: 'end' });
   c.text([-9, 13], 'O', { c: '#57534e', fs: 13, w: 600 });
   for (const g of o.guides || []) {
     c.line([X(g.p[0]), Y(g.p[1])], [X(g.p[0]), 0], { c: g.c || COL.a, w: 1.8, dash: '5 4' }, 1);
@@ -79,12 +80,12 @@ export function repere(o) {
     if (p.n && !p.nolab) c.text([x + (p.dx === undefined ? (p.p[0] < 0 ? -12 : 12) : p.dx), y + (p.dy === undefined ? (p.p[1] < 0 ? 12 : -12) : p.dy)], p.n, { c: col, fs: 18, it: true });
   }
   for (const t of o.texts || []) c.text([X(t.p[0]) + (t.dx || 0), Y(t.p[1]) + (t.dy || 0)], t.s, { c: t.c || COL.ink, fs: t.fs || 14 });
-  return c.svg(o.aria || 'repère du plan', ` data-k="${r1(k * 1000) / 1000}"`);
+  return c.svg(o.aria || 'repère du plan', ` data-k="${k.toFixed(5)}"`);
 }
 /** coordonnées des points d'un repère, relues dans le SVG (pixels / échelle) : vérification indépendante des tests */
 export function lirePoints(svg) {
   const k = +/data-k="([\d.]+)"/.exec(svg)[1], out = {};
-  for (const m of svg.matchAll(/<circle cx="(-?[\d.]+)" cy="(-?[\d.]+)" r="[\d.]+" fill="[^"]*" data-n="([^"]+)"/g)) out[m[3]] = [Math.round(+m[1] / k * 1e3) / 1e3, Math.round(-m[2] / k * 1e3) / 1e3];
+  for (const m of svg.matchAll(/<circle cx="(-?[\d.]+)" cy="(-?[\d.]+)" r="[\d.]+" fill="[^"]*" data-n="([^"]+)"/g)) out[m[3]] = [Math.round(+m[1] / k * 1e2) / 1e2 + 0, Math.round(-m[2] / k * 1e2) / 1e2 + 0];
   return out;
 }
 
@@ -96,6 +97,7 @@ const SIGHT = [-K, -K, 1]; // direction du regard : sa projection est nulle
 const sub3 = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
 const dot3 = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 const cross3 = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+export const dist3 = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
 const mean3 = L => [0, 1, 2].map(i => L.reduce((s, p) => s + p[i], 0) / L.length);
 /** faces visibles (normale sortante · regard < 0) et arêtes cachées (aucune face visible ne les porte) */
 export function analyse(V, F) {
@@ -123,12 +125,15 @@ export function aretesCachees(V, F) {
   for (const f of F) f.forEach((a, i) => {
     const b = f[(i + 1) % f.length], key = Math.min(a, b) + '-' + Math.max(a, b);
     if (seen.has(key)) return; seen.add(key);
-    const M = [0, 1, 2].map(t => (V[a][t] + V[b][t]) / 2);
+    for (const tt of [0.5, 0.37, 0.63]) {
+    const M = [0, 1, 2].map(t => V[a][t] + tt * (V[b][t] - V[a][t]));
     for (const g of F) {
       const n = cross3(sub3(V[g[1]], V[g[0]]), sub3(V[g[2]], V[g[0]])), nd = dot3(n, SIGHT);
       if (Math.abs(nd) < 1e-9) continue;
       const s = (dot3(n, M) - dot3(n, V[g[0]])) / nd;
       if (s > 1e-7 && inside(P2(M), g.map(i => P2(V[i])))) { set.add(key); break; }
+    }
+    if (set.has(key)) break;
     }
   });
   return set;
@@ -249,7 +254,7 @@ export function boule(o) {
     c.text([-12, -a - 13], 'O′', { it: true, fs: 17, c: COL.b }); c.text([rr + 12, -a - 12], 'M', { it: true, fs: 17, c: COL.a });
     const ra = Math.min(11, a / 3, rr / 3); c.poly([[ra, -a], [ra, -a + ra], [0, -a + ra]], { open: true, c: COL.ink, w: 1.5 }, 2);
     if (o.la) c.text([-8, -a / 2], o.la, { c: COL.b, fs: 14, w: 600, anchor: 'end' });
-    if (o.lr) c.text([rr / 2, -a - 13], o.lr, { c: COL.g, fs: 14, w: 600 });
+    if (o.lr) c.text([rr / 2, -a + 15], o.lr, { c: COL.g, fs: 14, w: 600 });
     if (o.lR) c.text([rr / 2 + 5, -a / 2 + 12], o.lR, { c: COL.a, fs: 14, w: 600, anchor: 'start' });
   } else if (o.lR) { c.line([0, 0], [P * 0.8, -P * 0.6], { c: COL.a, w: 2.2 }, 2); c.text([P * 0.4 + 6, -P * 0.3 - 12], o.lR, { c: COL.a, fs: 15, w: 600 }); }
   return c.svg(o.aria || 'boule');
@@ -267,7 +272,7 @@ export function plat(o) {
   for (const g of o.polys || []) c.poly(g.p.map(T), { fill: g.fill || '#fff', c: g.c || COL.ink, w: g.w || 2.2, dash: g.dash }, 0);
   for (const ci of o.circles || []) { const m = T(ci.c); c.arc(m, k * ci.r, k * ci.r, 0, 2 * Math.PI, { fill: ci.fill || '#fff', c: COL.ink, w: 2.2 }, 0); }
   for (const s of o.segs || []) c.line(T(s.a), T(s.b), { c: s.c || COL.ink, w: s.w || 2, dash: s.dash }, 1);
-  for (const t of o.texts || []) c.text(T(t.p), t.s, { c: t.c || COL.ink, fs: t.fs || 17 });
+  for (const t of o.texts || []) { const q = T(t.p); c.text([q[0] + (t.dx || 0), q[1] + (t.dy || 0)], t.s, { c: t.c || COL.ink, fs: t.fs || 17 }); }
   for (const d of o.dims || []) {
     const a = T(d.a), b = T(d.b), m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
     let nx = -(b[1] - a[1]), ny = b[0] - a[0]; const len = Math.hypot(nx, ny) || 1; nx = nx / len * (d.side || 1); ny = ny / len * (d.side || 1);

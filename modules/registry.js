@@ -36,6 +36,8 @@ export const MODULES = [
   { id: 'angles', titre: 'Angles', emoji: '📏', classes: '6e – 5e', groupe: 'Géométrie', couleur: '#9a3412', couleur2: '#fff7ed', resume: 'Rapporteur virtuel, somme des angles d\'un triangle, angles alternes-internes.', css: true },
   // ---
   { id: 'geometrie', titre: 'Géométrie plane', emoji: '🔷', classes: '6e – 4e', groupe: 'Géométrie', couleur: '#0f766e', couleur2: '#e6fffb', resume: 'Symétries, médiatrice, triangles, parallélogrammes, aires et droite des milieux.', css: true },
+  // ---
+  { id: 'reperage', titre: 'Repérage et solides', emoji: '🧭', classes: '6e – 3e', groupe: 'Géométrie', couleur: '#0369a1', couleur2: '#e0f2fe', resume: 'Coordonnées dans le plan et dans l’espace, solides, perspective cavalière, patrons, sections, sphère et Terre.' },
   // --- vers le lycée
   { id: 'fonctions', titre: 'Fonctions', emoji: '〰️', classes: '3e – 2de', groupe: 'Vers le lycée', couleur: '#343a40', couleur2: '#f1f3f5', resume: 'Image et antécédent sur un graphique, fonctions linéaires et affines.' },
   // ---
