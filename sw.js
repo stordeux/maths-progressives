@@ -1,6 +1,6 @@
 // Service worker : met tout le site en cache pour qu'il marche hors ligne.
 // La liste ASSETS et VERSION sont régénérées par « node tools/sw-assets.mjs » (vérifié par les tests).
-const VERSION = '5c866ad60223';
+const VERSION = '31af2b7a3963';
 const ASSETS = [
   './',
   './assets/css/base.css',
@@ -125,6 +125,23 @@ const ASSETS = [
   './modules/relatifs/draw.js',
   './modules/relatifs/index.html',
   './modules/relatifs/levels.js',
+  './modules/reperage/draw.js',
+  './modules/reperage/index.html',
+  './modules/reperage/l01.js',
+  './modules/reperage/l02.js',
+  './modules/reperage/l03.js',
+  './modules/reperage/l04.js',
+  './modules/reperage/l05.js',
+  './modules/reperage/l06.js',
+  './modules/reperage/l07.js',
+  './modules/reperage/l08.js',
+  './modules/reperage/l09.js',
+  './modules/reperage/l10.js',
+  './modules/reperage/l11.js',
+  './modules/reperage/l12.js',
+  './modules/reperage/levels.js',
+  './modules/reperage/solides.js',
+  './modules/reperage/util.js',
   './modules/revision/app.js',
   './modules/revision/index.html',
   './modules/stats-probas/draw.js',
@@ -177,6 +194,7 @@ const ASSETS = [
   './modules/pythagore/',
   './modules/ratios/',
   './modules/relatifs/',
+  './modules/reperage/',
   './modules/revision/',
   './modules/stats-probas/',
   './modules/stats3e/',

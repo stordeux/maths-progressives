@@ -58,6 +58,7 @@ accueil → **Ma progression** → **Exporter** (code à recopier ou fichier `.j
 | 🧊 Aires, périmètres, volumes | 6e – 3e | Géométrie |
 | 📏 Angles | 6e – 5e | Géométrie |
 | 🔷 Géométrie plane | 6e – 4e | Géométrie |
+| 🧭 Repérage et solides | 6e – 3e | Géométrie |
 | 〰️ Fonctions | 3e – 2de | Vers le lycée |
 | ↔️ Inégalités | 3e – 2de | Vers le lycée |
 | 📈 Second degré | 2de – 1re | Vers le lycée |
