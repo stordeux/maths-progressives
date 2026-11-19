@@ -243,6 +243,8 @@ export function C3() {
 ${cols(def(`Un nombre est divisible…<br>• <b>par 2</b> s'il se termine par 0, 2, 4, 6 ou 8 (il est <i>pair</i>) ;<br>• <b>par 5</b> s'il se termine par 0 ou 5 ;<br>• <b>par 10</b> s'il se termine par 0.`), finaux())}
 ${methode(['Repère le chiffre des unités.', 'Compare-le aux listes : 0, 2, 4, 6, 8 pour 2 ; 0, 5 pour 5 ; 0 pour 10.', 'Si le nombre est divisible à la fois par 2 et par 5, il est divisible par 10.'])}
 ${ex('3 470 est-il divisible par 5 ?', `Le chiffre des unités est 0 : <b>oui</b>.`)}
+${ex('7 934 est-il divisible par 2 ?', `Le chiffre des unités est 4 : pair, donc <b>oui</b>.`)}
+${ex('1 250 est-il divisible par 10 ?', `Le chiffre des unités est 0 : <b>oui</b>. (1 255 ne l'est pas : il se termine par 5.)`)}
 ${ex('1 568 est-il divisible par 5 ?', `Le chiffre des unités est 8 : ce n'est ni 0 ni 5, donc <b>non</b>.`)}
 ${ex('Lequel de ces nombres est divisible par 2 : 4 573, 8 261, 7 934 ou 3 055 ?', `Je regarde les chiffres des unités : 3, 1, 4, 5. Seul 4 est pair. Réponse : <b>7 934</b>.`)}
 ${ex('Quel est le plus grand chiffre qu\'on peut écrire à la place de ? pour que 83? soit divisible par 5 ?', `Le dernier chiffre doit être 0 ou 5. Le plus grand est <b>5</b> : 835 est divisible par 5.`)}
@@ -397,7 +399,7 @@ export function L5(d) {
     const c = pick([['œufs', 'des boîtes de', 'boîtes pleines', 'œufs restants'], ['bonbons', 'des sachets de', 'sachets pleins', 'bonbons restants']]);
     return {
       type: 'nums', tpl: `{0} ${c[2]}, {1} ${c[3]}`, labels: ['pleins', 'restants'],
-      html: `On range ${gr(a)} ${c[0]} dans ${c[1]} ${b}. Combien peut-on en remplir complètement, et combien de ${c[0]} restent-ils ?`,
+      html: `On range ${gr(a)} ${c[0]} dans ${c[1]} ${b}. Combien peut-on en remplir complètement, et combien ${c[0].startsWith('œ') ? "d'" : 'de '}${c[0]} restent-ils ?`,
       check: eucl(a, b), verify: E => E[0] * b + E[1] === a && E[1] >= 0 && E[1] < b,
       hint: `C'est la division euclidienne de ${gr(a)} par ${b} : le quotient donne les ${c[2]}, le reste donne les ${c[3]}.`,
       solution: `${gr(a)} = ${b} × ${q} + ${r}, avec ${r} &lt; ${b}. On remplit ${q} ${c[2].split(' ')[0]}${q > 1 ? ' complets' : ' complet'} et il reste ${r} ${c[0]}.`,
@@ -441,6 +443,7 @@ export function C5() {
 ${cols(def(`Diviser <b>a</b> (le dividende) par <b>b</b> (le diviseur), c'est trouver deux entiers <b>q</b> (le quotient) et <b>r</b> (le reste) tels que<br><b>a = b × q + r</b> avec <b>0 ≤ r &lt; b</b>.`), groupes(23, 5))}
 ${methode(['Cherche le plus grand multiple de b qui ne dépasse pas a : b × q.', 'Le reste est r = a − b × q.', 'Vérifie que r est strictement plus petit que b, et que a = b × q + r.'])}
 ${ex('Effectue la division euclidienne de 83 par 6.', `6 × 13 = 78 ≤ 83 et 6 × 14 = 84 &gt; 83. Reste : 83 − 78 = 5.<br>Réponse : quotient <b>13</b>, reste <b>5</b>.`)}
+${ex('Effectue la division euclidienne de 5 par 8.', `On ne peut pas remplir un seul groupe de 8 avec 5 objets : 8 × 0 = 0 ≤ 5. Reste : 5 − 0 = 5.<br>Réponse : quotient <b>0</b>, reste <b>5</b> (5 = 8 × 0 + 5).`)}
 ${ex('Complète l\'égalité de la division euclidienne de 83 par 6, avec un reste plus petit que 6.', `83 = 6 × <b>13</b> + <b>5</b> (et 5 &lt; 6).`)}
 ${ex('On range 83 œufs dans des boîtes de 6. Combien peut-on en remplir complètement, et combien d\'œufs restent-ils ?', `83 = 6 × 13 + 5 : <b>13 boîtes pleines</b> et <b>5 œufs</b> restants.`)}
 ${ex('Dans une division euclidienne par 7, le quotient est 12 et le reste est 3. Quel est le dividende ?', `dividende = 7 × 12 + 3 = 84 + 3 = <b>87</b>.`)}
@@ -520,6 +523,7 @@ ${ex('53 est-il un nombre premier ?', `Je teste 2, 3, 5, 7 (car 7 × 7 = 49 ≤ 
 ${ex('1 est-il un nombre premier ?', `1 n'a qu'un seul diviseur (lui-même) : <b>non</b>.`)}
 ${ex('Lequel de ces nombres est premier : 21, 27, 31 ou 39 ?', `21 = 3 × 7, 27 = 3 × 9, 39 = 3 × 13. 31 n'a pas de diviseur autre que 1 et 31. Réponse : <b>31</b>.`)}
 ${ex('Lequel de ces nombres n\'est <b>pas</b> premier : 13, 17, 19 ou 21 ?', `13, 17 et 19 sont premiers. 21 = 3 × 7 : réponse <b>21</b>.`)}
+${ex('Lequel de ces nombres n\'est <b>pas</b> premier : 1, 3, 5 ou 7 ?', `3, 5 et 7 sont premiers. 1 n'a qu'un seul diviseur : il n'est pas premier. Réponse : <b>1</b>.`)}
 ${ex('Quel est le plus petit nombre premier strictement supérieur à 24 ?', `25 = 5 × 5, 26 = 2 × 13, 27 = 3 × 9, 28 = 2 × 14 : aucun n'est premier. 29 est premier. Réponse : <b>29</b>.`)}
 ${ex('Combien y a-t-il de nombres premiers entre 10 et 25 (10 et 25 inclus) ?', `Les premiers entre 10 et 25 : 11, 13, 17, 19, 23. Réponse : <b>5</b>.`)}
 ${warn(`⚠️ <b>1 n'est pas premier</b> (un seul diviseur).<br>⚠️ <b>2</b> est premier, et c'est le seul premier pair.<br>⚠️ Un nombre impair n'est pas forcément premier : 9, 15, 21, 25, 27, 33, 35, 39, 49, 51, 55, 57, 63, 65, 69, 77, 87, 91 sont des pièges !`)}
