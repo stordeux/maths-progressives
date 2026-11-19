@@ -4,6 +4,7 @@ import { FICHES } from '../../fiches/registry.js';
 import * as store from '../../engine/storage.js';
 import { applySettings } from '../../engine/engine.js';
 import { installerSignalement, setContexte } from '../../engine/signaler.js';
+import { TITRES, titreActuel, nbEtoiles } from '../../engine/titres.js';
 
 const $ = s => document.querySelector(s);
 
@@ -16,7 +17,22 @@ function quand(t) {
   return 'le ' + new Date(t).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
 }
 
+/** titre de l'élève (toute sa progression) : nom, total d'étoiles, barre vers le titre suivant, échelle des 10 titres */
+function renderTitre() {
+  const t = titreActuel();
+  const suite = t.suivant
+    ? `<div class="tbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${t.pct}" aria-label="Avancement vers le titre ${t.suivant.nom}"><i style="width:${t.pct}%"></i></div>
+       <p class="tsuite" id="titreSuite">Encore <b>${nbEtoiles(t.manque)}</b> pour devenir <b>${t.suivant.nom}</b> <span class="note">(${t.score} / ${t.suivant.seuil} ★)</span></p>`
+    : `<div class="tbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" aria-label="Dernier titre atteint"><i style="width:100%"></i></div>
+       <p class="tsuite" id="titreSuite">🏆 Tu as obtenu le plus haut titre : bravo, tu es au sommet !</p>`;
+  $('#titre').innerHTML = `<div class="thead"><span class="tnom">🎖️ Ton titre : <b id="titreNom">${t.nom}</b></span><span class="ttot" id="titreTotal">★ ${nbEtoiles(t.score)} en tout</span></div>
+    ${suite}
+    <ol class="techelle" aria-label="Les 10 titres">${TITRES.map((x, i) => `<li class="${i < t.rang ? 'fait' : i === t.rang ? 'ici' : ''}"${i === t.rang ? ' aria-current="true"' : ''}>${x.nom}</li>`).join('')}</ol>
+    <p class="note">Chaque étoile ★ gagnée dans un module compte, tous modules confondus (5 étoiles par niveau).</p>`;
+}
+
 function render() {
+  renderTitre();
   let tot = 0, debut = 0;
   const html = GROUPES.map(g => {
     const mods = MODULES.filter(m => m.groupe === g);

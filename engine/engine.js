@@ -7,6 +7,7 @@ import { createScratchpad } from './scratchpad.js';
 import * as store from './storage.js';
 import { MODULES } from '../modules/registry.js';
 import { installerSignalement, setContexte } from './signaler.js';
+import { suiviTitre, titreActuel, nbEtoiles } from './titres.js';
 export { setContexte };
 
 const PRAISE = ['Bravo !', 'Excellent !', 'Parfait !', 'Bien joué !', 'Super !', 'Exactement !', 'Très bien !'];
@@ -38,6 +39,8 @@ export function bouger(S, delta, nbNiveaux) {
   S.level = Math.min(nbNiveaux - 1, Math.floor(p / ETOILES));
   S.stars = p - S.level * ETOILES;
   S.streak = S.stars; // compatibilité (difficulté, contexte des signalements)
+  // étoiles gagnées en jouant (jamais retirées, pas changées par le menu Niveaux) : c'est ce qui compte pour le titre
+  if (delta > 0) S.gagnees = (S.gagnees || 0) + delta;
   return Math.sign(S.level - avant);
 }
 export const etoilesHTML = n => Array.from({ length: ETOILES }, (_, i) => `<i class="${i < n ? 'on' : ''}">${i < n ? '★' : '☆'}</i>`).join('');
@@ -58,12 +61,36 @@ export function applySettings() {
   return s;
 }
 
-/** bandeau temporaire */
-let bt;
-export function banner(t) {
+/** bandeau temporaire ; plusieurs messages à la fois s'empilent (niveau débloqué + nouveau titre) au lieu de se remplacer */
+export function banner(t, duree = 3000) {
   const b = $('#banner'); if (!b) return;
-  b.textContent = t; b.classList.add('show'); clearTimeout(bt);
-  bt = setTimeout(() => b.classList.remove('show'), 3000);
+  const l = document.createElement('div'); l.className = 'ligne'; l.textContent = t;
+  b.appendChild(l); b.classList.add('show');
+  setTimeout(() => {
+    if (b.children.length > 1) { l.remove(); return; }
+    b.classList.remove('show'); // dernier message : on laisse le bandeau s'effacer avant de le vider
+    setTimeout(() => { l.remove(); }, 400);
+  }, duree);
+}
+
+/**
+ * Titre de l'élève (toute sa progression, tous modules confondus : engine/titres.js).
+ * Renvoie verifier(annoncer) à appeler après chaque enregistrement : bandeau « Tu deviens … » quand un seuil est franchi.
+ * verifier(false) recale sans rien annoncer (niveau choisi dans le menu, remise à zéro).
+ */
+export function annonceTitre() {
+  const suivi = suiviTitre();
+  return (annoncer = true) => {
+    const t = suivi();
+    if (t && annoncer) banner(`🎖️ Tu deviens ${t.nom} !`, 4500);
+    return t;
+  };
+}
+/** rappel discret du titre dans le menu Niveaux */
+export function titreMenu() {
+  const e = $('#menuTitre'); if (!e) return;
+  const t = titreActuel();
+  e.textContent = `🎖️ Ton titre : ${t.nom} · ${nbEtoiles(t.score)} en tout` + (t.suivant ? ` · encore ${t.manque} pour devenir ${t.suivant.nom}` : '');
 }
 
 /** lecture à voix haute (si disponible) */
@@ -137,6 +164,7 @@ export function shell(meta, { scratchpad = true, headerExtra = '' } = {}) {
 <div class="modal" id="menu" role="dialog" aria-modal="true" aria-label="Niveaux et réglages" aria-hidden="true"><div class="card">
   <h2>Choisir un niveau</h2>
   <p class="note" id="menuNote"></p>
+  <p class="note menu-titre" id="menuTitre"></p>
   <div class="lvlist" id="lvlist"></div>
   <h2>Réglages</h2>
   <label class="opt-line"><input type="checkbox" id="optLisible"> Police plus lisible (lettres espacées)</label>
@@ -187,6 +215,7 @@ export function startModule(id, LEVELS, opts = {}) {
   const sp = opts.scratchpad !== false ? createScratchpad($('#scratch')) : null;
   const cours = modal('coursModal'), menu = modal('menu');
   let Q, ui, attempt, usedHint, done, pending = 0, fauteFaite = false;
+  const titre = annonceTitre();
 
   function newQ() {
     Q = normalize(LEVELS[S.level].generate(difficulte(S.stars, ETOILES)));
@@ -242,7 +271,7 @@ export function startModule(id, LEVELS, opts = {}) {
       S.total++; S.fails++;
       fb.className = 'bad'; fb.innerHTML = `<b>Voici la correction :</b>${r.msg ? `<br>${r.msg}` : ''}<div class="sol">${Q.solution}</div>`; finish();
     }
-    save(); renderHead();
+    save(); renderHead(); titre();
   }
 
   function finish() {
@@ -284,7 +313,7 @@ export function startModule(id, LEVELS, opts = {}) {
   function renderMenu() {
     $('#lvlist').innerHTML = LEVELS.map((L, i) => `<button type="button" data-l="${i}" class="${i === S.level ? 'cur' : ''}" ${i === S.level ? 'aria-current="true"' : ''}><span class="tag">${i + 1}</span><span>${L.titre}</span>${L.classe ? `<small>${L.classe}</small>` : ''}</button>`).join('');
     $('#lvlist').querySelectorAll('[data-l]').forEach(b => {
-      b.onclick = () => { S.level = +b.dataset.l; S.streak = 0; S.stars = 0; S.fails = 0; pending = 0; save(); menu.close(); newQ(); };
+      b.onclick = () => { S.level = +b.dataset.l; S.streak = 0; S.stars = 0; S.fails = 0; pending = 0; save(); titre(false); menu.close(); newQ(); };
     });
   }
 
@@ -294,10 +323,10 @@ export function startModule(id, LEVELS, opts = {}) {
   $('#coursBtn').onclick = openCours;
   $('#coursToggle').onclick = () => setCours($('#coursInline').hidden);
   $('#speakBtn').onclick = () => speak(Q.html);
-  $('#openMenu').onclick = () => { renderMenu(); menu.open(); };
+  $('#openMenu').onclick = () => { renderMenu(); titreMenu(); menu.open(); };
   $('#resetBtn').onclick = () => { $('#resetConfirm').hidden = false; };
   $('#resetNo').onclick = () => { $('#resetConfirm').hidden = true; };
-  $('#resetYes').onclick = () => { S = JSON.parse(JSON.stringify(def)); pending = 0; save(); $('#resetConfirm').hidden = true; menu.close(); newQ(); };
+  $('#resetYes').onclick = () => { S = JSON.parse(JSON.stringify(def)); pending = 0; save(); titre(false); $('#resetConfirm').hidden = true; menu.close(); newQ(); };
 
   setContexte(() => ({
     Module: meta.titre, Niveau: `${S.level + 1} – ${LEVELS[S.level].titre}`, 'Exercice n°': S.n, 'Étoiles': S.stars,
