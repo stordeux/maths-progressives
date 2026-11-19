@@ -1,13 +1,15 @@
 // Niveaux 10 à 12 : construire une boîte à moustaches, comparer deux séries, valeurs extrêmes et synthèse.
 import { ri, pick, shuffle, prenom, chance } from '../../engine/util/rand.js';
 import { approx, decimals } from '../../engine/util/arith.js';
-import { M, F } from '../../engine/util/fmt.js';
+import { F } from '../../engine/util/fmt.js';
 import { tiles, tableHtml, parseBars, boxPlot, readBox, axeAuto } from './draw.js';
 import { bars } from './n1.js';
 import { boite } from './n3.js';
 import { choiceCheck } from '../../engine/answers/checks.js';
 import { sum, cumul, expand, tableau, TABLES, SERIES, AXES, BOXC, cinq, serie, resume, valeurDeRang, quantCount, medCount, cinqCount, rangQ, mean, asc, range } from './stat.js';
-import { numCheck, multiCheck, big, list, COMMA, ex, warn, retenir, methode, fv } from './util.js';
+import { numCheck, multiCheck, big, COMMA, ex, warn, retenir, methode, fv, K } from './util.js';
+const M = K;
+const list = a => a.map(M).join(' ; ');
 
 const sub = k => `Q<sub>${k}</sub>`;
 const nth = r => `${r}<sup>e</sup>`;
@@ -114,7 +116,7 @@ export function L11(d) {
     } while (t < 400 && (form === 'moy' ? decimals(ra.mean) > 2 || decimals(rb.mean) > 2 || approx(ra.mean, rb.mean) : Math.abs(ra.iqr - rb.iqr) < 3 || ra.q1 === ra.q3 || rb.q1 === rb.q3));
     if (t >= 400) { n = 8; a = [10, 12, 13, 15, 16, 18, 19, 21]; b = [4, 9, 12, 15, 16, 20, 24, 30]; ra = resume(a); rb = resume(b); }
     const lists = `Série A : ${list(a)}<br>Série B : ${list(b)}`;
-    const head = `Deux séries de ${S.pl} (${S.axe}) :${big(lists)}`;
+    const head = `Deux séries de ${S.pl}${S.u ? ` (en ${S.u.trim()})` : ''} :${big(lists)}`;
     const visual = tiles(a, { label: 'série A' }) + tiles(b, { label: 'série B' });
     if (form === 'moy') {
       return { type: 'nums', keys: COMMA, tpl: `Moyenne de A : {0}${S.u} &nbsp; Moyenne de B : {1}${S.u}`, labels: ['moyenne de A', 'moyenne de B'], check: multiCheck([ra.mean, rb.mean], [[[sum(a), `${M(sum(a))} est la somme : divise-la par le nombre de valeurs (${n}).`], [ra.med, 'Ça, c\'est la médiane : la moyenne est la somme divisée par le nombre de valeurs.']], [[sum(b), `${M(sum(b))} est la somme : divise-la par le nombre de valeurs (${n}).`], [rb.med, 'Ça, c\'est la médiane : la moyenne est la somme divisée par le nombre de valeurs.']]]),
@@ -210,7 +212,7 @@ export function L12(d) {
   const { v, x } = baseEt(E, n, form !== 'typique');
   const r0 = resume(v), all = [...v, x], r1 = resume(all), lowMode = E.mode === 'bas';
   const intro = `${E.intro(n, p)}${big(list(v))}${E.extra(x)}`;
-  const visual = tiles(v, { label: E.axe }) + tiles(['…', x], { hl: [1], label: 'valeur ajoutée' });
+  const visual = tiles(v.map(M), { label: E.axe }) + tiles(['…', M(x)], { hl: [1], label: 'valeur ajoutée' });
   const axe = axeNice(all), boxes = boxPlot([{ name: 'Avant', ...five(r0) }, { name: 'Après', ...five(r1) }], { ...axe, axe: E.axe, show: false });
   if (form === 'newMean') {
     const X = r1.mean;
@@ -242,11 +244,11 @@ export function L12(d) {
   const win = near(q.med) && !near(q.mean) ? 'med' : near(q.mean) && !near(q.med) ? 'moy' : null;
   if (win === null) return L12(d);
   return { type: 'choice', opts: [{ v: 'moy', l: 'La moyenne' }, { v: 'med', l: 'La médiane' }], check: choiceCheck(win, { msg: () => `Calcule les deux : lequel est proche de la plupart des valeurs de la liste (et pas seulement de la valeur extrême ${M(xx)}) ?` }),
-    html: `${E.intro(nn, p)} ${E.incl}${big(list(lst))}On veut un seul nombre pour décrire <b>${E.typ}</b>. Que vaut-il mieux choisir&nbsp;?`, visual: tiles(lst, { hl: [lst.indexOf(xx)], label: E.axe }),
+    html: `${E.intro(nn, p)} ${E.incl}${big(list(lst))}On veut un seul nombre pour décrire <b>${E.typ}</b>. Que vaut-il mieux choisir&nbsp;?`, visual: tiles(lst.map(M), { hl: [lst.indexOf(xx)], label: E.axe }),
     afterVisual: boxPlot([{ name: 'Série', ...five(q) }], { ...axeNice(lst), axe: E.axe, show: true }),
     verify: E2 => { const t = [...lst].sort((a, b) => a - b), m = t.reduce((a, b) => a + b, 0) / t.length, md = medCount(lst), c = a => lst.filter(y => Math.abs(y - a) <= 0.25 * a).length * 2 >= lst.length; return (c(md) && !c(m) ? 'med' : c(m) && !c(md) ? 'moy' : null) === E2; },
     hint: `Calcule la moyenne (somme des ${nn} valeurs ÷ ${nn}) et la médiane (valeur du milieu de la liste rangée). Regarde ensuite lequel des deux est proche de la plupart des valeurs, et pas seulement de ${M(xx)}.`,
-    solution: `Moyenne : ${M(q.mean)}${E.u} ; médiane : ${M(q.med)}${E.u}. ${win === 'med' ? `La médiane est proche de presque toutes les valeurs ; la moyenne est tirée vers ${M(xx)}.` : `La moyenne est proche de presque toutes les valeurs.`} On choisit <b>${win === 'med' ? 'la médiane' : 'la moyenne'}</b>.` };
+    solution: `Moyenne : environ ${M(Math.round(q.mean * 100) / 100)}${E.u} ; médiane : ${M(q.med)}${E.u}. ${win === 'med' ? `La médiane est proche de presque toutes les valeurs ; la moyenne est tirée vers ${M(xx)}.` : `La moyenne est proche de presque toutes les valeurs.`} On choisit <b>${win === 'med' ? 'la médiane' : 'la moyenne'}</b>.` };
 }
 export function C12() {
   const v = [1500, 1600, 1650, 1700, 1750], all = [...v, 5900];

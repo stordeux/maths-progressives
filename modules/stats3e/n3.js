@@ -28,7 +28,7 @@ export function L7(d) {
   const visual = bars(T, effs), raw = expand(vals, effs);
   const rows = form === 'q1c' || form === 'q3c' ? [{ h: 'Effectif', cells: effs }, { h: 'Effectif cumulé croissant', cells: c }] : [{ h: 'Effectif', cells: effs }];
   const medV = medCount(raw);
-  const base = isBar ? `${titre}Voici le diagramme en barres de la série (lis les effectifs sur les barres).` : `${titre}${tableHtml(head, rows)}`;
+  const base = isBar ? `${titre}<br>Voici le diagramme en barres de la série (lis les effectifs sur les barres).` : `${titre}${tableHtml(head, rows)}`;
   if (both) {
     return { type: 'nums', tpl: `${sub(1)} : {0} &nbsp; ${sub(3)} : {1}`, labels: ['premier quartile', 'troisième quartile'], check: multiCheck([x1, x3], [[[medV, "C'est la <b>médiane</b> : le premier quartile est plus bas."], [vals[Math.floor((k - 1) / 2)], "Ce n'est pas la colonne du milieu : cherche le rang avec les effectifs cumulés."]], [[medV, "C'est la <b>médiane</b> : le troisième quartile est plus haut."]]]),
       html: `${base}<br>Donne le premier quartile ${sub(1)} et le troisième quartile ${sub(3)} de cette série.`, visual, afterVisual: bars(T, effs, { hl: [vals.indexOf(x1), vals.indexOf(x3)] }),

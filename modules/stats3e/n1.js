@@ -4,7 +4,7 @@ import { approx } from '../../engine/util/arith.js';
 import { M, F } from '../../engine/util/fmt.js';
 import { barChart, parseBars, tiles, tableHtml } from './draw.js';
 import { sum, range, cumul, expand, tableau, TABLES } from './stat.js';
-import { numCheck, multiCheck, dont, fv, COMMA, NOCOMMA, ex, warn, retenir, methode, big } from './util.js';
+import { numCheck, multiCheck, dont, dedont, fv, COMMA, NOCOMMA, ex, warn, retenir, methode, big } from './util.js';
 
 /** diagramme en barres des effectifs d'un tableau (pas des graduations adapté) */
 export function bars(T, vals, { hl = [], titre = 'effectif', width = 460 } = {}) {
@@ -99,7 +99,7 @@ export function L2(d) {
   if (form === 'auplus') {
     const j = ri(1, k - 2);
     return { type: 'nums', tpl: 'Réponse : {0} ' + C.ent, check: numCheck(c[j], [[effs[j], `${effs[j]} est l'effectif d'une seule colonne : « d'au plus » veut dire cette valeur <b>et</b> les plus petites.`]]),
-      html: `${titre}${tbl()}Combien y a-t-il de ${dont(T, 'max', vals[j])}&nbsp;? (c'est l'effectif cumulé croissant de ${fv(vals[j], C.u)})`, visual: bars(T, effs, { hl: range(0, j) }), afterVisual: cumBars(range(0, j)),
+      html: `${titre}${tbl()}Combien y a-t-il ${dedont(T, 'max', vals[j])}&nbsp;? (c'est l'effectif cumulé croissant de ${fv(vals[j], C.u)})`, visual: bars(T, effs, { hl: range(0, j) }), afterVisual: cumBars(range(0, j)),
       verify: E => { const b = parseBars(bars(T, effs)).map(Math.round); return b.slice(0, j + 1).reduce((s, x) => s + x, 0) === E[0]; },
       hint: `« D'au plus ${fv(vals[j], C.u)} » : ${fv(vals[j], C.u)} <b>ou moins</b>. Additionne les effectifs ${effs.slice(0, j + 1).join(' + ')}.`,
       solution: `${effs.slice(0, j + 1).join(' + ')} = <b>${c[j]}</b>.` };
@@ -114,7 +114,7 @@ export function L2(d) {
   }
   const j = ri(1, k - 2);
   return { type: 'nums', tpl: 'Réponse : {0} ' + C.ent, check: numCheck(N - c[j], [[c[j], `${c[j]} est le nombre de ${C.ent} avec « au plus » ${fv(vals[j], C.u)} : il faut ceux qui dépassent, donc les <b>autres</b>.`], [N - c[j - 1], `Une valeur trop tôt : « strictement supérieur à ${fv(vals[j], C.u)} » ne contient pas ${fv(vals[j], C.u)} lui-même.`]]),
-    html: `${titre}${tableHtml(head, [{ h: 'Effectif cumulé croissant', cells: c }])}Combien y a-t-il de ${dont(T, 'gt', vals[j])}&nbsp;?`,
+    html: `${titre}${tableHtml(head, [{ h: 'Effectif cumulé croissant', cells: c }])}Combien y a-t-il ${dedont(T, 'gt', vals[j])}&nbsp;?`,
     visual: cumBars(range(0, j)), value: c[k - 1] - c[j],
     hint: `L'effectif total est la dernière case (${c[k - 1]}). Ceux qui ont au plus ${fv(vals[j], C.u)} sont ${c[j]} : soustrais.`,
     solution: `Total : ${c[k - 1]}. D'au plus ${fv(vals[j], C.u)} : ${c[j]}. Donc ${c[k - 1]} − ${c[j]} = <b>${N - c[j]}</b>.` };
@@ -170,7 +170,7 @@ export function L3(d) {
   if (form === 'D') {
     const fc = c.map(x => pct(x, N));
     return { type: 'nums', tpl: 'Réponse : {0} ' + C.ent, check: numCheck(c[j], [[fc[j], `${M(fc[j])} est déjà un pourcentage : calcule ${M(fc[j])} % de ${N}.`], [effs[j], `Tu as trouvé l'effectif de la colonne seule : la fréquence cumulée compte aussi les valeurs d'avant.`]]),
-      html: `${titre}${tableHtml(head, [{ h: 'Fréquence cumulée croissante (%)', cells: fc }])}L'effectif total est <b>${N}</b>. Combien y a-t-il de ${dont(T, 'max', vals[j])}&nbsp;?`, visual: bars(T, fc, { titre: 'fréquence cumulée (%)', hl: range(0, j) }),
+      html: `${titre}${tableHtml(head, [{ h: 'Fréquence cumulée croissante (%)', cells: fc }])}L'effectif total est <b>${N}</b>. Combien y a-t-il ${dedont(T, 'max', vals[j])}&nbsp;?`, visual: bars(T, fc, { titre: 'fréquence cumulée (%)', hl: range(0, j) }),
       value: fc[j] * N / 100,
       hint: `La fréquence cumulée de ${fv(vals[j], C.u)} est ${M(fc[j])} % : c'est ${M(fc[j])} % des ${N} ${C.ent}. Calcule ${M(fc[j])} ÷ 100 × ${N}.`,
       solution: `${M(fc[j])} % de ${N} = ${M(fc[j])} ÷ 100 × ${N} = <b>${c[j]}</b> ${C.ent}.` };

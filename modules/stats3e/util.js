@@ -37,3 +37,8 @@ export const ex = (q, corr) => `<div class="ex"><span class="q">${q}</span><br>$
 export const warn = (...l) => `<div class="warn">${l.map(x => '⚠️ ' + x).join('<br>')}</div>`;
 export const retenir = t => `<div class="retenir">À retenir : ${t}</div>`;
 export const methode = (...l) => `<div class="methode"><b>Méthode</b><ol>${l.map(x => `<li>${x}</li>`).join('')}</ol></div>`;
+
+/** « d'élèves dont … » ou « de familles dont … » (élision) */
+export const dedont = (T, kind, v) => { const s = dont(T, kind, v); return /^[aeiouyéèh]/i.test(s) ? `d'${s}` : `de ${s}`; };
+/** nombre avec espace insécable des milliers : 1 500 */
+export const K = n => { const [i, f] = M(n).split(','); return i.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + (f ? ',' + f : ''); };
