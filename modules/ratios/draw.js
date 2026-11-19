@@ -112,7 +112,7 @@ export function ratioBar(o) {
     s += rect(x0 + acc * w, y, p * w, h, 'none', { w: 3 });
     const cx = x0 + (acc + p / 2) * w;
     const unit = o.unit === undefined ? (p > 1 ? ' parts' : ' part') : (o.unit ? ' ' + o.unit : '');
-    s += tx(cx, y + h / 2 + 5, o.labels ? o.labels[i] : p + unit, { b: 1, fs: p * w >= 70 ? 15 : 12 });
+    s += tx(cx, y + h / 2 + 5, o.labels ? o.labels[i] : p + unit, { b: 1, fs: p * w >= 70 ? 15 : 12 }).replace('<text', '<text stroke="#fff" stroke-width="4" paint-order="stroke"');
     if (o.names) s += tx(cx, y + h + 22, o.names[i], { b: 1, fs: 15 });
     if (o.vals) s += tx(cx, y + h + 44, o.vals[i], { b: 1, fs: 15, c: '#c2410c' });
     acc += p;

@@ -147,7 +147,7 @@ test('accueil : réinitialiser toute la progression (réglages gardés)', async 
     localStorage.setItem('mp:reglages', JSON.stringify({ grand: true }));
   });
   await page.reload();
-  await expect(page.locator('.mcard').filter({ hasText: 'Fractions' })).toContainText('Niveau 5');
+  await expect(page.locator('.mcard[href$="modules/fractions/"]')).toContainText('Niveau 5');
   await page.locator('#rstBtn').click();
   await expect(page.locator('#rstBox')).toBeVisible();
   await page.locator('#rstYes').click();
@@ -156,7 +156,7 @@ test('accueil : réinitialiser toute la progression (réglages gardés)', async 
   expect(reste.f).toBeNull();
   expect(reste.r).not.toBeNull();
   expect(reste.b).not.toBeNull();
-  await expect(page.locator('.mcard').filter({ hasText: 'Fractions' })).not.toContainText('Niveau 5');
+  await expect(page.locator('.mcard[href$="modules/fractions/"]')).not.toContainText('Niveau 5');
 });
 
 test('accueil, export / import, hors ligne', async ({ page, context }, info) => {
