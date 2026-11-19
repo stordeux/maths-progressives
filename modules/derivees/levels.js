@@ -899,6 +899,7 @@ ${graph({ xr: [-1, 11], yr: [-2, 30], fs: [{ f, dom: [0, 10], l: 'y = A(x)' }], 
 </div>
 <div class="cols">
 <div class="ex"><span class="q">Exemple 3 : un enclos contre un mur, avec 40 m de grillage.</span><br>A(x) = x(40 − 2x) = 40x − 2x<sup>2</sup>, A${PR}(x) = 40 − 4x, nulle en x = 10 (+ puis −).<br><b>x = 10 m</b> et A(10) = 10 × 20 = <b>200 m<sup>2</sup></b>.</div>
+<div class="ex"><span class="q">Exemple 4 : minimum et maximum locaux d'une fonction de degré 3 : f(x) = x<sup>3</sup> − 3x<sup>2</sup> − 9x + 11, avec f′(x) = 3(x + 1)(x − 3).</span><br>f′ est du signe de 3 (+) à l'extérieur des racines −1 et 3 : + puis − puis +. f monte, descend, remonte.<br>En x = −1 : <b>maximum local</b> f(−1) = −1 − 3 + 9 + 11 = <b>16</b>. En x = 3 : <b>minimum local</b> f(3) = 27 − 27 − 27 + 11 = <b>−16</b>.<br>« Local » : c'est le plus haut (ou le plus bas) seulement autour de ce point, pas sur tout ℝ.</div>
 ${enclos(40)}
 </div>
 <div class="warn">⚠️ f${PR}(x<sub>0</sub>) = 0 ne suffit pas : il faut que f${PR} change de signe (x<sup>3</sup> a une dérivée nulle en 0 sans extremum).<br>⚠️ La réponse demande deux choses : <b>où</b> (la valeur de x) et <b>combien</b> (la valeur de f). Ne les inverse pas.</div>
