@@ -85,9 +85,20 @@ function texteSignalement(message, ctx) {
 }
 
 
-/** installe le bouton flottant et la fenêtre de signalement */
+// Compteur de visites GoatCounter (sans cookie, ne suit pas les personnes), sur le site publié seulement :
+// ni en local ni dans les tests. Décision de S. Tordeux du 2026-11-19 ; tableau de bord stordeux.goatcounter.com.
+function compteurVisites() {
+  if (location.hostname !== 'stordeux.github.io' || document.querySelector('script[data-goatcounter]')) return;
+  const s = document.createElement('script');
+  s.async = true; s.src = 'https://gc.zgo.at/count.js';
+  s.dataset.goatcounter = 'https://stordeux.goatcounter.com/count';
+  document.head.appendChild(s);
+}
+
+/** installe le bouton flottant et la fenêtre de signalement (et le compteur de visites) */
 export function installerSignalement(opts = {}) {
   prefixe = opts.prefixe ?? '../../';
+  compteurVisites();
   const fab = document.createElement('button');
   fab.type = 'button'; fab.className = 'sig-fab'; fab.id = 'sigBtn';
   fab.setAttribute('data-capture-exclude', '');

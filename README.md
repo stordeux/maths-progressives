@@ -5,7 +5,7 @@ Pensé d'abord pour une **tablette Android d'entrée de gamme**, au doigt ou au 
 
 **Site : https://stordeux.github.io/maths-progressives/**
 
-Gratuit, sans compte, sans publicité, sans traceur. Rien n'est envoyé sur Internet, sauf les messages que l'élève écrit lui-même avec le bouton 🐞 (texte, capture de l'écran, exercice en cours) : la progression reste sur l'appareil.
+Gratuit, sans compte, sans publicité, sans cookie. Un compteur de visites (GoatCounter) compte les pages vues sans suivre les personnes. La progression n'est jamais envoyée sur Internet ; seuls partent les messages que l'élève écrit lui-même avec le bouton 🐞 (texte, capture de l'écran, exercice en cours) : la progression reste sur l'appareil.
 
 ## Sur la tablette
 

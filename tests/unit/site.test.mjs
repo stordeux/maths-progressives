@@ -14,7 +14,8 @@ test('aucune ressource réseau externe dans le site', () => {
     const bad = t.match(/(src|href)\s*=\s*["']https?:\/\/[^"']+/g) || [];
     const imp = t.match(/(import|fetch)\s*\(?\s*["'`]https?:/g) || [];
     const css = t.match(/url\(\s*["']?https?:/g) || [];
-    const allowed = bad.filter(b => !/github\.com\/stordeux\/maths-progressives/.test(b));
+    // seules exceptions : le lien vers les sources, et le compteur de visites GoatCounter (chargé sur le site publié seulement)
+    const allowed = bad.filter(b => !/github\.com\/stordeux\/maths-progressives/.test(b) && !/^src\s*=\s*'https:\/\/gc\.zgo\.at\/count\.js$/.test(b));
     assert.deepEqual([...allowed, ...imp, ...css], [], f);
   }
 });
