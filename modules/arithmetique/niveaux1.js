@@ -198,7 +198,7 @@ export function L3(d) {
       check: choiceCheck(yn(est), { msg: c => (c === 'oui' ? `Regarde le chiffre des unités de ${gr(N)} : c'est ${u}. Pour être divisible par ${k}, il devrait être ${finTxt(k)}.` : `Regarde le chiffre des unités de ${gr(N)} : c'est ${u}, et ${u} fait partie de ${finTxt(k)}.`) }),
       verify: E => ((N % k === 0) === (E === 'oui')),
       hint: `Seul le dernier chiffre de ${gr(N)} compte (ici ${u}). Un nombre est divisible par ${k} quand son chiffre des unités est ${finTxt(k)}.`,
-      solution: `Le chiffre des unités de ${gr(N)} est ${u}. ${est ? `${u} est parmi ${finTxt(k)} : oui, ${gr(N)} est divisible par ${k}.` : `${u} n'est pas parmi ${finTxt(k)} : non, ${gr(N)} n'est pas divisible par ${k}.`}`,
+      solution: `Le chiffre des unités de ${gr(N)} est ${u}. ${est ? `${k === 10 ? 'Il se termine par 0' : `Il se termine par ${u}, qui est l'un des chiffres ${finTxt(k)}`} : oui, ${gr(N)} est divisible par ${k}.` : `${k === 10 ? `Il ne se termine pas par 0` : `${u} n'est pas l'un des chiffres ${finTxt(k)}`} : non, ${gr(N)} n'est pas divisible par ${k}.`}`,
     };
   }
   if (f === 'lequel') {
@@ -402,7 +402,7 @@ export function L5(d) {
       html: `On range ${gr(a)} ${c[0]} dans ${c[1]} ${b}. Combien peut-on en remplir complètement, et combien ${c[0].startsWith('œ') ? "d'" : 'de '}${c[0]} restent-ils ?`,
       check: eucl(a, b), verify: E => E[0] * b + E[1] === a && E[1] >= 0 && E[1] < b,
       hint: `C'est la division euclidienne de ${gr(a)} par ${b} : le quotient donne les ${c[2]}, le reste donne les ${c[3]}.`,
-      solution: `${gr(a)} = ${b} × ${q} + ${r}, avec ${r} &lt; ${b}. On remplit ${q} ${c[2].split(' ')[0]}${q > 1 ? ' complets' : ' complet'} et il reste ${r} ${c[0]}.`,
+      solution: `${gr(a)} = ${b} × ${q} + ${r}, avec ${r} &lt; ${b}. On remplit ${q} ${q > 1 ? c[2] : c[2].replace(/s/g, '')} et ${r === 0 ? `il ne reste aucun ${c[0].replace(/s$/, '')}` : `il reste ${r} ${r > 1 ? c[0] : c[0].replace(/s$/, '')}`}.`,
       afterVisual: vis,
     };
   }
