@@ -20,9 +20,11 @@ function terms(list){ // list de [coef, 'x²'|'x'|''] dans l'ordre voulu
 }
 const poly=(a,b,c)=>terms([[a,X2],[b,'x'],[c,'']]);
 const lin=p=>p===0?'x':p>0?`x + ${p}`:`x − ${-p}`;          // x + p
+const sqx=p=>p===0?'x<sup>2</sup>':`(${lin(p)})<sup>2</sup>`; // (x + p)², et x² (pas « (x)² ») quand p = 0
 const lmin=r=>r===0?'x':r>0?`x − ${r}`:`x + ${-r}`;         // x − r
+const sqm=r=>r===0?'x<sup>2</sup>':`(${lmin(r)})<sup>2</sup>`; // (x − r)², et x² quand r = 0
 const coefA=a=>a===1?'':a===-1?'−':M(a);
-const canon=(a,h,k)=>`${coefA(a)}(${lmin(h)})<sup>2</sup>${k?(k>0?' + '+k:' − '+(-k)):''}`;
+const canon=(a,h,k)=>`${coefA(a)}${sqm(h)}${k?(k>0?' + '+k:' − '+(-k)):''}`;
 const fact=(a,r1,r2)=>{const f=r=>r===0?'x':`(${lmin(r)})`;return `${coefA(a)}${f(r1)}${f(r2)}`};
 const big=s=>`<div class="big">${s}</div>`;
 const fx=(a,b,c)=>x=>a*x*x+b*x+c;
@@ -185,12 +187,12 @@ function L6(d){
     html:`Complète pour obtenir le carré d'une parenthèse :`,
     tpl:`x<sup>2</sup> ${b<0?'− '+(-b):'+ '+b}x + {0} = (x + {1})<sup>2</sup>`,check:numsCheck([c,p]),
     hint:`Le terme du milieu ${M(b)}x vaut 2 × x × p : donc p = ${M(b)} ÷ 2. Le nombre seul doit être p<sup>2</sup>.`,
-    solution:`${M(b)} ÷ 2 = ${M(p)}, et ${P(p)}<sup>2</sup> = ${c} : x<sup>2</sup> ${b<0?'− '+(-b):'+ '+b}x + ${c} = <b>(${lin(p)})<sup>2</sup></b>`};
+    solution:`${M(b)} ÷ 2 = ${M(p)}, et ${P(p)}<sup>2</sup> = ${c} : x<sup>2</sup> ${b<0?'− '+(-b):'+ '+b}x + ${c} = <b>${sqx(p)}</b>`};
   return{type:'nums',a:1,b,c,go:{},gs:{vertex:true},
     html:`Écris sous la forme d'un carré :${big('f(x) = '+poly(1,b,c))}<span class="note">Tape le nombre de la parenthèse avec son signe (par ex. −4 pour (x − 4)²).</span>`,
     tpl:`f(x) = (x + {0})<sup>2</sup>`,check:numsCheck([p]),
     hint:`Compare avec (x + p)<sup>2</sup> = x<sup>2</sup> + 2px + p<sup>2</sup>. Le terme en x est ${M(b)}x, donc 2p = ${M(b)}. Vérifie que p<sup>2</sup> = ${c}.`,
-    solution:`2p = ${M(b)} donc p = ${M(p)} ; et ${P(p)}<sup>2</sup> = ${c} ✓. Donc f(x) = <b>(${lin(p)})<sup>2</sup></b>`};
+    solution:`2p = ${M(b)} donc p = ${M(p)} ; et ${P(p)}<sup>2</sup> = ${c} ✓. Donc f(x) = <b>${sqx(p)}</b>`};
 }
 function C6(){return `<h2>6. Reconnaître un carré</h2>
 <p class="intro">On lit l'identité remarquable « à l'envers » : on <b>factorise</b> une expression en un carré. C'est la clé de la forme canonique.</p>
@@ -208,15 +210,15 @@ function L7(d){
   return{type:'nums',a:1,b,c,go:{},gs:{vertex:true},
     html:`Écris sous forme canonique (x + p)<sup>2</sup> + k :${big('f(x) = '+poly(1,b,c))}<span class="note">Tape les nombres avec leur signe.</span>`,
     tpl:`f(x) = (x + {0})<sup>2</sup> + {1}`,check:numsCheck([p,k]),
-    hint:`p = la moitié du coefficient de x : ${M(b)} ÷ 2 = ${M(p)}. Puis (${lin(p)})<sup>2</sup> = ${poly(1,b,p*p)} : il faut ajouter ou enlever ce qui manque pour retrouver ${M(c)}.`,
-    solution:`(${lin(p)})<sup>2</sup> = ${poly(1,b,p*p)}, donc f(x) = (${lin(p)})<sup>2</sup> − ${p*p} + ${P(c)} = <b>(${lin(p)})<sup>2</sup> ${k<0?'− '+(-k):'+ '+k}</b>`};
+    hint:`p = la moitié du coefficient de x : ${M(b)} ÷ 2 = ${M(p)}. Puis ${sqx(p)} = ${poly(1,b,p*p)} : il faut ajouter ou enlever ce qui manque pour retrouver ${M(c)}.`,
+    solution:`${sqx(p)} = ${poly(1,b,p*p)}, donc f(x) = ${sqx(p)} − ${p*p} + ${P(c)} = <b>${sqx(p)} ${k<0?'− '+(-k):'+ '+k}</b>`};
 }
 function C7(){return `<h2>7. La forme canonique</h2>
 <p class="intro">Quand ce n'est pas un carré parfait, on « complète le carré » : on écrit f(x) comme un carré plus un nombre. Cette forme montre tout de suite le point le plus bas.</p>
 <div class="def">x<sup>2</sup> + bx + c = (x + p)<sup>2</sup> + k &nbsp; avec <b>p = b ÷ 2</b> et <b>k = c − p<sup>2</sup></b></div>
 <div class="methode"><b>Méthode</b><ol><li>p = la moitié du coefficient de x (avec son signe).</li><li>Développe (x + p)<sup>2</sup> = x<sup>2</sup> + bx + p<sup>2</sup> : seul le nombre seul diffère.</li><li>k = c − p<sup>2</sup> : ce qu'il faut ajouter (ou enlever) pour retrouver c.</li></ol></div>
 <div class="ex"><span class="q">Exemple 1 :</span><br>f(x) = x<sup>2</sup> + 6x + 11<br>• p = 6 ÷ 2 = 3, et (x + 3)<sup>2</sup> = x<sup>2</sup> + 6x + 9<br>• Il manque 11 − 9 = 2<br>• Donc <b>f(x) = (x + 3)<sup>2</sup> + 2</b></div>
-<div class="ex"><span class="q">Exemple 2 : k négatif</span><br>g(x) = x<sup>2</sup> − 4x − 1<br>• p = −2, (x − 2)<sup>2</sup> = x<sup>2</sup> − 4x + 4<br>• k = −1 − 4 = −5 → <b>g(x) = (x − 2)<sup>2</sup> − 5</b><br>Vérification : (x − 2)<sup>2</sup> − 5 = x<sup>2</sup> − 4x + 4 − 5 = x<sup>2</sup> − 4x − 1 ✓<br>Dans les cases (x + …)<sup>2</sup> + … , on tape <b>−2</b> et <b>−5</b>.</div>
+<div class="ex"><span class="q">Exemple 2 : k négatif</span><br>g(x) = x<sup>2</sup> − 4x − 1<br>• p = −2, (x − 2)<sup>2</sup> = x<sup>2</sup> − 4x + 4<br>• k = −1 − 4 = −5 → <b>g(x) = (x − 2)<sup>2</sup> − 5</b><br>Vérification : (x − 2)<sup>2</sup> − 5 = x<sup>2</sup> − 4x + 4 − 5 = x<sup>2</sup> − 4x − 1 ✓<br>Dans les cases (x + …)<sup>2</sup> + … , on tape <b>−2</b> et <b>−5</b>.<br>Sans nombre seul : x<sup>2</sup> + 4x = (x + 2)<sup>2</sup> − 4 (ici c = 0, donc k = 0 − 4 = −4).</div>
 <div class="warn">⚠️ k n'est pas c : il faut retirer p<sup>2</sup>. Dans l'exemple 1, k = 2, pas 11.<br>⚠️ Garde le signe de p : x<sup>2</sup> − 4x donne (x − 2)<sup>2</sup>, donc p = −2.</div>
 <h3>Pourquoi c'est utile ?</h3><p>Un carré est toujours ≥ 0. Donc (x + 3)<sup>2</sup> + 2 est toujours ≥ 2 : le point le plus bas de la parabole est à la hauteur 2, pour x = −3.</p>${parabola(1,6,11,{vertex:true})}
 <div class="retenir">À retenir : x<sup>2</sup> + bx + c = (x + b÷2)<sup>2</sup> + (c − (b÷2)<sup>2</sup>).</div>`}
@@ -228,10 +230,10 @@ function L8(d){
     return{type:'nums',a,b,c,go:{},gs:{vertex:true},
       html:`Soit f(x) = ${poly(a,b,c)}.<br>Quel est le point de ${mx?'<b>maximum</b>':'<b>minimum</b>'} de la parabole ?<br><span class="note">Mets d'abord f(x) sous forme canonique (au brouillon).</span>`,
       tpl:`S ( {0} ; {1} )`,check:numsCheck([h,k]),
-      hint:a>0?`Complète le carré : la moitié de ${M(b)} est ${M(-h)}, donc (${lmin(h)})<sup>2</sup> = ${poly(1,b,h*h)}. Ajuste le nombre pour retrouver ${M(c)} : tu obtiens (${lmin(h)})<sup>2</sup> + k. Le point de minimum se lit alors directement.`
+      hint:a>0?`Complète le carré : la moitié de ${M(b)} est ${M(-h)}, donc ${sqm(h)} = ${poly(1,b,h*h)}. Ajuste le nombre pour retrouver ${M(c)} : tu obtiens ${sqm(h)} + k. Le point de minimum se lit alors directement.`
         :`Mets −1 en facteur : f(x) = −(${poly(1,-b,-c)}). Complète le carré dans la parenthèse, puis lis le sommet. Comme a = −1 &lt; 0, c'est un maximum.`,
-      solution:a>0?`(${lmin(h)})<sup>2</sup> = ${poly(1,b,h*h)}, donc f(x) = (${lmin(h)})<sup>2</sup> − ${h*h} + ${P(c)} = ${canon(1,h,k)}.<br>Un carré est toujours ≥ 0, donc f(x) ≥ ${M(k)}, avec égalité quand x = ${M(h)}. Point de minimum : <b>S(${M(h)} ; ${M(k)})</b>.`
-        :`f(x) = −(${poly(1,-b,-c)}) = −[(${lmin(h)})<sup>2</sup> ${-k<0?'− '+k:'+ '+(-k)}] = ${canon(-1,h,k)}.<br>−(${lmin(h)})<sup>2</sup> est toujours ≤ 0, donc f(x) ≤ ${M(k)}, avec égalité quand x = ${M(h)}. Point de maximum : <b>S(${M(h)} ; ${M(k)})</b>.`}}
+      solution:a>0?`${sqm(h)} = ${poly(1,b,h*h)}, donc f(x) = ${sqm(h)} − ${h*h} + ${P(c)} = ${canon(1,h,k)}.<br>Un carré est toujours ≥ 0, donc f(x) ≥ ${M(k)}, avec égalité quand x = ${M(h)}. Point de minimum : <b>S(${M(h)} ; ${M(k)})</b>.`
+        :`f(x) = −(${poly(1,-b,-c)}) = −[${sqm(h)} ${-k<0?'− '+k:'+ '+(-k)}] = ${canon(-1,h,k)}.<br>−${sqm(h)} est toujours ≤ 0, donc f(x) ≤ ${M(k)}, avec égalité quand x = ${M(h)}. Point de maximum : <b>S(${M(h)} ; ${M(k)})</b>.`}}
   const a=d<2?1:pick([1,-1,2,-2,-1]),h=d<1?ri(-4,4):nz(-6,6),k=nz(-7,7),b=-2*a*h,c=a*h*h+k;
   if(d>=1&&random()<.45){
     const opts=[{v:'min',l:`un <b>minimum</b> égal à ${M(k)}`},{v:'max',l:`un <b>maximum</b> égal à ${M(k)}`},{v:'minh',l:`un <b>minimum</b> égal à ${M(h)}`},{v:'maxh',l:`un <b>maximum</b> égal à ${M(h)}`}];
@@ -261,10 +263,10 @@ function L9(d){
   let v=d<2?0:ri(0,4),m,k,html,roots,b=-2*h,c;
   if(v<=2){m=n*n;roots=[h-n,h+n]}else if(v===3){m=0;roots=[h]}else{m=-ri(1,9);roots=[]}
   k=-m;c=h*h+k;
-  html=d<2?`Résous l'équation :${big(`(${lmin(h)})<sup>2</sup> = ${M(m)}`)}`:`Résous l'équation f(x) = 0 avec :${big(`f(x) = (${lmin(h)})<sup>2</sup> ${k<0?'− '+(-k):k>0?'+ '+k:''}`)}`;
+  html=d<2?`Résous l'équation :${big(`${sqm(h)} = ${M(m)}`)}`:`Résous l'équation f(x) = 0 avec :${big(`f(x) = ${sqm(h)} ${k<0?'− '+(-k):k>0?'+ '+k:''}`)}`;
   return{type:'roots',a:1,b,c,go:{},gs:{roots:true,vertex:true},html,check:rootsCheck(roots),
-    hint:`${d>=2?`Isole d'abord le carré : (${lmin(h)})<sup>2</sup> = ${M(m)}. `:''}Un carré égal à n<sup>2</sup> : la parenthèse vaut <b>n ou −n</b>. Un carré égal à 0 : la parenthèse vaut 0. Un carré ne peut jamais être négatif. Sur le graphique : les solutions sont là où la parabole coupe l'axe des x.`,
-    solution:m>0?`(${lmin(h)})<sup>2</sup> = ${m} ⇔ ${lmin(h)} = ${n} ou ${lmin(h)} = −${n} ⇔ <b>x = ${M(h+n)} ou x = ${M(h-n)}</b>`:m===0?`(${lmin(h)})<sup>2</sup> = 0 ⇔ ${lmin(h)} = 0 ⇔ <b>x = ${M(h)}</b> (une seule solution)`:`(${lmin(h)})<sup>2</sup> = ${M(m)} est impossible car un carré est toujours positif : <b>aucune solution</b>. La parabole ne coupe pas l'axe des x.`};
+    hint:`${d>=2?`Isole d'abord le carré : ${sqm(h)} = ${M(m)}. `:''}Un carré égal à n<sup>2</sup> : la parenthèse vaut <b>n ou −n</b>. Un carré égal à 0 : la parenthèse vaut 0. Un carré ne peut jamais être négatif. Sur le graphique : les solutions sont là où la parabole coupe l'axe des x.`,
+    solution:m>0?`${sqm(h)} = ${m} ⇔ ${lmin(h)} = ${n} ou ${lmin(h)} = −${n} ⇔ <b>x = ${M(h+n)} ou x = ${M(h-n)}</b>`:m===0?`${sqm(h)} = 0 ⇔ ${lmin(h)} = 0 ⇔ <b>x = ${M(h)}</b> (une seule solution)`:`${sqm(h)} = ${M(m)} est impossible car un carré est toujours positif : <b>aucune solution</b>. La parabole ne coupe pas l'axe des x.`};
 }
 function C9(){return `<h2>9. Résoudre (x − h)<sup>2</sup> = m</h2>
 <p class="intro">Avec la forme canonique, résoudre f(x) = 0 revient à résoudre « un carré égal à un nombre ». On trouve ainsi les racines.</p>
@@ -283,7 +285,7 @@ function L10(d){
   if(d<1){html=`Résous l'équation :${big(`${fact(1,r1,r2)} = 0`)}`}
   else if(d<2){r1=0;html=`Trouve les racines de :${big(`f(x) = ${fact(1,0,r2)}`)}`}
   else{const m=pick([2,3,-1,-2]);if(random()<.5){a=m;html=`Trouve les racines de :${big(`f(x) = ${fact(m,r1,r2)}`)}`}
-    else{a=m;const q=-m*r1,f1=q===0?coefA(m)+'x':`(${coefA(m)}x ${q<0?'− '+(-q):'+ '+q})`;html=`Trouve les racines de :${big(`f(x) = ${f1}(${lmin(r2)})`)}`}} // pas « (3x + 0) »
+    else{a=m;const q=-m*r1,f1=q===0?coefA(m)+'x':`(${coefA(m)}x ${q<0?'− '+(-q):'+ '+q})`;html=`Trouve les racines de :${big(`f(x) = ${r2===0?'x'+f1:`${f1}(${lmin(r2)})`}`)}`}} // pas « (3x + 0) »
   const b=-a*(r1+r2),c=a*r1*r2;
   return{type:'roots',a,b,c,go:{},gs:{roots:true},html,check:rootsCheck([r1,r2]),
     hint:`Un produit est nul si et seulement si <b>l'un des facteurs</b> est nul. Écris « facteur 1 = 0 ou facteur 2 = 0 » et résous chaque petite équation.`,
