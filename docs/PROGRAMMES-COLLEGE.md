@@ -21,7 +21,7 @@ Légende : ✅ couvert par un module · 🟡 en partie · ❌ absent.
 | Nombres premiers, décomposition en facteurs premiers, fraction irréductible par décomposition | 3e | ✅ | Arithmétique N6 à N11 |
 | Relatifs : addition, soustraction, multiplication, division, enchaînements | 5e–4e | ✅ | Nombres relatifs, Priorités N10 |
 | Priorités, distributivité simple sur des nombres | 5e | ✅ | Priorités opératoires |
-| Fraction d'une fraction, inverse, **division de fractions** | 4e | 🟡 | Fractions N8 multiplie ; l'inverse et la division manquent |
+| Fraction d'une fraction, inverse, **division de fractions** | 4e | ✅ | Ratios et fractions N1 à N6 |
 | Puissances (carré, cube, puissances de 10, exposants négatifs) | 5e–3e | ✅ | Puissances |
 | Racine carrée, encadrement | 4e | ✅ | Pythagore N2, Fractions N10 |
 | Calcul littéral, identités, factorisation | 5e–3e | ✅ | Calcul littéral |
@@ -37,8 +37,8 @@ Légende : ✅ couvert par un module · 🟡 en partie · ❌ absent.
 | Périmètres, aires (rectangle, triangle, disque), conversions | 6e–5e | ✅ | Aires, périmètres, volumes |
 | Durées, horaires | 6e | ✅ | Trains, durées et vitesses |
 | Angles : mesure, rapporteur, construction | 6e | ✅ | Angles N1 à N5 |
-| Solides, patrons, perspective cavalière, déplacements | 6e–5e | ❌ | |
-| Repérage : droite graduée, coordonnées dans le plan | 5e | 🟡 | Relatifs N1 (droite) ; pas de lecture / placement de points dans un repère |
+| Solides, patrons, perspective cavalière, déplacements | 6e–5e | ✅ | Repérage et solides N6 à N9 |
+| Repérage : droite graduée, coordonnées dans le plan | 5e | ✅ | Repérage et solides N1 à N5 |
 | Symétrie centrale (demi-tour) | 5e | ✅ | Géométrie plane N5, N6 |
 | Angles alternes-internes, correspondants ; somme des angles du triangle | 5e | ✅ | Angles N9 à N12 |
 | Triangle : constructions, inégalité triangulaire, médiatrices et cercle circonscrit, hauteurs, médianes | 5e | ✅ | Géométrie plane N7, N8 |
@@ -48,7 +48,7 @@ Légende : ✅ couvert par un module · 🟡 en partie · ❌ absent.
 | **Droite des milieux** (trois théorèmes) | 4e | ✅ | Géométrie plane N12 |
 | Pythagore, réciproque, contraposée ; triangle rectangle et cercle | 4e | ✅ | Pythagore ; fiche « triangle rectangle » |
 | Thalès (emboîtés, papillon), réciproque ; cos, sin, tan | 3e | ✅ | Thalès et trigonométrie |
-| Sphère, grands cercles, sections de solides | 3e | 🟡 | volume de la boule seulement ; sections absentes |
+| Sphère, grands cercles, sections de solides | 3e | ✅ | Repérage et solides N10 à N12 |
 | Homothétie, agrandissement-réduction | 3e | ✅ | Thalès N7, Aires N12 |
 
 ## Données et probabilités
@@ -56,7 +56,7 @@ Légende : ✅ couvert par un module · 🟡 en partie · ❌ absent.
 |---|---|---|---|
 | Tableaux, diagrammes, fréquences, moyenne, médiane, étendue | 6e–4e | ✅ | Statistiques et probabilités |
 | Effet d'une valeur extrême sur moyenne et médiane ; comparer deux séries | 4e | 🟡 | quelques défis ; pas de niveau dédié |
-| **Effectifs cumulés, quartiles, boîtes à moustaches** | 3e | ❌ | |
+| **Effectifs cumulés, quartiles, boîtes à moustaches** | 3e | ✅ | Statistiques de 3e |
 | Vocabulaire, équiprobabilité, contraire, deux épreuves | 5e–4e | ✅ | Statistiques et probabilités N9 à N12 |
 | Notations d'ensembles : réunion, intersection, complémentaire ; P(A ∪ B) + P(A ∩ B) = P(A) + P(B) | 4e–3e | 🟡 | dans Probabilités (lycée), pas au niveau collège |
 | Fréquences et simulation, stabilisation des fréquences | 4e–3e | ❌ | (difficile en exercice auto-corrigé, mais possible avec des tableaux de résultats) |
@@ -65,7 +65,7 @@ Légende : ✅ couvert par un module · 🟡 en partie · ❌ absent.
 | Notion | Classe | État | Où / ce qui manque |
 |---|---|---|---|
 | Proportionnalité, tableaux, graphiques, échelles, vitesses, pourcentages | 6e–4e | ✅ | Proportionnalité, Trains |
-| **Ratio, partage proportionnel** | 4e–3e | ❌ | |
+| **Ratio, partage proportionnel** | 4e–3e | ✅ | Ratios et fractions N7 à N12 |
 | Coefficient multiplicateur, hausses et baisses | 4e–3e | ✅ | Proportionnalité N10 à N12 |
 | « En fonction de », tableaux de valeurs, programmes de calcul (y compris « remonter » un programme) | 5e–4e | 🟡 | Fonctions N5, Calcul littéral N1 ; « retrouver le nombre de départ » absent |
 | Fonctions linéaires, affines, image, antécédent, lecture graphique | 3e | ✅ | Fonctions |
