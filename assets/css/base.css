@@ -40,9 +40,13 @@ main { display: grid; gap: 14px; padding: 14px; max-width: 1400px; margin: 0 aut
 main .col { display: grid; gap: 14px; align-content: start; min-width: 0; }
 .card { background: var(--card); border-radius: 18px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .07); min-width: 0; }
 @media (min-width: 1000px) {
-  main.withpad { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); }
-  main.withpad #scratch { position: sticky; top: 80px; align-self: start; }
-  main.withpad #scratch .cv { height: calc(100vh - 170px); min-height: 380px; }
+  /* sur ordinateur : l'exercice à gauche, la réponse à droite, le brouillon en dessous */
+  main.withpad .col { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: start; }
+  main.withpad .col > * { grid-column: 1 / -1; }
+  main.withpad .col > #qcard { grid-column: 1; }
+  main.withpad .col > #acard { grid-column: 2; }
+  main.withpad .col > #qcard:has(+ #acard[hidden]) { grid-column: 1 / -1; }
+  main.withpad #scratch .cv { height: max(320px, calc(100vh - 260px)); }
   main.nopad { max-width: 760px; }
 }
 .qhead { display: flex; justify-content: space-between; align-items: center; gap: 8px; color: var(--muted); font-size: .78em; margin-bottom: 4px; }
