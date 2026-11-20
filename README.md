@@ -70,6 +70,7 @@ accueil → **Ma progression** → **Exporter** (code à recopier ou fichier `.j
 | 📉 Dérivées | 1re | Lycée (1re – Tle) |
 | ∫ Intégrales | Terminale | Lycée (1re – Tle) |
 | 🎓 Révision brevet | 3e | Transversal |
+| 🧩 Pensée informatique | 6e – 3e | Transversal |
 
 ## Pour les développeurs
 
