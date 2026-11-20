@@ -277,19 +277,19 @@ test('fractions : bandeau « Tu deviens … » avec le bandeau de niveau, sans s
   const [a, b] = await page.locator('#banner .ligne').evaluateAll(ls => ls.map(l => { const r = l.getBoundingClientRect(); return { y: r.y, h: r.height }; }));
   expect(b.y).toBeGreaterThanOrEqual(a.y + a.h);
   await page.screenshot({ path: `tests/e2e/captures/titre-bandeau-${info.project.name}.png` });
-  // le bandeau finit par s'effacer et se vider ; une faute fait redescendre sous le seuil : pas d'annonce
+  // le bandeau finit par s'effacer et se vider ; une faute ne retire pas les étoiles gagnées : pas d'annonce, le titre reste
   await expect(page.locator('#banner')).not.toHaveClass(/show/, { timeout: 8000 });
   await expect(page.locator('#banner .ligne')).toHaveCount(0);
   await answer(page, false);
   await expect(page.locator('#fb')).toHaveClass(/bad/);
   await expect(page.locator('#banner .ligne')).toHaveCount(0);
   await page.locator('#openMenu').click();
-  await expect(page.locator('#menuTitre')).toContainText('Ton titre : Stagiaire · 8 étoiles');
+  await expect(page.locator('#menuTitre')).toContainText('Ton titre : Novice · 10 étoiles en tout');
   await page.locator('#menu [data-close]').click();
   // l'accueil affiche le même total
   await page.goto('./');
-  await expect(page.locator('#titreNom')).toHaveText('Stagiaire');
-  await expect(page.locator('#titreTotal')).toContainText('8 étoiles');
+  await expect(page.locator('#titreNom')).toHaveText('Novice');
+  await expect(page.locator('#titreTotal')).toContainText('10 étoiles');
   expect(errors).toEqual([]);
 });
 
