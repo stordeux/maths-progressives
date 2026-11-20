@@ -101,7 +101,7 @@ Les tickets du bouton 🐞 sont dans gitlab.inria.fr/tordeux/signalements-exerci
 
 **Repris.** Mesure d'abord (`node tools/reservoirs.mjs`, 1 500 tirages par niveau et par difficulté d) : au niveau 1 de
 la Trigonométrie il n'y avait que **6 angles à d = 0 et 10 à d = 1** ; avec une étoile (d = 1 ou 2, 30 énoncés en tout),
-près d'un exercice sur trois (34 %) était l'un des 10 précédents. Ce n'était pas le seul niveau : 54 niveaux sur 372
+près d'un exercice sur trois (34 %) était l'un des 10 précédents. Ce n'était pas le seul niveau : une soixantaine de niveaux sur 372
 ont au moins une difficulté d à moins de 20 énoncés, et 16 ont moins de 20 énoncés pour un nombre d'étoiles donné
 (le moteur mêle deux difficultés voisines : c'est ce réservoir « par étoiles » qui compte pour l'élève).
 
