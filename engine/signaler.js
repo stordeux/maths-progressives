@@ -106,6 +106,16 @@ export function installerSignalement(opts = {}) {
   fab.title = 'Demander une explication ou signaler une erreur';
   fab.innerHTML = '🐞<span>Signaler</span>';
   document.body.appendChild(fab);
+  // Sur téléphone, le bouton flottant cachait des boutons de réponse (retour du 2026-11-19) : on le range dans
+  // l'en-tête, à côté de « Cours » et « Niveaux ». Sur tablette et ordinateur, il reste en bas à droite.
+  const tel = window.matchMedia ? window.matchMedia('(max-width: 600px)') : { matches: false };
+  const placer = () => {
+    const tete = document.querySelector('header.top .hbtns');
+    if (tete && tel.matches) { if (fab.parentElement !== tete) tete.appendChild(fab); fab.classList.add('sig-tete'); }
+    else { if (fab.parentElement !== document.body) document.body.appendChild(fab); fab.classList.remove('sig-tete'); }
+  };
+  placer();
+  if (tel.addEventListener) tel.addEventListener('change', placer);
 
   const dlg = document.createElement('div');
   dlg.className = 'modal'; dlg.id = 'sigModal';
@@ -192,10 +202,12 @@ function bienvenue(fab) {
   dlg.className = 'modal open'; dlg.id = 'bienvenueModal';
   dlg.setAttribute('role', 'dialog'); dlg.setAttribute('aria-modal', 'true'); dlg.setAttribute('aria-labelledby', 'bienvenueTitre');
   dlg.setAttribute('data-capture-exclude', '');
+  const enTete = fab.classList.contains('sig-tete');
+  const ou = enTete ? 'en haut à droite, à côté de « Cours » et « Niveaux »' : "en bas à droite de l'écran";
   dlg.innerHTML = `<div class="card bienvenue">
     <h2 id="bienvenueTitre">👋 Bienvenue dans Maths progressives !</h2>
     <p class="warn">🚧 Ce site est <b>en cours de développement</b> : il reste sûrement des erreurs, et des explications peuvent manquer.</p>
-    <p>Le bouton rond <span class="bv-btn">🐞</span> (avec le mot « Signaler » sur un grand écran), <b>en bas à droite de l'écran</b>, toujours au même endroit sur chaque page, sert à :</p>
+    <p>Le bouton rond <span class="bv-btn">🐞</span> (avec le mot « Signaler » sur un grand écran), <b>${ou}</b>, toujours au même endroit sur chaque page, sert à :</p>
     <ul>
       <li>💬 <b>demander une explication supplémentaire</b> quand un cours ou une correction n'est pas clair ;</li>
       <li>🛠️ <b>demander une correction</b> quand un énoncé, une réponse ou un affichage est faux.</li>
@@ -203,15 +215,16 @@ function bienvenue(fab) {
     <p class="note">Une capture de l'écran et l'exercice en cours sont joints automatiquement : il suffit d'écrire ta question.</p>
     <div class="actions"><button type="button" class="btn" id="bienvenueOk">J'ai compris</button></div>
   </div>
-  <div class="bv-fleche" aria-hidden="true">le bouton est ici <span>↓</span></div>`;
+  ${enTete ? '' : '<div class="bv-fleche" aria-hidden="true">le bouton est ici <span>↓</span></div>'}`;
   document.body.appendChild(dlg);
   fab.classList.add('sig-fab-montre');
+  document.body.classList.add('bienvenue-ouverte');
   const fermer = () => {
     try { localStorage.setItem(CLE_BIENVENUE, '1'); } catch (e) { /* rien */ }
-    dlg.remove(); fab.classList.remove('sig-fab-montre');
+    dlg.remove(); fab.classList.remove('sig-fab-montre'); document.body.classList.remove('bienvenue-ouverte');
   };
   dlg.querySelector('#bienvenueOk').onclick = fermer;
   dlg.addEventListener('click', e => { if (e.target === dlg) fermer(); });
   dlg.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); fermer(); } });
-  dlg.querySelector('#bienvenueOk').focus();
+  dlg.querySelector('#bienvenueOk').focus({ preventScroll: true });
 }

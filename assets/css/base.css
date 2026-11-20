@@ -171,6 +171,37 @@ body.calcul #banner { top: 6px; }
 .opt-line input { width: 26px; height: 26px; }
 .confirm { margin-top: 10px; padding: 12px; background: var(--badbg); border-radius: 12px; }
 
+/* téléphone : en-tête et pavé plus compacts, 🐞 rangé dans l'en-tête (retour du 2026-11-19) */
+@media (max-width: 600px) {
+  header.top { padding: 6px 8px; gap: 6px; }
+  header.top h1 { font-size: .9em; flex: 1 1 0; min-width: 0; }
+  header.top .home { padding: 4px 8px; }
+  .hbtns { gap: 6px; flex-basis: 100%; }
+  .hbtns .btn { padding: 6px 10px; min-height: 40px; font-size: .85em; }
+  .pad { gap: 6px; }
+  .pad button { height: 46px; font-size: 22px; }
+  .sig-fab.sig-tete { position: static; width: 44px; height: 40px; min-height: 40px; padding: 0; font-size: 20px; box-shadow: none; opacity: 1; }
+  body.bienvenue-ouverte header.top { z-index: 31; }
+  body.bienvenue-ouverte #bienvenueModal { padding-top: 112px; align-items: flex-start; }
+  body.bienvenue-ouverte #bienvenueModal .card { max-height: calc(100vh - 124px); }
+  header.top .mt { display: none; }
+  header.top .lvl { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+  header.top .dots { margin-left: 0; }
+  .cours-toggle { padding: 8px 12px; min-height: 44px; font-size: .85em; }
+  #coursLabel { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .card { padding: 12px; }
+  main .col { gap: 10px; }
+  .qhead { font-size: .8em; }
+  .card.cours-panel { padding: 0; }
+  #q { font-size: .95em; line-height: 1.5; }
+  main { padding-top: 8px; }
+  /* Indice et Valider juste sous la réponse, avant le pavé : visibles sans faire défiler */
+  #acard { display: flex; flex-direction: column; }
+  #acard #answer { order: 1; }
+  #acard .actions { order: 2; margin: 8px 0; }
+  #acard #pad { order: 3; width: 100%; }
+  #acard #fb { order: 4; }
+}
 @media (max-width: 520px) {
   .btn { padding: 10px 12px; }
   .cmp button { width: 72px; }
