@@ -28,7 +28,7 @@ header.top .mt { white-space: nowrap; }
 .home { font-size: 26px; text-decoration: none; min-width: 48px; min-height: 48px; display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; background: var(--acc2); }
 .lvl { font-weight: 700; color: var(--acc); }
 .dots { display: inline-flex; gap: 5px; vertical-align: middle; margin-left: 8px; }
-.dots i { font-style: normal; font-size: 1.15em; line-height: 1; color: #c9c4b8; }
+.dots i { font-style: normal; font-size: 1.3em; line-height: 1; color: #c9c4b8; }
 .dots i.on { color: #f2a900; text-shadow: 0 0 1px #b07a00; }
 .score { color: var(--muted); font-size: .8em; white-space: nowrap; }
 .btn { background: var(--acc); color: #fff; padding: 10px 18px; min-height: 48px; font-size: .92em; font-weight: 600; }
@@ -213,6 +213,7 @@ body.calcul #banner { top: 6px; }
 }
 /* ---------- fêtes (engine/fete.js) : étoiles qui popent, gerbes, pluie, couronne ---------- */
 .fete { position: fixed; inset: 0; pointer-events: none; z-index: 60; overflow: hidden; }
+.fete span.grande { text-shadow: 0 0 18px rgba(255, 200, 40, .95), 0 0 40px rgba(255, 170, 0, .7), 0 0 2px #b07a00; }
 .fete span { position: absolute; line-height: 1; text-shadow: 0 0 6px rgba(255, 200, 40, .85), 0 0 1px #b07a00; will-change: transform, opacity; }
 .dots i.pop { display: inline-block; position: relative; z-index: 2; animation: etoile-pop 1s cubic-bezier(.3, 1.6, .5, 1), etoile-brille .8s 1s ease-in-out 2; }
 @keyframes etoile-pop {

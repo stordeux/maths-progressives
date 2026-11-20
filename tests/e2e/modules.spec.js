@@ -321,10 +321,13 @@ test('fêtes : étoile qui pope, gerbe, faute qui secoue, titre avec couronne', 
   await progression(page, { fractions: { level: 1, stars: 2, good: 7, total: 7, n: 7, last: 1 } });
   await page.goto('modules/fractions/');
   await answer(page, true);
-  await expect(page.locator('#dots i.pop')).toHaveCount(1);
   await expect(page.locator('#acard')).toHaveClass(/eclat/);
-  expect(await page.locator('.fete span').count()).toBeGreaterThan(0);
-  await page.waitForTimeout(250);
+  // la grande étoile s'envole de la réponse vers l'en-tête, puis l'étoile de l'en-tête s'allume
+  await expect(page.locator('.fete span.grande')).toHaveCount(1);
+  await page.waitForTimeout(450);
+  await page.screenshot({ path: `tests/e2e/captures/fete-etoile-vol-${info.project.name}.png` });
+  await expect(page.locator('#dots i.pop')).toHaveCount(1);
+  await page.waitForTimeout(300);
   await page.screenshot({ path: `tests/e2e/captures/fete-etoile-${info.project.name}.png` });
   // les étoiles ne prennent pas les clics : « Suivant » reste utilisable tout de suite
   await page.locator('#nextBtn').click();

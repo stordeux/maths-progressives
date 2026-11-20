@@ -308,7 +308,7 @@ export function startModule(id, LEVELS, opts = {}) {
   function feter(f, avant) {
     if (f === 'gagne' || f === 'juste') {
       anime($('#acard'), 'eclat', 900);
-      if (f === 'gagne') { if (S.level === avant.level) popEtoile($('#dots'), S.stars); gerbe($('#fb')); }
+      if (f === 'gagne') { if (S.level === avant.level) popEtoile($('#dots'), S.stars, $('#answer')); else gerbe($('#fb')); }
     } else if (f === 'faute') {
       anime($('#answer'), 'secoue', 500);
       if (S.level === avant.level && avant.stars > S.stars) perte($('#dots'), S.stars, avant.stars - S.stars);

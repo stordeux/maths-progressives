@@ -66,11 +66,28 @@ export function couronne(el, n = 16) {
 }
 
 /** l'étoile qui vient d'être gagnée dans l'en-tête s'allume en rebondissant */
-export function popEtoile(dots, n) {
+export function popEtoile(dots, n, depuis = null) {
   const e = dots && dots.children[n - 1]; if (!e) return;
-  e.classList.add('pop');
-  setTimeout(() => e.classList.remove('pop'), 2600);
-  gerbe(e, 10); // l'étoile gagnée éclate aussi là où elle s'allume
+  const allumer = () => {
+    e.classList.add('pop');
+    setTimeout(() => e.classList.remove('pop'), 2600);
+    gerbe(e, 12); // l'étoile gagnée éclate là où elle s'allume
+  };
+  if (!depuis || calme()) { allumer(); return; }
+  // une grande étoile apparaît au-dessus de la réponse, brille, puis s'envole vers sa place dans l'en-tête
+  e.style.visibility = 'hidden';
+  const a = centre(depuis), b = centre(e), c = calque(1500);
+  const s = etoile(c, a.x, a.y, 110, '#ffc400');
+  s.classList.add('grande');
+  const vol = s.animate([
+    { transform: 'translate(-50%,-50%) scale(.1) rotate(-120deg)', opacity: 0 },
+    { transform: 'translate(-50%,-50%) scale(1.25) rotate(10deg)', opacity: 1, offset: .3 },
+    { transform: 'translate(-50%,-50%) scale(1) rotate(0deg)', opacity: 1, offset: .5 },
+    { transform: `translate(calc(-50% + ${b.x - a.x}px), calc(-50% + ${b.y - a.y}px)) scale(.2) rotate(360deg)`, opacity: 1 },
+  ], { duration: 1300, easing: 'cubic-bezier(.5,0,.4,1)', fill: 'forwards' });
+  gerbe(depuis, 10);
+  vol.onfinish = () => { s.remove(); e.style.visibility = ''; allumer(); };
+  setTimeout(() => { if (e.style.visibility) { e.style.visibility = ''; allumer(); } }, 1600); // filet de sécurité
 }
 
 /** les étoiles perdues (indices de..de+nb-1 dans l'en-tête) pâlissent et tombent doucement */
