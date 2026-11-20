@@ -38,3 +38,5 @@
 .file input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
 .foot { color: var(--muted); font-size: .78em; padding-block: 24px; line-height: 1.5; }
 .mcard.soon { opacity: .6; border-top-style: dashed; min-height: 0; }
+.foot .logos { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 28px; margin: 4px 0 18px; }
+.foot .logos img { width: auto; max-width: 100%; }
