@@ -19,7 +19,7 @@ function jsB(b) {
     case 'add': return `${nom(b.v)} = ${nom(b.v)} + ${jsE(b.e)};`;
     case 'op': return `${nom('nombre')} = ${nom('nombre')} ${OPS[b.o]} ${b.k};`;
     case 'dire': return `OUT.push(${jsE(b.e)});`;
-    case 'av': return `{ const k = ${jsE(b.n)}; PX += k * Math.cos(CAP * Math.PI / 180); PY += k * Math.sin(CAP * Math.PI / 180); PX = Math.round(PX * 1e9) / 1e9; PY = Math.round(PY * 1e9) / 1e9; TRAIL.push([PX, PY]); }`;
+    case 'av': return `{ const k = ${jsE(b.n)}; PX += k * Math.cos(CAP * Math.PI / 180); PY += k * Math.sin(CAP * Math.PI / 180); PX = Math.round(PX * 1e9) / 1e9 + 0; PY = Math.round(PY * 1e9) / 1e9 + 0; TRAIL.push([PX, PY]); }`;
     case 'tn': return b.s === 'D' ? 'CAP -= 90;' : 'CAP += 90;';
     case 'rot': return `CAP -= ${jsE(b.a)}; TOURNE += ${jsE(b.a)};`;
     case 'rep': return `{ const N = ${jsE(b.n)}; for (let k = 0; k < N; k++) { GARDE(); ${b.body.map(jsB).join(' ')} } }`;

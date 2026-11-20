@@ -15,3 +15,7 @@ table.trace th { background: var(--acc2); }
 table.trace td.et, table.trace td.ca { text-align: left; }
 table.trace td.ch { font-weight: 700; background: #fff3d6; }
 .cours .sol, #fb .sol { margin: 4px 0 6px; }
+.optsex { display: flex; flex-wrap: wrap; gap: 10px 24px; margin: 6px 0; align-items: flex-start; }
+.optsex .optprog { display: flex; align-items: center; gap: 12px; }
+.optsex .optprog b { font-size: 1.15em; }
+.optsex svg { margin: 0; display: block; }

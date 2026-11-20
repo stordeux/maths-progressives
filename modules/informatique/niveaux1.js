@@ -115,7 +115,7 @@ export function C1() {
 /* =====================================================================
    2. L'ordre des instructions
    ===================================================================== */
-function perms(a) {
+export function perms(a) {
   if (a.length <= 1) return [a];
   const out = [], vus = new Set();
   a.forEach((x, i) => {
@@ -214,23 +214,23 @@ export function C2() {
    3. Programme de calcul en blocs : entrée, opérations, sortie
    ===================================================================== */
 const SYMB = { '+': '+', '−': '−', '×': '×', '÷': '÷' };
-const appl = (v, o) => (o.o === '+' ? v + o.k : o.o === '−' ? v - o.k : o.o === '×' ? v * o.k : v / o.k);
-const inv = o => (o.o === '+' ? op('−', o.k) : o.o === '−' ? op('+', o.k) : o.o === '×' ? op('÷', o.k) : op('×', o.k));
+export const appl = (v, o) => (o.o === '+' ? v + o.k : o.o === '−' ? v - o.k : o.o === '×' ? v * o.k : v / o.k);
+export const inv = o => (o.o === '+' ? op('−', o.k) : o.o === '−' ? op('+', o.k) : o.o === '×' ? op('÷', o.k) : op('×', o.k));
 /** valeurs successives : [val, v1, v2…] */
-const chaine = (val, ops) => ops.reduce((a, o) => [...a, appl(a[a.length - 1], o)], [val]);
-const fleches = vs => vs.map(M).join(' → ');
+export const chaine = (val, ops) => ops.reduce((a, o) => [...a, appl(a[a.length - 1], o)], [val]);
+export const fleches = vs => vs.map(M).join(' → ');
 /** tirage d'une chaîne d'opérations qui reste en nombres entiers positifs raisonnables */
-function genChaine(n, d, o = {}) {
+export function genChaine(n, d, o = {}) {
   const types = d < 1 ? ['+', '×'] : d < 2 ? ['+', '−', '×'] : ['+', '−', '×', '÷'];
   for (let t = 0; t < 500; t++) {
-    const val = o.val ?? ri(2, d < 2 ? 9 : 15); let cur = val; const ops = []; let ok = true;
+    const val = o.val ?? ri(2, d < 2 ? 9 : 15); let cur = val; const ops = [], vus = new Set([val]); let ok = true;
     for (let i = 0; i < n && ok; i++) {
       ok = false;
       for (let e = 0; e < 40; e++) {
         const ty = pick(types); if (ops.length && ops[ops.length - 1].o === ty) continue;
         let k;
         if (ty === '+') k = ri(2, 12); else if (ty === '−') { if (cur < 4) continue; k = ri(2, Math.min(10, cur - 1)); } else if (ty === '×') { k = ri(2, d < 2 ? 4 : 6); if (cur * k > 500) continue; } else { const ds = []; for (let x = 2; x < cur; x++) if (cur % x === 0 && x <= 6) ds.push(x); if (!ds.length) continue; k = pick(ds); }
-        const o2 = op(ty, k); cur = appl(cur, o2); ops.push(o2); ok = true; break;
+        const o2 = op(ty, k), nx = appl(cur, o2); if (vus.has(nx)) continue; vus.add(nx); cur = nx; ops.push(o2); ok = true; break;
       }
     }
     if (ok && cur !== val && cur <= 999 && cur >= 2) return { val, ops };

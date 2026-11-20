@@ -78,7 +78,7 @@ export function tb(b) {
     case 'in': return `entrée : ${b.v} = ${M(b.val)}`;
     case 'set': return `mettre ${b.v} à ${tx(b.e)}`;
     case 'add': return `ajouter ${tx(b.e)} à ${b.v}`;
-    case 'op': return b.o === '+' ? `ajouter ${M(b.k)}` : b.o === '−' ? `soustraire ${M(b.k)}` : b.o === '×' ? `multiplier par ${M(b.k)}` : `diviser par ${M(b.k)}`;
+    case 'op': return b.o === '+' ? `ajouter ${tx(b.k)}` : b.o === '−' ? `soustraire ${tx(b.k)}` : b.o === '×' ? `multiplier par ${tx(b.k)}` : `diviser par ${tx(b.k)}`;
     case 'dire': return b.e === 'nombre' ? 'dire le nombre' : `dire ${tx(b.e)}`;
     case 'rep': return `répéter ${tx(b.n)} fois`;
     case 'jus': return `répéter jusqu'à ${tx(b.c)}`;

@@ -49,7 +49,10 @@ export function optsProgs(progs, iBon, o = {}) {
 /** exemple corrigé : même énoncé, même dessin et même solution que l'exercice ; la réponse est écrite par « Réponse : … » */
 export const ex = (q, corps) => `<div class="ex"><span class="q">${q}</span><br>${corps}</div>`;
 export function exQ(q) {
-  const vis = q.afterVisual ? (q.replaceVisual ? q.afterVisual : q.visual + q.afterVisual) : q.visual;
+  const dessins = q.type === 'choice' && q.opts.some(o => /<svg/.test(o.l));
+  // choix de programmes dessinés : on montre la figure de l'énoncé, les programmes proposés, puis la figure corrigée
+  const vis = dessins ? q.visual + `<div class="optsex">${q.opts.map(o => `<div>${o.l}</div>`).join('')}</div>` + (q.afterVisual || '')
+    : q.afterVisual ? (q.replaceVisual ? q.afterVisual : q.visual + q.afterVisual) : q.visual;
   return ex(q.html, `${vis}<div class="sol">${q.solution}</div><b>Réponse : ${q.rep}</b>`);
 }
 export const warn = (...l) => `<div class="warn">${l.map(t => '⚠️ ' + t).join('<br>')}</div>`;
