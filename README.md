@@ -85,12 +85,12 @@ engine/titres.js                           titre de l'élève : score global (to
 engine/answers/                            types de réponse (nums, frac, steps, roots, choice, cmp, iv, table) et fonctions check
 engine/keypad.js, scratchpad.js            pavé numérique, brouillon
 engine/draw/                               SVG : droite graduée, droite réelle, courbes, figures
-engine/util/                               aléatoire avec graine, arithmétique, formatage français
+engine/util/                               aléatoire avec graine, arithmétique, formatage français, anti-répétition (repet.js : pas un des 10 derniers énoncés)
 modules/registry.js                        liste des modules (accueil, tests)
 modules/<id>/index.html, levels.js         une page de quelques lignes + les 12 niveaux
 tests/unit/                                tests Node des générateurs et du site
 tests/e2e/                                 tests Playwright
-tools/                                     serveur local, liste des fichiers du service worker, icônes
+tools/                                     serveur local, liste des fichiers du service worker, icônes, réservoirs d'énoncés (reservoirs.mjs)
 ```
 
 ### Contrat d'un niveau

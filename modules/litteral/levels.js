@@ -499,7 +499,7 @@ function C7() {
    ====================================================================== */
 function L8(d) {
   const v = d < 1 ? 0 : d < 2 ? ri(0, 1) : d < 3 ? ri(0, 2) : pick([0, 1, 2, 3, 3, 4]);
-  const a = ri(1, d < 2 ? 9 : 10);
+  const a = ri(1, 12); // jusqu'à 12 (ticket n° 7 : 9 énoncés seulement à d = 0)
   let k = 1, ast, p, A, B, kind;
   if (v <= 1) { const s = v ? -a : a; ast = Sq(L(1, s)); p = [1, 2 * s, a * a]; kind = 'sq'; A = 'x'; B = String(a); }
   else if (v === 2) { ast = chance(0.5) ? Pr(L(1, a), L(1, -a)) : Pr(L(1, -a), L(1, a)); p = [1, 0, -a * a]; kind = 'diff'; A = 'x'; B = String(a); }

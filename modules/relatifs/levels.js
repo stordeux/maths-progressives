@@ -104,13 +104,14 @@ function chain(ts, cols = ['#1971c2', '#e8590c', '#2b8a3e', '#9c36b5', '#c2255c'
 
 /* ================= 1. repérer sur une droite graduée ================= */
 function L1(d) {
-  const R = d < 1 ? 5 : d < 3 ? 10 : 20, n = d < 2 ? 1 : 2;
+  // la longueur de la droite varie (ticket n° 7 : il n'y avait que 4 énoncés à d = 0 et 9 à d = 1)
+  const R = d < 1 ? ri(5, 8) : d < 2 ? ri(8, 10) : d < 3 ? 10 : 20, n = d < 2 ? 1 : 2;
   const xs = [];
   while (xs.length < n) {
     const x = nz(-R + 1, R - 1);
     if (xs.every(y => Math.abs(y - x) >= 2)) xs.push(x);
   }
-  if (xs.every(x => x > 0)) xs[0] = -xs[0];
+  if (xs.every(x => x > 0) && (n === 2 || chance(0.75))) xs[0] = -xs[0]; // surtout des négatifs : c'est la nouveauté
   if (n === 2 && Math.abs(xs[0] - xs[1]) < 2) xs[1] = xs[0] < 0 ? xs[0] - 3 : xs[0] + 3;
   const names = ['A', 'B'], cols = ['#e03131', '#1971c2'];
   const vis = intLine({ min: -R, max: R, marks: xs.map((x, i) => ({ x, l: names[i], c: cols[i] })) });

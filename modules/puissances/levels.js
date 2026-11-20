@@ -271,7 +271,7 @@ const MOTS = { 2: 'cent', 3: 'mille', 4: 'dix mille', 5: 'cent mille', 6: 'un mi
 function L5(d) {
   const askExp = d >= 1 && chance(.5);
   if (!askExp) {
-    const n = ri(1, d < 1 ? 3 : d < 2 ? 5 : 6), X = prod(10, n);
+    const n = ri(1, d < 1 ? 4 : 6), X = prod(10, n);
     return {
       type: 'nums', html: `Écris en écriture décimale :${big(pw(10, n))}`, tpl: `<span>${pw(10, n)} =</span> {0}`,
       check: numsCheck([X], { msg: v => {

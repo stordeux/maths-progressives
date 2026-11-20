@@ -8,6 +8,7 @@ import { edit, show, parse } from '../../engine/answers/fields.js';
 import * as store from '../../engine/storage.js';
 import { MODULES } from '../registry.js';
 import { LEVELS, OPTIONS } from './levels.js';
+import { sansRepetition, memoireDe } from '../../engine/util/repet.js';
 
 const $ = s => document.querySelector(s);
 const ID = 'calcul', NEED = OPTIONS.need;
@@ -43,10 +44,11 @@ $('#main').innerHTML = `
   <div class="actions"><button type="button" class="btn" id="againBtn">Rejouer</button><button type="button" class="btn ghost" id="backTrain">Retour à l'entraînement</button></div>
 </section>`;
 
-const def = { level: 0, streak: 0, stars: 0, fails: 0, good: 0, total: 0, seen: [], best: {}, max: 0 };
+const def = { level: 0, streak: 0, stars: 0, fails: 0, good: 0, total: 0, seen: [], best: {}, max: 0, vus: [] };
 let S = store.load(ID, def);
+S.vus = memoireDe(S.vus); // empreintes des derniers calculs vus (anti-répétition)
 const save = () => { S.max = Math.max(S.max || 0, S.level); store.save(ID, S); };
-let mode = 'train', Q, val = '', t0, raf, locked = false, pending = 0, lastQ = '';
+let mode = 'train', Q, val = '', t0, raf, locked = false, pending = 0;
 let C = { score: 0, errs: [], end: 0, timer: null };
 const cours = modal('coursModal'), menu = modal('menu');
 const titre = annonceTitre(); // titre de l'élève (tous modules confondus)
@@ -70,9 +72,9 @@ function renderHead() {
   if (mode === 'train') { $('#info1').textContent = `✔ ${S.good} / ${S.total}`; $('#info2').textContent = S.level < LEVELS.length - 1 ? `★ ${S.stars}/${ETOILES} · encore ${ETOILES - S.stars} pour monter` : `★ ${S.stars}/${ETOILES} · dernier niveau`; }
 }
 function newQ() {
-  let g, k = 0;
-  do { g = LEVELS[S.level].generate(mode === 'train' ? S.stars : 4); k++; } while (g.q === lastQ && k < 10);
-  Q = g; lastQ = g.q; val = ''; locked = false;
+  // jamais un calcul déjà vu parmi les 10 derniers, tant que le niveau en propose assez (ticket n° 7)
+  Q = sansRepetition(() => LEVELS[S.level].generate(mode === 'train' ? S.stars : 4), S.vus);
+  val = ''; locked = false;
   $('#mq').innerHTML = Q.q.includes('?') ? Q.q : Q.q + ' <span class="eq">=</span>';
   $('#disp').className = ''; showVal();
   if (mode === 'train') { $('#fb').className = ''; $('#fb').innerHTML = ''; }

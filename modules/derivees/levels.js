@@ -342,7 +342,8 @@ function L5(d) {
   let kind;
   if (d < 1) kind = pick(['const', 'x', 'p2']);
   else if (d < 2) kind = 'pn';
-  else if (d < 3) kind = pick(['inv', 'sqrt']);
+  // 1/x et √x : deux énoncés seulement ; on les mêle aux formes déjà vues (ticket n° 7 : répétitions)
+  else if (d < 3) kind = chance(0.6) ? pick(['inv', 'sqrt']) : pick(['const', 'pn']);
   else kind = chance(0.5) ? 'val' : pick(['const', 'pn', 'inv', 'sqrt']);
   let f, tex, tpl, E, g, xs = PTS, msg, sol, poles = [], from = -INF, x0 = 1, n = 2, value, html;
   const head = t => `Soit f(x) = ${t}.<br>Donne la fonction dérivée f${PR}(x).`;
@@ -359,7 +360,7 @@ function L5(d) {
     msg = v => (near(v[0], 1) ? '(x<sup>2</sup>)' + PR + ' n\'est pas x : l\'exposant 2 descend devant.' : '');
     sol = `(x<sup>n</sup>)${PR} = n x<sup>n − 1</sup> avec n = 2 : <b>f${PR}(x) = 2x</b>.`;
   } else if (kind === 'pn') {
-    n = ri(3, 6); f = x => x ** n; tex = xp(n);
+    n = ri(3, 9); f = x => x ** n; tex = xp(n);
     tpl = `f${PR}(x) = k x<sup>p</sup> &nbsp; avec &nbsp; k = {0} &nbsp; p = {1}`; E = [n, n - 1]; g = Ev => x => Ev[0] * x ** Ev[1];
     msg = v => (near(v[0], n) && near(v[1], n) ? 'Le coefficient est bon, mais l\'exposant <b>baisse de 1</b>.' : near(v[0], 1) && near(v[1], n - 1) ? `L'exposant descend <b>devant</b> : le coefficient est ${n}.` : '');
     sol = `(x<sup>n</sup>)${PR} = n x<sup>n − 1</sup> avec n = ${n} : <b>f${PR}(x) = ${n}x<sup>${n - 1}</sup></b> (k = ${n}, p = ${n - 1}).`;

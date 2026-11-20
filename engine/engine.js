@@ -1,5 +1,6 @@
 // Moteur commun : boucle d'exercice, adaptation du niveau, bandeaux, cours, menu, réglages.
 import { pick, chance } from './util/rand.js';
+import { sansRepetition, memoireDe } from './util/repet.js';
 import { strip } from './util/fmt.js';
 import { ANSWERS } from './answers/index.js';
 import { createKeypad, physicalKey } from './keypad.js';
@@ -53,6 +54,17 @@ export function normalize(q) {
   q.visual = q.visual || '';
   q.afterVisual = q.afterVisual || '';
   return q;
+}
+
+/**
+ * Exercice suivant du niveau en cours (S.level), à la difficulté donnée par les étoiles (S.stars).
+ * Ticket n° 7 (« il faut éviter que les exercices se répètent ») : on retire tant que l'énoncé est l'un des
+ * 10 derniers vus dans le module (S.vus, empreintes enregistrées avec la progression), 25 tirages au plus ;
+ * si le réservoir du niveau est trop petit, on prend l'énoncé vu il y a le plus longtemps.
+ */
+export function tirerExercice(LEVELS, S) {
+  if (!Array.isArray(S.vus)) S.vus = [];
+  return normalize(sansRepetition(() => LEVELS[S.level].generate(difficulte(S.stars, ETOILES)), S.vus));
 }
 
 /** applique les réglages d'affichage (police plus lisible, grands caractères) */
@@ -200,8 +212,9 @@ export function startModule(id, LEVELS, opts = {}) {
   const NEED = opts.need || 4;
   shell(meta, { scratchpad: opts.scratchpad !== false });
   registerSW();
-  const def = { level: 0, streak: 0, stars: 0, fails: 0, good: 0, total: 0, n: 0, seen: [], max: 0 };
+  const def = { level: 0, streak: 0, stars: 0, fails: 0, good: 0, total: 0, n: 0, seen: [], max: 0, vus: [] };
   let S = store.load(id, def);
+  S.vus = memoireDe(S.vus); // empreintes des derniers énoncés vus dans ce module (anti-répétition)
   if (S.level >= LEVELS.length) S.level = 0;
   const save = () => { S.max = Math.max(S.max || 0, S.level); store.save(id, S); };
   // « ?niveau=n » (liens des fiches de synthèse) : ouvre directement le niveau n, comme le menu Niveaux
@@ -220,7 +233,7 @@ export function startModule(id, LEVELS, opts = {}) {
   const titre = annonceTitre();
 
   function newQ() {
-    Q = normalize(LEVELS[S.level].generate(difficulte(S.stars, ETOILES)));
+    Q = tirerExercice(LEVELS, S);
     attempt = 1; usedHint = false; done = false; fauteFaite = false; S.n++;
     $('#q').innerHTML = Q.html;
     $('#vis').innerHTML = Q.visual;

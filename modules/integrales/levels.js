@@ -163,15 +163,36 @@ ${repere({ eq: true, xr: [-2, 4], yr: [-1, 3], fs: [{ f: g, dom: [-1, 3] }], fil
 }
 
 /* ================= 2. méthode des rectangles ================= */
+// Cas « qui tombent juste », construits à partir de quelques familles de fonctions monotones et positives
+// (ticket n° 7 : la liste écrite à la main ne donnait que 3 à 9 énoncés par difficulté, ils revenaient sans cesse).
+const X2H = 'x<sup>2</sup>';
+const F_UP1 = [{ f: x => x * x, h: X2H }, { f: x => 2 * x, h: '2x' }, { f: x => 3 * x, h: '3x' }];
+const F_UP2 = [{ f: x => x * x + 1, h: X2H + ' + 1' }, { f: x => x * x + 2, h: X2H + ' + 2' }, { f: x => x * x / 2, h: F(1, 2) + X2H }, { f: x => 2 * x * x, h: '2' + X2H }];
+const F_DN = [...[4, 9, 10, 12, 16, 20].map(c => ({ f: x => c - x * x, h: c + ' − ' + X2H })), ...[6, 12, 18].map(k => ({ f: x => k / x, h: F(k, 'x'), inv: true }))];
+const dec = (v, n) => Math.abs(v * 10 ** n - Math.round(v * 10 ** n)) < 1e-7;
+/** tous les découpages [a ; a + n h] (a entier, 2 à 4 bandes) où les hauteurs et les deux sommes s'écrivent simplement */
+function rectCases(fams, h, ns = [2, 3, 4]) {
+  const out = [];
+  for (const fam of fams) for (let a = fam.inv ? 1 : 0; a <= 3; a++) for (const n of ns) {
+    const b = a + n * h, vals = [...Array(n + 1).keys()].map(i => fam.f(a + i * h));
+    if (b > 6 || vals.some(v => v < 0 || v > 20 || !dec(v, 2))) continue;
+    const s1 = h * vals.slice(0, -1).reduce((p, q) => p + q, 0), s2 = h * vals.slice(1).reduce((p, q) => p + q, 0);
+    if (!dec(s1, 3) || !dec(s2, 3)) continue;
+    out.push({ ...fam, a, b, n });
+  }
+  return out;
+}
+/** réservoirs par difficulté : croissante, largeur 1 ; d'autres fonctions croissantes ; décroissante ; largeur 0,5 ; tout mêlé */
 const RECT = [
-  [{ f: x => x * x, h: 'x<sup>2</sup>', a: 0, b: 3, n: 3 }, { f: x => x * x, h: 'x<sup>2</sup>', a: 0, b: 4, n: 4 }, { f: x => x * x, h: 'x<sup>2</sup>', a: 1, b: 3, n: 2 }, { f: x => 2 * x, h: '2x', a: 0, b: 3, n: 3 }],
-  [{ f: x => x * x + 1, h: 'x<sup>2</sup> + 1', a: 0, b: 3, n: 3 }, { f: x => x * x / 2, h: F(1, 2) + 'x<sup>2</sup>', a: 0, b: 4, n: 4 }, { f: x => 2 * x * x, h: '2x<sup>2</sup>', a: 0, b: 3, n: 3 }],
-  [{ f: x => 9 - x * x, h: '9 − x<sup>2</sup>', a: 0, b: 3, n: 3 }, { f: x => 12 / x, h: F(12, 'x'), a: 1, b: 4, n: 3 }, { f: x => 16 - x * x, h: '16 − x<sup>2</sup>', a: 0, b: 4, n: 4 }],
-  [{ f: x => x * x, h: 'x<sup>2</sup>', a: 0, b: 2, n: 4 }, { f: x => 4 - x * x, h: '4 − x<sup>2</sup>', a: 0, b: 2, n: 4 }, { f: x => x * x, h: 'x<sup>2</sup>', a: 1, b: 3, n: 4 }],
-  [{ f: x => 6 / x, h: F(6, 'x'), a: 1, b: 3, n: 4 }, { f: x => 12 / x, h: F(12, 'x'), a: 2, b: 6, n: 4 }, { f: x => x * x / 2, h: F(1, 2) + 'x<sup>2</sup>', a: 0, b: 2, n: 4 }],
+  rectCases(F_UP1, 1),
+  rectCases([...F_UP1, ...F_UP2], 1),
+  rectCases(F_DN, 1),
+  rectCases([F_UP1[0], ...F_DN.filter(c => !c.inv).slice(0, 2)], 0.5),
 ];
+RECT.push([...RECT[2], ...RECT[3], ...rectCases([...F_DN.filter(c => c.inv), F_UP2[2]], 0.5, [4])]);
+export const RECT_TAILLES = RECT.map(r => r.length);
 function L2(d) {
-  const pool = d < 1 ? RECT[0] : d < 2 ? [...RECT[0], ...RECT[1]] : d < 3 ? RECT[2] : d < 4 ? RECT[3] : [...RECT[2], ...RECT[3], ...RECT[4]];
+  const pool = RECT[Math.min(4, Math.floor(d))];
   const c = pick(pool), { f, a, b, n } = c, h = (b - a) / n, up = f(b) > f(a);
   const xs = [...Array(n + 1).keys()].map(i => a + i * h);
   const vals = xs.map(f);
@@ -189,7 +210,7 @@ function L2(d) {
   check.expected = base.expected;
   const rects = []; for (let i = 0; i < n; i++) { rects.push({ x: xs[i], w: h, h: lo[i], k: 'lo' }); rects.push({ x: xs[i], w: h, h: hi[i], k: 'up' }); }
   const xr = [Math.min(0, a) - 1, b + 1], yr = yWin([f], a, b, { lim: 20 });
-  const vis = repere({ xr, yr, fs: [{ f, dom: [Math.max(xr[0], c.h.includes('x</span>') ? 0.4 : xr[0]), xr[1]], l: 'y = f(x)' }], rects, xl: [{ x: a, l: M(a) }, { x: b, l: M(b) }] });
+  const vis = repere({ xr, yr, fs: [{ f, dom: [Math.max(xr[0], c.inv ? 0.4 : xr[0]), xr[1]], l: 'y = f(x)' }], rects, xl: [{ x: a, l: M(a) }, { x: b, l: M(b) }] });
   const hs = (arr, k) => arr.map((v, i) => `f(${M(xs[up === (k === 'lo') ? i : i + 1])})`).join(' + ');
   return {
     type: 'nums', keys: { neg: false }, visual: vis,
@@ -331,9 +352,10 @@ const BASES = {
 const USUELLES = [['inv2', 'inv', -1], ['inv', 'ln', 1], ['exp', 'exp', 1], ['isqrt', 'sqrt', 2]];
 function L4(d) {
   if (d < 2 || (d < 4 && chance(0.4))) {
-    const n = ri(1, d < 1 ? 3 : 4);
-    let k = (n + 1) * (d < 1 ? 1 : ri(1, 4)) * (d >= 3 && chance(0.5) ? -1 : 1);
-    if (d >= 4 && chance(0.4)) k = 1 * (n === 2 ? 3 : 1); // x ou x³ → coefficient 0,5 ou 0,25
+    // exposants jusqu'à 5 et coefficients variés dès le début (ticket n° 7 : 3 énoncés seulement à d = 0)
+    const n = ri(1, d < 1 ? 4 : 5);
+    let k = (n + 1) * ri(1, d < 1 ? 3 : 5) * (d >= 3 && chance(0.5) ? -1 : 1);
+    if (d >= 4 && chance(0.4)) k = n === 2 || n === 5 ? 3 : 1; // x, x³, x⁴ → coefficient 0,5 ; 0,25 ; 0,2 (et 3x², 3x⁵ → 1 et 0,5)
     const a = r6(k / (n + 1)), p = n + 1, fn = x => k * x ** n;
     const base = numsCheck([a, p]);
     const check = v => {
@@ -686,7 +708,8 @@ function L9(d) {
   let f, a, b;
   if (d < 2) { const r = ri(-1, 3), u = ri(1, 2); if (chance(0.5)) { f = [-2 * u * r, 2 * u]; b = r - ri(0, 1); a = b - ri(1, 3); } else { f = [2 * u * r, -2 * u]; a = r + ri(0, 1); b = a + ri(1, 3); } }
   else if (d < 3) { const m = ri(2, 3); f = [-3 * m * m, 0, 3]; a = ri(-m, m - 1); b = ri(a + 1, m); }   // 3x² − 3m² ≤ 0 sur [−m ; m]
-  else if (d < 4) { const r = ri(-1, 2), u = nz(-2, 2); f = [-2 * u * r, 2 * u]; a = r - ri(1, 3); b = r + ri(1, 3); }
+  // d ≥ 4 : le second degré qui change de signe n'a que 10 énoncés ; une fois sur deux, on reprend la droite (ticket n° 7)
+  else if (d < 4 || chance(0.5)) { const r = ri(-1, 2), u = nz(-2, 2); f = [-2 * u * r, 2 * u]; a = r - ri(1, 3); b = r + ri(1, 3); }
   else { const m = ri(1, 2); f = [-3 * m * m, 0, 3]; a = chance(0.5) ? 0 : ri(-m - 1, -m + 1); b = m + ri(1, 2); if (a === -m) a = 0; } // change de signe en ±m
   const fn = pf(f), Iq = intQ(f, a, b), I = qv(Iq);
   const neg = !(d >= 3);
