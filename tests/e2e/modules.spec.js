@@ -331,8 +331,7 @@ test('fêtes : étoile qui pope, gerbe, faute qui secoue, titre avec couronne', 
   await expect(page.locator('#okBtn')).toBeVisible();
   await answer(page, false);
   await expect(page.locator('#answer')).toHaveClass(/secoue/);
-  await page.waitForTimeout(1200);
-  await expect(page.locator('.fete')).toHaveCount(0);
+  await expect(page.locator('.fete')).toHaveCount(0, { timeout: 4000 });
   // titre : la médaille et la couronne d'étoiles
   await page.evaluate(() => localStorage.setItem('mp:fractions', JSON.stringify({ level: 1, stars: 4, good: 9, total: 9, n: 9, last: 1 })));
   await page.goto('modules/fractions/');

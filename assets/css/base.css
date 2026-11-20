@@ -214,12 +214,13 @@ body.calcul #banner { top: 6px; }
 /* ---------- fêtes (engine/fete.js) : étoiles qui popent, gerbes, pluie, couronne ---------- */
 .fete { position: fixed; inset: 0; pointer-events: none; z-index: 60; overflow: hidden; }
 .fete span { position: absolute; line-height: 1; text-shadow: 0 0 6px rgba(255, 200, 40, .85), 0 0 1px #b07a00; will-change: transform, opacity; }
-.dots i.pop { display: inline-block; animation: etoile-pop .8s cubic-bezier(.3, 1.6, .5, 1); }
+.dots i.pop { display: inline-block; position: relative; z-index: 2; animation: etoile-pop 1s cubic-bezier(.3, 1.6, .5, 1), etoile-brille .8s 1s ease-in-out 2; }
 @keyframes etoile-pop {
-  0% { transform: scale(.3) rotate(-60deg); }
-  55% { transform: scale(1.8) rotate(12deg); text-shadow: 0 0 10px #ffd23f, 0 0 22px rgba(255, 190, 0, .8); }
+  0% { transform: scale(.3) rotate(-90deg); }
+  50% { transform: scale(2.6) rotate(20deg); text-shadow: 0 0 12px #ffd23f, 0 0 30px rgba(255, 190, 0, .9); }
   100% { transform: scale(1) rotate(0); }
 }
+@keyframes etoile-brille { 50% { transform: scale(1.45); text-shadow: 0 0 10px #ffd23f, 0 0 24px rgba(255, 190, 0, .85); } }
 #acard.eclat { animation: eclat .9s ease-out; }
 @keyframes eclat { 0% { box-shadow: 0 0 0 0 rgba(46, 160, 67, .55); } 40% { box-shadow: 0 0 0 10px rgba(46, 160, 67, .18); } 100% { box-shadow: 0 1px 3px rgba(0, 0, 0, .07); } }
 .secoue { animation: secoue .45s ease-in-out; }
