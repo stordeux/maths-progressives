@@ -315,6 +315,38 @@ test('calcul : bandeau « Tu deviens … » en calcul mental (progression des au
   expect(errors).toEqual([]);
 });
 
+test('fêtes : étoile qui pope, gerbe, faute qui secoue, titre avec couronne', async ({ page }, info) => {
+  const errors = [];
+  page.on('pageerror', e => errors.push(e.message));
+  await progression(page, { fractions: { level: 1, stars: 2, good: 7, total: 7, n: 7, last: 1 } });
+  await page.goto('modules/fractions/');
+  await answer(page, true);
+  await expect(page.locator('#dots i.pop')).toHaveCount(1);
+  await expect(page.locator('#acard')).toHaveClass(/eclat/);
+  expect(await page.locator('.fete span').count()).toBeGreaterThan(0);
+  await page.waitForTimeout(250);
+  await page.screenshot({ path: `tests/e2e/captures/fete-etoile-${info.project.name}.png` });
+  // les étoiles ne prennent pas les clics : « Suivant » reste utilisable tout de suite
+  await page.locator('#nextBtn').click();
+  await expect(page.locator('#okBtn')).toBeVisible();
+  await answer(page, false);
+  await expect(page.locator('#answer')).toHaveClass(/secoue/);
+  await page.waitForTimeout(1200);
+  await expect(page.locator('.fete')).toHaveCount(0);
+  // titre : la médaille et la couronne d'étoiles
+  await page.evaluate(() => localStorage.setItem('mp:fractions', JSON.stringify({ level: 1, stars: 4, good: 9, total: 9, n: 9, last: 1 })));
+  await page.goto('modules/fractions/');
+  await answer(page, true);
+  await expect(page.locator('#banner .medaille')).toHaveCount(1);
+  await expect(page.locator('#banner')).toContainText('Tu deviens Novice !');
+  await page.waitForTimeout(900);
+  await page.screenshot({ path: `tests/e2e/captures/fete-titre-${info.project.name}.png` });
+  await page.locator('#nextBtn').click();
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: `tests/e2e/captures/fete-niveau-${info.project.name}.png` });
+  expect(errors).toEqual([]);
+});
+
 test('révision brevet : séance de 5 exercices et bilan', async ({ page }, info) => {
   const errors = [];
   page.on('pageerror', e => errors.push(e.message));

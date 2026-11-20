@@ -8,6 +8,8 @@ import * as store from './storage.js';
 import { MODULES } from '../modules/registry.js';
 import { installerSignalement, setContexte } from './signaler.js';
 import { suiviTitre, titreActuel, nbEtoiles } from './titres.js';
+import { gerbe, pluie, couronne, popEtoile, perte, anime } from './fete.js';
+export { gerbe, pluie, couronne, popEtoile, perte, anime };
 export { setContexte };
 
 const PRAISE = ['Bravo !', 'Excellent !', 'Parfait !', 'Bien joué !', 'Super !', 'Exactement !', 'Très bien !'];
@@ -68,6 +70,7 @@ export function banner(t, duree = 3000) {
   const b = $('#banner'); if (!b) return;
   const l = document.createElement('div'); l.className = 'ligne'; l.textContent = t;
   b.appendChild(l); b.classList.add('show');
+  if (/^🎉/.test(t)) { l.classList.add('brille'); pluie(); }
   setTimeout(() => {
     if (b.children.length > 1) { l.remove(); return; }
     b.classList.remove('show'); // dernier message : on laisse le bandeau s'effacer avant de le vider
@@ -84,7 +87,16 @@ export function annonceTitre() {
   const suivi = suiviTitre();
   return (annoncer = true) => {
     const t = suivi();
-    if (t && annoncer) banner(`🎖️ Tu deviens ${t.nom} !`, 4500);
+    if (t && annoncer) {
+      banner(`🎖️ Tu deviens ${t.nom} !`, 4500);
+      const l = document.querySelector('#banner .ligne:last-child');
+      if (l) {
+        l.classList.add('titre', 'brille');
+        l.textContent = ` Tu deviens ${t.nom} !`;
+        const m = document.createElement('span'); m.className = 'medaille'; m.textContent = '🎖️'; l.prepend(m);
+        setTimeout(() => couronne(l), 380);
+      }
+    }
     return t;
   };
 }
@@ -253,11 +265,12 @@ export function startModule(id, LEVELS, opts = {}) {
     const v = ui.read();
     if (v && v.incomplete) { nudge(v.incomplete); return; }
     const r = Q.check(v) || { ok: false }, fb = $('#fb');
+    const avant = { level: S.level, stars: S.stars }; let fete = null;
     ui.mark(r.bad || []);
     if (r.ok) {
       S.total++; S.good++; S.fails = 0;
       const auMax = S.level === LEVELS.length - 1 && S.stars === ETOILES;
-      if (attempt === 1 && !usedHint) pending = bouger(S, 1, LEVELS.length);
+      if (attempt === 1 && !usedHint) { pending = bouger(S, 1, LEVELS.length); fete = 'gagne'; } else fete = 'juste';
       let m = `<b>✅ ${pick(PRAISE)}</b>`;
       if (attempt > 1 || usedHint) m += ` <span class="note">(réussi avec de l'aide : on s'entraîne encore un peu à ce niveau)</span>`;
       if (r.msg) m += `<br>${r.msg}`;
@@ -266,14 +279,27 @@ export function startModule(id, LEVELS, opts = {}) {
       if (!auMax && S.level === LEVELS.length - 1 && S.stars === ETOILES) banner(`🏆 Bravo, tu maîtrises tout le module « ${meta.titre} » !`);
     } else if (attempt === 1) {
       attempt = 2; usedHint = true; $('#hintBtn').hidden = true;
-      if (!fauteFaite) { fauteFaite = true; pending = bouger(S, -2, LEVELS.length); }
+      if (!fauteFaite) { fauteFaite = true; pending = bouger(S, -2, LEVELS.length); fete = 'faute'; }
       fb.className = 'bad';
       fb.innerHTML = `<b>Pas tout à fait…</b> ${r.msg || ''}<br>💡 ${Q.hint}<br><span class="note">Essaie encore une fois.</span>`;
     } else {
       S.total++; S.fails++;
       fb.className = 'bad'; fb.innerHTML = `<b>Voici la correction :</b>${r.msg ? `<br>${r.msg}` : ''}<div class="sol">${Q.solution}</div>`; finish();
     }
-    save(); renderHead(); titre();
+    save(); renderHead();
+    feter(fete, avant);
+    titre();
+  }
+
+  /** animations après la réponse (engine/fete.js) */
+  function feter(f, avant) {
+    if (f === 'gagne' || f === 'juste') {
+      anime($('#acard'), 'eclat', 900);
+      if (f === 'gagne') { if (S.level === avant.level) popEtoile($('#dots'), S.stars); gerbe($('#fb')); }
+    } else if (f === 'faute') {
+      anime($('#answer'), 'secoue', 500);
+      if (S.level === avant.level && avant.stars > S.stars) perte($('#dots'), S.stars, avant.stars - S.stars);
+    }
   }
 
   function finish() {

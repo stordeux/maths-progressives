@@ -211,6 +211,25 @@ body.calcul #banner { top: 6px; }
   .cmp button { width: 72px; }
   .box { min-width: 58px; }
 }
+/* ---------- fêtes (engine/fete.js) : étoiles qui popent, gerbes, pluie, couronne ---------- */
+.fete { position: fixed; inset: 0; pointer-events: none; z-index: 60; overflow: hidden; }
+.fete span { position: absolute; line-height: 1; text-shadow: 0 0 6px rgba(255, 200, 40, .85), 0 0 1px #b07a00; will-change: transform, opacity; }
+.dots i.pop { display: inline-block; animation: etoile-pop .8s cubic-bezier(.3, 1.6, .5, 1); }
+@keyframes etoile-pop {
+  0% { transform: scale(.3) rotate(-60deg); }
+  55% { transform: scale(1.8) rotate(12deg); text-shadow: 0 0 10px #ffd23f, 0 0 22px rgba(255, 190, 0, .8); }
+  100% { transform: scale(1) rotate(0); }
+}
+#acard.eclat { animation: eclat .9s ease-out; }
+@keyframes eclat { 0% { box-shadow: 0 0 0 0 rgba(46, 160, 67, .55); } 40% { box-shadow: 0 0 0 10px rgba(46, 160, 67, .18); } 100% { box-shadow: 0 1px 3px rgba(0, 0, 0, .07); } }
+.secoue { animation: secoue .45s ease-in-out; }
+@keyframes secoue { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-6px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(2px); } }
+#banner .ligne.brille { position: relative; overflow: hidden; }
+#banner .ligne.brille::after { content: ''; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%; background: linear-gradient(100deg, transparent, rgba(255, 235, 150, .55), transparent); transform: skewX(-20deg); animation: reflet 1.4s .25s ease-in-out 2; }
+@keyframes reflet { to { left: 130%; } }
+#banner .ligne.titre { color: #ffe58a; font-size: 1.08em; }
+#banner .medaille { display: inline-block; animation: medaille 1.3s cubic-bezier(.3, 1.4, .5, 1); filter: drop-shadow(0 0 6px rgba(255, 210, 60, .9)); }
+@keyframes medaille { 0% { transform: scale(.2) rotateY(0); } 60% { transform: scale(1.5) rotateY(540deg); } 100% { transform: scale(1) rotateY(720deg); } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 .pad .wide { grid-column: span 2; }
 
