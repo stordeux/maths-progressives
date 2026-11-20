@@ -19,3 +19,4 @@ table.trace td.ch { font-weight: 700; background: #fff3d6; }
 .optsex .optprog { display: flex; align-items: center; gap: 12px; }
 .optsex .optprog b { font-size: 1.15em; }
 .optsex svg { margin: 0; display: block; }
+table.trace td.et { white-space: nowrap; }
