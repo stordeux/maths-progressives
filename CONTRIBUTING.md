@@ -21,6 +21,10 @@ Lire d'abord le [README](README.md) (contrat d'un niveau) et regarder un module 
 - 12 niveaux très progressifs : **une seule difficulté nouvelle par niveau**.
 - `generate(d)` : `d` = série de réussites en cours (0, 1, 2, 3…). Les paramètres s'élargissent avec `d`
   (négatifs, coefficients ≠ 1, désordre, cas particuliers). Typiquement `d < 1`, `d < 2`, `d < 3`, `d ≥ 3`.
+- **Assez d'énoncés différents** : à chaque nombre d'étoiles, un niveau doit pouvoir tirer au moins **20 énoncés
+  différents** (`node tools/reservoirs.mjs <id>` les compte ; test `tests/unit/repetitions.test.mjs`). Le moteur évite
+  de redonner l'un des 10 derniers énoncés (`engine/util/repet.js`), mais il ne peut rien si le niveau n'en a que six.
+  Une notion qui n'en a vraiment pas 20 se déclare, avec sa raison, dans `EXCEPTIONS` de `tools/reservoirs.mjs`.
 - `hint` : indice **ciblé** (méthode, pas la réponse). `solution` : correction **pas à pas**.
 - `check` renvoie un `msg` quand l'erreur est « presque juste » (bonne valeur mal écrite, une solution sur deux,
   signe oublié, unité confondue…). Les fabriques de `engine/answers/checks.js` en gèrent déjà plusieurs.

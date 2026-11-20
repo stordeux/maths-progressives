@@ -7,6 +7,7 @@ import { numsCheck } from '../../engine/answers/checks.js';
 import { createKeypad, physicalKey } from '../../engine/keypad.js';
 import { createScratchpad } from '../../engine/scratchpad.js';
 import { ri, shuffle } from '../../engine/util/rand.js';
+import { sansRepetition } from '../../engine/util/repet.js';
 import { M } from '../../engine/util/fmt.js';
 import * as store from '../../engine/storage.js';
 import { MODULES, READY } from '../registry.js';
@@ -81,7 +82,7 @@ function startScreen() {
 function start(n) {
   // répartir les exercices entre les modules, dans un ordre mélangé
   const order = []; while (order.length < n) order.push(...shuffle([...pool]));
-  session = { n, i: 0, order: order.slice(0, n), res: [], end: Date.now() + n * 90000, t0: Date.now() };
+  session = { n, i: 0, order: order.slice(0, n), res: [], vus: [], end: Date.now() + n * 90000, t0: Date.now() };
   timer = setInterval(tick, 500); tick();
   nextQ();
 }
@@ -94,7 +95,8 @@ function tick() {
 function nextQ() {
   if (session.i >= session.n) return finish();
   const m = session.order[session.i];
-  const item = makeQuestion(m); Q = item.q; session.cur = item; done = false; $('#acard').hidden = false;
+  // pas deux fois le même énoncé dans une séance (ticket n° 7)
+  const item = sansRepetition(() => makeQuestion(m), session.vus, { taille: session.n, exo: x => x.q }); Q = item.q; session.cur = item; done = false; $('#acard').hidden = false;
   $('#qnum').textContent = `Exercice ${session.i + 1} / ${session.n}`;
   $('#lvlName').textContent = `· ${m.meta.emoji} ${m.meta.titre} (niveau ${item.lv + 1})`;
   $('#score').textContent = `✔ ${session.res.filter(r => r.ok).length} / ${session.res.length}`;

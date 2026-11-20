@@ -88,12 +88,23 @@ const asinK = k => [...Array(13).keys()].map(K => K - 6).find(K => [0, 2, 3, 4].
 /* =====================================================================
    1. Degrés → radians
    ===================================================================== */
-const D_BASE = [30, 45, 60, 90, 180, 360], D_TOUR = [120, 135, 150, 210, 225, 240, 270, 300, 315, 330];
-const D_FIN = [15, 75, 105, 165, 10, 20, 36, 72, 40, 18], D_BIG = [390, 405, 420, 450, 480, 495, 540, 600, 630, 720, 750, 1080];
+// Réservoirs élargis (ticket n° 7 : « les exercices se répètent » ; il n'y avait que 6 angles à d = 0 et 10 à d = 1).
+// La méthode ne change pas (degrés / 180, puis simplifier) ; seule la simplification se corse avec d.
+const mult = (pas, a, b) => { const t = []; for (let x = Math.ceil(a / pas) * pas; x <= b; x += pas) t.push(x); return t; };
+const uni = (...l) => [...new Set(l.flat())];
+/** angles remarquables (multiples de 30° et de 45°) : un tirage sur deux aux premières difficultés, on les retrouve aux niveaux suivants */
+const D_REM1 = uni(mult(30, 30, 180), mult(45, 45, 180)), D_REM2 = uni(mult(30, 210, 360), mult(45, 225, 360));
+/** multiples de 10° et de 15° : jusqu'au demi-tour (d = 0, 24 angles), puis jusqu'au tour (d = 1, 24 angles) */
+const D_BASE = uni(mult(15, 15, 180), mult(10, 10, 180)), D_TOUR = uni(mult(15, 195, 360), mult(10, 190, 360));
+/** fractions plus fines : multiples de 5°, 6° et 9° (simplifier en plusieurs fois), 72 angles */
+const D_FIN = uni(mult(5, 5, 360), mult(6, 6, 360), mult(9, 9, 360)).filter(x => x % 10 && x % 15);
+/** plus d'un tour : multiples de 15° et de 10° jusqu'à 3 tours */
+const D_BIG = uni(mult(15, 375, 1080), mult(10, 370, 1080));
+export const DEG = { D_REM1, D_REM2, D_BASE, D_TOUR, D_FIN, D_BIG };
 function degPool(d) {
-  if (d < 1) return pick(D_BASE);
-  if (d < 2) return pick(D_TOUR);
-  if (d < 3) return (chance(0.75) ? -1 : 1) * pick([...D_BASE.slice(0, 5), ...D_TOUR]);
+  if (d < 1) return pick(chance(0.5) ? D_REM1 : D_BASE);
+  if (d < 2) return pick(chance(0.5) ? D_REM2 : D_TOUR);
+  if (d < 3) return (chance(0.75) ? -1 : 1) * pick([...D_BASE, ...D_TOUR]);
   if (d < 4) return (chance(0.3) ? -1 : 1) * pick(D_FIN);
   return (chance(0.4) ? -1 : 1) * pick(d < 5 ? D_BIG : [...D_BIG, ...D_FIN, ...D_TOUR]);
 }
@@ -126,6 +137,7 @@ ${meth([`Écris la fraction ${F('degrés', 180)} devant π.`, 'Simplifie la frac
 <div class="cols"><div>
 ${exq('Exemple 1 : 135°', `135° = ${F(135, 180)} × π. On simplifie par 45 : <b>${F('3π', 4)}</b>.`)}
 ${exq('Exemple 2 : −20° et 450°', `−20° = −${F(20, 180)} × π = <b>−${F('π', 9)}</b> (on simplifie par 20).<br>450° = ${F(450, 180)} × π = <b>${F('5π', 2)}</b> (par 90) : plus d'un tour, c'est permis.`)}
+${exq('Exemple 3 : 70° et 48°', `70° = ${F(70, 180)} × π = <b>${F('7π', 18)}</b> (on simplifie par 10).<br>48° = ${F(48, 180)} × π : on peut simplifier en plusieurs fois, par 2 (${F(24, 90)}), encore par 2 (${F(12, 45)}), puis par 3 : <b>${F('4π', 15)}</b>.`)}
 </div>${cercle({ marks: true, noGrad: true, arc: { t: 3 * PI / 4 }, pts: [{ t: 3 * PI / 4, l: '135° = 3π/4' }], tl: [{ t: 0, l: '0' }, { t: PI / 2, l: '90° = π/2' }, { t: -PI / 2, l: '−90° = −π/2' }] })}</div>
 <div class="warn">⚠️ π rad = <b>180°</b>, pas 360° !<br>⚠️ Ne fais pas l'inverse : on divise les degrés par 180, pas 180 par les degrés.<br>⚠️ On garde π : ${F('π', 3)} est une valeur exacte, 1,047 n'est qu'une valeur approchée.</div>
 ${ret(`180° = π rad, donc on multiplie les degrés par ${F('π', 180)} et on simplifie.`)}`;

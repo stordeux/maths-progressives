@@ -365,6 +365,33 @@ test('révision brevet : séance de 5 exercices et bilan', async ({ page }, info
   expect(errors).toEqual([]);
 });
 
+test("trigo : douze exercices de suite au niveau 1, aucun énoncé répété parmi les 10 derniers (ticket n° 7)", async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', e => errors.push(e.message));
+  await page.goto('modules/trigo/?niveau=1');
+  const vus = [];
+  for (let k = 0; k < 12; k++) {
+    await expect(page.locator('#okBtn')).toBeVisible();
+    const angle = await page.locator('#q b').first().innerText();
+    // la garantie porte sur les 10 derniers énoncés (le 12e peut reprendre le 1er)
+    expect(vus.slice(-10), `exercice ${k + 1} : ${angle} déjà vu`).not.toContain(angle);
+    vus.push(angle);
+    // deux réponses fausses : on reste au niveau 1 avec 0 étoile (les angles les plus simples, le plus petit réservoir)
+    await answer(page, false);
+    await page.evaluate(() => window.__mp.resetAnswer());
+    await answer(page, false);
+    await page.locator('#nextBtn').click();
+  }
+  expect(await page.evaluate(() => window.__mp.state.level)).toBe(0);
+  // la mémoire des 10 derniers énoncés est enregistrée avec la progression : elle tient après un rechargement
+  const mem = await page.evaluate(() => JSON.parse(localStorage.getItem('mp:trigo')).vus);
+  expect(mem).toHaveLength(10);
+  await page.reload();
+  await expect(page.locator('#okBtn')).toBeVisible();
+  expect(vus.slice(-10)).not.toContain(await page.locator('#q b').first().innerText());
+  expect(errors).toEqual([]);
+});
+
 test('signaler une erreur : capture, texte, envoi', async ({ page }, info) => {
   const errors = [];
   page.on('pageerror', e => errors.push(e.message));

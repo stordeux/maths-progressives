@@ -151,7 +151,7 @@ function C4(){
 
 /* ---------- 5. identités ---------- */
 function L5(d){
-  const v=d<1?0:d<2?ri(0,1):ri(0,d>=3?3:2),p=ri(1,d<2?6:9);
+  const v=d<1?0:d<2?ri(0,1):ri(0,d>=3?3:2),p=ri(1,12); // jusqu'à 12 (ticket n° 7 : 6 énoncés seulement à d = 0)
   let a,b,c,e;
   if(v===0){a=1;b=2*p;c=p*p;e=`(x + ${p})<sup>2</sup>`}
   else if(v===1){a=1;b=-2*p;c=p*p;e=`(x − ${p})<sup>2</sup>`}
@@ -182,7 +182,7 @@ function C5(){
 
 /* ---------- 6. reconnaître un carré ---------- */
 function L6(d){
-  const p=d<1?ri(1,6):nz(-9,9),b=2*p,c=p*p;
+  const p=d<1?ri(1,10):nz(-12,12),b=2*p,c=p*p; // élargi (ticket n° 7 : 6 énoncés seulement à d = 0)
   if(d>=2&&random()<.5)return{type:'nums',a:1,b,c,go:{},gs:{vertex:true},
     html:`Complète pour obtenir le carré d'une parenthèse :`,
     tpl:`x<sup>2</sup> ${b<0?'− '+(-b):'+ '+b}x + {0} = (x + {1})<sup>2</sup>`,check:numsCheck([c,p]),

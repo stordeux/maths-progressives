@@ -23,6 +23,7 @@ export const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j =
 /** vrai avec la probabilité p */
 export const chance = p => random() < p;
 /** prénom au hasard pour les énoncés */
-export const prenom = () => pick(['Léa', 'Nour', 'Tom', 'Inès', 'Hugo', 'Yanis', 'Chloé', 'Malo', 'Sarah', 'Adam', 'Mila', 'Lucas', 'Jade', 'Rayan']);
+export const PRENOMS = ['Léa', 'Nour', 'Tom', 'Inès', 'Hugo', 'Yanis', 'Chloé', 'Malo', 'Sarah', 'Adam', 'Mila', 'Lucas', 'Jade', 'Rayan'];
+export const prenom = () => pick(PRENOMS);
 /** variante dépendant de d : tire dans [max(0,d-1) ; d], plafonné à max */
 export const variant = (d, max) => Math.min(max, ri(Math.max(0, d - 1), d));
