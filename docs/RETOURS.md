@@ -83,3 +83,9 @@ Les tickets du bouton 🐞 sont dans gitlab.inria.fr/tordeux/signalements-exerci
 ## 2026-11-20 · la fille de S. Tordeux : « le bouton n'était pas visible sur mon téléphone » (Inégalités)
 
 **Repris** (tous les modules, écrans de 600 px de large au plus) : le 🐞 flottant cachait le bouton « ℝ tous les réels », et « Valider » était à 960 px de haut sur un écran de 643. Maintenant : 🐞 rangé dans l'en-tête à côté de « Cours » et « Niveaux » (la fenêtre d'accueil le dit) ; en-tête sur deux lignes (niveau et étoiles, puis boutons) ; bandeau du cours, cartes et énoncé plus serrés ; **Indice et Valider juste sous la réponse, avant le pavé** ; pavé un peu plus bas. Mesuré à 360 × 643 sur Inégalités niveau 4 : « Valider » à 570–618 px, visible sans défiler. Tablettes et ordinateurs : inchangés.
+
+| Module | Repris | Relecture |
+|---|---|---|
+| Pensée informatique (6e–3e) | 12 niveaux : programmes par blocs dessinés (style original, pas Scratch) : séquences sur grille, ordre, programme de calcul, boucles, variables, conditions, et/ou, répéter jusqu'à, trouver l'erreur, défis (division par soustractions, Syracuse). Vérification par un second interpréteur. | Indices relus sur échantillon, conformes. |
+
+**Bilan au 2026-11-20** : les 7 modules manquants du programme du collège sont créés et publiés (Nombres décimaux, Arithmétique, Géométrie plane, Ratios et fractions, Statistiques de 3e, Repérage et solides, Pensée informatique).

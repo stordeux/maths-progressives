@@ -67,14 +67,14 @@ Légende : ✅ couvert par un module · 🟡 en partie · ❌ absent.
 | Proportionnalité, tableaux, graphiques, échelles, vitesses, pourcentages | 6e–4e | ✅ | Proportionnalité, Trains |
 | **Ratio, partage proportionnel** | 4e–3e | ✅ | Ratios et fractions N7 à N12 |
 | Coefficient multiplicateur, hausses et baisses | 4e–3e | ✅ | Proportionnalité N10 à N12 |
-| « En fonction de », tableaux de valeurs, programmes de calcul (y compris « remonter » un programme) | 5e–4e | 🟡 | Fonctions N5, Calcul littéral N1 ; « retrouver le nombre de départ » absent |
+| « En fonction de », tableaux de valeurs, programmes de calcul (y compris « remonter » un programme) | 5e–4e | 🟡 | Fonctions N5, Calcul littéral N1 ; « retrouver le nombre de départ » : Pensée informatique N3 |
 | Fonctions linéaires, affines, image, antécédent, lecture graphique | 3e | ✅ | Fonctions |
 | Fonction carré (représentation) | 3e | 🟡 | Second degré (niveau lycée) |
 
 ## Pensée informatique (6e à 3e)
 | Notion | État |
 |---|---|
-| Programmes par blocs : séquences, boucles, conditions, variables, prévoir le résultat d'un programme | ❌ (aucun module) |
+| Programmes par blocs : séquences, boucles, conditions, variables, prévoir le résultat d'un programme | ✅ Pensée informatique |
 
 ## Priorités proposées (ce qui manque le plus, par ordre d'utilité)
 1. **Géométrie plane du collège** : symétries axiale et centrale, triangles (constructions, droites remarquables), parallélogrammes, droite des milieux. C'est le plus gros manque.
