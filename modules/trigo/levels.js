@@ -101,12 +101,18 @@ const D_FIN = uni(mult(5, 5, 360), mult(6, 6, 360), mult(9, 9, 360)).filter(x =>
 /** plus d'un tour : multiples de 15° et de 10° jusqu'à 3 tours */
 const D_BIG = uni(mult(15, 375, 1080), mult(10, 370, 1080));
 export const DEG = { D_REM1, D_REM2, D_BASE, D_TOUR, D_FIN, D_BIG };
+// Ticket n° 8 (« les angles sont beaucoup trop grands pour du niveau 1 ») : on reste sous le demi-tour jusqu'à 2 étoiles,
+// le tour complet vient à 3 étoiles, les angles négatifs et plus d'un tour à la fin.
+/** premiers angles : remarquables jusqu'à 180° et multiples de 10° et de 15° jusqu'à 90° */
+const D_PETIT = uni(D_REM1, mult(15, 15, 90), mult(10, 10, 90));
+const D_FIN180 = D_FIN.filter(x => x < 180);
 function degPool(d) {
-  if (d < 1) return pick(chance(0.5) ? D_REM1 : D_BASE);
-  if (d < 2) return pick(chance(0.5) ? D_REM2 : D_TOUR);
-  if (d < 3) return (chance(0.75) ? -1 : 1) * pick([...D_BASE, ...D_TOUR]);
-  if (d < 4) return (chance(0.3) ? -1 : 1) * pick(D_FIN);
-  return (chance(0.4) ? -1 : 1) * pick(d < 5 ? D_BIG : [...D_BIG, ...D_FIN, ...D_TOUR]);
+  if (d < 1) return pick(D_PETIT);
+  if (d < 2) return pick(D_BASE);
+  if (d < 3) return pick(chance(0.6) ? D_BASE : D_FIN180);
+  if (d < 4) return pick(chance(0.5) ? [...D_REM2, ...D_TOUR] : D_FIN);
+  if (d < 5) return (chance(0.5) ? -1 : 1) * pick([...D_BASE, ...D_TOUR, ...D_FIN]);
+  return (chance(0.4) ? -1 : 1) * pick(chance(0.6) ? D_BIG : [...D_TOUR, ...D_FIN]);
 }
 function L1(d) {
   const deg = degPool(d), [p, q] = red(deg, 180), g = gcd(deg, 180), t = deg * PI / 180;

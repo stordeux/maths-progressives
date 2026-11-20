@@ -112,3 +112,13 @@ ont au moins une difficulté d à moins de 20 énoncés, et 16 ont moins de 20 �
 | Autres niveaux à petit réservoir | **élargis** | Relatifs N1 (droite de longueur variable : 4 → 44 énoncés à d = 0) ; Puissances N5 (10¹ à 10⁴ dès le début) ; Calcul littéral N8 et Second degré N5 et N6 (nombres jusqu'à 12 ou 10) ; Trains N9 (8 vitesses en km/h, 15 en m/s) ; Dérivées N5 (xⁿ jusqu'à n = 9 ; 1/x et √x mêlées aux formes déjà vues) ; Intégrales N2 (cas calculés au lieu d'une liste de 16 : 28, 54, 46, 21 et 70 selon d), N4 (exposants jusqu'à 5, coefficients variés), N9 (à d ≥ 4, la droite une fois sur deux). Aucune forme nouvelle : les exemples des cours les couvraient déjà. |
 | Niveaux laissés petits | **pas repris**, avec la raison | La notion n'a pas 20 énoncés aux premières étoiles : Calcul mental N2 (compléments à 10) et N12 (carrés de 2 à 12), Puissances N5 et N6 (puissances de 10 qui tiennent sur le pavé), Angles N3 (rapporteur lu de 10 en 10), Trigonométrie N8 (trois triangles seulement donnent des valeurs décimales exactes). Ils sont déclarés dans `EXCEPTIONS` de `tools/reservoirs.mjs` ; le garde-fou y fait tourner les énoncés. De même, les difficultés d = 0 de quelques niveaux restent petites (équations cos x = a : 3 énoncés ; parité de cos et sin : 2 ; nature d'un quadrilatère : 5…) : le garde-fou les donne une fois, puis passe aux énoncés de d = 1. |
 | Tests | **ajoutés** | `tests/unit/repetitions.test.mjs` : garde-fou ; pour chaque niveau de chaque module et chaque nombre d'étoiles, au moins 20 énoncés différents (sauf exceptions ci-dessus) et 20 exercices de suite sans répétition parmi les 10 derniers. Playwright : 12 exercices de suite au niveau 1 de la Trigonométrie, aucun parmi les 10 précédents, mémoire gardée après rechargement. Règle ajoutée à `CONTRIBUTING.md`. |
+
+## 2026-11-20 · Ticket n° 8 (bouton 🐞) : « les angles sont beaucoup trop grands pour du niveau 1 »
+
+> Trigonométrie, niveau 1 « Degrés → radians », exercice n° 3, 1 étoile : « Convertis 330° en radians ».
+
+**Repris.** L'élargissement du ticket n° 7 donnait des angles jusqu'à 360° dès 1 étoile (d = 1) et des négatifs à 2 étoiles.
+Nouvelle montée : d = 0, angles remarquables jusqu'à 180° et multiples de 10° et 15° jusqu'à 90° (16 angles) ; d = 1, multiples
+de 10° et 15° jusqu'à 180° (24) ; d = 2, plus des multiples de 5°, 6°, 9° sous 180° ; d = 3, jusqu'au tour complet ;
+d = 4, angles négatifs ; d = 5, plus d'un tour. Donc **rien au-delà de 180° avant 2 étoiles**. Cours et indice inchangés
+(les exemples couvrent toutes les formes). Tests trigo (réservoirs, générateurs, cours) : 62 sur 62.
