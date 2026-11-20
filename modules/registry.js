@@ -65,6 +65,8 @@ export const MODULES = [
   // --- transversal
   { id: 'revision', titre: 'Révision brevet', emoji: '🎓', classes: '3e', groupe: 'Transversal', couleur: '#a61e4d', couleur2: '#fff0f6', resume: 'Des exercices de tous les modules du collège, chronométrés, avec un bilan.' },
   // ---
+  { id: 'informatique', titre: 'Pensée informatique', emoji: '🧩', classes: '6e – 3e', groupe: 'Transversal', couleur: '#5b21b6', couleur2: '#f3edff', resume: 'Lire des programmes en blocs : séquences, boucles, variables, conditions, et prévoir ce qu’ils font.', css: true },
+  // ---
 ];
 
 export const GROUPES = ['Calcul', 'Proportionnalité et données', 'Géométrie', 'Vers le lycée', 'Lycée (1re – Tle)', 'Transversal'];

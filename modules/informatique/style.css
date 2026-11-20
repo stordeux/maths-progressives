@@ -1,0 +1,17 @@
+/* Styles propres au module Pensée informatique (programmes en blocs, grille du lutin, tableaux de suivi). */
+.dual { display: flex; flex-wrap: wrap; gap: 10px 20px; justify-content: center; align-items: flex-start; margin: 8px 0; }
+.dual svg, #vis .dual svg, .cours .dual svg { width: auto; max-width: 100%; height: auto; margin: 0; }
+#vis svg.prog, .cours svg.prog, #vis svg.grille, .cours svg.grille, #vis svg.figure, .cours svg.figure { width: auto; max-width: 100%; height: auto; }
+.cours .cols > svg.prog, .cours .cols > .dual { flex: 0 1 auto; }
+figure.pg { margin: 0; }
+figure.pg figcaption { font-weight: 700; text-align: center; font-size: .85em; color: var(--muted); }
+.choices .optprog { display: flex; align-items: center; gap: 12px; }
+.choices .optprog b { font-size: 1.15em; min-width: 1.1em; }
+.choices svg { max-width: 100%; height: auto; margin: 0; display: block; }
+.trwrap { overflow-x: auto; margin: 6px 0; }
+table.trace { border-collapse: collapse; font-size: .84em; line-height: 1.35; }
+table.trace th, table.trace td { border: 1px solid #cbd5e1; padding: 3px 8px; text-align: center; }
+table.trace th { background: var(--acc2); }
+table.trace td.et, table.trace td.ca { text-align: left; }
+table.trace td.ch { font-weight: 700; background: #fff3d6; }
+.cours .sol, #fb .sol { margin: 4px 0 6px; }
