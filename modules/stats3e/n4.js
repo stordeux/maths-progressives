@@ -240,13 +240,14 @@ export function L12(d) {
   }
   // typique : quelle valeur résume le mieux ? (série avec une valeur extrême déjà dans la liste)
   const nn = ri(7, 9), base = Array.from({ length: nn - 1 }, () => E.lo + E.st * ri(0, Math.round((E.hi - E.lo) / E.st))), xx = E.ex(), lst = shuffle([...base, xx]), q = resume(lst);
-  const near = val => lst.filter(a => Math.abs(a - val) <= 0.25 * val).length * 2 >= lst.length;
-  const win = near(q.med) && !near(q.mean) ? 'med' : near(q.mean) && !near(q.med) ? 'moy' : null;
+  // cas tranchés seulement : le bon indicateur est à 25 % de la plupart des valeurs, l'autre en est loin même à 40 %
+  const near = (val, k = 0.25) => lst.filter(a => Math.abs(a - val) <= k * val).length * 2 >= lst.length;
+  const win = near(q.med) && !near(q.mean, 0.4) ? 'med' : near(q.mean) && !near(q.med, 0.4) ? 'moy' : null;
   if (win === null) return L12(d);
   return { type: 'choice', opts: [{ v: 'moy', l: 'La moyenne' }, { v: 'med', l: 'La médiane' }], check: choiceCheck(win, { msg: () => `Calcule les deux : lequel est proche de la plupart des valeurs de la liste (et pas seulement de la valeur extrême ${M(xx)}) ?` }),
     html: `${E.intro(nn, p)} ${E.incl}${big(list(lst))}On veut un seul nombre pour décrire <b>${E.typ}</b>. Que vaut-il mieux choisir&nbsp;?`, visual: tiles(lst.map(M), { hl: [lst.indexOf(xx)], label: E.axe }),
     afterVisual: boxPlot([{ name: 'Série', ...five(q) }], { ...axeNice(lst), axe: E.axe, show: true }),
-    verify: E2 => { const t = [...lst].sort((a, b) => a - b), m = t.reduce((a, b) => a + b, 0) / t.length, md = medCount(lst), c = a => lst.filter(y => Math.abs(y - a) <= 0.25 * a).length * 2 >= lst.length; return (c(md) && !c(m) ? 'med' : c(m) && !c(md) ? 'moy' : null) === E2; },
+    verify: E2 => { const t = [...lst].sort((a, b) => a - b), m = t.reduce((a, b) => a + b, 0) / t.length, md = medCount(lst), c = (a, k = 0.25) => lst.filter(y => Math.abs(y - a) <= k * a).length * 2 >= lst.length; return (c(md) && !c(m, 0.4) ? 'med' : c(m) && !c(md, 0.4) ? 'moy' : null) === E2; },
     hint: `Calcule la moyenne (somme des ${nn} valeurs ÷ ${nn}) et la médiane (valeur du milieu de la liste rangée). Regarde ensuite lequel des deux est proche de la plupart des valeurs, et pas seulement de ${M(xx)}.`,
     solution: `Moyenne : environ ${M(Math.round(q.mean * 100) / 100)}${E.u} ; médiane : ${M(q.med)}${E.u}. ${win === 'med' ? `La médiane est proche de presque toutes les valeurs ; la moyenne est tirée vers ${M(xx)}.` : `La moyenne est proche de presque toutes les valeurs.`} On choisit <b>${win === 'med' ? 'la médiane' : 'la moyenne'}</b>.` };
 }

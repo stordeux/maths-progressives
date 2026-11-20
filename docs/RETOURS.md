@@ -89,3 +89,8 @@ Les tickets du bouton 🐞 sont dans gitlab.inria.fr/tordeux/signalements-exerci
 | Pensée informatique (6e–3e) | 12 niveaux : programmes par blocs dessinés (style original, pas Scratch) : séquences sur grille, ordre, programme de calcul, boucles, variables, conditions, et/ou, répéter jusqu'à, trouver l'erreur, défis (division par soustractions, Syracuse). Vérification par un second interpréteur. | Indices relus sur échantillon, conformes. |
 
 **Bilan au 2026-11-20** : les 7 modules manquants du programme du collège sont créés et publiés (Nombres décimaux, Arithmétique, Géométrie plane, Ratios et fractions, Statistiques de 3e, Repérage et solides, Pensée informatique).
+
+## 2026-11-20 · Les trois points « à trancher » des nouveaux modules
+- **Géométrie, angle annoncé et angle dessiné** : vérifié par calcul sur les figures générées (niveaux 3 et 6) : aucun écart (moins de 2°). L'impression venait d'une lecture à l'œil d'une capture réduite. **Rien à changer.**
+- **Décimaux, division par un décimal (niveau 10)** : c'est au programme de 5e (cycle 4, « diviser par un nombre décimal »). **Repris** : aux difficultés d < 4, « combien de fois » se fait avec un diviseur entier (96 L en bouteilles de 4 L) ; la division par un décimal ne reste qu'aux difficultés hautes, annoncée « programme de 5e » dans la correction et dans un exemple du cours.
+- **Statistiques de 3e** : niveau 9, les choix disaient déjà « Oui, c'est certain » / « Non, on ne peut pas l'affirmer » : **rien à changer**. Niveau 12 « moyenne ou médiane ? » : **repris**, seuls les cas tranchés sont tirés (le bon indicateur est proche de la plupart des valeurs, l'autre en est loin même avec une tolérance de 40 %).

@@ -102,11 +102,12 @@ function L10(d) {
       afterVisual: divPosed(raw(a), n, Math.max(0, nd(q) - nd(a))), replaceVisual: false };
   }
   // combien de parts
-  const n = ri(3, 40), v = pick([0.25, 0.5, 0.75, 1.5, 0.2, 2.5, 1.2, 0.4, 0.05]), T = r6(n * v), kv = nd(v), P = prenom(), c = pick(COMBIEN)(P, T, v), M = 10 ** kv;
+  // diviser par un décimal est au programme de 5e (cycle 4) : en 6e (d < 4) on cherche « combien de fois » un entier
+  const n = ri(3, 40), v = d < 4 ? pick([2, 3, 4, 5, 6, 8]) : pick([0.25, 0.5, 0.75, 1.5, 0.2, 2.5, 1.2, 0.4, 0.05]), T = r6(n * v), kv = nd(v), P = prenom(), c = pick(COMBIEN)(P, T, v), M = 10 ** kv;
   return { ...numQ([n], Math.round(sc(T, 3) / sc(v, 3)), { tpl: `${c.lab} : {0}`, ctx: '' }),
     html: c.txt,
-    hint: `Il faut chercher combien de fois ${f(v)} tient dans ${f(T)} : c'est ${f(T)} ÷ ${f(v)}. Pour t'aider, multiplie les deux nombres par ${fx(M, 0)} (le quotient ne change pas) : tu divises alors ${f(r6(T * M))} par ${f(r6(v * M))}.`,
-    solution: `On multiplie les deux nombres par ${fx(M, 0)} : ${f(T)} ÷ ${f(v)} = ${f(r6(T * M))} ÷ ${f(r6(v * M))} = <b>${n}</b>. Vérification : ${n} × ${f(v)} = ${f(T)}.` };
+    hint: kv === 0 ? `Il faut chercher combien de fois ${f(v)} tient dans ${f(T)} : c'est la division ${f(T)} ÷ ${f(v)}. Pose-la, ou cherche le nombre qui, multiplié par ${f(v)}, donne ${f(T)}.` : `Il faut chercher combien de fois ${f(v)} tient dans ${f(T)} : c'est ${f(T)} ÷ ${f(v)}. Pour t'aider, multiplie les deux nombres par ${fx(M, 0)} (le quotient ne change pas) : tu divises alors ${f(r6(T * M))} par ${f(r6(v * M))}.`,
+    solution: kv === 0 ? `${f(T)} ÷ ${f(v)} = <b>${n}</b>. Vérification : ${n} × ${f(v)} = ${f(T)}.` : `On multiplie les deux nombres par ${fx(M, 0)} : ${f(T)} ÷ ${f(v)} = ${f(r6(T * M))} ÷ ${f(r6(v * M))} = <b>${n}</b>. Vérification : ${n} × ${f(v)} = ${f(T)}. (Diviser par un décimal : programme de 5e.)` };
 }
 function C10() {
   return `<h2>10. Division décimale</h2>
@@ -118,7 +119,8 @@ ${ex('Exemple 1 : calcule 7,5 ÷ 5', `On divise 7 par 5 : 1, reste 2. On met la 
 ${ex('Exemple 2 : calcule 3 ÷ 4', `3 ÷ 4 = 0, reste 3. On met la virgule et un zéro : 30 ÷ 4 = 7, reste 2 ; puis 20 ÷ 4 = 5, reste 0.<br>Résultat : <b>0,75</b>`)}
 ${ex('Exemple 3 : donne 17 ÷ 3 arrondi au dixième', `17 ÷ 3 = 5,66… (le reste n'est jamais nul). Le chiffre suivant les dixièmes est 6 (≥ 5) : on augmente.<br>17 ÷ 3 ≈ <b>5,7</b>.<br>Au centième : le chiffre suivant les centièmes est 6, donc 17 ÷ 3 ≈ <b>5,67</b>.`)}
 ${ex('Exemple 4 : 13,5 m de ruban partagés en 5 morceaux égaux', `Partager, c'est diviser : 13,5 ÷ 5 = 2,7.<br>Réponse : <b>2,7</b> m.`)}
-${ex('Exemple 5 : combien de verres de 0,25 L avec 2 L ?', `On cherche 2 ÷ 0,25. On multiplie par 100 : 200 ÷ 25 = 8.<br>Nombre de verres : <b>8</b>.`)}
+${ex('Exemple 5 : combien de bouteilles de 4 L remplit-on avec 96 L ?', `On cherche combien de fois 4 tient dans 96 : 96 ÷ 4 = 24.<br>Nombre de bouteilles : <b>24</b>.`)}
+${ex('Exemple 6 (plus difficile, programme de 5e) : combien de verres de 0,25 L avec 2 L ?', `On cherche 2 ÷ 0,25. On multiplie les deux nombres par 100 : 200 ÷ 25 = 8.<br>Nombre de verres : <b>8</b>.`)}
 <div class="warn">⚠️ N'oublie pas la virgule au quotient : 7,5 ÷ 5 = 1,5 et non 15.<br>⚠️ Pour une valeur approchée, on ne coupe pas : 5,66… au dixième donne 5,7 et non 5,6.<br>⚠️ Diviser par un nombre plus petit que 1 donne un résultat plus grand.</div>
 <div class="retenir">À retenir : virgule au quotient quand on abaisse le 1<sup>er</sup> chiffre décimal ; on peut ajouter des zéros au reste.</div>`;
 }
