@@ -149,3 +149,10 @@ test('accord : « 1 étoile », « 12 étoiles »', () => {
   assert.equal(nbEtoiles(1), '1 étoile');
   assert.equal(nbEtoiles(12), '12 étoiles');
 });
+
+test("progression d'avant les titres : la première réussite fait monter le titre, jamais descendre", () => {
+  const S = { level: 3, stars: 2 }; // 17 étoiles, sans compteur gagnees
+  assert.equal(position(S), 17);
+  bouger(S, 1, 12);
+  assert.equal(position(S), 18);
+});

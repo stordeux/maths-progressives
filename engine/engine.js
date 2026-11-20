@@ -35,12 +35,14 @@ export const ETOILES = 5;
 export function bouger(S, delta, nbNiveaux) {
   if (S.stars === undefined) S.stars = Math.min(ETOILES - 1, S.streak || 0);
   const avant = S.level, max = (nbNiveaux - 1) * ETOILES + ETOILES;
+  // progression d'avant les titres (sans compteur) : on part de la position atteinte, pour que le titre ne recule pas
+  const avantPos = S.level * ETOILES + S.stars;
   let p = Math.max(0, Math.min(max, S.level * ETOILES + S.stars + delta));
   S.level = Math.min(nbNiveaux - 1, Math.floor(p / ETOILES));
   S.stars = p - S.level * ETOILES;
   S.streak = S.stars; // compatibilité (difficulté, contexte des signalements)
   // étoiles gagnées en jouant (jamais retirées, pas changées par le menu Niveaux) : c'est ce qui compte pour le titre
-  if (delta > 0) S.gagnees = (S.gagnees || 0) + delta;
+  if (delta > 0) S.gagnees = (S.gagnees ?? avantPos) + delta;
   return Math.sign(S.level - avant);
 }
 export const etoilesHTML = n => Array.from({ length: ETOILES }, (_, i) => `<i class="${i < n ? 'on' : ''}">${i < n ? '★' : '☆'}</i>`).join('');
