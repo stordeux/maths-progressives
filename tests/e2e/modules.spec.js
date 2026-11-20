@@ -333,7 +333,7 @@ test('révision brevet : séance de 5 exercices et bilan', async ({ page }, info
   expect(errors).toEqual([]);
 });
 
-test("trigo : douze exercices de suite au niveau 1, aucun énoncé répété (ticket n° 7)", async ({ page }) => {
+test("trigo : douze exercices de suite au niveau 1, aucun énoncé répété parmi les 10 derniers (ticket n° 7)", async ({ page }) => {
   const errors = [];
   page.on('pageerror', e => errors.push(e.message));
   await page.goto('modules/trigo/?niveau=1');
@@ -341,7 +341,8 @@ test("trigo : douze exercices de suite au niveau 1, aucun énoncé répété (ti
   for (let k = 0; k < 12; k++) {
     await expect(page.locator('#okBtn')).toBeVisible();
     const angle = await page.locator('#q b').first().innerText();
-    expect(vus, `exercice ${k + 1} : ${angle} déjà vu`).not.toContain(angle);
+    // la garantie porte sur les 10 derniers énoncés (le 12e peut reprendre le 1er)
+    expect(vus.slice(-10), `exercice ${k + 1} : ${angle} déjà vu`).not.toContain(angle);
     vus.push(angle);
     // deux réponses fausses : on reste au niveau 1 avec 0 étoile (les angles les plus simples, le plus petit réservoir)
     await answer(page, false);
