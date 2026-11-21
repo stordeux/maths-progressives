@@ -178,6 +178,7 @@ body.calcul #banner { top: 6px; }
 
 /* téléphone : en-tête et pavé plus compacts, 🐞 rangé dans l'en-tête (retour du 2026-11-19) */
 @media (max-width: 600px) {
+  table.data td, table.data th { padding: 5px 7px; min-width: 0; }
   header.top { padding: 6px 8px; gap: 6px; }
   header.top h1 { font-size: .9em; flex: 1 1 0; min-width: 0; }
   header.top .home { padding: 4px 8px; }
