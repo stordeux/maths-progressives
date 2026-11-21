@@ -170,7 +170,7 @@ const sigmaTransf = {
   ex2: [{ op: 'add', s: 3.2, k: 3, a: 5 }],
 };
 
-export const LV4 = niveau('Écart type : sens et calcul simple', [comparDisp, sigmaNul, sommeCarres, compVal, sigmaCalc, sigmaArr, sigmaTransf], {
+export const LV4 = niveau('Écart type simple', [comparDisp, sigmaNul, sommeCarres, compVal, sigmaCalc, sigmaArr, sigmaTransf], {
   n: 4,
   intro: 'La moyenne ne dit pas tout : deux séries de même moyenne peuvent être très différentes. L’écart type mesure la dispersion des valeurs autour de leur moyenne.',
   def: `Pour une série de valeurs de moyenne m : la <b>variance</b> est la moyenne des carrés des écarts à la moyenne, <span class="nw">V = ((x₁ − m)² + (x₂ − m)² + …) ÷ N</span> ; l’<b>écart type</b> est sa racine carrée, <span class="nw">σ = √V</span>. Plus l’écart type est <b>grand</b>, plus les valeurs sont <b>dispersées</b> ; il est nul si toutes les valeurs sont égales.`,
@@ -288,7 +288,7 @@ const sigmaFreq = {
   ex: { C: CTX[0], vals: [8, 9, 10, 11], fr: [10, 20, 30, 40] },
 };
 
-export const LV5 = niveau('Écart type avec effectifs', [termeLigne, sigmaEff, varianceEff, moySigma, sigmaArrEff, sigmaFreq], {
+export const LV5 = niveau('Écart type, effectifs', [termeLigne, sigmaEff, varianceEff, moySigma, sigmaArrEff, sigmaFreq], {
   n: 5,
   intro: 'Avec un tableau d’effectifs, chaque valeur compte autant de fois que son effectif : on pondère les carrés des écarts, comme on pondère les valeurs pour la moyenne.',
   def: `Pour une série de valeurs x₁, x₂, … d’effectifs n₁, n₂, … et d’effectif total N, de moyenne m : <span class="nw">V = (n₁ × (x₁ − m)² + n₂ × (x₂ − m)² + …) ÷ N</span> et <span class="nw">σ = √V</span>. Avec des fréquences f₁, f₂, … : <span class="nw">V = f₁ × (x₁ − m)² + f₂ × (x₂ − m)² + …</span>`,
@@ -398,7 +398,7 @@ const estimExacte = {
   ex: { C: CTXC[0], bornes: [0, 10, 20, 30], L: [4, 8, 12, 15, 17, 21, 22, 26, 13, 18] },
 };
 
-export const LV6 = niveau('Données regroupées en classes', [centre, classeDe, effClasse, moyClasses, freqClasses, estimExacte], {
+export const LV6 = niveau('Données en classes', [centre, classeDe, effClasse, moyClasses, freqClasses, estimExacte], {
   n: 6,
   intro: 'Quand les données sont nombreuses ou très variées (durées, tailles, salaires…), on les regroupe en classes de même amplitude. On perd un peu de précision, mais on y gagne en lisibilité.',
   def: `Une <b>classe</b> [a ; b[ contient les valeurs x telles que a ≤ x &lt; b. Son <b>amplitude</b> est b − a et son <b>centre</b> est <span class="nw">(a + b) ÷ 2</span>. La <b>moyenne estimée</b> d’une série en classes se calcule comme une moyenne pondérée, en remplaçant chaque classe par son centre.`,

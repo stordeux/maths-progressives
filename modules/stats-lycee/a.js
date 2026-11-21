@@ -109,7 +109,7 @@ const part = {
   ex: { S: PARTS[0], N: 600, p: 35 },
 };
 
-export const LV1 = niveau('Moyenne, effectifs, fréquences', [effManq, frequence, moyPond, moyQcm, moyFreq, part], {
+export const LV1 = niveau('Moyenne et fréquences', [effManq, frequence, moyPond, moyQcm, moyFreq, part], {
   n: 1,
   intro: 'Rappel des séries du collège : un tableau d’effectifs résume une série ; la moyenne et la fréquence en découlent. On les retrouve avec des tableaux plus grands.',
   def: `L’<b>effectif</b> d’une valeur est le nombre de fois qu’elle apparaît ; l’<b>effectif total</b> N est la somme des effectifs. La <b>fréquence</b> d’une valeur est ${'<span class="nw">effectif ÷ N</span>'} (en nombre décimal ou en %). La <b>moyenne</b> d’une série est ${'<span class="nw">(n₁ × x₁ + n₂ × x₂ + …) ÷ N</span>'} : chaque valeur xᵢ est multipliée par son effectif nᵢ.`,
@@ -272,7 +272,7 @@ const qcmEffet = {
   ex: { C: CTX[0], A: [9, 12, 7, 15, 11, 13, 10], B: [9, 12, 7, 25, 11, 13, 10], cible: 'moy' },
 };
 
-export const LV2 = niveau('Linéarité et valeur ajoutée', [linAdd, linMul, ajoutVal, ajoutExt, linAff, retireVal, qcmEffet], {
+export const LV2 = niveau('Linéarité et ajouts', [linAdd, linMul, ajoutVal, ajoutExt, linAff, retireVal, qcmEffet], {
   n: 2,
   intro: 'Que devient la moyenne quand on transforme toutes les données, ou quand on ajoute ou retire une valeur ? On peut souvent répondre sans refaire tout le calcul.',
   def: `<b>Linéarité de la moyenne</b> : si on remplace chaque valeur x par <span class="nw">a × x + b</span>, la moyenne m devient <span class="nw">a × m + b</span>. Pour <b>ajouter ou retirer une valeur</b>, on passe par la <b>somme</b> : somme = effectif × moyenne.`,
@@ -387,7 +387,7 @@ const interpQ = {
   ex2: [{ C: CTX[0], N: 28, q: 3 }],
 };
 
-export const LV3 = niveau('Médiane, quartiles, écart interquartile', [medListe, quartListe, eiqListe, quartEff, interpQ, eiqEff], {
+export const LV3 = niveau('Médiane et quartiles', [medListe, quartListe, eiqListe, quartEff, interpQ, eiqEff], {
   n: 3,
   intro: 'Au collège, tu as déjà vu la médiane et les quartiles. On les retrouve ici, puis on les calcule aussi à partir d’un tableau d’effectifs.',
   def: `Dans une série de N valeurs rangées dans l’ordre croissant : la <b>médiane</b> partage la série en deux groupes de même effectif ; le <b>premier quartile</b> ${sub(1)} est la plus petite valeur telle qu’au moins 25 % des valeurs lui soient inférieures ou égales (rang <span class="nw">N ÷ 4</span>, arrondi au rang entier supérieur) ; le <b>troisième quartile</b> ${sub(3)} est défini de même avec 75 % (rang <span class="nw">3 × N ÷ 4</span>). L’<b>écart interquartile</b> est ${sub(3)} − ${sub(1)}.`,

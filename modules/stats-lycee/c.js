@@ -257,7 +257,7 @@ const supPoly = {
   ex: { C: CTXC[0], bornes: [0, 10, 20, 30, 40], F: [0, 15, 40, 80, 100], j: 2, strict: false },
 };
 
-export const LV8 = niveau('Fréquences cumulées et polygone', [cumulCalc, lirePoly, polyEntre, polyEff, medianePoly, quartilePoly, supPoly], {
+export const LV8 = niveau('Fréquences cumulées', [cumulCalc, lirePoly, polyEntre, polyEff, medianePoly, quartilePoly, supPoly], {
   n: 8,
   intro: 'La fréquence cumulée croissante d’une borne dit quelle part des données lui est inférieure. En traçant ces fréquences, on obtient un polygone qui permet de lire des pourcentages, la médiane et les quartiles.',
   def: `La <b>fréquence cumulée croissante</b> d’une borne b est la proportion des valeurs inférieures à b. Le <b>polygone des fréquences cumulées croissantes</b> joint par des segments les points (borne ; fréquence cumulée en %). La <b>médiane</b> (50 %) et les <b>quartiles</b> (25 % et 75 %) se lisent en cherchant l’abscisse d’une ordonnée donnée.`,

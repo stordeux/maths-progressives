@@ -269,7 +269,7 @@ const reconstr = {
   ex: { i: 0, N: 250, dp: 140, n1: 100, pc1: 45 },
 };
 
-export const LV11 = niveau('Tableau croisé et fréquences conditionnelles', [croiseCompl, freqMarg, freqCond, condSens, condCompar, reconstr], {
+export const LV11 = niveau('Tableau croisé', [croiseCompl, freqMarg, freqCond, condSens, condCompar, reconstr], {
   n: 11,
   intro: 'Un tableau croisé étudie deux caractères en même temps (par exemple le niveau et le régime des élèves d’un lycée). Selon la question, on divise par le total général ou par le total d’un groupe : c’est la différence entre fréquence marginale et fréquence conditionnelle.',
   def: `Dans un tableau croisé, la <b>fréquence marginale</b> d’un caractère est <span class="nw">effectif du caractère ÷ effectif total</span>. La <b>fréquence conditionnelle</b> de B <b>parmi</b> A est <span class="nw">effectif (A et B) ÷ effectif de A</span> : on se limite au groupe A.`,
@@ -449,7 +449,7 @@ const inverseDroite = {
   ex: { id: 'rev', pts: [{ x: 1, y: 9 }, { x: 2, y: 11 }, { x: 3, y: 12 }, { x: 5, y: 14 }, { x: 6, y: 15 }, { x: 7, y: 17 }, { x: 8, y: 17 }, { x: 9, y: 19 }], x: 5 },
 };
 
-export const LV12 = niveau('Nuage de points et ajustement affine', [sensLiaison, lireNuage, pointMoyen, placeG, interp, extrap, droiteG, fiable, inverseDroite], {
+export const LV12 = niveau('Nuage et ajustement', [sensLiaison, lireNuage, pointMoyen, placeG, interp, extrap, droiteG, fiable, inverseDroite], {
   n: 12,
   intro: 'Deux caractères mesurés sur les mêmes individus se représentent par un nuage de points. Quand les points suivent à peu près une droite, on peut utiliser cette droite pour estimer une valeur : c’est l’ajustement affine.',
   def: `Un <b>nuage de points</b> représente les couples (x ; y) mesurés. Son <b>point moyen</b> est <span class="nw">G(x̄ ; ȳ)</span>, où x̄ et ȳ sont les moyennes des x et des y. Une <b>droite d’ajustement</b> y = ax + b résume le nuage : on s’en sert pour estimer y pour une valeur de x, en <b>interpolant</b> (x entre les valeurs observées) ou en <b>extrapolant</b> (x en dehors).`,

@@ -26,7 +26,7 @@ export function histogramme(bornes, h, { gy = 1, ly = 1, ytitle = 'effectif', xt
   const hi = top || Math.ceil(Math.max(...h) / gy - 1e-9) * gy + gy;
   const pw = W - L - R, ph = H - T - B, ux = pw / (bornes[k] - bornes[0]), uy = ph / hi;
   const X = v => L + (v - bornes[0]) * ux, Y = v => T + ph - v * uy;
-  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis histo" style="width:${W}px" data-x0="${f1(L)}" data-a0="${bornes[0]}" data-ux="${ux}" data-uy="${uy}" role="img" aria-label="histogramme" ${FONT}>`;
+  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis histo" style="max-width:${W}px;width:100%" data-x0="${f1(L)}" data-a0="${bornes[0]}" data-ux="${ux}" data-uy="${uy}" role="img" aria-label="histogramme" ${FONT}>`;
   for (const g of graduations(0, hi, gy)) {
     const major = Math.abs(g / ly - Math.round(g / ly)) < 1e-9;
     s += `<line x1="${L}" y1="${f1(Y(g))}" x2="${W - R}" y2="${f1(Y(g))}" stroke="${major ? '#adb5bd' : '#dee2e6'}" stroke-width="1"/>`;
@@ -60,7 +60,7 @@ export function polygone(bornes, F, { gx = null, lx = null, h = [], xtitle = '',
   const pw = W - L - R, ph = H - T - B, ux = pw / (bornes[k] - bornes[0]), uy = ph / 100;
   const X = v => L + (v - bornes[0]) * ux, Y = v => T + ph - v * uy;
   const g = gx || (bornes[1] - bornes[0]), l = lx || g;
-  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis poly" style="width:${W}px" data-x0="${f1(L)}" data-a0="${bornes[0]}" data-ux="${ux}" data-yb="${f1(T + ph)}" data-uy="${uy}" role="img" aria-label="polygone des fréquences cumulées" ${FONT}>`;
+  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis poly" style="max-width:${W}px;width:100%" data-x0="${f1(L)}" data-a0="${bornes[0]}" data-ux="${ux}" data-yb="${f1(T + ph)}" data-uy="${uy}" role="img" aria-label="polygone des fréquences cumulées" ${FONT}>`;
   for (const y of graduations(0, 100, 10)) {
     const major = y % 20 === 0;
     s += `<line x1="${L}" y1="${f1(Y(y))}" x2="${W - R}" y2="${f1(Y(y))}" stroke="${major ? '#adb5bd' : '#dee2e6'}" stroke-width="1"/>`;
@@ -100,7 +100,7 @@ export function nuage(pts, { xr, yr, gx = 1, gy = 1, lx = null, ly = null, xt = 
   const W = width, L = 56, R = 16, T = 28, B = 56, H = 340;
   const pw = W - L - R, ph = H - T - B, ux = pw / (xr[1] - xr[0]), uy = ph / (yr[1] - yr[0]);
   const X = v => L + (v - xr[0]) * ux, Y = v => T + ph - (v - yr[0]) * uy;
-  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis nuage" style="width:${W}px" data-x0="${f1(L)}" data-a0="${xr[0]}" data-ux="${ux}" data-yb="${f1(T + ph)}" data-b0="${yr[0]}" data-uy="${uy}" role="img" aria-label="nuage de points" ${FONT}>`;
+  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis nuage" style="max-width:${W}px;width:100%" data-x0="${f1(L)}" data-a0="${xr[0]}" data-ux="${ux}" data-yb="${f1(T + ph)}" data-b0="${yr[0]}" data-uy="${uy}" role="img" aria-label="nuage de points" ${FONT}>`;
   for (const y of graduations(yr[0], yr[1], gy)) {
     const major = !ly || Math.abs((y - yr[0]) / ly - Math.round((y - yr[0]) / ly)) < 1e-9;
     s += `<line x1="${L}" y1="${f1(Y(y))}" x2="${W - R}" y2="${f1(Y(y))}" stroke="${major ? '#ced4da' : '#edf0f2'}" stroke-width="1"/>`;
@@ -143,7 +143,7 @@ export function courbeFreq(pts, { nmax, yr = [0, 1], gy = 0.1, ly = 0.2, width =
   const W = width, L = 56, R = 16, T = 28, B = 52, H = 300;
   const pw = W - L - R, ph = H - T - B, ux = pw / nmax, uy = ph / (yr[1] - yr[0]);
   const X = v => L + v * ux, Y = v => T + ph - (v - yr[0]) * uy;
-  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis freq" style="width:${W}px" data-x0="${f1(L)}" data-ux="${ux}" data-yb="${f1(T + ph)}" data-b0="${yr[0]}" data-uy="${uy}" role="img" aria-label="fréquence observée selon le nombre d'essais" ${FONT}>`;
+  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis freq" style="max-width:${W}px;width:100%" data-x0="${f1(L)}" data-ux="${ux}" data-yb="${f1(T + ph)}" data-b0="${yr[0]}" data-uy="${uy}" role="img" aria-label="fréquence observée selon le nombre d'essais" ${FONT}>`;
   for (const y of graduations(yr[0], yr[1], gy)) {
     const major = Math.abs((y - yr[0]) / ly - Math.round((y - yr[0]) / ly)) < 1e-9;
     s += `<line x1="${L}" y1="${f1(Y(y))}" x2="${W - R}" y2="${f1(Y(y))}" stroke="${major ? '#adb5bd' : '#dee2e6'}" stroke-width="1"/>`;
@@ -169,7 +169,7 @@ export function readFreqFin(svg) {
 export function pointsSurDroite(series, { lo, hi, g = 1, lab = 1, width = 520 } = {}) {
   const W = width, L = 30, R = 20, rowH = 64, T = 8, H = T + series.length * rowH + 40;
   const ux = (W - L - R) / (hi - lo), X = v => L + (v - lo) * ux;
-  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis" style="width:${W}px" role="img" aria-label="valeurs de chaque série sur une droite graduée" ${FONT}>`;
+  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis" style="max-width:${W}px;width:100%" role="img" aria-label="valeurs de chaque série sur une droite graduée" ${FONT}>`;
   const ay = T + series.length * rowH;
   for (const x of graduations(lo, hi, g)) {
     const major = Math.abs((x - lo) / lab - Math.round((x - lo) / lab)) < 1e-9;
@@ -189,7 +189,7 @@ export function pointsSurDroite(series, { lo, hi, g = 1, lab = 1, width = 520 } 
 /** barres horizontales de même longueur découpées selon les fréquences conditionnelles : rows = [{ nom, a, b }], leg = [libellé a, libellé b] */
 export function barresCond(rows, leg, { width = 520 } = {}) {
   const L = 110, R = 16, T = 34, rowH = 48, W = width, H = T + rows.length * rowH + 12, pw = W - L - R;
-  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis" style="width:${W}px" role="img" aria-label="fréquences conditionnelles dans chaque groupe" ${FONT}>`;
+  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis" style="max-width:${W}px;width:100%" role="img" aria-label="fréquences conditionnelles dans chaque groupe" ${FONT}>`;
   s += `<rect x="${L}" y="8" width="14" height="14" fill="${STROKE}" fill-opacity=".55"/><text x="${L + 20}" y="20" font-size="14" fill="#222">${esc(leg[0])}</text><rect x="${L + 20 + leg[0].length * 7.6 + 16}" y="8" width="14" height="14" fill="#f08c00" fill-opacity=".6"/><text x="${L + 20 + leg[0].length * 7.6 + 36}" y="20" font-size="14" fill="#222">${esc(leg[1])}</text>`;
   rows.forEach((r, i) => {
     const tot = r.a + r.b, y = T + i * rowH, wa = pw * r.a / tot, fa = Math.round(r.a / tot * 1000) / 10, fb = Math.round(r.b / tot * 1000) / 10;
