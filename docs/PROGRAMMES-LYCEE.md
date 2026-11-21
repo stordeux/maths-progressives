@@ -34,10 +34,10 @@ Légende : ✅ couvert · 🟡 en partie · ❌ absent.
 | Fonctions affines : coefficient directeur, ordonnée à l'origine, variations | ✅ | Fonctions 7 à 11 |
 | Proportions, pourcentage de pourcentage | 🟡 | Proportionnalité et pourcentages |
 | Évolutions : coefficient multiplicateur, taux, évolutions successives et réciproques | 🟡 | Proportionnalité (hausses et baisses) ; successives et réciproques à vérifier |
-| Statistiques : linéarité de la moyenne, écart type, classes, histogramme | ❌ | Statistiques de 3e s'arrête aux quartiles ; à créer (Statistiques au lycée) |
+| Statistiques : linéarité de la moyenne, écart type, classes, histogramme | ✅ | Statistiques au lycée 1 à 9 |
 | Tableau croisé, fréquences conditionnelles et marginales | ✅ | Probabilités conditionnelles 1 à 3 |
 | Probabilités conditionnelles, arbres | ✅ | Probabilités conditionnelles 3 à 7 |
-| Loi des grands nombres (fréquence et probabilité), simulation | ❌ | à créer (avec Python ou Statistiques au lycée) |
+| Loi des grands nombres (fréquence et probabilité), simulation | ✅ | Statistiques au lycée 10 |
 | Algorithmique et Python : variables, affectation, conditions, boucles, fonctions | ❌ | Pensée informatique s'arrête aux blocs du collège ; à créer (Python) |
 
 ## Première, spécialité
@@ -65,7 +65,7 @@ Légende : ✅ couvert · 🟡 en partie · ❌ absent.
 |---|---|---|
 | Automatismes (taux d'évolution, signe, lecture graphique, statistiques, probabilités conditionnelles) | 🟡 | plusieurs modules ; module Automatismes à créer |
 | Analyse de l'information chiffrée, tableaux croisés | 🟡 | Probabilités conditionnelles 1 à 3, Proportionnalité |
-| Deux caractères : nuage de points, ajustement affine | ❌ | à mettre dans Statistiques au lycée |
+| Deux caractères : nuage de points, ajustement affine | ✅ | Statistiques au lycée 11, 12 |
 | Croissance linéaire, suites arithmétiques | ✅ | Suites 4, 5, Fonctions |
 | Modélisation quadratique (paraboles, forme factorisée) | ✅ | Second degré |
 | Croissance exponentielle, suites géométriques | ✅ | Suites 6, 7, Exponentielle 6 |
@@ -103,7 +103,7 @@ Légende : ✅ couvert · 🟡 en partie · ❌ absent.
 |---|---|---|---|
 | 1 | ✅ **Automatismes** (QCM sans calculatrice ; publié le 2026-11-21) | 2de – 1re | épreuve anticipée de 1re dès 2027, pour tous les élèves de 1re générale |
 | 2 | ✅ **Fonctions de référence et variations** (publié le 2026-11-21) | 2de | cœur du programme de 2de, absent du site |
-| 3 | **Statistiques au lycée** (écart type, classes, histogramme, deux caractères, ajustement affine) | 2de – 1re | nouveau en 2de, aussi en 1re sans spécialité |
+| 3 | ✅ **Statistiques au lycée** (publié le 2026-11-21) | 2de – 1re | nouveau en 2de, aussi en 1re sans spécialité |
 | 4 | **Produit scalaire et géométrie repérée** | 1re | chapitre entier de spécialité |
 | 5 | **Variables aléatoires** (variance, sommes, Bienaymé-Tchebychev, loi des grands nombres) | 1re – Tle | complète Probabilités conditionnelles |
 | 6 | **Python** (variables, conditions, boucles, fonctions, simulations) | 2de | programmation au programme de 2de |
