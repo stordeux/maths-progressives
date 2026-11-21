@@ -10,7 +10,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { setSeed } from '../../engine/util/rand.js';
 import { LEVELS } from '../../modules/stats-lycee/levels.js';
-import { exempleDe } from '../../modules/stats-lycee/outils.js';
+import { exempleDe, exemples2De } from '../../modules/stats-lycee/outils.js';
 import { rnd, sigma, variance, varianceAutre } from '../../modules/stats-lycee/stat.js';
 import { histogramme, readHisto, polygone, readPoly, nuage, readNuage } from '../../modules/stats-lycee/draw.js';
 import { strip, M } from '../../engine/util/fmt.js';
@@ -112,7 +112,10 @@ for (let L = 0; L < 12; L++) {
         assert.ok(Math.abs(variance(vals, effs) - varianceAutre(vals, effs)) < 1e-9, `${where} variance`);
       }
     };
-    for (const f of lev.forms) { const q = exempleDe(f); assert.ok(q.hint && q.solution && q.html, `exemple ${f.id}`); verifier(q, `N${L + 1} exemple ${f.id}`, true); }
+    for (const f of lev.forms) {
+      const q = exempleDe(f); assert.ok(q.hint && q.solution && q.html, `exemple ${f.id}`); verifier(q, `N${L + 1} exemple ${f.id}`, true);
+      exemples2De(f).forEach((q2, k) => verifier(q2, `N${L + 1} exemple ${f.id} (autre cas ${k + 1})`, true));
+    }
     const vus = new Set();
     for (let d = 0; d <= 5; d++) for (let i = 0; i < N; i++) {
       setSeed(L * 1e6 + d * 1e5 + i + 11);

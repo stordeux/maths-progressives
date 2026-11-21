@@ -160,10 +160,10 @@ export const LV10 = niveau('Fréquence et probabilité', [freqObs, espNb, simulL
 
 /* ===================================================================== 11. tableau croisé et fréquences conditionnelles */
 const CROISE = [
-  { ent: 'élèves d’un lycée', lignes: ['2de', '1re'], colonnes: ['demi-pensionnaires', 'externes'], gl: (l) => `en ${l}`, intro: 'Le tableau donne la répartition des élèves d’un lycée selon leur niveau et leur régime.' },
-  { ent: 'personnes interrogées', lignes: ['moins de 30 ans', '30 ans ou plus'], colonnes: ['pratiquent un sport', 'ne pratiquent pas de sport'], gl: (l) => `parmi les personnes de ${l}`, intro: 'Le tableau donne les réponses à un sondage sur la pratique sportive, selon l’âge.' },
-  { ent: 'pièces fabriquées', lignes: ['machine A', 'machine B'], colonnes: ['conformes', 'défectueuses'], gl: (l) => `fabriquées par la ${l}`, intro: 'Le tableau donne le contrôle de la qualité des pièces fabriquées par deux machines.' },
-  { ent: 'abonnés d’un club', lignes: ['adultes', 'enfants'], colonnes: ['inscrits à l’escalade', 'inscrits à la natation'], gl: (l) => `parmi les ${l}`, intro: 'Le tableau donne l’activité choisie par les abonnés d’un club, selon leur âge.' },
+  { ent: 'élèves', ens: 'des élèves du lycée', Gl: ['2de', '1re'], Cl: ['demi-pensionnaires', 'externes'], Gn: ['élèves de 2de', 'élèves de 1re'], Gp: ['sont en 2de', 'sont en 1re'], Cn: ['élèves demi-pensionnaires', 'élèves externes'], Cp: ['sont demi-pensionnaires', 'sont externes'], intro: 'Le tableau donne la répartition des élèves d’un lycée selon leur niveau et leur régime.' },
+  { ent: 'personnes', ens: 'des personnes interrogées', Gl: ['moins de 30 ans', '30 ans ou plus'], Cl: ['pratiquent un sport', 'ne pratiquent pas de sport'], Gn: ['personnes de moins de 30 ans', 'personnes de 30 ans ou plus'], Gp: ['ont moins de 30 ans', 'ont 30 ans ou plus'], Cn: ['personnes qui pratiquent un sport', 'personnes qui ne pratiquent pas de sport'], Cp: ['pratiquent un sport', 'ne pratiquent pas de sport'], intro: 'Le tableau donne les réponses à un sondage sur la pratique sportive, selon l’âge.' },
+  { ent: 'pièces', ens: 'des pièces fabriquées', Gl: ['machine A', 'machine B'], Cl: ['conformes', 'défectueuses'], Gn: ['pièces de la machine A', 'pièces de la machine B'], Gp: ['viennent de la machine A', 'viennent de la machine B'], Cn: ['pièces conformes', 'pièces défectueuses'], Cp: ['sont conformes', 'sont défectueuses'], intro: 'Le tableau donne le contrôle de la qualité des pièces fabriquées par deux machines.' },
+  { ent: 'abonnés', ens: 'des abonnés du club', Gl: ['adultes', 'enfants'], Cl: ['inscrits à l’escalade', 'inscrits à la natation'], Gn: ['adultes', 'enfants'], Gp: ['sont des adultes', 'sont des enfants'], Cn: ['abonnés inscrits à l’escalade', 'abonnés inscrits à la natation'], Cp: ['sont inscrits à l’escalade', 'sont inscrits à la natation'], intro: 'Le tableau donne l’activité choisie par les abonnés d’un club, selon leur âge.' },
 ];
 /** tableau croisé 2 × 2 de total N : [[a, b], [c, d]] */
 function tirageCroise(Ns = [100, 200, 250, 400, 500]) {
@@ -171,18 +171,18 @@ function tirageCroise(Ns = [100, 200, 250, 400, 500]) {
 }
 const tabCroise = (S, t, o = {}) => {
   const rt = [t.a + t.b, t.c + t.d], ct = [t.a + t.c, t.b + t.d], N = rt[0] + rt[1], cell = (k, v) => (o.cache === k ? '?' : v);
-  return tab([['', ...S.colonnes, 'Total'], [S.lignes[0], cell('a', t.a), cell('b', t.b), cell('r1', rt[0])], [S.lignes[1], cell('c', t.c), cell('d', t.d), cell('r2', rt[1])], ['Total', cell('c1', ct[0]), cell('c2', ct[1]), cell('N', N)]]);
+  return tab([['', ...S.Cl, 'Total'], [S.Gl[0], cell('a', t.a), cell('b', t.b), cell('r1', rt[0])], [S.Gl[1], cell('c', t.c), cell('d', t.d), cell('r2', rt[1])], ['Total', cell('c1', ct[0]), cell('c2', ct[1]), cell('N', N)]]);
 };
 const croiseCompl = {
   id: 'croise-compl', dmin: 0, titre: 'compléter un tableau croisé',
   draw: d => { const t = tirageCroise(); return t && { ...t, cache: pick(['a', 'b', 'c', 'd', 'r1', 'r2', 'c1', 'c2']) }; },
   build: p => {
-    const S = CROISE[p.i], { cache } = p, rt = [p.a + p.b, p.c + p.d], ct = [p.a + p.c, p.b + p.d], N = sum(rt);
+    const S = CROISE[p.i], { cache } = p, rt = [p.a + p.b, p.c + p.d], ct = [p.a + p.c, p.b + p.d];
     const rep = { a: p.a, b: p.b, c: p.c, d: p.d, r1: rt[0], r2: rt[1], c1: ct[0], c2: ct[1] }[cache];
     const sol = { a: `${M(rt[0])} − ${M(p.b)} = ${M(p.a)}`, b: `${M(rt[0])} − ${M(p.a)} = ${M(p.b)}`, c: `${M(rt[1])} − ${M(p.d)} = ${M(p.c)}`, d: `${M(rt[1])} − ${M(p.c)} = ${M(p.d)}`, r1: `${M(p.a)} + ${M(p.b)} = ${M(rt[0])}`, r2: `${M(p.c)} + ${M(p.d)} = ${M(rt[1])}`, c1: `${M(p.a)} + ${M(p.c)} = ${M(ct[0])}`, c2: `${M(p.b)} + ${M(p.d)} = ${M(ct[1])}` }[cache];
-    const hint = { a: `Le total de la ligne « ${S.lignes[0]} » est ${M(rt[0])} et la case ${S.colonnes[1]} vaut ${M(p.b)} : retire-la du total de la ligne.`, b: `Le total de la ligne « ${S.lignes[0]} » est ${M(rt[0])} et la case ${S.colonnes[0]} vaut ${M(p.a)} : retire-la du total de la ligne.`, c: `Le total de la ligne « ${S.lignes[1]} » est ${M(rt[1])} et la case ${S.colonnes[1]} vaut ${M(p.d)} : retire-la du total de la ligne.`, d: `Le total de la ligne « ${S.lignes[1]} » est ${M(rt[1])} et la case ${S.colonnes[0]} vaut ${M(p.c)} : retire-la du total de la ligne.`, r1: `Additionne les deux cases de la ligne « ${S.lignes[0]} » : ${M(p.a)} et ${M(p.b)}.`, r2: `Additionne les deux cases de la ligne « ${S.lignes[1]} » : ${M(p.c)} et ${M(p.d)}.`, c1: `Additionne les deux cases de la colonne « ${S.colonnes[0]} » : ${M(p.a)} et ${M(p.c)}.`, c2: `Additionne les deux cases de la colonne « ${S.colonnes[1]} » : ${M(p.b)} et ${M(p.d)}.` }[cache];
+    const hint = { a: `Le total de la ligne « ${S.Gl[0]} » est ${M(rt[0])} et la case « ${S.Cl[1]} » de cette ligne vaut ${M(p.b)} : retire-la du total de la ligne.`, b: `Le total de la ligne « ${S.Gl[0]} » est ${M(rt[0])} et la case « ${S.Cl[0]} » de cette ligne vaut ${M(p.a)} : retire-la du total de la ligne.`, c: `Le total de la ligne « ${S.Gl[1]} » est ${M(rt[1])} et la case « ${S.Cl[1]} » de cette ligne vaut ${M(p.d)} : retire-la du total de la ligne.`, d: `Le total de la ligne « ${S.Gl[1]} » est ${M(rt[1])} et la case « ${S.Cl[0]} » de cette ligne vaut ${M(p.c)} : retire-la du total de la ligne.`, r1: `Additionne les deux cases de la ligne « ${S.Gl[0]} » : ${M(p.a)} et ${M(p.b)}.`, r2: `Additionne les deux cases de la ligne « ${S.Gl[1]} » : ${M(p.c)} et ${M(p.d)}.`, c1: `Additionne les deux cases de la colonne « ${S.Cl[0]} » : ${M(p.a)} et ${M(p.c)}.`, c2: `Additionne les deux cases de la colonne « ${S.Cl[1]} » : ${M(p.b)} et ${M(p.d)}.` }[cache];
     return { ...rNums([rep], { tpl: 'Valeur de la case « ? » : {0}', value: rep }),
-      html: `${S.intro}${tabCroise(S, p, { cache })}Quel nombre faut-il écrire à la place du « ? »`,
+      html: `${S.intro}${tabCroise(S, p, { cache })}Quel nombre faut-il écrire à la place du « ? » ?`,
       hint, solution: `Dans un tableau croisé, chaque total est la somme de sa ligne ou de sa colonne.<br>${sol} : la case vaut <b>${M(rep)}</b>.` };
   },
   ex: { i: 0, a: 80, b: 40, c: 70, d: 110, cache: 'a' },
@@ -193,13 +193,12 @@ const freqMarg = {
   draw: d => { const t = tirageCroise([100, 200, 250, 400, 500]); return t && { ...t, k: ri(0, 3) }; },
   build: p => {
     const S = CROISE[p.i], { k } = p, rt = [p.a + p.b, p.c + p.d], ct = [p.a + p.c, p.b + p.d], N = sum(rt);
-    const [eff, nom] = [[rt[0], `les ${S.lignes[0]}`], [rt[1], `les ${S.lignes[1]}`], [ct[0], `les ${S.colonnes[0]}`], [ct[1], `les ${S.colonnes[1]}`]][k], f = eff / N * 100;
+    const [eff, lib, verbe] = [[rt[0], S.Gl[0], S.Gp[0]], [rt[1], S.Gl[1], S.Gp[1]], [ct[0], S.Cl[0], S.Cp[0]], [ct[1], S.Cl[1], S.Cp[1]]][k], f = eff / N * 100;
     if (dec(f) < 0 || dec(f) > 1) return null;
-    const qui = k < 2 ? `${S.ent} sont « ${S.lignes[k]} »` : `${S.ent} sont « ${S.colonnes[k - 2]} »`;
     return { ...rNums([f], { tpl: 'Pourcentage : {0} %', value: f, near: [[[eff, `${M(eff)} est un effectif : le pourcentage est cet effectif divisé par l’effectif total ${M(N)}.`]]] }),
-      html: `${S.intro}${tabCroise(S, p)}Quel pourcentage de l’ensemble des ${S.ent} sont « ${k < 2 ? S.lignes[k] : S.colonnes[k - 2]} » ?`,
-      hint: `Repère dans la case « Total » le nombre de ${S.ent} « ${k < 2 ? S.lignes[k] : S.colonnes[k - 2]} » (ligne ou colonne), puis divise-le par l’effectif total ${M(N)}.`,
-      solution: `Effectif des « ${k < 2 ? S.lignes[k] : S.colonnes[k - 2]} » : ${M(eff)}. Effectif total : ${M(N)}.<br>Fréquence : ${M(eff)} ÷ ${M(N)} = ${M(f / 100)}, soit <b>${M(f)} %</b>.` };
+      html: `${S.intro}${tabCroise(S, p)}Quel pourcentage ${S.ens} ${verbe} ?`,
+      hint: `Repère dans la case « Total » (ligne ou colonne « ${lib} ») le nombre d’individus concernés, puis divise-le par l’effectif total ${M(N)}.`,
+      solution: `Effectif concerné (case « Total » de « ${lib} ») : ${M(eff)}. Effectif total : ${M(N)}.<br>Fréquence : ${M(eff)} ÷ ${M(N)} = ${M(f / 100)}, soit <b>${M(f)} %</b>.` };
   },
   ex: { i: 0, a: 80, b: 40, c: 70, d: 110, k: 2 },
 };
@@ -209,10 +208,10 @@ const freqCond = {
   draw: d => cherche(() => { const t = tirageCroise(); return t && { ...t, l: ri(0, 1), cc: ri(0, 1) }; }, t => { const tot = (t.l ? t.c + t.d : t.a + t.b), v = [[t.a, t.b], [t.c, t.d]][t.l][t.cc]; return dec(v / tot * 100) >= 0 && dec(v / tot * 100) <= 1; }),
   build: p => {
     const S = CROISE[p.i], { l, cc } = p, v = [[p.a, p.b], [p.c, p.d]][l][cc], tot = l ? p.c + p.d : p.a + p.b, N = p.a + p.b + p.c + p.d, f = v / tot * 100;
-    return { ...rNums([f], { tpl: 'Pourcentage : {0} %', value: f, near: [[[v / N * 100, `Tu as divisé par l’effectif total ${M(N)} : ici on se limite aux « ${S.lignes[l]} », donc on divise par leur effectif.`], [v, 'Tu as donné un effectif : on demande un pourcentage.']]] }),
-      html: `${S.intro}${tabCroise(S, p)}Parmi les ${S.ent} « ${S.lignes[l]} », quel pourcentage sont « ${S.colonnes[cc]} » ?`,
-      hint: `On ne regarde que les « ${S.lignes[l]} » : leur effectif est la case « Total » de leur ligne. Divise le nombre de ${S.colonnes[cc]} dans cette ligne (${M(v)}) par cet effectif.`,
-      solution: `Effectif des « ${S.lignes[l]} » : ${M(tot)} (total de la ligne). Parmi eux, ${M(v)} sont « ${S.colonnes[cc]} ».<br>Fréquence conditionnelle : ${M(v)} ÷ ${M(tot)} = ${M(f / 100)}, soit <b>${M(f)} %</b>.` };
+    return { ...rNums([f], { tpl: 'Pourcentage : {0} %', value: f, near: [[[v / N * 100, `Tu as divisé par l’effectif total ${M(N)} : ici on se limite à un seul groupe, donc on divise par son effectif.`], [v, 'Tu as donné un effectif : on demande un pourcentage.']]] }),
+      html: `${S.intro}${tabCroise(S, p)}Parmi les ${S.Gn[l]}, quel pourcentage ${S.Cp[cc]} ?`,
+      hint: `On ne regarde que les ${S.Gn[l]} : leur effectif est la case « Total » de la ligne « ${S.Gl[l]} ». Divise par cet effectif la case de cette ligne située dans la colonne « ${S.Cl[cc]} » (${M(v)}).`,
+      solution: `Effectif des ${S.Gn[l]} : ${M(tot)} (total de la ligne). Parmi eux, ${M(v)} figurent dans la colonne « ${S.Cl[cc]} ».<br>Fréquence conditionnelle : ${M(v)} ÷ ${M(tot)} = ${M(f / 100)}, soit <b>${M(f)} %</b>.` };
   },
   ex: { i: 0, a: 80, b: 40, c: 70, d: 110, l: 0, cc: 0 },
 };
@@ -223,7 +222,7 @@ const condSens = {
   build: p => {
     const S = CROISE[p.i], { l, cc, sens } = p, v = [[p.a, p.b], [p.c, p.d]][l][cc], rt = [p.a + p.b, p.c + p.d], ct = [p.a + p.c, p.b + p.d], N = sum(rt);
     const base = sens === 'ligne' ? rt[l] : ct[cc], autre = sens === 'ligne' ? ct[cc] : rt[l];
-    const q = sens === 'ligne' ? `Parmi les ${S.ent} « ${S.lignes[l]} », quelle est la proportion de ceux qui sont « ${S.colonnes[cc]} » ?` : `Parmi les ${S.ent} « ${S.colonnes[cc]} », quelle est la proportion de ceux qui sont « ${S.lignes[l]} » ?`;
+    const q = sens === 'ligne' ? `Parmi les ${S.Gn[l]}, quelle est la proportion de ceux (ou celles) qui ${S.Cp[cc]} ?` : `Parmi les ${S.Cn[cc]}, quelle est la proportion de ceux (ou celles) qui ${S.Gp[l]} ?`;
     const bon = `${M(v)} ÷ ${M(base)}`;
     const items = [
       { l: bon, ok: true },
@@ -234,10 +233,11 @@ const condSens = {
     if (new Set(items.map(x => x.l)).size < 4) return null;
     return { ...rChoice(items, { indep: bon }),
       html: `${S.intro}${tabCroise(S, p)}${q} Quel calcul faut-il faire ?`,
-      hint: `Le groupe de départ est annoncé après « parmi » : trouve son effectif dans la case « Total » (${M(base)} ou ${M(autre)}). La proportion est le nombre de personnes qui ont l’autre caractère (${M(v)}), divisé par l’effectif de ce groupe.`,
-      solution: `Après « parmi », on lit le groupe de départ : ${sens === 'ligne' ? `les « ${S.lignes[l]} »` : `les « ${S.colonnes[cc]} »`}, d’effectif ${M(base)}.<br>Dans ce groupe, ${M(v)} personnes ont l’autre caractère. La proportion est <b>${bon}</b>.` };
+      hint: `Le groupe de départ est annoncé après « parmi » : trouve son effectif dans la case « Total » (${M(base)} ou ${M(autre)}). La proportion est le nombre d’individus qui ont l’autre caractère (${M(v)}), divisé par l’effectif de ce groupe.`,
+      solution: `Après « parmi », on lit le groupe de départ : ${sens === 'ligne' ? `les ${S.Gn[l]}` : `les ${S.Cn[cc]}`}, d’effectif ${M(base)}.<br>Dans ce groupe, ${M(v)} individus ont l’autre caractère. La proportion est <b>${bon}</b>.` };
   },
   ex: { i: 0, a: 80, b: 40, c: 70, d: 110, l: 0, cc: 0, sens: 'colonne' },
+  ex2: [{ i: 0, a: 80, b: 40, c: 70, d: 110, l: 0, cc: 0, sens: 'ligne' }],
 };
 
 const condCompar = {
@@ -245,12 +245,12 @@ const condCompar = {
   draw: d => cherche(() => { const t = tirageCroise([200, 250, 400, 500]); return t && { ...t, cc: ri(0, 1) }; }, t => { const f0 = [t.a, t.b][t.cc] / (t.a + t.b), f1 = [t.c, t.d][t.cc] / (t.c + t.d), n0 = [t.a, t.b][t.cc], n1 = [t.c, t.d][t.cc]; return Math.abs(f0 - f1) >= 0.05 && (f0 > f1) !== (n0 > n1); }),
   build: p => {
     const S = CROISE[p.i], { cc } = p, v0 = [p.a, p.b][cc], v1 = [p.c, p.d][cc], t0 = p.a + p.b, t1 = p.c + p.d, f0 = v0 / t0 * 100, f1 = v1 / t1 * 100, bon = f0 > f1 ? 0 : 1;
-    const gr = k => `Parmi les « ${S.lignes[k]} »`;
-    const items = [{ l: `${gr(0)}.`, ok: bon === 0 }, { l: `${gr(1)}.`, ok: bon === 1 }, { l: 'La proportion est la même dans les deux groupes.' }].map(x => ({ ...x, why: x.ok ? '' : `Compare les proportions ${M(rnd(f0, 1))} % et ${M(rnd(f1, 1))} % : le groupe où il y a le plus de « ${S.colonnes[cc]} » en nombre n’est pas forcément celui où leur proportion est la plus grande.` }));
+    const gr = k => `Parmi les ${S.Gn[k]}`;
+    const items = [{ l: `${gr(0)}.`, ok: bon === 0 }, { l: `${gr(1)}.`, ok: bon === 1 }, { l: 'La proportion est la même dans les deux groupes.' }].map(x => ({ ...x, why: x.ok ? '' : `Compare les proportions ${M(rnd(f0, 1))} % et ${M(rnd(f1, 1))} % : le groupe où ils sont le plus nombreux n’est pas forcément celui où leur proportion est la plus grande.` }));
     return { ...rChoice(items, { ordre: true, indep: `${gr(bon)}.` }),
-      html: `${S.intro}${tabCroise(S, p)}Dans quel groupe la proportion de « ${S.colonnes[cc]} » est-elle la plus grande ?`,
-      hint: `Compare des proportions, pas des effectifs : pour chaque ligne, divise le nombre de « ${S.colonnes[cc]} » (${M(v0)} et ${M(v1)}) par le total de la ligne (${M(t0)} et ${M(t1)}).`,
-      solution: `« ${S.lignes[0]} » : ${M(v0)} ÷ ${M(t0)} ≈ ${M(rnd(v0 / t0, 3))}, soit ${M(rnd(f0, 1))} %.<br>« ${S.lignes[1]} » : ${M(v1)} ÷ ${M(t1)} ≈ ${M(rnd(v1 / t1, 3))}, soit ${M(rnd(f1, 1))} %.<br>La plus grande proportion est <b>${gr(bon).toLowerCase()}</b>.` };
+      html: `${S.intro}${tabCroise(S, p)}Dans quel groupe la proportion d’individus de la colonne « ${S.Cl[cc]} » est-elle la plus grande ?`,
+      hint: `Compare des proportions, pas des effectifs : pour chaque ligne, divise le nombre d’individus de la colonne « ${S.Cl[cc]} » (${M(v0)} et ${M(v1)}) par le total de la ligne (${M(t0)} et ${M(t1)}).`,
+      solution: `« ${S.Gl[0]} » : ${M(v0)} ÷ ${M(t0)} ≈ ${M(rnd(v0 / t0, 3))}, soit ${M(rnd(f0, 1))} %.<br>« ${S.Gl[1]} » : ${M(v1)} ÷ ${M(t1)} ≈ ${M(rnd(v1 / t1, 3))}, soit ${M(rnd(f1, 1))} %.<br>La plus grande proportion est <b>${gr(bon).toLowerCase()}</b>.` };
   },
   ex: { i: 0, a: 90, b: 60, c: 120, d: 130, cc: 0 },
 };
@@ -258,13 +258,13 @@ const condCompar = {
 const reconstr = {
   id: 'reconstr', dmin: 4, titre: 'retrouver une case à partir de fréquences',
   draw: d => cherche(() => { const N = pick([200, 250, 400, 500]), dp = ri(Math.round(N * 0.3), Math.round(N * 0.6)), n1 = ri(Math.round(N * 0.3), Math.round(N * 0.6)), pc1 = ri(2, 18) * 5, i = ri(0, CROISE.length - 1); return { i, N, dp, n1, pc1 }; },
-    t => entier(t.n1 * t.pc1 / 100) && t.N - t.dp - t.n1 * t.pc1 / 100 > 0 && t.N - t.dp - t.n1 * t.pc1 / 100 < t.N - t.n1 && t.N - t.dp > t.n1 * t.pc1 / 100),
+    t => entier(t.n1 * t.pc1 / 100) && t.N - t.dp - t.n1 * t.pc1 / 100 > 0 && t.N - t.dp - t.n1 * t.pc1 / 100 < t.N - t.n1),
   build: p => {
     const S = CROISE[p.i], { N, dp, n1, pc1 } = p, ext = N - dp, cell = n1 * pc1 / 100, r = ext - cell;
-    return { ...rNums([r], { tpl: 'Effectif : {0}', value: r, near: [[[cell, `${M(cell)} est le nombre de « ${S.lignes[1]} » qui sont « ${S.colonnes[1]} » : il reste à trouver ceux des « ${S.lignes[0]} ».`], [ext, `${M(ext)} est le total des « ${S.colonnes[1]} » : il faut en retirer ceux des « ${S.lignes[1]} ».`]]] }),
-      html: `Un ensemble de ${M(N)} ${S.ent} se partage entre « ${S.lignes[0]} » et « ${S.lignes[1]} », et entre « ${S.colonnes[0]} » et « ${S.colonnes[1]} ». Il y a ${M(dp)} « ${S.colonnes[0]} » au total, et ${M(n1)} « ${S.lignes[1]} », dont ${pc(pc1)} sont « ${S.colonnes[1]} ». Combien de « ${S.lignes[0]} » sont « ${S.colonnes[1]} » ?`,
-      hint: `Calcule d’abord le total des « ${S.colonnes[1]} » (${M(N)} moins les ${M(dp)} « ${S.colonnes[0]} »), puis le nombre de « ${S.lignes[1]} » qui sont « ${S.colonnes[1]} » (${M(pc1)} % de ${M(n1)}) : le reste concerne les « ${S.lignes[0]} ».`,
-      solution: `Total des « ${S.colonnes[1]} » : ${M(N)} − ${M(dp)} = ${M(ext)}.<br>« ${S.lignes[1]} » qui sont « ${S.colonnes[1]} » : ${M(n1)} × ${M(pc1)} ÷ 100 = ${M(cell)}.<br>« ${S.lignes[0]} » qui sont « ${S.colonnes[1]} » : ${M(ext)} − ${M(cell)} = <b>${M(r)}</b>.` };
+    return { ...rNums([r], { tpl: 'Effectif : {0}', value: r, near: [[[cell, `${M(cell)} est le nombre d’individus de la ligne « ${S.Gl[1]} » dans la colonne « ${S.Cl[1]} » : il reste à trouver ceux de la ligne « ${S.Gl[0]} ».`], [ext, `${M(ext)} est le total de la colonne « ${S.Cl[1]} » : il faut en retirer ceux de la ligne « ${S.Gl[1]} ».`]]] }),
+      html: `Un ensemble de ${M(N)} ${S.ent} se partage selon deux caractères : les lignes « ${S.Gl[0]} » et « ${S.Gl[1]} », les colonnes « ${S.Cl[0]} » et « ${S.Cl[1]} ». La colonne « ${S.Cl[0]} » compte ${M(dp)} ${S.ent} au total. La ligne « ${S.Gl[1]} » compte ${M(n1)} ${S.ent}, dont ${pc(pc1)} sont dans la colonne « ${S.Cl[1]} ». Combien ${/^[aeiouéèh]/i.test(S.ent) ? 'd’' : 'de '}${S.ent} de la ligne « ${S.Gl[0]} » sont dans la colonne « ${S.Cl[1]} » ?`,
+      hint: `Calcule d’abord le total de la colonne « ${S.Cl[1]} » (${M(N)} moins les ${M(dp)} de la colonne « ${S.Cl[0]} »), puis le nombre d’individus de la ligne « ${S.Gl[1]} » qui y sont (${M(pc1)} % de ${M(n1)}) : le reste vient de la ligne « ${S.Gl[0]} ».`,
+      solution: `Total de la colonne « ${S.Cl[1]} » : ${M(N)} − ${M(dp)} = ${M(ext)}.<br>Ligne « ${S.Gl[1]} », colonne « ${S.Cl[1]} » : ${M(n1)} × ${M(pc1)} ÷ 100 = ${M(cell)}.<br>Ligne « ${S.Gl[0]} », colonne « ${S.Cl[1]} » : ${M(ext)} − ${M(cell)} = <b>${M(r)}</b>.` };
   },
   ex: { i: 0, N: 250, dp: 140, n1: 100, pc1: 45 },
 };
@@ -322,6 +322,7 @@ const sensLiaison = {
       solution: `Le nuage ${m === 'pos' ? 'monte de la gauche vers la droite' : m === 'neg' ? 'descend de la gauche vers la droite' : 'ne suit aucune direction particulière'}.<br><b>${T[m]}</b>` };
   },
   ex: { id: 'rev', pts: [1, 2, 3, 4, 5, 6, 7, 9].map((x, i) => ({ x, y: [9, 11, 10, 13, 14, 15, 17, 18][i] })), mode: 'pos' },
+  ex2: [{ id: 'age', pts: [1, 2, 3, 4, 5, 6, 7, 9].map((x, i) => ({ x, y: [15, 14, 13, 11, 10, 9, 7, 5][i] })), mode: 'neg' }],
 };
 
 const lireNuage = {
@@ -331,7 +332,7 @@ const lireNuage = {
     const ct = NU.find(c => c.id === p.id), j = p.j, P_ = p.pts[j], pts = p.pts.map((q, i) => (i === j ? { ...q, l: 'P' } : q)), vis = svgNuage(ct, pts, { mark: [j] });
     return { ...rNums([P_.x, P_.y], { tpl: 'x : {0} y : {1}', value: P_.y, verify: E => { const L = readNuage(vis).pts[j]; return Math.abs(L.x - E[0]) < 0.02 && Math.abs(L.y - E[1]) < 0.02; } }), visual: vis,
       html: `${ct.intro} Quelles sont les coordonnées du point P, mis en évidence sur le nuage ?`,
-      hint: `Lis l’abscisse x de P sur l’axe horizontal (${ct.xt}) en descendant verticalement, puis son ordonnée y sur l’axe vertical (${ct.yt}) en allant horizontalement. Les graduations de l’axe vertical vont de ${M(ct.ly)} en ${M(ct.ly)}.`,
+      hint: `Lis l’abscisse x de P sur l’axe horizontal (« ${ct.xt} ») en descendant verticalement, puis son ordonnée y sur l’axe vertical (« ${ct.yt} ») en allant horizontalement. Les graduations de l’axe vertical vont de ${M(ct.ly)} en ${M(ct.ly)}.`,
       solution: `En descendant de P vers l’axe horizontal, on lit x = <b>${M(P_.x)}</b>${ct.ux}. En allant vers l’axe vertical, on lit y = <b>${M(P_.y)}</b>${ct.uy}.` };
   },
   ex: { id: 'rev', pts: [{ x: 1, y: 9 }, { x: 2, y: 11 }, { x: 3, y: 12 }, { x: 4, y: 12 }, { x: 5, y: 14 }, { x: 7, y: 17 }, { x: 8, y: 17 }], j: 4 },
@@ -430,6 +431,7 @@ const fiable = {
       solution: `${M(x)} ${dedans ? 'est compris entre' : 'n’est pas compris entre'} ${M(xmin)} et ${M(xmax)}.<br>${dedans ? 'C’est une interpolation : on reste dans le domaine où l’on a des observations.' : 'C’est une extrapolation : on sort du domaine observé et rien ne garantit que la tendance continue.'}<br>Réponse : <b>${T[bon]}</b>` };
   },
   ex: { id: 'rev', pts: [{ x: 1, y: 9 }, { x: 2, y: 11 }, { x: 3, y: 12 }, { x: 5, y: 14 }, { x: 6, y: 15 }, { x: 7, y: 17 }, { x: 8, y: 17 }, { x: 9, y: 19 }], x: 15, dehors: true },
+  ex2: [{ id: 'rev', pts: [{ x: 1, y: 9 }, { x: 2, y: 11 }, { x: 3, y: 12 }, { x: 5, y: 14 }, { x: 6, y: 15 }, { x: 7, y: 17 }, { x: 8, y: 17 }, { x: 9, y: 19 }], x: 6, dehors: false }],
 };
 
 const inverseDroite = {

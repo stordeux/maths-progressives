@@ -229,14 +229,14 @@ const ajoutExt = {
   draw: d => cherche(() => {
     const i = ri(0, SC_EXT.length - 1), S = SC_EXT[i], L = asc(Array.from({ length: 5 }, () => ri(S.lo, S.hi))), v = pick(S.ext);
     return { i, L: shuffle([...L]), v };
-  }, p => { const s = sum(p.L) + p.v, m2 = s / 6; return entier(m2 * 2) && new Set(p.L).size >= 4; }),
+  }, p => { const m1 = sum(p.L) / 5, m2 = (sum(p.L) + p.v) / 6, B = asc([...p.L, p.v]), me2 = (B[2] + B[3]) / 2; return entier(m2 * 2) && new Set(p.L).size >= 4 && m2 - m1 > 2 && m2 - m1 > 2.5 * Math.abs(me2 - asc(p.L)[2]); }),
   build: p => {
     const S = SC_EXT[p.i], { L, v } = p, s = sum(L), s2 = s + v, A = asc(L), B = asc([...L, v]);
     const m1 = s / 5, me1 = A[2], m2 = s2 / 6, me2 = (B[2] + B[3]) / 2;
     return { ...rNums([m2, me2], { tpl: `Moyenne : {0}${S.u} Médiane : {1}${S.u}`, value: me2, verify: E => Math.abs(E[0] - mean([...L, v])) < 1e-9 && Math.abs(E[1] - medCount([...L, v])) < 1e-9, near: [[], [[me1, 'Avec 6 valeurs, la médiane est la moyenne des 3<sup>e</sup> et 4<sup>e</sup> valeurs rangées : elle a changé.']]] }),
       html: `${S.t(L, v)} Calcule la nouvelle moyenne et la nouvelle médiane.`,
       hint: `Pour la moyenne : additionne les 5 valeurs (${plus(L.slice(0, 3))} …) et ${M(v)}, puis divise par 6. Pour la médiane : range les 6 valeurs et fais la moyenne des deux du milieu.`,
-      solution: `Somme des 6 valeurs : ${plus(L)} + ${M(v)} = ${M(s2)}, donc moyenne : ${M(s2)} ÷ 6 = <b>${M(m2)}</b>${S.u}.<br>Rangées : ${lst(B)}. La médiane est la moyenne de la 3<sup>e</sup> (${M(B[2])}) et de la 4<sup>e</sup> (${M(B[3])}) : (${M(B[2])} + ${M(B[3])}) ÷ 2 = <b>${M(me2)}</b>${S.u}.<br>La moyenne a beaucoup bougé (de ${M(m1)} à ${M(m2)}), la médiane très peu (de ${M(me1)} à ${M(me2)}) : la médiane résiste aux valeurs extrêmes.` };
+      solution: `Somme des 6 valeurs : ${plus(L)} + ${M(v)} = ${M(s2)}, donc moyenne : ${M(s2)} ÷ 6 = <b>${M(m2)}</b>${S.u}.<br>Rangées : ${lst(B)}. La médiane est la moyenne de la 3<sup>e</sup> (${M(B[2])}) et de la 4<sup>e</sup> (${M(B[3])}) : (${M(B[2])} + ${M(B[3])}) ÷ 2 = <b>${M(me2)}</b>${S.u}.<br>La moyenne passe de ${M(m1)} à ${M(m2)}, la médiane de ${M(me1)} à ${M(me2)} : la valeur extrême agit surtout sur la moyenne, la médiane y est bien moins sensible.` };
   },
   ex: { i: 0, L: [18, 15, 20, 16, 21], v: 72 },
 };
@@ -359,32 +359,32 @@ const eiqEff = {
   ex: { C: CTX[0], vals: [7, 8, 9, 10, 11], effs: [2, 5, 9, 7, 3] },
 };
 
+const MOINS = {
+  notes: x => `ont une note inférieure ou égale à ${M(x)}`,
+  trajet: x => `ont un trajet de ${M(x)} min ou moins`,
+  taille: x => `mesurent ${M(x)} cm ou moins`,
+};
 const interpQ = {
   id: 'interp-q', dmin: 2, titre: 'sens d’un quartile',
-  draw: d => ({ C: pick(CTX.filter(c => ['notes', 'trajet', 'taille', 'livres'].includes(c.id))), N: pick([20, 24, 28, 32, 36, 40]), q: pick([1, 3]), x: 0 }),
+  draw: d => ({ C: pick(CTX.filter(c => MOINS[c.id])), N: pick([20, 24, 28, 32, 36, 40]), q: pick([1, 3]) }),
   build: p => {
-    const { C, N, q } = p, x = q === 1 ? Math.round((C.lo + C.hi) / 2 / C.pas) * C.pas - C.pas * 2 : Math.round((C.lo + C.hi) / 2 / C.pas) * C.pas + C.pas * 2;
-    const quart = N / 4, trois = 3 * N / 4, mots = { notes: 'ont une note', trajet: 'ont un trajet de durée', taille: 'ont une taille', livres: 'ont lu un nombre de livres' }[C.id];
-    const sup = (k, mark) => `Au ${mark} ${M(k)} ${C.ent} ${mots} inférieur${C.id === 'notes' ? 'e' : ''} ou égal${C.id === 'notes' ? 'e' : ''} à ${fv(x, C.u)}.`;
-    const bon = q === 1 ? sup(quart, 'moins') : sup(trois, 'moins');
-    const [tq, tt] = q === 1 ? [`${sub(1)}`, `${M(quart)}`] : [`${sub(3)}`, `${M(trois)}`];
-    const items = q === 1 ? [
-      { l: bon, ok: true },
-      { l: `Exactement ${M(quart)} ${C.ent} ${mots} inférieur${C.id === 'notes' ? 'e' : ''} ou égal${C.id === 'notes' ? 'e' : ''} à ${fv(x, C.u)}.`, why: 'Un quartile est une valeur de la série : plusieurs élèves peuvent avoir la même valeur, on dit donc « au moins », pas « exactement ».' },
-      { l: sup(trois, 'moins'), why: `${M(trois)} correspond aux trois quarts de ${M(N)} : ce serait le troisième quartile.` },
-      { l: sup(N / 2, 'moins'), why: `La moitié des ${C.ent}, c’est la médiane, pas le premier quartile.` },
-    ] : [
-      { l: bon, ok: true },
-      { l: `Exactement ${M(trois)} ${C.ent} ${mots} inférieur${C.id === 'notes' ? 'e' : ''} ou égal${C.id === 'notes' ? 'e' : ''} à ${fv(x, C.u)}.`, why: 'Un quartile est une valeur de la série : plusieurs élèves peuvent avoir la même valeur, on dit donc « au moins », pas « exactement ».' },
-      { l: sup(quart, 'moins'), why: `${M(quart)} correspond au quart de ${M(N)} : ce serait le premier quartile.` },
-      { l: sup(N / 2, 'moins'), why: `La moitié des ${C.ent}, c’est la médiane, pas le troisième quartile.` },
+    const { C, N, q } = p, mid = Math.round((C.lo + C.hi) / 2 / C.pas) * C.pas, x = q === 1 ? mid - 2 * C.pas : mid + 2 * C.pas;
+    const quart = N / 4, trois = 3 * N / 4, moins = MOINS[C.id](x);
+    const au = k => `Au moins ${M(k)} ${C.ent} ${moins}.`, ex_ = k => `Exactement ${M(k)} ${C.ent} ${moins}.`;
+    const nom = q === 1 ? sub(1) : sub(3), bonK = q === 1 ? quart : trois, autreK = q === 1 ? trois : quart;
+    const items = [
+      { l: au(bonK), ok: true },
+      { l: ex_(bonK), why: 'Un quartile est une valeur de la série : plusieurs données peuvent être égales, on dit donc « au moins », pas « exactement ».' },
+      { l: au(autreK), why: `${M(autreK)} correspond ${q === 1 ? 'aux trois quarts' : 'au quart'} de ${M(N)} : ce serait le ${q === 1 ? 'troisième' : 'premier'} quartile.` },
+      { l: au(N / 2), why: `La moitié des ${C.ent}, c’est la médiane, pas le ${q === 1 ? 'premier' : 'troisième'} quartile.` },
     ];
-    return { ...rChoice(items, { indep: bon }),
-      html: `Dans une série de ${M(N)} ${C.ent}, le ${q === 1 ? 'premier' : 'troisième'} quartile ${tq} est égal à ${fv(x, C.u)} (${C.nom}). Quelle phrase est exacte ?`,
-      hint: `Le ${q === 1 ? 'premier' : 'troisième'} quartile ${tq} sépare le ${q === 1 ? 'quart' : 'dernier quart'} des valeurs : ${q === 1 ? '25 %' : '75 %'} de ${M(N)} fait ${tt}. Regarde « au moins » et la valeur ${fv(x, C.u)}.`,
-      solution: `Par définition, ${tq} est la plus petite valeur telle qu’au moins ${q === 1 ? '25 %' : '75 %'} des valeurs lui soient inférieures ou égales.<br>${q === 1 ? '25 %' : '75 %'} de ${M(N)} : ${M(N)} × ${q === 1 ? '0,25' : '0,75'} = ${tt}.<br>Donc : ${bon}` };
+    return { ...rChoice(items, { indep: au(bonK) }),
+      html: `On a relevé les ${C.noms} de ${M(N)} ${C.ent}. Le ${q === 1 ? 'premier' : 'troisième'} quartile ${nom} de cette série vaut ${fv(x, C.u)}. Quelle phrase est exacte ?`,
+      hint: `${nom} correspond à ${q === 1 ? '25 %' : '75 %'} des ${M(N)} ${C.ent}, c’est-à-dire ${M(bonK)} ${C.ent} : regarde la valeur ${fv(x, C.u)} et la différence entre « au moins » et « exactement ».`,
+      solution: `Par définition, ${nom} est la plus petite valeur telle qu’au moins ${q === 1 ? '25 %' : '75 %'} des valeurs lui soient inférieures ou égales.<br>${q === 1 ? '25 %' : '75 %'} de ${M(N)} : ${M(N)} × ${q === 1 ? '0,25' : '0,75'} = ${M(bonK)}.<br>Donc : ${au(bonK)}` };
   },
   ex: { C: CTX[0], N: 28, q: 1 },
+  ex2: [{ C: CTX[0], N: 28, q: 3 }],
 };
 
 export const LV3 = niveau('Médiane, quartiles, écart interquartile', [medListe, quartListe, eiqListe, quartEff, interpQ, eiqEff], {

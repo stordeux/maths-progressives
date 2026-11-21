@@ -1,5 +1,5 @@
 // Niveaux 7 à 9 : histogramme ; fréquences cumulées et polygone ; comparer deux séries.
-import { ri, pick, shuffle, chance, M, big, lst, pc, fv, plus, somme, rNums, rChoice, niveau, tabEff } from './outils.js';
+import { ri, pick, shuffle, chance, M, big, lst, pc, fv, plus, sm, somme, rNums, rChoice, niveau, tabEff } from './outils.js';
 import { CTX, sum, range, moy, rnd, entier, dec, cherche, effCloche, partition, cumul, mean, med, asc } from './stat.js';
 import { tab, histogramme, readHisto, polygone, readPoly, pointsSurDroite } from './draw.js';
 import { boxPlot } from '../stats3e/draw.js';
@@ -80,9 +80,10 @@ const effSup = {
     return { ...rNums([r], { tpl: 'Effectif : {0}', verify: E => { const L = readHisto(vis).map(x => x.h); return Math.abs(E[0] - sum(moins ? L.slice(0, j) : L.slice(j))) < 0.02; }, value: r, near: [[[sum(moins ? h.slice(j) : h.slice(0, j)), `Tu as additionné les classes situées de l’autre côté de ${M(lim)}.`]]] }), visual: vis,
       html: `${C.hist()} Combien de ${C.ent} ont une valeur ${moins ? 'strictement inférieure à' : 'supérieure ou égale à'} ${fv(lim, C.u)} ?`,
       hint: `${M(lim)} est une borne entre deux classes. Repère les classes ${moins ? 'situées à gauche' : 'situées à droite'} de ${M(lim)} et additionne les hauteurs de leurs rectangles.`,
-      solution: `Classes ${moins ? 'avant' : 'à partir de'} ${M(lim)} : ${part.map((x, i) => cl(...(moins ? [bornes[i], bornes[i + 1]] : [bornes[j + i], bornes[j + i + 1]]))).join(' ; ')}.<br>Effectifs : ${lst(part)}, d’où ${plus(part)} = <b>${M(r)}</b>.` };
+      solution: `Classes ${moins ? 'avant' : 'à partir de'} ${M(lim)} : ${part.map((x, i) => cl(...(moins ? [bornes[i], bornes[i + 1]] : [bornes[j + i], bornes[j + i + 1]]))).join(' ; ')}.<br>Effectifs : ${lst(part)}, d’où ${sm(part).replace(/ = [^=]*$/, '')} = <b>${M(r)}</b>.` };
   },
   ex: { C: CTXC[0], bornes: [0, 10, 20, 30, 40], h: [3, 8, 6, 3], j: 2, moins: false },
+  ex2: [{ C: CTXC[0], bornes: [0, 10, 20, 30, 40], h: [3, 8, 6, 3], j: 2, moins: true }],
 };
 
 const histoPct = {
@@ -123,7 +124,7 @@ const pctMoins = {
     return { ...rNums([f], { tpl: 'Proportion : {0} %', verify: E => { const L = readHisto(vis).map(x => x.h); return Math.abs(sum(L.slice(0, j)) / sum(L) * 100 - E[0]) < 0.02; }, value: f, near: [[[s, 'Tu as donné un effectif : la proportion est cet effectif divisé par l’effectif total, en %.'], [100 - f, 'Tu as calculé la proportion des valeurs situées de l’autre côté de la borne.']]] }), visual: vis,
       html: `${C.hist()} Quel pourcentage des ${C.ent} ont une valeur strictement inférieure à ${fv(bornes[j], C.u)} ?`,
       hint: `Additionne les hauteurs des rectangles situés à gauche de ${M(bornes[j])} (${h.slice(0, j).map(M).join(' + ')}), puis divise par l’effectif total, somme de tous les rectangles.`,
-      solution: `Effectifs à gauche de ${M(bornes[j])} : ${plus(h.slice(0, j))} = ${M(s)}.<br>Effectif total : ${plus(h)} = ${M(N)}.<br>Proportion : ${M(s)} ÷ ${M(N)} = ${M(f / 100)}, soit <b>${M(f)} %</b>.` };
+      solution: `Effectifs à gauche de ${M(bornes[j])} : ${sm(h.slice(0, j))}.<br>Effectif total : ${plus(h)} = ${M(N)}.<br>Proportion : ${M(s)} ÷ ${M(N)} = ${M(f / 100)}, soit <b>${M(f)} %</b>.` };
   },
   ex: { C: CTXC[0], bornes: [0, 10, 20, 30, 40], h: [3, 8, 6, 3], j: 2 },
 };
@@ -158,7 +159,7 @@ const cumulCalc = {
     return { ...rNums([f], { tpl: 'Fréquence cumulée : {0} %', value: f, near: [[[s, 'Tu as donné un effectif cumulé : la fréquence cumulée est cet effectif divisé par l’effectif total, en %.']]] }),
       html: `${C.intro}${tableCumul(C, bornes, effs)}Quelle est la fréquence cumulée croissante de ${fv(bornes[j], C.u)}, c’est-à-dire le pourcentage de valeurs strictement inférieures à ${fv(bornes[j], C.u)} ?`,
       hint: `Additionne les effectifs des classes situées avant ${M(bornes[j])} (${effs.slice(0, j).map(M).join(' + ')}), puis divise par l’effectif total, somme de toute la ligne des effectifs.`,
-      solution: `Effectif des classes avant ${M(bornes[j])} : ${plus(effs.slice(0, j))} = ${M(s)}.<br>Effectif total : ${plus(effs)} = ${M(N)}.<br>Fréquence cumulée : ${M(s)} ÷ ${M(N)} = ${M(f / 100)}, soit <b>${M(f)} %</b>.` };
+      solution: `Effectif des classes avant ${M(bornes[j])} : ${sm(effs.slice(0, j))}.<br>Effectif total : ${plus(effs)} = ${M(N)}.<br>Fréquence cumulée : ${M(s)} ÷ ${M(N)} = ${M(f / 100)}, soit <b>${M(f)} %</b>.` };
   },
   ex: { C: CTXC[0], bornes: [0, 10, 20, 30, 40], effs: [3, 5, 8, 4], N: 20, F: [0, 15, 40, 80, 100], j: 2 },
 };
@@ -240,6 +241,7 @@ const quartilePoly = {
       solution: D.texte };
   },
   ex: { C: CTXC[0], bornes: [0, 10, 20, 30, 40], F: [0, 15, 40, 80, 100], cible: 25 },
+  ex2: [{ C: CTXC[0], bornes: [0, 10, 20, 30, 40, 50], F: [0, 10, 35, 70, 90, 100], cible: 75 }],
 };
 
 const supPoly = {
@@ -332,7 +334,7 @@ const outilExtreme = {
     return { ...rChoice(items, { indep: OUTILS[1].l }),
       html: `Voici les temps de livraison (en minutes) de 7 commandes : ${lst(L)}. Une commande a été très en retard (${M(ext)} minutes). Pour résumer cette série sans que cette valeur extrême n’influence trop le résultat, quels indicateurs choisir ?`,
       hint: `Une valeur extrême comme ${M(ext)} change beaucoup la moyenne et l’écart type, alors que la médiane et les quartiles dépendent surtout des valeurs du milieu. Compare ${M(ext)} aux autres valeurs de la liste.`,
-      solution: `Les valeurs sont autour de ${M(asc(L)[3])} minutes, sauf ${M(ext)}. La moyenne et l’écart type utilisent toutes les valeurs : ils sont tirés par ${M(ext)}.<br>La médiane et l’écart interquartile résistent aux valeurs extrêmes : <b>${OUTILS[1].l.replace('.', '')}</b>.` };
+      solution: `Les valeurs sont autour de ${M(asc(L)[3])} minutes, sauf ${M(ext)}. La moyenne et l’écart type utilisent toutes les valeurs : ils sont tirés par ${M(ext)}.<br>La médiane et l’écart interquartile résistent aux valeurs extrêmes : <b>${OUTILS[1].l.replace('.', '').replace('La médiane', 'la médiane')}</b>.` };
   },
   ex: { L: [22, 25, 19, 24, 135, 21, 26] },
 };
@@ -345,14 +347,14 @@ const outilToutes = {
     return { ...rChoice(items, { indep: OUTILS[0].l }),
       html: `Voici les notes (sur 20) de 8 élèves : ${lst(L)}. Aucune valeur n’est extrême et on veut un résumé qui utilise toutes les notes. Quels indicateurs choisir ?`,
       hint: `Les notes ${M(Math.min(...L))} à ${M(Math.max(...L))} sont proches les unes des autres : aucune valeur extrême. Quels indicateurs calculent avec toutes les valeurs de la série ?`,
-      solution: `Il n’y a pas de valeur extrême (les notes vont de ${M(Math.min(...L))} à ${M(Math.max(...L))}) et on veut utiliser toutes les notes : <b>${OUTILS[0].l.replace('.', '')}</b> utilisent toutes les valeurs.` };
+      solution: `Il n’y a pas de valeur extrême (les notes vont de ${M(Math.min(...L))} à ${M(Math.max(...L))}) et on veut utiliser toutes les notes : <b>${OUTILS[0].l.replace('.', '').replace('La moyenne', 'la moyenne')}</b> utilisent toutes les valeurs.` };
   },
   ex: { L: [11, 13, 9, 12, 14, 10, 12, 15] },
 };
 
 const moyReunie = {
   id: 'moy-reunie', dmin: 2, titre: 'moyenne de deux groupes réunis',
-  draw: d => cherche(() => { const n1 = ri(8, 30), n2 = pick([20, 25, 40, 50]) - n1; return n2 >= 5 && n2 !== n1 ? { n1, n2, m1: ri(60, 150) / 10, m2: ri(60, 150) / 10, i: ri(0, 2) } : null; }, t => { const m = (t.n1 * t.m1 + t.n2 * t.m2) / (t.n1 + t.n2); return dec(m) >= 0 && dec(m) <= 2 && t.m1 !== t.m2; }),
+  draw: d => cherche(() => { const n1 = ri(8, 30), n2 = pick([20, 25, 40, 50]) - n1; return n2 >= 5 && n2 !== n1 ? { n1, n2, m1: ri(80, 150) / 10, m2: ri(80, 150) / 10, i: ri(0, 2) } : null; }, t => { const m = (t.n1 * t.m1 + t.n2 * t.m2) / (t.n1 + t.n2); return dec(m) >= 0 && dec(m) <= 2 && t.m1 !== t.m2; }),
   build: p => {
     const { n1, n2, m1, m2, i } = p, N = n1 + n2, s1 = rnd(n1 * m1, 4), s2 = rnd(n2 * m2, 4), m = (s1 + s2) / N;
     const [g1, g2, ent] = [['la classe A', 'la classe B', 'élèves'], ['le groupe A', 'le groupe B', 'élèves'], ['le lot A', 'le lot B', 'pièces']][i];

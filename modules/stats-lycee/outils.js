@@ -29,6 +29,8 @@ export const fv = (v, u = '') => `${M(v)}${u ? u.replace(/^ /, '&nbsp;') : ''}`;
 export const pl = (n, mot, mots = mot + 's') => `${M(n)} ${n > 1 ? mots : mot}`;
 /** « 3 × 12 + 5 × 14 » : somme de produits effectif × valeur */
 export const somme = (vals, effs, f = (x, e) => `${M(e)} × ${M(x)}`) => vals.map((x, i) => f(x, effs[i])).join(' + ');
+/** « 12 + 8 + 20 = 40 » (ou simplement « 12 » s'il n'y a qu'un terme) */
+export const sm = a => (a.length > 1 ? `${a.map(M).join(' + ')} = ${M(a.reduce((s, x) => s + x, 0))}` : M(a[0]));
 /** « 12 + 8 + 20 » */
 export const plus = a => a.map(M).join(' + ');
 /** « 3 + (−2) » sans « + − » : somme de nombres relatifs avec parenthèses */
@@ -37,7 +39,8 @@ export const plusP = a => a.map(P).join(' + ');
 /* ---------- réponses ---------- */
 const fill = (tpl, E) => tpl.replace(/\{(\d+)\}/g, (_, i) => `<b>${M(E[+i])}</b>`);
 /** cases numériques ; tpl : gabarit {0}, {1}… ; near : par case, [[valeur, message « presque juste »], …] */
-export function rNums(E, o = {}) {
+export function rNums(E0, o = {}) {
+  const E = E0.map(x => Math.round(x * 1e6) / 1e6);
   const tpl = o.tpl || 'Réponse : {0}';
   const q = { type: 'nums', tpl, check: multiCheck(E, o.near || []), expected: E, rep: fill(tpl, E), keys: { comma: true, neg: o.neg !== undefined ? o.neg : false } };
   if (o.value !== undefined) q.value = o.value;
@@ -61,18 +64,20 @@ export const memes = (a, b) => a.length === b.length && a.every((x, i) => approx
 
 /* ---------- niveaux ---------- */
 /** exemple corrigé d'une forme (cours) : mêmes énoncé, indice et solution que l'exercice, ordre des choix fixe */
-function exemple(f, num) {
+function exemple(f, num, params = f.ex, autre = false) {
   FIXE = true;
   let q;
-  try { q = f.build(f.ex); } finally { FIXE = false; }
+  try { q = f.build(params); } finally { FIXE = false; }
   if (!q) throw new Error(`exemple impossible : ${f.id}`);
   let choix = '';
   if (q.type === 'choice' && !q.opts.some(o => /<table|<svg/.test(o.l))) {
     choix = `<div class="choixex">${q.opts.map((o, i) => `<b>${'ABCD'[i]}.</b> ${i === +q.expected ? '<b>' + o.l + ' ✓</b>' : o.l}`).join(' &nbsp;·&nbsp; ')}</div>`;
   }
-  return `<div class="ex" data-form="${f.id}"><span class="q">Exemple ${num} : ${f.titre}</span><br>${q.html}${q.visual || ''}${choix}<div class="repex"><b>Réponse :</b> ${q.rep}</div>${q.solution}${q.afterVisual || ''}</div>`;
+  return `<div class="ex" data-form="${f.id}"><span class="q">Exemple ${num} : ${f.titre}${autre ? ' (autre cas)' : ''}</span><br>${q.html}${q.visual || ''}${choix}<div class="repex"><b>Réponse :</b> ${q.rep}</div>${q.solution}${q.afterVisual || ''}</div>`;
 }
-export const exemples = forms => forms.map((f, i) => exemple(f, i + 1)).join('\n');
+export const exemples = forms => { let n = 0; return forms.flatMap(f => [exemple(f, ++n), ...(f.ex2 || []).map(p => exemple(f, ++n, p, true))]).join('\n'); };
+/** les exemples supplémentaires d'une forme (autres cas), pour les tests */
+export function exemples2De(f) { FIXE = true; try { return (f.ex2 || []).map(p => f.build(p)); } finally { FIXE = false; } }
 /** l'exemple d'une forme, pour les tests */
 export function exempleDe(f) { FIXE = true; try { return f.build(f.ex); } finally { FIXE = false; } }
 

@@ -1,5 +1,5 @@
 // Niveaux 4 à 6 : écart type (sens, petite série) ; écart type avec effectifs ; données regroupées en classes.
-import { ri, pick, shuffle, chance, M, big, lst, pc, fv, plus, somme, rNums, rChoice, niveau, tabEff } from './outils.js';
+import { ri, pick, shuffle, chance, M, big, lst, pc, fv, plus, sm, somme, rNums, rChoice, niveau, tabEff } from './outils.js';
 import { CTX, sum, range, moy, variance, sigma, racineExacte, rnd, entier, dec, cherche, serie, valeursTab, effCloche, partition, mean } from './stat.js';
 import { tab, pointsSurDroite, histogramme } from './draw.js';
 
@@ -167,6 +167,7 @@ const sigmaTransf = {
       solution: op === 'add' ? `On a ajouté ${M(a)} à chaque valeur : la moyenne augmente de ${M(a)}, mais chaque écart à la moyenne reste le même.<br>L’écart type ne change pas : <b>${M(r)}</b>.` : `Chaque valeur est multipliée par ${M(k)}, donc la moyenne et chaque écart à la moyenne aussi : l’écart type est multiplié par ${M(k)}.<br>${M(s)} × ${M(k)} = <b>${M(r)}</b>.` };
   },
   ex: { op: 'mul', s: 2.5, k: 3, a: 5 },
+  ex2: [{ op: 'add', s: 3.2, k: 3, a: 5 }],
 };
 
 export const LV4 = niveau('Écart type : sens et calcul simple', [comparDisp, sigmaNul, sommeCarres, compVal, sigmaCalc, sigmaArr, sigmaTransf], {
@@ -342,7 +343,7 @@ const classeDe = {
 
 const effClasse = {
   id: 'eff-classe', dmin: 1, titre: 'compter les valeurs d’une classe',
-  draw: d => { const C = pick(CTXC.filter(c => c.id !== 'salaire')), w = pick(C.ws), a0 = C.a0(), k = 4, bornes = classesDe(C, k, w, a0), n = ri(14, d < 3 ? 16 : 20); const L = Array.from({ length: n }, () => ri(bornes[0], bornes[k] - 1)); if (d >= 2) { L[0] = bornes[1]; L[1] = bornes[2]; } return { C, bornes, L, j: ri(0, k - 1) }; },
+  draw: d => { const C = pick(CTXC.filter(c => c.id !== 'salaire')), w = pick(C.ws), a0 = C.a0(), k = 4, bornes = classesDe(C, k, w, a0), n = ri(14, d < 3 ? 16 : 20); const L = Array.from({ length: n }, () => ri(Math.max(bornes[0], C.id === 'trajet' ? 1 : 0), bornes[k] - 1)); if (d >= 2) { L[0] = bornes[1]; L[1] = bornes[2]; } return { C, bornes, L, j: ri(0, k - 1) }; },
   build: p => {
     const { C, bornes, L, j } = p, a = bornes[j], b = bornes[j + 1], dans = L.filter(x => x >= a && x < b), r = dans.length;
     if (r < 2) return null;
@@ -377,14 +378,14 @@ const freqClasses = {
     return { ...rNums([f], { tpl: 'Proportion : {0} %', value: f, near: [[[s, 'Tu as donné un effectif : la proportion est cet effectif divisé par l’effectif total, en %.'], [100 - f, 'Tu as calculé la proportion des valeurs de l’autre côté de la limite.']]] }),
       html: `${C.intro}${tabClasses(C, bornes, effs)}Quel pourcentage des ${C.ent} ont une valeur strictement inférieure à ${fv(lim, C.u)} ?`,
       hint: `Additionne les effectifs des classes situées avant ${M(lim)} (${effs.slice(0, j).map(M).join(' + ')}), puis divise par l’effectif total ${M(N)}.`,
-      solution: `Classes avant ${M(lim)} : ${plus(effs.slice(0, j))} = ${M(s)} ${C.ent}.<br>Effectif total : ${plus(effs)} = ${M(N)}.<br>Proportion : ${M(s)} ÷ ${M(N)} = ${M(f / 100)}, soit <b>${M(f)} %</b>.` };
+      solution: `Classes avant ${M(lim)} : ${sm(effs.slice(0, j))} ${C.ent}.<br>Effectif total : ${plus(effs)} = ${M(N)}.<br>Proportion : ${M(s)} ÷ ${M(N)} = ${M(f / 100)}, soit <b>${M(f)} %</b>.` };
   },
   ex: { C: CTXC[0], bornes: [0, 10, 20, 30, 40], effs: [3, 5, 8, 4], j: 2 },
 };
 
 const estimExacte = {
   id: 'estim-exacte', dmin: 3, titre: 'moyenne exacte et moyenne estimée',
-  draw: d => cherche(() => { const C = pick(CTXC.filter(c => c.id !== 'salaire')), w = C.ws[C.ws.length - 1], a0 = C.a0(), bornes = classesDe(C, 3, w, a0); const L = Array.from({ length: 10 }, () => ri(bornes[0], bornes[3] - 1)); return { C, bornes, L }; }, t => new Set(t.L).size >= 7),
+  draw: d => cherche(() => { const C = pick(CTXC.filter(c => c.id !== 'salaire')), w = C.ws[C.ws.length - 1], a0 = C.a0(), bornes = classesDe(C, 3, w, a0); const L = Array.from({ length: 10 }, () => ri(Math.max(bornes[0], C.id === 'trajet' ? 1 : 0), bornes[3] - 1)); return { C, bornes, L }; }, t => new Set(t.L).size >= 7),
   build: p => {
     const { C, bornes, L } = p, k = bornes.length - 1, effs = range(0, k - 1).map(i => L.filter(x => x >= bornes[i] && x < bornes[i + 1]).length);
     if (effs.some(e => e === 0)) return null;
