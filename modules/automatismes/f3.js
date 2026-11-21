@@ -383,7 +383,7 @@ const vitMK = {
     };
   },
 };
-const tablAire = () => `<div class="tablewrap"><table class="data"><tr><th>km²</th><th>hm²</th><th>dam²</th><th>m²</th><th>dm²</th><th>cm²</th><th>mm²</th></tr><tr><td colspan="7">chaque unité vaut 100 fois la suivante (2 chiffres par colonne)</td></tr></table></div>`;
+const tablAire = () => { let s = `<svg viewBox="0 0 440 90" class="vis" role="img" aria-label="échelle des unités d’aire">`; ['km²', 'hm²', 'dam²', 'm²', 'dm²', 'cm²', 'mm²'].forEach((u, i) => { s += `<rect x="${8 + i * 62}" y="14" width="56" height="34" rx="6" fill="var(--acc2)" stroke="var(--acc)" stroke-width="2"/><text x="${36 + i * 62}" y="36" text-anchor="middle" font-size="15">${u}</text>`; if (i < 6) s += `<text x="${70 + i * 62}" y="70" text-anchor="middle" font-size="12" fill="var(--acc)" font-weight="700">× 100</text>`; }); return s + `</svg>`; };
 const LV6 = niveau('Conversions d’unités : aires, volumes, durées, vitesses', [aireD, aireU, volD, volU, dureeDec, dureeMin, vitKM, vitMK], {
   n: 6, classe: '2de – 1re',
   intro: 'Les erreurs d’unités font perdre beaucoup de points. On retient les bons facteurs : 100 pour les aires, 1 000 pour les volumes, 60 pour les durées, 3,6 pour les vitesses.',

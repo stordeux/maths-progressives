@@ -39,7 +39,7 @@ const pcl = v => dec(r6(v));
 const base = (id, dmin, titre, lab, calc, why, hintF, solF) => ({
   id, dmin, titre,
   draw: tirerTableau,
-  ex: { N: 100, cells: [[24, 16], [21, 39]], c: CTX[0] },
+  ex: { N: 100, cells: [[30, 10], [50, 10]], c: CTX[0] },
   build({ N, cells, c }) {
     const [[a, b], [cc, d]] = cells, nA = a + b, nB = a + cc, L = recount(cells), g = calc({ N, a, b, cc, d, nA, nB });
     const bads = why({ N, a, b, cc, d, nA, nB }).map(([v, w]) => opt(pcl(v), r6(v), w));
@@ -153,7 +153,7 @@ const arbreTotal = {
 const arbreInv = {
   id: 'pb-arbre-inv', dmin: 5, titre: 'P<sub>B</sub>(A) avec un arbre pondéré',
   draw: () => tirerArbre(true),
-  ex: { p: 0.4, q: 0.5, r: 0.3 },
+  ex: { p: 0.5, q: 0.3, r: 0.1 },
   build({ p, q, r }) {
     const pb = p * q + (1 - p) * r, g = p * q / pb;
     return {

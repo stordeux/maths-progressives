@@ -19,16 +19,18 @@ export { ri, pick, shuffle };
 const key = n => (typeof n === 'number' ? String(r6(n)) : String(n));
 
 /** exercice QCM complet (type 'choice') à partir de la description d'une forme */
-export function qcm(s, form) {
+export function qcm(s, form, fixe = false) {
   const seen = new Set([key(s.good.n)]), labels = new Set([s.good.l]), ch = [];
-  for (const b of shuffle([...s.bads])) {
+  for (const b of (fixe ? s.bads : shuffle([...s.bads]))) {
     if (ch.length >= 3) break;
     const k = key(b.n);
-    if (seen.has(k) || labels.has(b.l)) continue;
+    if (seen.has(k) || labels.has(b.l) || /\d,\d{5,}/.test(b.l)) continue; // pas de décimale interminable parmi les choix
     seen.add(k); labels.add(b.l); ch.push(b);
   }
   if (ch.length < 3) throw new Error(`pas assez de distracteurs (${form}) : ${s.html}`);
-  const all = shuffle([{ ...s.good, ok: true }, ...ch]);
+  let all;
+  if (fixe) { all = [...ch]; all.splice([...form].reduce((a, c) => a + c.charCodeAt(0), 0) % 4, 0, { ...s.good, ok: true }); } // cours : ordre fixe
+  else all = shuffle([{ ...s.good, ok: true }, ...ch]);
   const E = String(all.findIndex(o => o.ok));
   const q = {
     type: 'choice', form, html: s.html, opts: all.map((o, i) => ({ v: String(i), l: o.l })),
@@ -42,7 +44,7 @@ export function qcm(s, form) {
 
 /** exemple corrigé d'une forme, pour le cours : mêmes choix que l'exercice, la bonne réponse marquée */
 function exemple(f, num) {
-  const q = qcm(f.build(f.ex), f.id);
+  const q = qcm(f.build(f.ex), f.id, true);
   const lettres = 'ABCD';
   const choix = q.opts.map((o, i) => `<b>${lettres[i]}.</b> ${i === +q.expected ? '<b>' + o.l + ' ✓</b>' : o.l}`).join(' &nbsp;·&nbsp; ');
   return `<div class="ex" data-form="${f.id}"><span class="q">Exemple ${num} : ${f.titre}</span><br>${q.html}${q.visual || ''}<div class="choixex">${choix}</div><b>Réponse : ${q.opts[+q.expected].l}</b><br>${q.solution}</div>`;

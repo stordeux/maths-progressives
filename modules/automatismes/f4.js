@@ -2,6 +2,7 @@
 import { ri, pick, shuffle, M, F, big, ent, dec, gcd, niveau } from './outils.js';
 import { terms, strip } from '../../engine/util/fmt.js';
 import { r6 } from '../../engine/util/arith.js';
+import { setSeed } from '../../engine/util/rand.js';
 
 const nzr = (a, b) => { let v; do { v = ri(a, b); } while (v === 0); return v; };
 const Pn = n => (n < 0 ? `(−${-n})` : String(n));
@@ -124,11 +125,11 @@ const factX = {
     ];
     const same = fn => [1, 2, 3, 4].every(x => Math.abs(fn(x) - f(x)) < 1e-9);
     return {
-      html: `Factorise : ${big(`x<sup>2</sup> ${s} ${A}x`)}`,
+      html: `Factorise : ${big(`x<sup>2</sup> ${s} ${A === 1 ? '' : A}x`)}`,
       good: { l: good, n: 'ok' },
       bads: opts.filter(o => !same(o[1])).map(o => ({ l: o[0], n: o[0], why: o[2] })),
-      hint: `x<sup>2</sup> = x × x et ${A}x = ${A} × x : quel facteur apparaît dans les deux termes ? Mets-le devant et note ce qu’il reste dans la parenthèse.`,
-      solution: `x<sup>2</sup> ${s} ${A}x = x × x ${s} ${A} × x = x(x ${s} ${A}).`,
+      hint: `x<sup>2</sup> = x × x et ${A === 1 ? '' : A}x = ${A} × x : quel facteur apparaît dans les deux termes ? Mets-le devant et note ce qu’il reste dans la parenthèse.`,
+      solution: `x<sup>2</sup> ${s} ${A === 1 ? '' : A}x = x × x ${s} ${A} × x = x(x ${s} ${A}).`,
       indep: () => [1, 2, 3, 4].every(x => Math.abs(x * (x + a) - f(x)) < 1e-9) ? 'ok' : 'ko',
     };
   },
@@ -323,6 +324,7 @@ const appNum = {
   build({ e, p }) {
     // les nombres sont tirés avec une graine locale dérivée de p, pour que build soit déterministe (cours)
     const saved = [];
+    setSeed(p); // tirage des nombres fixé par p : l'exemple du cours est toujours le même
     const A = APPS[e], g = A.g();
     const lab = x => `${dec(Math.round(x * 100) / 100)} ${g.unit.split(',')[0]}`;
     return {
@@ -335,11 +337,12 @@ const appNum = {
     };
   },
 };
+const balance = () => `<svg viewBox="0 0 420 110" class="vis" role="img" aria-label="même opération des deux côtés"><rect x="20" y="30" width="150" height="40" rx="8" fill="var(--acc2)" stroke="var(--acc)" stroke-width="2"/><text x="95" y="57" text-anchor="middle" font-size="20">3x + 2</text><text x="210" y="58" text-anchor="middle" font-size="26">=</text><rect x="250" y="30" width="150" height="40" rx="8" fill="var(--acc2)" stroke="var(--acc)" stroke-width="2"/><text x="325" y="57" text-anchor="middle" font-size="20">14</text><text x="210" y="100" text-anchor="middle" font-size="15" fill="var(--acc)" font-weight="700">on fait la même opération des deux côtés (− 2, puis ÷ 3)</text></svg>`;
 const LV8 = niveau('Équations, inéquations et formules', [eq1, eq2, ineq(false), ineq(true), isoler, appNum], {
   n: 8, classe: '2de – 1re',
   intro: 'Résoudre une équation ou une inéquation du 1er degré et isoler une lettre dans une formule reviennent au même : on défait les opérations dans l’ordre inverse.',
   def: 'On garde une équation vraie en faisant la <b>même opération des deux côtés</b>. Pour une <b>inéquation</b>, c’est pareil, sauf qu’on <b>change le sens</b> quand on multiplie ou divise par un nombre <b>négatif</b>.',
-  visuel: '',
+  visuel: balance(),
   methode: ['Enlève d’abord les termes ajoutés (opération inverse), puis divise par le coefficient de x.', 'Avec x des deux côtés : regroupe les x d’un côté, les nombres de l’autre.', 'Inéquation : même méthode ; divisé par un négatif → sens inversé.', 'Formule : repère l’opération appliquée à la lettre, fais l’inverse des deux côtés.', 'Application numérique : remplace les lettres par les valeurs, avec l’unité.'],
   warn: ['−2x &gt; 6 donne x &lt; −3 (le sens change).', 'Dans x = (y − b) ÷ a, on divise <b>tout</b> y − b par a.', 'Vérifie une équation en remplaçant x : le résultat doit être le bon.'],
   retenir: 'on fait la même opération des deux côtés ; diviser par un négatif inverse l’inégalité.',
