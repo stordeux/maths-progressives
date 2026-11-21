@@ -158,38 +158,39 @@ export const LV4 = niveau('Orthogonalité', F4, {
    Niveau 5 : bilinéarité et symétrie
    ===================================================================================================== */
 const lamTxt = (k, U) => `${Math.abs(k) === 1 ? (k < 0 ? '−' : '') : M(k)}${U}`;
-const bilLin = {
-  id: 'bi-lin', dmin: 0, titre: 'sortir un coefficient',
-  draw(d) { return { nv: pick(NOMS_V), k: nz(-6, 6), l: pick(d < 2 ? [2, 3, 4, 5] : [2, 3, 4, -2, -3, -4]), m: pick(d < 3 ? [1, 1, 1, 2, 3] : [-2, 2, 3, -3, 5]), cote: pick([0, 1]) }; },
-  ex: { nv: ['u', 'v'], k: 4, l: 3, m: 1, cote: 0 },
-  build({ nv, k, l, m, cote }) {
+/** (λu) · v, u · (λv) ou (λu) · (μv), avec u · v connu */
+const mkLin = (id, dmin, titre, v, ex) => ({
+  id, dmin, titre,
+  draw(d) { return { nv: pick(NOMS_V), k: nz(-6, 6), l: pick(d < 2 ? [2, 3, 4, 5] : [2, 3, 4, -2, -3, -4]), m: v === 2 ? pick(d < 3 ? [2, 3] : [-2, 2, 3, -3, 5]) : 1 }; },
+  ex,
+  build({ nv, k, l, m }) {
     const [a, b] = nv, U = V(a), W = V(b);
-    const left = lamTxt(l, U), right = m === 1 ? W : lamTxt(m, W);
     let e, fac;
-    if (m === 1) { e = cote === 0 ? dot(`(${left})`, W) : dot(U, `(${lamTxt(l, W)})`); fac = l; } else { e = dot(`(${left})`, `(${right})`); fac = l * m; }
+    if (v === 0) { e = dot(`(${lamTxt(l, U)})`, W); fac = l; } else if (v === 1) { e = dot(U, `(${lamTxt(l, W)})`); fac = l; } else { e = dot(`(${lamTxt(l, U)})`, `(${lamTxt(m, W)})`); fac = l * m; }
     const p = fac * k;
-    const sol = m === 1
+    const sol = v < 2
       ? `${e} = ${M(l)} × (${dot(U, W)}) = ${M(l)} × ${P(k)} = ${M(p)}`
       : `${e} = ${M(l)} × ${P(m)} × (${dot(U, W)}) = ${M(fac)} × ${P(k)} = ${M(p)}`;
     return {
       html: `Les vecteurs ${U} et ${W} vérifient ${dot(U, W)} = ${M(k)}.<br>Calcule ${e}.`,
       ...rNums([p], { tpl: `${e} = {0}`, value: fac * k }),
-      hint: `Le produit scalaire est bilinéaire : un coefficient se sort du produit. ${e} s’écrit avec ${dot(U, W)} = ${M(k)} ; multiplie ce nombre par le bon coefficient${m === 1 ? '' : ' (celui de chaque vecteur)'}.`,
+      hint: `Le produit scalaire est bilinéaire : un coefficient se sort du produit. ${e} s’écrit avec ${dot(U, W)} = ${M(k)} ; multiplie ce nombre par le bon coefficient${v < 2 ? '' : ' (celui de chaque vecteur)'}.`,
       solution: `Par bilinéarité, ${sol}.`,
     };
   },
-};
-const NB = ' · ';
-const sc0 = W => W;
+});
+const bilLinG = mkLin('bi-lin-g', 0, 'sortir un coefficient à gauche', 0, { nv: ['u', 'v'], k: 4, l: 3, m: 1 });
+const bilLinD = mkLin('bi-lin-d', 0, 'sortir un coefficient à droite', 1, { nv: ['u', 'v'], k: -5, l: 2, m: 1 });
+const bilLin2 = mkLin('bi-lin-2', 1, 'sortir deux coefficients', 2, { nv: ['u', 'v'], k: 2, l: 3, m: 2 });
 
-const bilSomme = {
-  id: 'bi-somme', dmin: 1, titre: 'distribuer sur une somme',
+const mkSomme = (id, dmin, titre, cote, ex) => ({
+  id, dmin, titre,
   draw(d) {
     const co = d < 3 ? [[1, 1], [1, -1], [2, 1], [1, 2], [2, -1]] : [[2, 3], [3, -2], [-2, 5], [4, -3], [-3, -2], [2, -5]];
-    return { nv: pick([['u', 'v', 'w'], ['a', 'b', 'c']]), p: nz(-7, 7), q: nz(-7, 7), c: pick(co), cote: pick([0, 1]) };
+    return { nv: pick([['u', 'v', 'w'], ['a', 'b', 'c']]), p: nz(-7, 7), q: nz(-7, 7), c: pick(co) };
   },
-  ex: { nv: ['u', 'v', 'w'], p: 5, q: 4, c: [2, -3], cote: 0 },
-  build({ nv, p, q, c, cote }) {
+  ex,
+  build({ nv, p, q, c }) {
     const [a, b, w] = nv, A = V(a), B = V(b), Wv = V(w), s = cv(c, [A, B]), tot = c[0] * p + c[1] * q;
     const e = cote === 0 ? dot(`(${s})`, Wv) : dot(Wv, `(${s})`);
     const items = cote === 0 ? [`(${dot(A, Wv)})`, `(${dot(B, Wv)})`] : [`(${dot(Wv, A)})`, `(${dot(Wv, B)})`];
@@ -200,13 +201,15 @@ const bilSomme = {
       solution: `Par bilinéarité${cote === 1 ? ' et symétrie' : ''}, ${e} = ${cv(c, items)}. Avec ${dot(A, Wv)} = ${M(p)} et ${dot(B, Wv)} = ${M(q)} : ${comb(c, [p, q])}.`,
     };
   },
-};
+});
+const bilSomme = mkSomme('bi-somme', 1, 'distribuer (αu + βv) · w', 0, { nv: ['u', 'v', 'w'], p: 5, q: 4, c: [2, -3] });
+const bilSommeD = mkSomme('bi-somme-d', 2, 'distribuer w · (αu + βv)', 1, { nv: ['u', 'v', 'w'], p: 3, q: -2, c: [1, 2] });
 
-const bilCarre = {
-  id: 'bi-carre', dmin: 1, titre: 'u · u = ‖u‖²',
-  draw(d) { return { nv: pick(['u', 'v', 'w']), n: ri(2, 9), var: pick([0, 0, 1, 2]), l: pick([2, 3, 4, -2, -3]) }; },
-  ex: { nv: 'u', n: 6, var: 0, l: 2 },
-  build({ nv, n, var: vr, l }) {
+const mkCarre = (id, dmin, titre, vr, ex) => ({
+  id, dmin, titre,
+  draw() { return { nv: pick(['u', 'v', 'w']), n: ri(2, 9), l: pick([2, 3, 4, -2, -3]) }; },
+  ex,
+  build({ nv, n, l }) {
     const U = V(nv);
     if (vr === 0) {
       return {
@@ -232,16 +235,19 @@ const bilCarre = {
       solution: `${e} = ${M(l)} × (${dot(U, U)}) = ${M(l)} × ${norm(nv)}<sup>2</sup> = ${M(l)} × ${M(n * n)} = ${M(l * n * n)}.`,
     };
   },
-};
+});
+const bilCarre = mkCarre('bi-carre', 1, 'u · u à partir de ‖u‖', 0, { nv: 'u', n: 6, l: 2 });
+const bilRacine = mkCarre('bi-racine', 1, '‖u‖ à partir de u · u', 1, { nv: 'u', n: 7, l: 2 });
+const bilCarreC = mkCarre('bi-carre-coef', 2, '(λu) · u', 2, { nv: 'u', n: 4, l: -3 });
 
 /** données cohérentes : normes a, b et produit scalaire k, avec |k| ≤ ab */
 const tirageNK = d => { const a = ri(2, 5), b = ri(2, 5); let k = nz(-a * b, a * b); if (Math.abs(k) > 6) k = k > 0 ? 6 : -6; return { a, b, k }; };
 
-const bilDist = {
-  id: 'bi-dist', dmin: 2, titre: 'distribuer u · (αu + βv)',
-  draw() { return { ...tirageNK(), nv: pick(NOMS_V), c: pick([[1, 1], [2, 1], [1, -1], [2, -1], [3, 2], [2, 3], [-1, 3], [3, -1]]), cote: pick([0, 1]) }; },
-  ex: { a: 3, b: 2, k: -1, nv: ['u', 'v'], c: [2, -3], cote: 0 },
-  build({ a, b, k, nv, c, cote }) {
+const mkDist = (id, dmin, titre, cote, ex) => ({
+  id, dmin, titre,
+  draw() { return { ...tirageNK(), nv: pick(NOMS_V), c: pick([[1, 1], [2, 1], [1, -1], [2, -1], [3, 2], [2, 3], [-1, 3], [3, -1]]) }; },
+  ex,
+  build({ a, b, k, nv, c }) {
     const [nu, nvv] = nv, U = V(nu), W = V(nvv), s = cv(c, [U, W]), tot = c[0] * a * a + c[1] * k;
     const e = cote === 0 ? dot(U, `(${s})`) : dot(`(${s})`, U);
     const T = cote === 0 ? [dot(U, U), dot(U, W)] : [dot(U, U), dot(W, U)];
@@ -252,7 +258,9 @@ const bilDist = {
       solution: `Par bilinéarité${cote === 1 ? ' et symétrie' : ''}, ${e} = ${cv(c, [`(${T[0]})`, `(${T[1]})`])}. Or ${dot(U, U)} = ${norm(nu)}<sup>2</sup> = ${M(a * a)} et ${dot(U, W)} = ${M(k)}. Donc ${comb(c, [a * a, k])}.`,
     };
   },
-};
+});
+const bilDist = mkDist('bi-dist', 2, 'distribuer u · (αu + βv)', 0, { a: 3, b: 2, k: -1, nv: ['u', 'v'], c: [2, -3] });
+const bilDistD = mkDist('bi-dist-d', 3, 'distribuer (αu + βv) · u', 1, { a: 4, b: 3, k: 5, nv: ['u', 'v'], c: [1, 3] });
 
 const bilDev = {
   id: 'bi-dev', dmin: 3, titre: 'développer (αu + βv) · (γu + δv)',
@@ -276,14 +284,15 @@ const bilDev = {
   },
 };
 
-const bilChasles = {
-  id: 'bi-chasles', dmin: 4, titre: 'Chasles et bilinéarité dans un triangle',
-  draw() { let c, b, k; do { c = ri(2, 6); b = ri(2, 6); k = nz(-c * b, c * b); } while (Math.abs(k) > 12 || c === b); return { nm: pick(NOMS3), c, b, k, v: ri(0, 2) }; },
-  ex: { nm: ['A', 'B', 'C'], c: 3, b: 4, k: 5, v: 0 },
-  build({ nm, c, b, k, v }) {
+
+const mkChasles = (id, dmin, titre, v, ex) => ({
+  id, dmin, titre,
+  draw() { let c, b, k; do { c = ri(2, 6); b = ri(2, 6); k = nz(-c * b, c * b); } while (Math.abs(k) > 12 || c === b); return { nm: pick(NOMS3), c, b, k }; },
+  ex,
+  build({ nm, c, b, k }) {
     const [A, B, C] = nm, AB = vn(A, B), AC = vn(A, C);
     const q = [
-      { e: dot(AB, vn(B, C)), r: k - c * c, ch: `${vn(B, C)} = ${vn(B, A)} + ${AC}`, sol: `${vn(B, C)} = ${AC} − ${AB}, donc ${dot(AB, vn(B, C))} = ${dot(AB, AC)} − ${dot(AB, AB)} = ${M(k)} − ${A}${B}<sup>2</sup> = ${M(k)} − ${M(c * c)} = ${M(k - c * c)}`, h: `Écris ${vn(B, C)} = ${AC} − ${AB} (relation de Chasles), puis distribue ${AB}.` },
+      { e: dot(AB, vn(B, C)), r: k - c * c, sol: `${vn(B, C)} = ${AC} − ${AB}, donc ${dot(AB, vn(B, C))} = ${dot(AB, AC)} − ${dot(AB, AB)} = ${M(k)} − ${A}${B}<sup>2</sup> = ${M(k)} − ${M(c * c)} = ${M(k - c * c)}`, h: `Écris ${vn(B, C)} = ${AC} − ${AB} (relation de Chasles), puis distribue ${AB}.` },
       { e: dot(AC, vn(C, B)), r: k - b * b, sol: `${vn(C, B)} = ${AB} − ${AC}, donc ${dot(AC, vn(C, B))} = ${dot(AC, AB)} − ${dot(AC, AC)} = ${M(k)} − ${A}${C}<sup>2</sup> = ${M(k)} − ${M(b * b)} = ${M(k - b * b)}`, h: `Écris ${vn(C, B)} = ${AB} − ${AC} (relation de Chasles), puis distribue ${AC} et utilise la symétrie.` },
       { e: dot(vn(B, A), vn(B, C)), r: c * c - k, sol: `${vn(B, C)} = ${vn(B, A)} + ${AC}, donc ${dot(vn(B, A), vn(B, C))} = ${dot(vn(B, A), vn(B, A))} + ${dot(vn(B, A), AC)} = ${A}${B}<sup>2</sup> − ${dot(AB, AC)} = ${M(c * c)} − ${P(k)} = ${M(c * c - k)}`, h: `Écris ${vn(B, C)} = ${vn(B, A)} + ${AC}, distribue ${vn(B, A)}, et remarque que ${vn(B, A)} est l’opposé de ${AB}.` },
     ][v];
@@ -294,9 +303,12 @@ const bilChasles = {
       solution: `${q.sol}.`,
     };
   },
-};
+});
+const bilCh0 = mkChasles('bi-chasles', 3, 'Chasles : AB · BC', 0, { nm: ['A', 'B', 'C'], c: 3, b: 4, k: 5 });
+const bilCh1 = mkChasles('bi-chasles2', 4, 'Chasles : AC · CB', 1, { nm: ['A', 'B', 'C'], c: 3, b: 4, k: 5 });
+const bilCh2 = mkChasles('bi-chasles3', 4, 'Chasles : BA · BC', 2, { nm: ['A', 'B', 'C'], c: 3, b: 4, k: 5 });
 
-const F5 = [bilLin, bilSomme, bilCarre, bilDist, bilDev, bilChasles];
+const F5 = [bilLinG, bilLinD, bilLin2, bilSomme, bilSommeD, bilCarre, bilRacine, bilCarreC, bilDist, bilDistD, bilDev, bilCh0, bilCh1, bilCh2];
 export const LV5 = niveau('Bilinéarité et symétrie', F5, {
   n: 5,
   intro: 'Le produit scalaire se calcule comme un produit : on développe, on factorise, on sort les coefficients.',
@@ -397,12 +409,12 @@ const nmTriangle = {
   },
 };
 
-const nmLong = {
-  id: 'nm-long', dmin: 5, titre: 'longueur de u + v ou u − v',
-  draw() { const t = tirageABS(); return { ...t, nv: pick(NOMS_V), plusSigne: chance(0.5), entier: (t.s * t.s - t.a * t.a - t.b * t.b) % 2 === 0 }; },
-  ex: { a: 3, b: 5, s: 7, nv: ['u', 'v'], plusSigne: true, entier: true },
-  build({ a, b, s, nv, plusSigne, entier }) {
-    if (!entier) return null;
+const mkLong = (id, titre, plusSigne, ex) => ({
+  id, dmin: 5, titre,
+  draw() { return { ...tirageABS(), nv: pick(NOMS_V) }; },
+  ex,
+  build({ a, b, s, nv }) {
+    if ((s * s - a * a - b * b) % 2 !== 0) return null;
     const [nu, nvv] = nv, U = V(nu), W = V(nvv), k0 = (s * s - a * a - b * b) / 2, k = plusSigne ? k0 : -k0, sg = plusSigne ? '+' : '−';
     if (k === 0) return null;
     const tot = s * s;
@@ -413,9 +425,11 @@ const nmLong = {
       solution: `‖${U} ${sg} ${W}‖<sup>2</sup> = ${norm(nu)}<sup>2</sup> ${sg} 2 × ${dot(U, W)} + ${norm(nvv)}<sup>2</sup> = ${M(a * a)} ${sg} 2 × ${P(k)} + ${M(b * b)} = ${somme([a * a, plusSigne ? 2 * k : -2 * k, b * b])} = ${M(tot)}. Donc ‖${U} ${sg} ${W}‖ = √${M(tot)} = ${M(s)}.`,
     };
   },
-};
+});
+const nmLongP = mkLong('nm-long', 'longueur de u + v', true, { a: 3, b: 5, s: 6, nv: ['u', 'v'] });
+const nmLongM = mkLong('nm-long-m', 'longueur de u − v', false, { a: 4, b: 6, s: 8, nv: ['u', 'v'] });
 
-const F6 = [nmSomme, nmDiff, nmPol1, nmPol2, nmTriangle, nmLong];
+const F6 = [nmSomme, nmDiff, nmPol1, nmPol2, nmTriangle, nmLongP, nmLongM];
 export const LV6 = niveau('Normes d’une somme, polarisation', F6, {
   n: 6,
   intro: 'En développant ‖u + v‖², le produit scalaire apparaît : on peut le calculer à partir de longueurs, ou l’inverse.',

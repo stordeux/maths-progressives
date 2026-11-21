@@ -33,11 +33,11 @@ function solutionPj(nM, M0, a, b, c, t, H, d = 'd') {
   return `Le vecteur ${vc('n', [a, b])} est normal à ${d}. Le projeté H vérifie : ${vn(nM, 'H')} est colinéaire à ${V('n')}, donc H = ${nM} + t ${V('n')}, soit H${cpx(X, Y)}. H est sur ${d} : ${eq}. En développant, on regroupe les termes constants et les termes en t : (a × x<sub>${nM}</sub> + b × y<sub>${nM}</sub> + c) + (a<sup>2</sup> + b<sup>2</sup>) × t = 0. Calculs : ${valEq(a, b, c, M0[0], M0[1])} et a<sup>2</sup> + b<sup>2</sup> = ${M(a * a)} + ${M(b * b)} = ${M(w)}. D’où ${M(v)} + ${M(w)}t = 0 et t = ${M(-v)} ÷ ${M(w)} = ${M(t)}. Alors H${cpx(`${M(M0[0])} + ${P(t)} × ${P(a)}`, `${M(M0[1])} + ${P(t)} × ${P(b)}`)} = H${cp(H[0], H[1])}.`;
 }
 
-const pjAxes = {
-  id: 'pj-axes', dmin: 0, titre: 'droite horizontale ou verticale',
-  draw() { return { nm: pick(['M', 'N', 'P', 'K']), Pt: [ri(-6, 6), ri(-6, 6)], k: ri(-5, 5), horiz: chance(0.5) }; },
-  ex: { nm: 'M', Pt: [3, 5], k: 2, horiz: true },
-  build({ nm, Pt, k, horiz }) {
+const mkAxes = (id, titre, horiz, ex) => ({
+  id, dmin: 0, titre,
+  draw() { return { nm: pick(['M', 'N', 'P', 'K']), Pt: [ri(-6, 6), ri(-6, 6)], k: ri(-5, 5) }; },
+  ex,
+  build({ nm, Pt, k }) {
     const H = horiz ? [Pt[0], k] : [k, Pt[1]];
     if (H[0] === Pt[0] && H[1] === Pt[1]) return null;
     const eq = horiz ? `y = ${M(k)}` : `x = ${M(k)}`, ln = horiz ? { a: 0, b: 1, c: -k } : { a: 1, b: 0, c: -k };
@@ -51,7 +51,9 @@ const pjAxes = {
       solution: `La droite d (${eq}) est ${horiz ? 'horizontale' : 'verticale'}. La perpendiculaire à d passant par ${nm} est ${horiz ? 'verticale, d’équation x = ' + M(Pt[0]) : 'horizontale, d’équation y = ' + M(Pt[1])}. Elle coupe d en H${cp(H[0], H[1])} : ${horiz ? `H a la même abscisse que ${nm} et son ordonnée vaut ${M(k)}` : `H a la même ordonnée que ${nm} et son abscisse vaut ${M(k)}`}.`,
     };
   },
-};
+});
+const pjHoriz = mkAxes('pj-horiz', 'droite horizontale (y = k)', true, { nm: 'M', Pt: [3, 5], k: 2 });
+const pjVert = mkAxes('pj-vert', 'droite verticale (x = k)', false, { nm: 'M', Pt: [-4, 1], k: 3 });
 
 const pjVerif = {
   id: 'pj-verif', dmin: 1, titre: 'H est-il le projeté de M ?',
@@ -183,7 +185,7 @@ const pjReduite = {
   },
 };
 
-const F10 = [pjAxes, pjVerif, pjDroite, pjDir, pjPied, pjReduite];
+const F10 = [pjHoriz, pjVert, pjVerif, pjDroite, pjDir, pjPied, pjReduite];
 export const LV10 = niveau('Projeté orthogonal d’un point sur une droite', F10, {
   n: 10,
   intro: 'Le projeté orthogonal H d’un point M sur une droite d est le point de d le plus proche de M : (MH) est perpendiculaire à d.',
@@ -406,7 +408,7 @@ const dfPoint = {
     const ax = A[0] - x, bx = B[0] - x, prod = ax * bx, bmy = b === 0 ? '−y' : `${M(b)} − y`;
     return {
       html: `Dans un repère orthonormé, on donne ${pt0(nA, A)}, ${pt0(nB, B)} et ${nw(`${nM}${cpx(M(x), 'y')}`)} avec y &gt; ${M(b)}.<br>Pour quelle valeur de y le triangle ${nA}${nM}${nB} est-il rectangle en ${nM} ?`,
-      visual: fig({ axes: true, H: 300, aria: `points ${nA} et ${nB} et droite x = ${x}`, ext: coin([A, B, [x, b + r]]), pts: [{ x: A[0], y: A[1], l: nA }, { x: B[0], y: B[1], l: nB }], lines: [{ a: 1, b: 0, c: -x, dash: true, col: COL.v, l: `${nM} est sur x = ${M(x)}`, at: 0.12 }] }),
+      visual: fig({ axes: true, H: 300, aria: `points ${nA} et ${nB} et droite x = ${x}`, ext: coin([A, B, [x, b + r]]), pts: [{ x: A[0], y: A[1], l: nA }, { x: B[0], y: B[1], l: nB }], lines: [{ a: 1, b: 0, c: -x, dash: true, col: COL.v, l: `${nM} est sur x = ${M(x)}`, at: 0.92 }] }),
       ...rNums([y], { tpl: 'y = {0}', value: y }),
       hint: `Le triangle est rectangle en ${nM} si ${dot(vn(nM, nA), vn(nM, nB))} = 0. Écris ${vn(nM, nA)}(${M(A[0])} − ${P(x)} ; ${bmy}) et ${vn(nM, nB)}(${M(B[0])} − ${P(x)} ; ${bmy}), calcule le produit scalaire, puis résous l’équation d’inconnue y en gardant y &gt; ${M(b)}.`,
       solution: `${nw(vn(nM, nA) + cpx(`${M(A[0])} − ${P(x)}`, bmy))} = ${nw(vn(nM, nA) + cpx(M(ax), bmy))} et ${nw(vn(nM, nB) + cpx(M(bx), bmy))}. Le produit des deuxièmes coordonnées vaut ${pa(xm(b, 'y'))}<sup>2</sup>. Donc ${dot(vn(nM, nA), vn(nM, nB))} = ${fois(ax, bx)} + ${pa(xm(b, 'y'))}<sup>2</sup> = ${M(prod)} + ${pa(xm(b, 'y'))}<sup>2</sup>. Angle droit en ${nM} : ${pa(xm(b, 'y'))}<sup>2</sup> = ${M(-prod)}, donc ${xm(b, 'y')} = ${M(s)} ou ${xm(b, 'y')} = ${M(-s)}, ${b === 0 ? '' : `, soit y = ${M(b + s)} ou y = ${M(b - s)}`}. Comme y &gt; ${M(b)}, y = ${M(y)}.`,

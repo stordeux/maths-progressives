@@ -36,7 +36,7 @@ function figProj({ nm, a, h, hc, ac, o = 1, lab = ['ab', 'ah'], ahTxt }) {
 
 /** tirage commun : triplet pythagoricien (AH, HC, AC) et longueur AB */
 function tirageProj(d, signe) {
-  const t = pick(TRIPLES.slice(0, d >= 3 ? 8 : 5));
+  const t = pick(TRIPLES.slice(0, d >= 3 ? 5 : 3));
   const k = d >= 3 && t[0] % 3 === 0 && chance(0.4) ? 0.5 : 1;
   const [x, y] = chance(0.5) ? [t[0], t[1]] : [t[1], t[0]];
   const ah = x * k, hc = y * k, ac = t[2] * k;

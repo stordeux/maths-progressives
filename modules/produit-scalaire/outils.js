@@ -72,7 +72,8 @@ export const comb = (coefs, vals) => {
     t += (k < 0 ? (first ? '−' : ' − ') : (first ? '' : ' + ')) + piece;
     prods.push(k * vals[i]); tot += k * vals[i];
   });
-  return `${t} = ${somme(prods)} = ${M(tot)}`;
+  const s2 = somme(prods);
+  return t === s2 ? `${t} = ${M(tot)}` : `${t} = ${s2} = ${M(tot)}`;
 };
 /** combinaison k₁ x₁ + k₂ x₂ … (éléments déjà écrits), coefficients 1 et −1 sans « 1 » */
 export const cv = (coefs, items) => {

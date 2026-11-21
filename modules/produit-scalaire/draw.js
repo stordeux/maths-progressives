@@ -110,7 +110,8 @@ export function fig(o) {
       if (!sd) sd = (X(mx) + nx - X(cen[0])) * nx + (Y(my) + ny - Y(cen[1])) * ny >= 0 ? 1 : -1;
       nx *= sd; ny *= sd;
       const w = lwidth(S.lab, 16), off = (S.dist ?? 11) + Math.abs(nx) * (w / 2 + 2) + Math.abs(ny) * 7;
-      labs.push(S.lab.includes('{') ? vlabel(X(mx) + nx * off, Y(my) + ny * off + 6, S.lab, S.lc || c, 'middle', 16, [3, W - 3]) : txt(X(mx) + nx * off, Y(my) + ny * off + 6, S.lab, S.lc || c, 'middle', 16));
+      const lx = Math.max(w / 2 + 3, Math.min(W - w / 2 - 3, X(mx) + nx * off));
+      labs.push(S.lab.includes('{') ? vlabel(lx, Y(my) + ny * off + 6, S.lab, S.lc || c, 'middle', 16, [3, W - 3]) : txt(lx, Y(my) + ny * off + 6, S.lab, S.lc || c, 'middle', 16));
     }
   });
   (o.right || []).forEach(R => {
