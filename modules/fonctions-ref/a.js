@@ -211,12 +211,12 @@ const cImage = {
       html: `${stemCarre}Calcule l’image de <b>${M(x)}</b> par f.`,
       ...rNums([y], {
         tpl: `f(${M(x)}) = {0}`, value: Math.pow(x, 2),
-        msg: v => (v[0] === -y ? `Un carré n’est jamais négatif : ${carre(x)} = ${M(x)} × ${M(x)}, et deux nombres de même signe ont un produit positif.` : v[0] === r6(2 * x) ? `Tu as calculé 2 × ${M(x)} : le carré de ${M(x)}, c’est ${M(x)} × ${M(x)}.` : ''),
+        msg: v => (v[0] === -y ? `Un carré n’est jamais négatif : ${carre(x)} = ${P(x)} × ${P(x)}, et deux nombres de même signe ont un produit positif.` : v[0] === r6(2 * x) ? `Tu as calculé 2 × ${M(x)} : le carré de ${M(x)}, c’est ${M(x)} × ${M(x)}.` : ''),
       }),
       hint: x < 0
-        ? `Remplace x par ${M(x)} dans ${X2} : ${carre(x)} = ${M(x)} × ${M(x)}. Quel est le signe d’un produit de deux nombres négatifs ?`
-        : `Remplace x par ${M(x)} dans ${X2} et calcule ${M(x)} × ${M(x)}${dec ? ' ; le résultat a deux chiffres après la virgule' : ''}.`,
-      solution: `f(${M(x)}) = ${carre(x)} = ${M(x)} × ${M(x)} = ${M(y)}${x < 0 ? ' (le produit de deux nombres négatifs est positif)' : ''}.`,
+        ? `Remplace x par ${M(x)} dans ${X2} : ${carre(x)} = ${P(x)} × ${P(x)}. Quel est le signe d’un produit de deux nombres négatifs ?`
+        : `Remplace x par ${M(x)} dans ${X2} et calcule ${P(x)} × ${P(x)}${dec ? ' ; le résultat a deux chiffres après la virgule' : ''}.`,
+      solution: `f(${M(x)}) = ${carre(x)} = ${P(x)} × ${P(x)} = ${M(y)}${x < 0 ? ' (le produit de deux nombres négatifs est positif)' : ''}.`,
     };
   },
 };
@@ -296,7 +296,7 @@ const FORMS2 = [cImage, cAntecedent, cNombre, cEquation, cPoint];
 const parab = (pts = [], h) => graph({ xr: [-4, 4], yr: [-1, 10], fs: [{ f: x => x * x, dom: [-3.2, 3.2], l: 'f' }], pts, h, aria: 'parabole, courbe de la fonction carré' });
 const visu2 = parab([{ x: -3, y: 9, l: 'A(−3 ; 9)', px: true, py: true, anchor: 'end' }, { x: 2, y: 4, l: 'B(2 ; 4)', px: true, py: true, anchor: 'start' }]);
 
-export const LV2 = niveau('Fonction carré : images et antécédents', FORMS2, {
+export const LV2 = niveau('Carré : images, antécédents', FORMS2, {
   n: 2, classe: '2de',
   intro: 'La <b>fonction carré</b> associe à chaque réel x son carré : f(x) = x². Sa courbe est une <b>parabole</b>, symétrique par rapport à l’axe des ordonnées. Elle est définie pour tous les réels.',
   def: '<b>Image et antécédents.</b> L’image de 3 est f(3) = 3² = 9. Les antécédents de 9 sont les nombres x tels que x² = 9 : il y en a deux, 3 et −3. Sur la courbe, on coupe la parabole par la droite horizontale d’ordonnée 9.',
@@ -495,7 +495,7 @@ const vIneqSpec = {
 
 const FORMS3 = [vIntervalle, vCmpPos, vCmpNeg, vIneq, vEnc, vCmpMixte, vIneqSup, vEncNeg, vEncZero, vIneqSpec];
 
-export const LV3 = niveau('Fonction carré : variations et inéquations', FORMS3, {
+export const LV3 = niveau('Carré : variations', FORMS3, {
   n: 3, classe: '2de',
   intro: 'Sur la parabole, on voit que la fonction carré <b>décroît</b> pour les nombres négatifs, passe par son minimum 0, puis <b>croît</b> pour les nombres positifs. C’est ce qui permet de comparer des carrés sans les calculer et de résoudre des inéquations.',
   def: '<b>Variations.</b> La fonction carré est décroissante sur ]−∞ ; 0] et croissante sur [0 ; +∞[. Son minimum est 0, atteint en 0. Elle conserve l’ordre des nombres positifs et le renverse pour les nombres négatifs.',

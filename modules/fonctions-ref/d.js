@@ -105,7 +105,7 @@ const mkIneq10 = inf => ({
       html: `${stem10(F)}Résous graphiquement l’inéquation f(x) ${REL[rel]} g(x).`,
       visual: vis10(F, G),
       ...rIv(S, x => x >= F.a - 1e-12 && x <= F.b + 1e-12 && CMPF[rel](F.f(x), G.f(x))),
-      hint: `Repère les abscisses où les deux courbes se coupent${racines.length ? ` (${racines.map(M).join(' ; ')})` : ''}, puis les endroits où la courbe de f est ${inf ? 'en dessous de' : 'au-dessus de'} celle de g. ${strict ? 'Inégalité stricte : les abscisses d’intersection sont exclues.' : 'Inégalité large : les abscisses d’intersection sont comprises.'}`,
+      hint: `Repère les points où les deux courbes se coupent et lis leurs abscisses, puis repère les endroits où la courbe de f est ${inf ? 'en dessous de' : 'au-dessus de'} celle de g. ${strict ? 'Inégalité stricte : les abscisses d’intersection sont exclues.' : 'Inégalité large : les abscisses d’intersection sont comprises.'}`,
       solution: `Les courbes se coupent aux abscisses ${racines.map(M).join(' et ')}. La courbe de f est ${inf ? 'en dessous de' : 'au-dessus de'} celle de g ${strict ? '(strictement) ' : '(ou sur elle) '}pour x dans ${fmtSet(S)}.`,
       afterVisual: vis10(F, G, ptsX(F, racines)),
     };
@@ -126,7 +126,7 @@ const hNsol = {
       ...rNums([n], { tpl: 'Nombre de solutions : {0}', value: n }),
       verify: E => { let c = 0; for (let x = F.a; x <= F.b + 1e-9; x += 0.5) if (Math.abs(F.f(Math.min(x, F.b)) - G.f(Math.min(x, F.b))) < 1e-9) c++; return c === E[0]; },
       hint: `Compte les points où les deux courbes se coupent ou se touchent : chacun donne une solution de f(x) = g(x).`,
-      solution: `Les courbes ont ${n} point${n > 1 ? 's' : ''} commun${n > 1 ? 's' : ''}${n ? `, d’abscisses ${e.racines.map(M).join(' ; ')}` : ''} : l’équation f(x) = g(x) a ${n} solution${n > 1 ? 's' : ''}.`,
+      solution: `Les courbes ont ${n} point${n > 1 ? 's' : ''} commun${n > 1 ? 's' : ''}${n ? `, d’abscisse${n > 1 ? 's' : ''} ${e.racines.map(M).join(' ; ')}` : ''} : l’équation f(x) = g(x) a ${n} solution${n > 1 ? 's' : ''}.`,
       afterVisual: vis10(F, G, ptsX(F, e.racines)),
     };
   },
@@ -155,7 +155,7 @@ const hRef = {
       html: `On a tracé les courbes des fonctions f et g définies par f(x) = ${Pq.ef} et g(x) = ${Pq.eg}. Résous l’inéquation f(x) ${REL[rel]} g(x) sur l’ensemble de définition commun.`,
       visual: vis(),
       ...rIv(S, truth),
-      hint: `Repère les abscisses où les deux courbes se coupent (${crit.map(M).join(' ; ')}), puis où la courbe de f est ${rel === '<' || rel === '≤' ? 'en dessous de' : 'au-dessus de'} celle de g. ${Pq.ok(0) ? '' : 'Attention : en x = 0 il y a un problème de définition.'}`,
+      hint: `Repère les points où les deux courbes se coupent (lis leurs abscisses), puis où la courbe de f est ${rel === '<' || rel === '≤' ? 'en dessous de' : 'au-dessus de'} celle de g. ${Pq.ok(0) ? '' : 'Attention : en x = 0 il y a un problème de définition.'}`,
       solution: `Les courbes se coupent aux abscisses ${crit.map(M).join(' et ')}. La courbe de f est ${rel === '<' || rel === '≤' ? 'en dessous de' : 'au-dessus de'} celle de g${rel === '≤' || rel === '≥' ? ' (ou sur elle)' : ''} pour x dans ${fmtSet(S)}.`,
       afterVisual: vis(crit.map(c => ({ x: c, y: Pq.f(c), px: true, c: ORANGE, l: M(c), ly: -12 }))),
     };
@@ -165,7 +165,7 @@ const hRef = {
 const FORMS10 = [hCmp, hEq, mkIneq10(true), mkIneq10(false), hNsol, hRef];
 const visu10 = (() => { const { F, G } = paire(EX10); return vis10(F, G, ptsX(F, [-3, 1])); })();
 
-export const LV10 = niveau('Résolution graphique : f(x) = g(x) et f(x) < g(x)', FORMS10, {
+export const LV10 = niveau('Graphique : f(x) = g(x)', FORMS10, {
   n: 10, classe: '2de',
   intro: 'Avec <b>deux courbes</b>, on compare directement les hauteurs : là où la courbe de f est plus haute que celle de g, on a f(x) &gt; g(x). Résoudre f(x) = g(x) ou f(x) &lt; g(x), c’est lire des abscisses sur le graphique.',
   def: '<b>f(x) = g(x)</b> : abscisses des points d’intersection des deux courbes. <b>f(x) &lt; g(x)</b> : abscisses des points où la courbe de f est <i>strictement en dessous</i> de celle de g. <b>f(x) &gt; g(x)</b> : au-dessus.',
@@ -220,7 +220,7 @@ const zoneTxt = (xs, z, nom = 'Le produit') => `${nom} est ` + z.map((s, i) => `
 
 const pAffine = {
   id: 'p-affine', dmin: 0, titre: 'signe de ax + b',
-  draw(d) { return { a: pick([1, 1, -1, 2, -2, 3, -3, 5, -5]), r: ri(-9, 9), rel: pick(['>', '<', '≥', '≤']) }; },
+  draw(d) { return { a: pick([1, 1, -1, 2, -2, 3, -3, 5, -5]), r: nz(-9, 9), rel: pick(['>', '<', '≥', '≤']) }; },
   ex: { a: 2, r: 3, rel: '>' },
   build({ a, r, rel }) {
     const f = fac(a, r), pos = (rel === '>' || rel === '≥') === (a > 0);
@@ -228,7 +228,7 @@ const pAffine = {
     return {
       html: `Pour quelles valeurs de x a-t-on ${f.s} ${REL[rel]} 0 ?`,
       ...rIv(S, x => CMPF[rel](f.a * x + f.b, 0)),
-      hint: `${f.s} s’annule pour x = ${M(r)}. ${a > 0 ? `Le coefficient de x est ${M(a)}, positif : l’expression est négative avant ${M(r)} et positive après` : `Le coefficient de x est ${M(a)}, négatif : l’expression est positive avant ${M(r)} et négative après`}. Choisis le bon côté, puis décide du crochet.`,
+      hint: `Cherche d’abord la valeur de x qui annule ${f.s}. Le coefficient de x est ${M(a)}, ${a > 0 ? 'positif : l’expression est négative avant ce zéro et positive après' : 'négatif : l’expression est positive avant ce zéro et négative après'}. Choisis le bon côté, puis décide du crochet.`,
       solution: `${f.s} = 0 pour x = ${M(r)}. Comme le coefficient de x est ${a > 0 ? 'positif' : 'négatif'}, ${f.s} est ${a > 0 ? 'négatif avant' : 'positif avant'} ${M(r)} et ${a > 0 ? 'positif après' : 'négatif après'}. Donc ${f.s} ${REL[rel]} 0 pour x dans ${fmtSet(S)}.`,
     };
   },
@@ -293,7 +293,7 @@ const pIneq = {
     return {
       html: `Résous l’inéquation${big(`${prodTxt(fs)} ${REL[rel]} 0`)}`,
       ...rIv(S, x => CMPF[rel](evalP(fs, x), 0)),
-      hint: `Dresse d’abord le tableau de signes du produit ${prodTxt(fs)} (zéros : ${xs.map(M).join(' et ')}), puis garde les zones où le signe est ${rel === '>' || rel === '≥' ? '+' : '−'}. Les zéros eux-mêmes sont ${rel === '≥' || rel === '≤' ? 'inclus' : 'exclus'}.`,
+      hint: `Dresse d’abord le tableau de signes du produit ${prodTxt(fs)} (les valeurs qui annulent chaque facteur), puis garde les zones où le signe est ${rel === '>' || rel === '≥' ? '+' : '−'}. Les zéros eux-mêmes sont ${rel === '≥' || rel === '≤' ? 'inclus' : 'exclus'}.`,
       solution: `Tableau de signes de ${prodTxt(fs)} :${T.html}On garde les zones « ${rel === '>' || rel === '≥' ? '+' : '−'} »${rel === '≥' || rel === '≤' ? ' et les zéros' : ''} : S = ${fmtSet(S)}.`,
     };
   },
@@ -353,7 +353,7 @@ const qIneq = {
     return {
       html: `Résous l’inéquation${big(`${quotTxt(num, den)} ${REL[rel]} 0`)}`,
       ...rIv(S, truth),
-      hint: `Dresse le tableau de signes du quotient (zéros : ${num.map(f => M(f.r)).join(' ; ')} ; valeurs interdites : ${den.map(f => M(f.r)).join(' ; ')}), puis garde les zones « ${rel === '>' || rel === '≥' ? '+' : '−'} ». Une valeur interdite n’est jamais solution, même avec ≤ ou ≥.`,
+      hint: `Dresse le tableau de signes du quotient (zéros du numérateur, valeurs interdites du dénominateur), puis garde les zones « ${rel === '>' || rel === '≥' ? '+' : '−'} ». Une valeur interdite n’est jamais solution, même avec ≤ ou ≥.`,
       solution: `Tableau de signes de ${quotTxt(num, den)} :${T.html}On garde les zones « ${rel === '>' || rel === '≥' ? '+' : '−'} »${rel === '≥' || rel === '≤' ? ', avec les zéros du numérateur mais jamais la valeur interdite' : ''} : S = ${fmtSet(S)}.`,
     };
   },
@@ -362,7 +362,7 @@ const qIneq = {
 const FORMS11 = [pAffine, pSigneEn, pTable, pIneq, qTable, qSigneEn, qIneq, pTable3];
 const visu11 = (() => { const T = tableauComplet([fac(1, 2)], [fac(1, -3)]); return `${T.html}${ligneSignes(T.xs, T.zp, T.pole)}`; })();
 
-export const LV11 = niveau('Tableau de signes d’un produit et d’un quotient', FORMS11, {
+export const LV11 = niveau('Tableaux de signes', FORMS11, {
   n: 11, classe: '2de',
   intro: 'Pour savoir où un produit ou un quotient est positif ou négatif, on étudie le signe de <b>chaque facteur</b>, puis on les combine avec la <b>règle des signes</b> dans un tableau de signes.',
   def: '<b>Signe de ax + b.</b> Il s’annule en x = −b/a. Si a &gt; 0, il est négatif avant ce zéro et positif après ; si a &lt; 0, c’est l’inverse. <b>Produit ou quotient</b> : on met une ligne par facteur, puis une ligne pour le résultat (règle des signes). Un quotient n’est pas défini quand le dénominateur est nul : on le note par une double barre ‖.',
@@ -556,7 +556,7 @@ const pbAire = {
     return {
       html: `Un carré de côté c centimètres a pour aire c<sup>2</sup> cm<sup>2</sup>. Pour quelles valeurs de c a-t-on c<sup>2</sup> ${REL[rel]} ${M(A)} ?`,
       ...rIv(S, x => x > 0 && CMPF[rel](x * x, A)),
-      hint: `Le côté c est un nombre strictement positif. Résous c<sup>2</sup> ${REL[rel]} ${M(A)} comme avec la parabole (les solutions de c<sup>2</sup> = ${M(A)} sont ${M(-n)} et ${M(n)}), puis garde seulement les valeurs positives.`,
+      hint: `Le côté c est un nombre strictement positif. Résous c<sup>2</sup> ${REL[rel]} ${M(A)} comme avec la parabole (cherche d’abord les solutions de c<sup>2</sup> = ${M(A)}), puis garde seulement les valeurs positives.`,
       solution: `c<sup>2</sup> = ${M(A)} pour c = ${M(n)} (ou c = ${M(-n)}, impossible car un côté est positif). ${rel === '<' || rel === '≤' ? `c<sup>2</sup> ${REL[rel]} ${M(A)} équivaut à c entre ${M(-n)} et ${M(n)}` : `c<sup>2</sup> ${REL[rel]} ${M(A)} équivaut à c ${rel === '>' ? '&gt;' : '≥'} ${M(n)} ou c ≤ ${M(-n)}`}, et c &gt; 0 : S = ${fmtSet(S)}.`,
     };
   },
@@ -615,7 +615,7 @@ const FORMS12 = [mPariteRef, mkVal(true), mkVal(false), mPosition, mPariteExpr, 
 
 const visu12 = graph({ xr: [-3, 3], yr: [-9, 9], fs: [{ f: x => x ** 3, dom: [-2.08, 2.08], l: 'cube' }, { f: x => x * x, dom: [-3, 3], l: 'carré', c: '#c2255c' }], pts: [{ x: -2, y: -8, l: 'A(−2 ; −8)', px: true, py: true, anchor: 'start', ly: 18 }, { x: 2, y: 8, l: 'B(2 ; 8)', px: true, py: true, anchor: 'end' }], aria: 'courbes du carré (symétrique par rapport à l’axe des ordonnées) et du cube (symétrique par rapport à l’origine)' });
 
-export const LV12 = niveau('Défis : parité et problèmes', FORMS12, {
+export const LV12 = niveau('Défis : parité, problèmes', FORMS12, {
   n: 12, classe: '2de',
   intro: 'Dernier niveau : on mélange tout ce que tu sais sur les fonctions de référence et on y ajoute la <b>parité</b>, avant de résoudre quelques problèmes concrets.',
   def: '<b>Fonction paire</b> : f(−x) = f(x) pour tout x (la courbe est symétrique par rapport à l’axe des ordonnées) : carré, x⁴… <b>Fonction impaire</b> : f(−x) = −f(x) (symétrie par rapport à l’origine) : cube, inverse, x… Il faut aussi que −x soit dans l’ensemble de définition quand x y est : la racine carrée n’est ni paire ni impaire.',

@@ -197,7 +197,7 @@ const vNsol = {
 const FORMS7 = [vLire, mkExt('max'), mkExt('min'), mkExt('max', true), mkSens(false), mkSens(true), vCmp, vEnc, mkExt('min', true), vCmpNc, vNsol];
 const visu7 = tabVarXY([-4, -1, 2, 4], [-1, 4, -2, 1]) + graphCourbe(fromYs(-4, EX7.ys), { aria: 'courbe de f, dont le tableau de variations est ci-dessus' });
 
-export const LV7 = niveau('Lire un tableau de variations', FORMS7, {
+export const LV7 = niveau('Lire les variations', FORMS7, {
   n: 7, classe: '2de',
   intro: 'Un <b>tableau de variations</b> résume le comportement d’une fonction : les flèches ↗ et ↘ indiquent si f est croissante ou décroissante, et les nombres aux extrémités des flèches sont les valeurs de f.',
   def: 'Un <b>maximum</b> de f sur un intervalle est la plus grande valeur prise par f(x) ; un <b>minimum</b> la plus petite. On précise où ils sont atteints : « le maximum de f est 4, atteint pour x = −1 ». Entre deux abscisses voisines du tableau, f est monotone (une seule flèche).',
@@ -254,7 +254,7 @@ const mkExtGraph = quoi => {
       return {
         html: `Voici la courbe représentative d’une fonction f définie sur ${lim(T)}. Donne le ${nom} de f et la valeur de x où il est atteint.`,
         visual: graphCourbe(C),
-        ...rNums([v, x], { tpl: `${nom[0].toUpperCase() + nom.slice(1)} : {0}, atteint pour x = {1}`, value: x, msg: w => (w[0] === x && w[1] === v ? 'Tu as inversé : le premier nombre est la hauteur (valeur de f), le second l’abscisse.' : '') }),
+        ...rNums([v, x], { tpl: `${nom[0].toUpperCase() + nom.slice(1)} : {0} en x = {1}`, value: x, msg: w => (w[0] === x && w[1] === v ? 'Tu as inversé : le premier nombre est la hauteur (valeur de f), le second l’abscisse.' : '') }),
         verify: E => { let m = max ? -Infinity : Infinity, xm = 0; for (let t = C.a; t <= C.b + 1e-9; t += 0.01) { const y = C.f(t); if (max ? y > m : y < m) { m = y; xm = t; } } return Math.abs(m - E[0]) < 0.01 && Math.abs(xm - E[1]) < 0.02; },
         hint: `Cherche sur la courbe le point le plus ${max ? 'haut' : 'bas'} : sa hauteur est le ${nom} (valeur de f), son abscisse est la valeur de x demandée. Attention, les extrémités de la courbe comptent aussi.`,
         solution: `Le point le plus ${max ? 'haut' : 'bas'} de la courbe a pour coordonnées (${M(x)} ; ${M(v)}). Le ${nom} de f est donc ${M(v)}, atteint pour x = ${M(x)}.`,
@@ -302,7 +302,7 @@ const dChoix = {
       html: `Voici la courbe représentative d’une fonction f définie sur ${lim(T)}. Quel tableau de variations est le sien ?`,
       visual: graphCourbe(C),
       ...rChoice(items, { indep: tv(T) }),
-      hint: `Regarde où la courbe monte et où elle descend (de gauche à droite), puis lis la hauteur des points où elle change de sens : ${T.xs.slice(0, -1).map(M).join(' ; ')}${T.xs.length > 2 ? '…' : ''}. Élimine les tableaux dont les flèches ou les valeurs ne correspondent pas.`,
+      hint: `Regarde où la courbe monte et où elle descend (de gauche à droite), puis lis la hauteur des points où elle change de sens, ainsi que celle des deux extrémités. Élimine les tableaux dont les flèches ou les valeurs ne correspondent pas.`,
       solution: `La courbe ${T.xs.slice(1).map((x, i) => `${T.ys[i + 1] > T.ys[i] ? 'monte' : 'descend'} de ${M(T.ys[i])} à ${M(T.ys[i + 1])} entre ${M(T.xs[i])} et ${M(x)}`).join(', puis ')}. Le bon tableau est celui dont les flèches et les valeurs sont ${T.ys.map(M).join(' ; ')}.`,
       afterVisual: tv(T),
     };
@@ -332,7 +332,7 @@ const dCompleteX = {
 const FORMS8 = [dComplete, mkExtGraph('max'), mkExtGraph('min'), mkSensGraph(true), mkSensGraph(false), dChoix, dCompleteX];
 const visu8 = graphCourbe(fromYs(-3, EX8.ys), { pts: [{ x: -3, y: 2, px: true, py: true, c: '#e8590c' }, { x: 0, y: -1, px: true, py: true, c: '#e8590c' }, { x: 4, y: 3, px: true, py: true, c: '#e8590c' }], aria: 'courbe de f avec trois points repérés' }) + tabVarXY([-3, 0, 4], [2, -1, 3]);
 
-export const LV8 = niveau('Dresser un tableau de variations', FORMS8, {
+export const LV8 = niveau('Dresser un tableau', FORMS8, {
   n: 8, classe: '2de',
   intro: 'Sur une courbe, on voit où la fonction monte et où elle descend. Un tableau de variations range ces informations : il suffit de repérer les points où la courbe <b>change de sens</b>.',
   def: '<b>Méthode du tableau.</b> 1) Repère les abscisses des deux extrémités et des points où la courbe change de sens : ce sont les colonnes. 2) Entre deux colonnes, dessine ↗ si la courbe monte, ↘ si elle descend. 3) Au bout de chaque flèche, écris la hauteur du point (valeur de f).',
@@ -408,7 +408,7 @@ const mkIneq = inf => ({
       html: `${stem9(T)}${M(k)}. Résous graphiquement l’inéquation f(x) ${REL[rel]} ${M(k)}.`,
       visual: graphCourbe(C, { k }),
       ...rIv(S, x => x >= C.a - 1e-12 && x <= C.b + 1e-12 && cmpf(C.f(x), k)),
-      hint: `Repère d’abord les abscisses où la courbe coupe la droite y = ${M(k)} (${racines.map(M).join(' ; ')}), puis les parties de la courbe ${inf ? 'en dessous de' : 'au-dessus de'} cette droite. ${strict ? 'L’inégalité est stricte : les points où la courbe touche la droite sont exclus.' : 'L’inégalité est large : les points de la droite font partie des solutions.'}`,
+      hint: `Repère d’abord les points où la courbe coupe la droite y = ${M(k)} et lis leurs abscisses, puis repère les parties de la courbe ${inf ? 'en dessous de' : 'au-dessus de'} cette droite. ${strict ? 'L’inégalité est stricte : les points où la courbe touche la droite sont exclus.' : 'L’inégalité est large : les points de la droite font partie des solutions.'}`,
       solution: `La droite y = ${M(k)} coupe la courbe aux abscisses ${racines.map(M).join(' et ')}. La courbe est ${inf ? 'en dessous de' : 'au-dessus de'} la droite ${strict ? '(strictement) ' : '(ou sur elle) '}pour x dans ${fmtSet(S)}. Les crochets sont ${strict ? 'ouverts sur les abscisses d’intersection (inégalité stricte)' : 'fermés sur les abscisses d’intersection (inégalité large)'}, et fermés aux extrémités ${M(C.a)} et ${M(C.b)} de l’ensemble de définition quand elles conviennent.`,
       afterVisual: graphCourbe(C, { k, pts: ptsSol(racines, k) }),
     };
@@ -466,7 +466,7 @@ const FORMS9 = [gEq, mkIneq(true), mkIneq(false), gNsol, gRef];
 const C9 = fromYs(-4, EX9.ys);
 const visu9 = graphCourbe(C9, { k: 1, pts: ptsSol([-3, 1], 1) });
 
-export const LV9 = niveau('Résolution graphique : f(x) = k et f(x) < k', FORMS9, {
+export const LV9 = niveau('Graphique : f(x) = k', FORMS9, {
   n: 9, classe: '2de',
   intro: 'Pour résoudre <b>f(x) = k</b> ou <b>f(x) &lt; k</b> sur la courbe de f, on trace la <b>droite horizontale</b> d’équation y = k et on regarde où la courbe la rencontre ou passe en dessous.',
   def: '<b>f(x) = k</b> : les solutions sont les abscisses des points d’intersection de la courbe et de la droite y = k. <b>f(x) &lt; k</b> : ce sont les abscisses des points de la courbe situés <i>strictement en dessous</i> de la droite. <b>f(x) &gt; k</b> : au-dessus.',

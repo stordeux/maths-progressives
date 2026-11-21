@@ -273,11 +273,11 @@ const rImgCube = {
       html: `${STEM_C}Calcule l’image de <b>${M(x)}</b> par g.`,
       ...rNums([y], {
         tpl: `g(${M(x)}) = {0}`, value: Math.pow(x, 3),
-        msg: v => (v[0] === -y ? `Un cube garde le signe de x : le produit de trois nombres négatifs est négatif.` : v[0] === r6(3 * x) ? `Tu as calculé 3 × ${M(x)} : le cube de ${M(x)}, c’est ${M(x)} × ${M(x)} × ${M(x)}.` : v[0] === r6(x * x) ? `Tu as calculé le carré : il faut un facteur de plus, ${M(x)} × ${M(x)} × ${M(x)}.` : ''),
+        msg: v => (v[0] === -y ? `Un cube garde le signe de x : le produit de trois nombres négatifs est négatif.` : v[0] === r6(3 * x) ? `Tu as calculé 3 × ${M(x)} : le cube de ${M(x)}, c’est ${P(x)} × ${P(x)} × ${P(x)}.` : v[0] === r6(x * x) ? `Tu as calculé le carré : il faut un facteur de plus, ${M(x)} × ${M(x)} × ${M(x)}.` : ''),
       }),
-      hint: x < 0 ? `Remplace x par ${M(x)} : ${cube(x)} = ${M(x)} × ${M(x)} × ${M(x)}. Combien de facteurs négatifs y a-t-il, et quel est le signe du produit ?`
+      hint: x < 0 ? `Remplace x par ${M(x)} : ${cube(x)} = ${P(x)} × ${P(x)} × ${P(x)}. Combien de facteurs négatifs y a-t-il, et quel est le signe du produit ?`
         : `Remplace x par ${M(x)} : calcule ${M(x)} × ${M(x)} × ${M(x)}${Number.isInteger(x) ? '' : ' ; le résultat a trois chiffres après la virgule (ou moins si tu le simplifies)'}.`,
-      solution: `g(${M(x)}) = ${cube(x)} = ${P(x)} × ${P(x)} × ${P(x)} : ${M(x)} × ${M(x)} = ${M(r6(x * x))}, puis ${M(r6(x * x))} × ${P(x)} = ${M(y)}${x < 0 ? ' (un cube a le signe de x)' : ''}.`,
+      solution: `g(${M(x)}) = ${cube(x)} = ${P(x)} × ${P(x)} × ${P(x)} : ${P(x)} × ${P(x)} = ${M(r6(x * x))}, puis ${M(r6(x * x))} × ${P(x)} = ${M(y)}${x < 0 ? ' (un cube a le signe de x)' : ''}.`,
     };
   },
 };
@@ -602,7 +602,7 @@ const cProp = {
 const FORMS6 = [cNom, cCourbe, cProp, cPoint, cSym, cDom, cSigne];
 
 const vignettes = `<div class="cols vign">${CLES.map(k => `<div class="vg">${miniRef(k)}<div class="cap">${NOMS[k]}</div></div>`).join('')}</div>`;
-export const LV6 = niveau('Reconnaître une courbe de référence', FORMS6, {
+export const LV6 = niveau('Reconnaître les courbes', FORMS6, {
   n: 6, classe: '2de',
   intro: 'Les quatre fonctions de référence se reconnaissent à l’<b>allure de leur courbe</b>. Quand tu sais les repérer, tu en déduis tout de suite l’ensemble de définition, le signe et la symétrie.',
   def: '<b>Carré</b> : parabole, au-dessus de l’axe, symétrique par rapport à l’axe des ordonnées. <b>Inverse</b> : deux branches, pas de point en x = 0, symétrique par rapport à l’origine. <b>Racine carrée</b> : part de l’origine, n’existe que pour x ≥ 0. <b>Cube</b> : monte sans cesse, traverse l’origine, symétrique par rapport à l’origine.',
