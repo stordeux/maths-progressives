@@ -13,7 +13,10 @@ import { LEVELS } from '../../modules/stats-lycee/levels.js';
 import { exempleDe, exemples2De } from '../../modules/stats-lycee/outils.js';
 import { rnd, sigma, variance, varianceAutre } from '../../modules/stats-lycee/stat.js';
 import { histogramme, readHisto, polygone, readPoly, nuage, readNuage } from '../../modules/stats-lycee/draw.js';
-import { strip, M } from '../../engine/util/fmt.js';
+import { strip } from '../../engine/util/fmt.js';
+import { M as Mm } from '../../modules/stats-lycee/nombre.js';
+/** nombre du module, avec une espace ordinaire (c'est ce que donne strip) */
+const M = n => Mm(n).replace(/\u202f/g, ' ');
 import { NU, NN } from '../../modules/stats-lycee/d.js';
 
 const N = +(process.env.N_STL || 120);
@@ -27,7 +30,8 @@ function evalue(e) {
   const js = e.replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-').replace(/(\d),(\d)/g, '$1.$2').replace(/\s+/g, ' ').trim();
   return Function(`"use strict"; return (${js});`)();
 }
-export function calculsJustes(texte0, where) {
+export function calculsJustes(texte00, where) {
+  const texte0 = texte00.replace(/(\d) (\d{3})(?!\d)/g, '$1$2').replace(/(\d) (\d{3})(?!\d)/g, '$1$2');
   const texte = texte0.replace(/√(\d+(?:,\d+)?)/g, (_, x) => String(Math.sqrt(parseFloat(x.replace(',', '.')))));
   for (const mm of texte.matchAll(CHAINE)) {
     const m = mm[0], avant = texte.slice(Math.max(0, mm.index - 6), mm.index), apres = texte.slice(mm.index + m.length, mm.index + m.length + 6);
@@ -90,6 +94,10 @@ for (let L = 0; L < 12; L++) {
         for (const e of q.expected) { const w = M(e); if (w.length >= 2 && !dansEnonce.has(w) && dansIndice.has(w) && (strip(q.solution).match(new RegExp(`(?<![\\d,])${w}(?![\\d,])`, 'g')) || []).length < 2) assert.fail(`${where} l'indice donne la réponse ${w} : ${strip(q.hint)}`); }
       }
       assert.ok(strip(q.solution).length > 15, `${where} solution`);
+      if (q.visual && /class="vis (poly|histo)"/.test(q.visual)) {
+        const pts = /class="vis poly"/.test(q.visual) ? readPoly(q.visual).map(p => p.x) : readHisto(q.visual).flatMap(b => [b.a, b.b]);
+        for (const x of new Set(pts)) assert.ok(q.visual.includes(`>${Mm(x)}</text>`), `${where} le SVG n'écrit pas la borne ${M(x)} sous l'axe`);
+      }
       assert.ok(strip(q.hint).length > 20, `${where} indice trop court`);
       for (const [nom, s] of [['énoncé', q.html], ['indice', q.hint], ['solution', q.solution], ['réponse', q.rep], ['gabarit', q.tpl || ''], ...(q.opts || []).map(o => ['choix', o.l])]) {
         const tx = strip(String(s).replace(/<table[\s\S]*?<\/table>/g, ' [tableau] ').replace(/<svg[\s\S]*?<\/svg>/g, ' '));

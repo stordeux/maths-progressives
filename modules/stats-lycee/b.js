@@ -307,7 +307,7 @@ export const CTXC = [
 ];
 /** k classes de même amplitude w à partir de a0 : bornes b0 … bk */
 export const classesDe = (C, k, w, a0) => range(0, k).map(i => a0 + i * w);
-export const cl = (a, b) => `[${M(a)} ; ${M(b)}[`;
+export const cl = (a, b) => `[${M(a)}&nbsp;;&nbsp;${M(b)}[`;
 const tabClasses = (C, bornes, effs, lab = 'Effectif') => tab([[C.h, ...bornes.slice(0, -1).map((b, i) => cl(b, bornes[i + 1]))], [lab, ...effs]]);
 const tirageClasses = (d, kmax = 5) => { const C = pick(CTXC), w = pick(C.ws), k = ri(4, kmax), a0 = C.a0() + (C.id === 'trajet' ? 0 : w * ri(0, 1)); return { C, bornes: classesDe(C, k, w, a0), effs: effCloche(k, pick([20, 25, 30, 40, 50])) }; };
 
@@ -334,7 +334,7 @@ const classeDe = {
     const items = cand.slice(0, 4).map(k => ({ l: lig(k), ok: k === i, why: k === i - 1 && v === bornes[i] ? `${M(v)} est la borne de droite de ${lig(k)} : cette borne est exclue. La classe ${cl(bornes[k], bornes[k + 1])} s’arrête juste avant ${M(v)}.` : `${M(v)} ${v < bornes[k] ? 'est plus petit que' : 'est plus grand que ou égal à'} ${M(v < bornes[k] ? bornes[k] : bornes[k + 1])} : regarde les bornes de ${lig(k)}.` }));
     if (items.length < 4 || new Set(items.map(x => x.l)).size < 4) return null;
     return { ...rChoice(items, { ordre: true, indep: lig(i) }),
-      html: `Les classes sont de la forme [a ; b[ (la borne a est comprise, la borne b ne l’est pas). Dans quelle classe se trouve la valeur ${fv(v, C.u)} (${C.h.split(' (')[0].toLowerCase()}) ?`,
+      html: `Les classes sont de la forme [a&nbsp;;&nbsp;b[ (la borne a est comprise, la borne b ne l’est pas). Dans quelle classe se trouve la valeur ${fv(v, C.u)} (${C.h.split(' (')[0].toLowerCase()}) ?`,
       hint: `Cherche la classe dont la borne de gauche est inférieure ou égale à ${M(v)} et dont la borne de droite est strictement supérieure à ${M(v)} (l’amplitude est ${M(bornes[1] - bornes[0])}).`,
       solution: `${M(bornes[i])} ≤ ${M(v)} &lt; ${M(bornes[i + 1])} : la valeur ${M(v)} est dans la classe <b>${lig(i)}</b>.` };
   },
@@ -401,9 +401,9 @@ const estimExacte = {
 export const LV6 = niveau('Données en classes', [centre, classeDe, effClasse, moyClasses, freqClasses, estimExacte], {
   n: 6,
   intro: 'Quand les données sont nombreuses ou très variées (durées, tailles, salaires…), on les regroupe en classes de même amplitude. On perd un peu de précision, mais on y gagne en lisibilité.',
-  def: `Une <b>classe</b> [a ; b[ contient les valeurs x telles que a ≤ x &lt; b. Son <b>amplitude</b> est b − a et son <b>centre</b> est <span class="nw">(a + b) ÷ 2</span>. La <b>moyenne estimée</b> d’une série en classes se calcule comme une moyenne pondérée, en remplaçant chaque classe par son centre.`,
+  def: `Une <b>classe</b> [a&nbsp;;&nbsp;b[ contient les valeurs x telles que a ≤ x &lt; b. Son <b>amplitude</b> est b − a et son <b>centre</b> est <span class="nw">(a + b) ÷ 2</span>. La <b>moyenne estimée</b> d’une série en classes se calcule comme une moyenne pondérée, en remplaçant chaque classe par son centre.`,
   visuel: tabClasses(CTXC[0], [0, 10, 20, 30], [5, 8, 7]) + tab([['Centre', 5, 15, 25]]) + histogramme([0, 10, 20, 30], [5, 8, 7], { gy: 1, ly: 1, xtitle: 'durée du trajet (min)' }),
   methode: ['Repère les bornes : a est compris dans la classe, b est exclu.', 'Calcule le centre de chaque classe : (a + b) ÷ 2.', 'Moyenne estimée : somme des (effectif × centre) ÷ effectif total.'],
-  warn: ['La valeur b (borne de droite) appartient à la classe suivante, pas à [a ; b[.', 'La moyenne calculée avec les centres est une estimation : elle n’est en général pas égale à la moyenne exacte.', 'Ne pas oublier les effectifs : la moyenne des centres seule est fausse.'],
-  retenir: 'classe [a ; b[ : centre (a + b) ÷ 2 ; moyenne estimée = somme des (effectif × centre) ÷ effectif total.',
+  warn: ['La valeur b (borne de droite) appartient à la classe suivante, pas à [a&nbsp;;&nbsp;b[.', 'La moyenne calculée avec les centres est une estimation : elle n’est en général pas égale à la moyenne exacte.', 'Ne pas oublier les effectifs : la moyenne des centres seule est fausse.'],
+  retenir: 'classe [a&nbsp;;&nbsp;b[ : centre (a + b) ÷ 2 ; moyenne estimée = somme des (effectif × centre) ÷ effectif total.',
 });

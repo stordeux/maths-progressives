@@ -10,7 +10,8 @@
 // Dans build, tout hasard passe par melange() : en mode « cours » (FIXE) l'ordre des choix est celui de la liste.
 import { ri, pick, shuffle, chance } from '../../engine/util/rand.js';
 import { numsCheck, choiceCheck } from '../../engine/answers/checks.js';
-import { M, P, F, strip } from '../../engine/util/fmt.js';
+import { F, strip } from '../../engine/util/fmt.js';
+import { M, P } from './nombre.js';
 import { approx } from '../../engine/util/arith.js';
 import { multiCheck } from '../stats3e/util.js';
 

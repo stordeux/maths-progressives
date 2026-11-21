@@ -135,7 +135,7 @@ export const LV7 = niveau('Histogramme', [lireEff, lireTotal, modale, lireFreq, 
   def: `Dans un <b>histogramme</b> de classes de même amplitude, l’aire et la hauteur d’un rectangle sont proportionnelles à l’effectif (ou à la fréquence) de sa classe. La <b>classe modale</b> est la classe de plus grand effectif : c’est le rectangle le plus haut.`,
   visuel: histogramme([0, 10, 20, 30, 40], [3, 8, 6, 3], { gy: 1, ly: 1, ytitle: 'effectif', xtitle: 'durée du trajet (min)', hl: [1] }),
   methode: ['Lis l’échelle de l’axe vertical : chaque graduation vaut combien ?', 'Effectif d’une classe : hauteur du rectangle. Effectif total : somme des hauteurs.', 'Fréquence d’une classe : effectif ÷ effectif total, en %. Moyenne estimée : centres des classes pondérés par les effectifs.'],
-  warn: ['Une borne comme 20 appartient à la classe [20 ; 30[, pas à [10 ; 20[.', 'Lire la fréquence (ou l’effectif) sur la mauvaise graduation : regarde si le quadrillage est de 1 en 1 ou de 2 en 2.', 'Quand l’axe donne des fréquences en %, il faut connaître l’effectif total pour retrouver un nombre d’individus.'],
+  warn: ['Une borne comme 20 appartient à la classe [20&nbsp;;&nbsp;30[, pas à [10&nbsp;;&nbsp;20[.', 'Lire la fréquence (ou l’effectif) sur la mauvaise graduation : regarde si le quadrillage est de 1 en 1 ou de 2 en 2.', 'Quand l’axe donne des fréquences en %, il faut connaître l’effectif total pour retrouver un nombre d’individus.'],
   retenir: 'hauteur du rectangle = effectif (ou fréquence) ; effectif total = somme des hauteurs ; classe modale = rectangle le plus haut.',
 });
 
@@ -367,15 +367,15 @@ const moyReunie = {
 };
 
 const intervalleSigma = {
-  id: 'intervalle-sigma', dmin: 3, titre: 'intervalle [m − σ ; m + σ]',
+  id: 'intervalle-sigma', dmin: 3, titre: 'intervalle [m − σ&nbsp;;&nbsp;m + σ]',
   draw: d => { const i = ri(0, 2); return { i, m: [ri(100, 160) / 10, ri(60, 120) / 10, ri(240, 320) / 10][i], s: ri(15, 45) / 10 }; },
   build: p => {
     const { i, m, s } = p, a = rnd(m - s, 3), b = rnd(m + s, 3);
     const [t, u] = [['Les durées de trajet des élèves d’un lycée ont pour moyenne', ' min'], ['Les notes d’un devoir ont pour moyenne', ''], ['Les températures d’un mois d’été ont pour moyenne', ' °C']][i];
     return { ...rNums([a, b], { tpl: `Borne basse : {0}${u} Borne haute : {1}${u}`, value: b, near: [[[m, 'C’est la moyenne : la borne basse est m − σ, donc plus petite.']], [[m, 'C’est la moyenne : la borne haute est m + σ, donc plus grande.']]] }),
-      html: `${t} ${fv(m, u)} et pour écart type ${fv(s, u)}. Donne les bornes de l’intervalle [m − σ ; m + σ], qui regroupe les valeurs « proches de la moyenne ».`,
+      html: `${t} ${fv(m, u)} et pour écart type ${fv(s, u)}. Donne les bornes de l’intervalle [m − σ&nbsp;;&nbsp;m + σ], qui regroupe les valeurs « proches de la moyenne ».`,
       hint: `Retire l’écart type ${M(s)} à la moyenne ${M(m)} pour la borne basse, et ajoute-le pour la borne haute.`,
-      solution: `Borne basse : ${M(m)} − ${M(s)} = <b>${M(a)}</b>${u}.<br>Borne haute : ${M(m)} + ${M(s)} = <b>${M(b)}</b>${u}.<br>L’intervalle est [${M(a)} ; ${M(b)}] : les valeurs qui s’en écartent peu sont proches de la moyenne.` };
+      solution: `Borne basse : ${M(m)} − ${M(s)} = <b>${M(a)}</b>${u}.<br>Borne haute : ${M(m)} + ${M(s)} = <b>${M(b)}</b>${u}.<br>L’intervalle est [${M(a)}&nbsp;;&nbsp;${M(b)}] : les valeurs qui s’en écartent peu sont proches de la moyenne.` };
   },
   ex: { i: 0, m: 12.5, s: 3 },
 };

@@ -2,7 +2,7 @@
 // histogramme, polygone des fréquences cumulées, nuage de points, courbe des fréquences observées, tableaux.
 // Chaque dessin porte les données de son échelle (data-…) : readHisto(), readPoly(), readNuage() relisent les valeurs
 // d'après la GÉOMÉTRIE du dessin (vérification indépendante des tests).
-import { M } from '../../engine/util/fmt.js';
+import { M } from './nombre.js';
 
 const FONT = 'font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif"';
 const f1 = x => (Math.round(x * 1000) / 1000).toString();
@@ -13,7 +13,7 @@ const STROKE = 'var(--curve)';
 export const tab = rows => `<div class="tablewrap"><table class="data">${rows.map(r => `<tr><th>${r[0]}</th>${r.slice(1).map(c => `<td>${typeof c === 'number' ? M(c) : c}</td>`).join('')}</tr>`).join('')}</table></div>`;
 
 /** graduations : positions multiples de step dans [a ; b] */
-const graduations = (a, b, step) => { const out = []; for (let v = Math.ceil(a / step - 1e-9) * step; v <= b + 1e-9; v += step) out.push(Math.round(v * 1e6) / 1e6); return out; };
+const graduations = (a, b, step, depuis = null) => { const out = []; const o = depuis === null ? 0 : depuis; for (let v = o + Math.ceil((a - o) / step - 1e-9) * step; v <= b + 1e-9; v += step) out.push(Math.round(v * 1e6) / 1e6); return out; };
 
 /* ===================================================================== histogramme */
 /**
@@ -66,7 +66,7 @@ export function polygone(bornes, F, { gx = null, lx = null, h = [], xtitle = '',
     s += `<line x1="${L}" y1="${f1(Y(y))}" x2="${W - R}" y2="${f1(Y(y))}" stroke="${major ? '#adb5bd' : '#dee2e6'}" stroke-width="1"/>`;
     if (major) s += `<text x="${L - 7}" y="${f1(Y(y) + 5)}" font-size="14" text-anchor="end" fill="#333">${y}</text>`;
   }
-  for (const x of graduations(bornes[0], bornes[k], g)) {
+  for (const x of graduations(bornes[0], bornes[k], g, bornes[0])) {
     const major = Math.abs((x - bornes[0]) / l - Math.round((x - bornes[0]) / l)) < 1e-9;
     s += `<line x1="${f1(X(x))}" y1="${T}" x2="${f1(X(x))}" y2="${T + ph}" stroke="${major ? '#ced4da' : '#edf0f2'}" stroke-width="1"/>`;
     if (major) s += `<text x="${f1(X(x))}" y="${T + ph + 20}" font-size="14" text-anchor="middle" fill="#222">${M(x)}</text>`;
