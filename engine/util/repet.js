@@ -10,7 +10,8 @@ export const ESSAIS = 25;
 
 // identifiants internes des figures SVG (compteur qui change à chaque dessin : dégradés, zones de découpe, titres)
 const RE_ID = /(\bid="|url\(#|href="#|aria-(?:labelledby|describedby)=")[^")]*/g;
-const RE_PRENOM = new RegExp(`(?<![\\p{L}])(?:${PRENOMS.join('|')})(?![\\p{L}])`, 'gu');
+// pas de lookbehind « (?<! » : un Safari antérieur à 16.4 (vieilles tablettes) refuse alors tout le moteur (SyntaxError)
+const RE_PRENOM = new RegExp(`(^|[^\\p{L}])(?:${PRENOMS.join('|')})(?![\\p{L}])`, 'gu');
 
 /**
  * Texte comparable d'un exercice : l'énoncé et la figure, sans les prénoms (« Léa achète 3 kg » et
@@ -20,7 +21,7 @@ const RE_PRENOM = new RegExp(`(?<![\\p{L}])(?:${PRENOMS.join('|')})(?![\\p{L}])`
 export function texteCle(q) {
   const opts = (q.opts || []).map(o => String(o.l)).sort().join('¦');
   const brut = [q.html ?? q.q ?? '', q.visual || '', q.tpl || '', opts, (q.lines || []).join('¦')].join('§');
-  return brut.replace(RE_ID, '$1').replace(RE_PRENOM, '∗').replace(/&nbsp;|\s+/g, ' ').trim();
+  return brut.replace(RE_ID, '$1').replace(RE_PRENOM, '$1∗').replace(/&nbsp;|\s+/g, ' ').trim();
 }
 
 /** empreinte courte (deux hachages de 32 bits) : c'est elle qu'on enregistre, pas l'énoncé */

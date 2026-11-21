@@ -681,7 +681,7 @@ function L11(d) {
   if (!asChoice) {
     let prog;
     const q = stepsExo(() => { const t = progMake(d); prog = t.prog; return t; },
-      { hl: d < 1, hint: H11, ok: needsPar, extraVerify: E => approx(simulate(prog).at(-1), E.at(-1)) });
+      { hl: d < 1, hint: H11, ok: needsPar, extraVerify: E => approx(simulate(prog).slice(-1)[0], E.slice(-1)[0]) });
     q.html = `Voici un programme de calcul :${progHtml(prog)}Il se traduit par l'expression ci-dessous. Calcule-la pas à pas :` + q.html.replace(/^Calcule pas à pas :/, '');
     return q;
   }
@@ -690,7 +690,7 @@ function L11(d) {
     fixPar(t);
     const steps = run(t);
     if (!valid(t, steps, { minSteps: 3, ok: needsPar })) continue;
-    const good = R(t, 0, {}), goodV = simulate(p).at(-1);
+    const good = R(t, 0, {}), goodV = simulate(p).slice(-1)[0];
     const rev = [...p.ins].reverse(), sw = [p.ins[1], p.ins[0], ...p.ins.slice(2)];
     const cands = [
       { l: R(t, 0, { nopar: true }), why: 'nopar' },
@@ -721,7 +721,7 @@ function L11(d) {
         // l'option choisie, relue par l'analyseur, donne le résultat du programme simulé ; les autres non
         const sims = simulate(p);
         if (!opts.every(o => Number.isFinite(safeCalc(o.l)))) return false;
-        return opts.every(o => (o.v === Ex) === approx(calc(o.l), sims.at(-1)));
+        return opts.every(o => (o.v === Ex) === approx(calc(o.l), sims.slice(-1)[0]));
       },
     };
   }

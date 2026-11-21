@@ -63,9 +63,9 @@ export function readBox(svg) {
   const x0 = +(/data-x0="([\d.\-]+)"/.exec(svg) || [])[1], u = +(/data-u="([\d.\-]+)"/.exec(svg) || [])[1], lo = +(/data-lo="([\d.\-]+)"/.exec(svg) || [])[1];
   const val = px => Math.round((lo + (px - x0) / u) * 100) / 100;
   const out = [];
-  for (const m of svg.matchAll(/<line data-i="(\d+)" data-r="(min|max|med)" x1="([\d.\-]+)"/g)) { (out[+m[1]] ||= {})[m[2]] = val(+m[3]); }
+  for (const m of svg.matchAll(/<line data-i="(\d+)" data-r="(min|max|med)" x1="([\d.\-]+)"/g)) { (out[+m[1]] = out[+m[1]] || {})[m[2]] = val(+m[3]); }
   for (const m of svg.matchAll(/<rect data-i="(\d+)" data-r="box" x="([\d.\-]+)" y="[\d.\-]+" width="([\d.\-]+)"/g)) {
-    const o = (out[+m[1]] ||= {}); o.q1 = val(+m[2]); o.q3 = val(+m[2] + +m[3]);
+    const o = (out[+m[1]] = out[+m[1]] || {}); o.q1 = val(+m[2]); o.q3 = val(+m[2] + +m[3]);
   }
   return out;
 }
