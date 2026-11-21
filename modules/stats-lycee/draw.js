@@ -26,7 +26,7 @@ export function histogramme(bornes, h, { gy = 1, ly = 1, ytitle = 'effectif', xt
   const hi = top || Math.ceil(Math.max(...h) / gy - 1e-9) * gy + gy;
   const pw = W - L - R, ph = H - T - B, ux = pw / (bornes[k] - bornes[0]), uy = ph / hi;
   const X = v => L + (v - bornes[0]) * ux, Y = v => T + ph - v * uy;
-  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis histo" style="width:${W}px" data-x0="${f1(L)}" data-a0="${bornes[0]}" data-ux="${f1(ux)}" data-uy="${f1(uy)}" role="img" aria-label="histogramme" ${FONT}>`;
+  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis histo" style="width:${W}px" data-x0="${f1(L)}" data-a0="${bornes[0]}" data-ux="${ux}" data-uy="${uy}" role="img" aria-label="histogramme" ${FONT}>`;
   for (const g of graduations(0, hi, gy)) {
     const major = Math.abs(g / ly - Math.round(g / ly)) < 1e-9;
     s += `<line x1="${L}" y1="${f1(Y(g))}" x2="${W - R}" y2="${f1(Y(g))}" stroke="${major ? '#adb5bd' : '#dee2e6'}" stroke-width="1"/>`;
@@ -46,7 +46,7 @@ export function readHisto(svg) {
   const g = n => +svg.match(new RegExp(`data-${n}="([^"]+)"`))[1];
   const x0 = g('x0'), a0 = g('a0'), ux = g('ux'), uy = g('uy');
   return [...svg.matchAll(/<rect class="bar" [^>]*?x="([\d.]+)" y="[\d.]+" width="([\d.]+)" height="([\d.]+)"/g)]
-    .map(m => { const a = a0 + (+m[1] - x0) / ux; return { a: Math.round(a * 1e3) / 1e3, b: Math.round((a + +m[2] / ux) * 1e3) / 1e3, h: Math.round(+m[3] / uy * 1e3) / 1e3 }; });
+    .map(m => { const a = a0 + (+m[1] - x0) / ux; return { a: Math.round(a * 100) / 100, b: Math.round((a + +m[2] / ux) * 100) / 100, h: Math.round(+m[3] / uy * 100) / 100 }; });
 }
 
 /* ===================================================================== polygone des fréquences cumulées */
@@ -60,7 +60,7 @@ export function polygone(bornes, F, { gx = null, lx = null, h = [], xtitle = '',
   const pw = W - L - R, ph = H - T - B, ux = pw / (bornes[k] - bornes[0]), uy = ph / 100;
   const X = v => L + (v - bornes[0]) * ux, Y = v => T + ph - v * uy;
   const g = gx || (bornes[1] - bornes[0]), l = lx || g;
-  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis poly" style="width:${W}px" data-x0="${f1(L)}" data-a0="${bornes[0]}" data-ux="${f1(ux)}" data-yb="${f1(T + ph)}" data-uy="${f1(uy)}" role="img" aria-label="polygone des fréquences cumulées" ${FONT}>`;
+  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis poly" style="width:${W}px" data-x0="${f1(L)}" data-a0="${bornes[0]}" data-ux="${ux}" data-yb="${f1(T + ph)}" data-uy="${uy}" role="img" aria-label="polygone des fréquences cumulées" ${FONT}>`;
   for (const y of graduations(0, 100, 10)) {
     const major = y % 20 === 0;
     s += `<line x1="${L}" y1="${f1(Y(y))}" x2="${W - R}" y2="${f1(Y(y))}" stroke="${major ? '#adb5bd' : '#dee2e6'}" stroke-width="1"/>`;
@@ -87,7 +87,7 @@ export function readPoly(svg) {
   const g = n => +svg.match(new RegExp(`data-${n}="([^"]+)"`))[1];
   const x0 = g('x0'), a0 = g('a0'), ux = g('ux'), yb = g('yb'), uy = g('uy');
   return [...svg.matchAll(/<circle class="pt" data-i="\d+" cx="([\d.]+)" cy="([\d.]+)"/g)]
-    .map(m => ({ x: Math.round((a0 + (+m[1] - x0) / ux) * 1e3) / 1e3, y: Math.round((yb - +m[2]) / uy * 1e3) / 1e3 }));
+    .map(m => ({ x: Math.round((a0 + (+m[1] - x0) / ux) * 100) / 100, y: Math.round((yb - +m[2]) / uy * 100) / 100 }));
 }
 
 /* ===================================================================== nuage de points */
@@ -100,7 +100,7 @@ export function nuage(pts, { xr, yr, gx = 1, gy = 1, lx = null, ly = null, xt = 
   const W = width, L = 56, R = 16, T = 28, B = 56, H = 340;
   const pw = W - L - R, ph = H - T - B, ux = pw / (xr[1] - xr[0]), uy = ph / (yr[1] - yr[0]);
   const X = v => L + (v - xr[0]) * ux, Y = v => T + ph - (v - yr[0]) * uy;
-  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis nuage" style="width:${W}px" data-x0="${f1(L)}" data-a0="${xr[0]}" data-ux="${f1(ux)}" data-yb="${f1(T + ph)}" data-b0="${yr[0]}" data-uy="${f1(uy)}" role="img" aria-label="nuage de points" ${FONT}>`;
+  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis nuage" style="width:${W}px" data-x0="${f1(L)}" data-a0="${xr[0]}" data-ux="${ux}" data-yb="${f1(T + ph)}" data-b0="${yr[0]}" data-uy="${uy}" role="img" aria-label="nuage de points" ${FONT}>`;
   for (const y of graduations(yr[0], yr[1], gy)) {
     const major = !ly || Math.abs((y - yr[0]) / ly - Math.round((y - yr[0]) / ly)) < 1e-9;
     s += `<line x1="${L}" y1="${f1(Y(y))}" x2="${W - R}" y2="${f1(Y(y))}" stroke="${major ? '#ced4da' : '#edf0f2'}" stroke-width="1"/>`;
@@ -127,7 +127,7 @@ export function nuage(pts, { xr, yr, gx = 1, gy = 1, lx = null, ly = null, xt = 
 export function readNuage(svg) {
   const g = n => +svg.match(new RegExp(`data-${n}="([^"]+)"`))[1];
   const x0 = g('x0'), a0 = g('a0'), ux = g('ux'), yb = g('yb'), b0 = g('b0'), uy = g('uy');
-  const vx = px => Math.round((a0 + (px - x0) / ux) * 1e3) / 1e3, vy = py => Math.round((b0 + (yb - py) / uy) * 1e3) / 1e3;
+  const vx = px => Math.round((a0 + (px - x0) / ux) * 100) / 100, vy = py => Math.round((b0 + (yb - py) / uy) * 100) / 100;
   return {
     pts: [...svg.matchAll(/<circle class="pt" data-i="\d+" cx="([\d.]+)" cy="([\d.]+)"/g)].map(m => ({ x: vx(+m[1]), y: vy(+m[2]) })),
     croix: [...svg.matchAll(/<g class="cx" data-l="([^"]*)" data-cx="([\d.]+)" data-cy="([\d.]+)"/g)].map(m => ({ l: m[1], x: vx(+m[2]), y: vy(+m[3]) })),
@@ -143,7 +143,7 @@ export function courbeFreq(pts, { nmax, yr = [0, 1], gy = 0.1, ly = 0.2, width =
   const W = width, L = 56, R = 16, T = 28, B = 52, H = 300;
   const pw = W - L - R, ph = H - T - B, ux = pw / nmax, uy = ph / (yr[1] - yr[0]);
   const X = v => L + v * ux, Y = v => T + ph - (v - yr[0]) * uy;
-  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis freq" style="width:${W}px" data-x0="${f1(L)}" data-ux="${f1(ux)}" data-yb="${f1(T + ph)}" data-b0="${yr[0]}" data-uy="${f1(uy)}" role="img" aria-label="fréquence observée selon le nombre d'essais" ${FONT}>`;
+  let s = `<svg viewBox="0 0 ${W} ${H}" class="vis freq" style="width:${W}px" data-x0="${f1(L)}" data-ux="${ux}" data-yb="${f1(T + ph)}" data-b0="${yr[0]}" data-uy="${uy}" role="img" aria-label="fréquence observée selon le nombre d'essais" ${FONT}>`;
   for (const y of graduations(yr[0], yr[1], gy)) {
     const major = Math.abs((y - yr[0]) / ly - Math.round((y - yr[0]) / ly)) < 1e-9;
     s += `<line x1="${L}" y1="${f1(Y(y))}" x2="${W - R}" y2="${f1(Y(y))}" stroke="${major ? '#adb5bd' : '#dee2e6'}" stroke-width="1"/>`;

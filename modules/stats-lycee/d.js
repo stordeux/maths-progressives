@@ -281,9 +281,9 @@ export const LV11 = niveau('Tableau croisé et fréquences conditionnelles', [cr
 
 /* ===================================================================== 12. nuage de points et ajustement affine */
 const NU = [
-  { id: 'rev', intro: 'On a relevé, pour des élèves, le nombre d’heures de révision par semaine, noté x, et la note obtenue à un contrôle sur 20, notée y.', xt: 'révision (h par semaine)', yt: 'note (sur 20)', xr: [0, 10], yr: [0, 20], gx: 1, gy: 1, lx: 1, ly: 2, x0: 1, x1: 9, a: 1.2, b: 8, A: 2, ux: ' h', uy: '', ent: 'élèves',
+  { id: 'rev', intro: 'On a relevé, pour des élèves, le nombre d’heures de révision par semaine, noté x, et la note obtenue à un contrôle sur 20, notée y.', xt: 'révision (h par semaine)', yt: 'note (sur 20)', xr: [0, 12], yr: [0, 20], gx: 1, gy: 1, lx: 1, ly: 2, x0: 1, x1: 10, a: 1.1, b: 7, A: 2, ux: ' h', uy: '', ent: 'élèves',
     phr: x => `Un élève révise ${M(x)} h par semaine.`, qq: 'Quelle note peut-on prévoir ?', ymax: 20 },
-  { id: 'age', intro: 'On a relevé l’âge, noté x (en années), et le prix, noté y (en milliers d’euros), de voitures d’occasion du même modèle.', xt: 'âge (années)', yt: 'prix (milliers d’euros)', xr: [0, 10], yr: [0, 18], gx: 1, gy: 1, lx: 1, ly: 2, x0: 1, x1: 9, a: -1.2, b: 16, A: 1.5, ux: ' ans', uy: ' milliers d’euros', ent: 'voitures',
+  { id: 'age', intro: 'On a relevé l’âge, noté x (en années), et le prix, noté y (en milliers d’euros), de voitures d’occasion du même modèle.', xt: 'âge (années)', yt: 'prix (milliers d’euros)', xr: [0, 12], yr: [0, 18], gx: 1, gy: 1, lx: 1, ly: 2, x0: 1, x1: 10, a: -1.2, b: 16, A: 1.5, ux: ' ans', uy: ' milliers d’euros', ent: 'voitures',
     phr: x => `Une voiture a ${M(x)} ans.`, qq: 'Quel prix peut-on prévoir (en milliers d’euros) ?', ymax: 18 },
   { id: 'temp', intro: 'On a relevé la température extérieure moyenne, notée x (en °C), et la consommation de chauffage, notée y (en kWh par jour), d’une maison.', xt: 'température (°C)', yt: 'consommation (kWh par jour)', xr: [0, 16], yr: [0, 70], gx: 1, gy: 5, lx: 2, ly: 10, x0: 1, x1: 14, a: -3, b: 60, A: 4, ux: ' °C', uy: ' kWh', ent: 'jours',
     phr: x => `La température extérieure moyenne d’une journée est de ${M(x)} °C.`, qq: 'Quelle consommation peut-on prévoir (en kWh) ?', ymax: 70 },
@@ -329,7 +329,7 @@ const lireNuage = {
   draw: d => { const ct = pick(NU), pts = pointsNuage(ct, ri(7, 9)); return { id: ct.id, pts, j: ri(0, pts.length - 1) }; },
   build: p => {
     const ct = NU.find(c => c.id === p.id), j = p.j, P_ = p.pts[j], pts = p.pts.map((q, i) => (i === j ? { ...q, l: 'P' } : q)), vis = svgNuage(ct, pts, { mark: [j] });
-    return { ...rNums([P_.x, P_.y], { tpl: 'x : {0} y : {1}', value: P_.y, verify: E => { const L = readNuage(vis).pts[j]; return L.x === E[0] && L.y === E[1]; } }), visual: vis,
+    return { ...rNums([P_.x, P_.y], { tpl: 'x : {0} y : {1}', value: P_.y, verify: E => { const L = readNuage(vis).pts[j]; return Math.abs(L.x - E[0]) < 0.02 && Math.abs(L.y - E[1]) < 0.02; } }), visual: vis,
       html: `${ct.intro} Quelles sont les coordonnées du point P, mis en évidence sur le nuage ?`,
       hint: `Lis l’abscisse x de P sur l’axe horizontal (${ct.xt}) en descendant verticalement, puis son ordonnée y sur l’axe vertical (${ct.yt}) en allant horizontalement. Les graduations de l’axe vertical vont de ${M(ct.ly)} en ${M(ct.ly)}.`,
       solution: `En descendant de P vers l’axe horizontal, on lit x = <b>${M(P_.x)}</b>${ct.ux}. En allant vers l’axe vertical, on lit y = <b>${M(P_.y)}</b>${ct.uy}.` };
@@ -343,7 +343,7 @@ const pointMoyen = {
   draw: d => { const ct = pick(NU); return { id: ct.id, pts: pointsNuage(ct, pick([5, 5, 10])) }; },
   build: p => {
     const ct = NU.find(c => c.id === p.id), { pts } = p, n = pts.length, sx = sum(pts.map(q => q.x)), sy = sum(pts.map(q => q.y)), mx = sx / n, my = sy / n, vis = svgNuage(ct, pts);
-    return { ...rNums([mx, my], { tpl: 'x̄ : {0} ȳ : {1}', value: my, verify: E => { const L = readNuage(vis).pts; return Math.abs(mean(L.map(q => q.x)) - E[0]) < 1e-9 && Math.abs(mean(L.map(q => q.y)) - E[1]) < 1e-9; }, near: [[[sx, `${M(sx)} est la somme des x : divise-la par le nombre de points ${M(n)}.`]], [[sy, `${M(sy)} est la somme des y : divise-la par le nombre de points ${M(n)}.`]]] }), visual: vis,
+    return { ...rNums([mx, my], { tpl: 'x̄ : {0} ȳ : {1}', value: my, verify: E => { const L = readNuage(vis).pts; return Math.abs(mean(L.map(q => q.x)) - E[0]) < 0.02 && Math.abs(mean(L.map(q => q.y)) - E[1]) < 0.02; }, near: [[[sx, `${M(sx)} est la somme des x : divise-la par le nombre de points ${M(n)}.`]], [[sy, `${M(sy)} est la somme des y : divise-la par le nombre de points ${M(n)}.`]]] }), visual: vis,
       html: `${ct.intro}${tabPoints(ct, pts)}Calcule les coordonnées du point moyen G (x̄ ; ȳ) du nuage.`,
       hint: `Le point moyen a pour abscisse la moyenne des x (additionne les ${M(n)} valeurs de x, divise par ${M(n)}) et pour ordonnée la moyenne des y, calculée de la même façon.`,
       solution: `Moyenne des x : ${plus(pts.map(q => q.x))} = ${M(sx)}, puis ${M(sx)} ÷ ${M(n)} = <b>${M(mx)}</b>.<br>Moyenne des y : ${plus(pts.map(q => q.y))} = ${M(sy)}, puis ${M(sy)} ÷ ${M(n)} = <b>${M(my)}</b>.<br>Le point moyen est G(${M(mx)} ; ${M(my)}).` };

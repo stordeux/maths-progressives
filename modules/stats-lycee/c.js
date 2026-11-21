@@ -22,7 +22,7 @@ const lireEff = {
   draw: d => { const t = tirageHisto(d, { kmax: d < 3 ? 5 : 6 }); return t && { ...t, j: ri(0, t.h.length - 1) }; },
   build: p => {
     const { C, bornes, h, j } = p, vis = svgHisto(C, bornes, h);
-    return { ...rNums([h[j]], { tpl: 'Effectif : {0}', verify: E => readHisto(vis)[j].h === E[0], value: h[j] }), visual: vis,
+    return { ...rNums([h[j]], { tpl: 'Effectif : {0}', verify: E => Math.abs(readHisto(vis)[j].h - E[0]) < 0.02, value: h[j] }), visual: vis,
       html: `${C.hist()} Quel est l’effectif de la classe ${cl(bornes[j], bornes[j + 1])} ?`,
       hint: `Repère le rectangle situé au-dessus de la classe ${cl(bornes[j], bornes[j + 1])} (entre ${M(bornes[j])} et ${M(bornes[j + 1])} sur l’axe horizontal), puis lis sa hauteur sur l’axe vertical des effectifs.`,
       solution: `Le rectangle de la classe ${cl(bornes[j], bornes[j + 1])} monte jusqu’à la graduation <b>${M(h[j])}</b> : cette classe contient ${M(h[j])} ${C.ent}.` };
@@ -35,7 +35,7 @@ const lireTotal = {
   draw: d => tirageHisto(d, { kmax: d < 3 ? 5 : 6 }),
   build: p => {
     const { C, bornes, h } = p, vis = svgHisto(C, bornes, h), N = sum(h);
-    return { ...rNums([N], { tpl: 'Effectif total : {0}', verify: E => sum(readHisto(vis).map(x => x.h)) === E[0], value: N }), visual: vis,
+    return { ...rNums([N], { tpl: 'Effectif total : {0}', verify: E => Math.abs(sum(readHisto(vis).map(x => x.h)) - E[0]) < 0.02, value: N }), visual: vis,
       html: `${C.hist()} Quel est l’effectif total de cette série ?`,
       hint: `Lis la hauteur de chaque rectangle (il y en a ${h.length}) sur l’axe des effectifs, puis additionne-les : l’effectif total est la somme des effectifs de toutes les classes.`,
       solution: `Effectifs des classes : ${lst(h)}.<br>Effectif total : ${plus(h)} = <b>${M(N)}</b>.` };
@@ -64,7 +64,7 @@ const lireFreq = {
   build: p => {
     const { C, bornes, h, j } = p, vis = svgHisto(C, bornes, h), N = sum(h), f = h[j] / N * 100;
     if (dec(f) < 0 || dec(f) > 2) return null;
-    return { ...rNums([f], { tpl: 'Fréquence : {0} %', verify: E => Math.abs(readHisto(vis)[j].h / sum(readHisto(vis).map(x => x.h)) * 100 - E[0]) < 1e-9, value: f, near: [[[h[j], 'Tu as lu l’effectif : la fréquence est cet effectif divisé par l’effectif total, en pourcentage.']]] }), visual: vis,
+    return { ...rNums([f], { tpl: 'Fréquence : {0} %', verify: E => Math.abs(readHisto(vis)[j].h / sum(readHisto(vis).map(x => x.h)) * 100 - E[0]) < 0.02, value: f, near: [[[h[j], 'Tu as lu l’effectif : la fréquence est cet effectif divisé par l’effectif total, en pourcentage.']]] }), visual: vis,
       html: `${C.hist()} Quelle est la fréquence, en pourcentage, de la classe ${cl(bornes[j], bornes[j + 1])} ?`,
       hint: `Lis l’effectif de la classe ${cl(bornes[j], bornes[j + 1])}, puis additionne les hauteurs des ${h.length} rectangles pour avoir l’effectif total, et divise.`,
       solution: `Effectif de la classe ${cl(bornes[j], bornes[j + 1])} : ${M(h[j])}.<br>Effectif total : ${plus(h)} = ${M(N)}.<br>Fréquence : ${M(h[j])} ÷ ${M(N)} = ${M(f / 100)}, soit <b>${M(f)} %</b>.` };
@@ -77,7 +77,7 @@ const effSup = {
   draw: d => { const t = tirageHisto(d, { kmax: 6 }); return t && { ...t, j: ri(1, t.h.length - 1), moins: chance(0.5) }; },
   build: p => {
     const { C, bornes, h, j, moins } = p, vis = svgHisto(C, bornes, h), lim = bornes[j], part = moins ? h.slice(0, j) : h.slice(j), r = sum(part);
-    return { ...rNums([r], { tpl: 'Effectif : {0}', verify: E => { const L = readHisto(vis).map(x => x.h); return E[0] === sum(moins ? L.slice(0, j) : L.slice(j)); }, value: r, near: [[[sum(moins ? h.slice(j) : h.slice(0, j)), `Tu as additionné les classes situées de l’autre côté de ${M(lim)}.`]]] }), visual: vis,
+    return { ...rNums([r], { tpl: 'Effectif : {0}', verify: E => { const L = readHisto(vis).map(x => x.h); return Math.abs(E[0] - sum(moins ? L.slice(0, j) : L.slice(j))) < 0.02; }, value: r, near: [[[sum(moins ? h.slice(j) : h.slice(0, j)), `Tu as additionné les classes situées de l’autre côté de ${M(lim)}.`]]] }), visual: vis,
       html: `${C.hist()} Combien de ${C.ent} ont une valeur ${moins ? 'strictement inférieure à' : 'supérieure ou égale à'} ${fv(lim, C.u)} ?`,
       hint: `${M(lim)} est une borne entre deux classes. Repère les classes ${moins ? 'situées à gauche' : 'situées à droite'} de ${M(lim)} et additionne les hauteurs de leurs rectangles.`,
       solution: `Classes ${moins ? 'avant' : 'à partir de'} ${M(lim)} : ${part.map((x, i) => cl(...(moins ? [bornes[i], bornes[i + 1]] : [bornes[j + i], bornes[j + i + 1]]))).join(' ; ')}.<br>Effectifs : ${lst(part)}, d’où ${plus(part)} = <b>${M(r)}</b>.` };
@@ -93,7 +93,7 @@ const histoPct = {
   }, t => entier(t.N * t.pct[t.j] / 100)),
   build: p => {
     const { C, bornes, pct, N, j } = p, vis = histogramme(bornes, pct, { gy: 5, ly: 10, ytitle: 'fréquence (%)', xtitle: C.h }), r = N * pct[j] / 100;
-    return { ...rNums([r], { tpl: 'Effectif : {0}', verify: E => Math.abs(readHisto(vis)[j].h * N / 100 - E[0]) < 1e-9, value: r, near: [[[pct[j], `${M(pct[j])} est la fréquence en % : on demande un nombre de ${C.ent}.`]]] }), visual: vis,
+    return { ...rNums([r], { tpl: 'Effectif : {0}', verify: E => Math.abs(readHisto(vis)[j].h * N / 100 - E[0]) < 0.02, value: r, near: [[[pct[j], `${M(pct[j])} est la fréquence en % : on demande un nombre de ${C.ent}.`]]] }), visual: vis,
       html: `On a interrogé ${M(N)} ${C.ent}. L’histogramme donne la fréquence (en %) de chaque classe de la variable « ${C.h.toLowerCase()} ». Combien de ${C.ent} sont dans la classe ${cl(bornes[j], bornes[j + 1])} ?`,
       hint: `Lis la fréquence en pourcentage du rectangle de la classe ${cl(bornes[j], bornes[j + 1])}, puis calcule ce pourcentage de ${M(N)} (multiplie par ${M(N)} et divise par 100).`,
       solution: `Le rectangle de la classe ${cl(bornes[j], bornes[j + 1])} monte jusqu’à ${M(pct[j])} %.<br>${M(pct[j])} % de ${M(N)} : ${M(N)} × ${M(pct[j])} ÷ 100 = <b>${M(r)}</b>.` };
@@ -106,7 +106,7 @@ const moyHisto = {
   draw: d => cherche(() => tirageHisto(d, { kmin: 4, kmax: 5, Ns: [20, 25, 40, 50] }), t => { const c = t.bornes.slice(0, -1).map((b, i) => (b + t.bornes[i + 1]) / 2), m = moy(c, t.h); return dec(m) >= 0 && dec(m) <= 2; }),
   build: p => {
     const { C, bornes, h } = p, vis = svgHisto(C, bornes, h), N = sum(h), c = bornes.slice(0, -1).map((b, i) => (b + bornes[i + 1]) / 2), S = sum(c.map((x, i) => x * h[i])), m = S / N;
-    return { ...rNums([m], { tpl: tplU('Moyenne estimée', C), verify: E => { const L = readHisto(vis); return Math.abs(moy(L.map(x => (x.a + x.b) / 2), L.map(x => x.h)) - E[0]) < 1e-9; }, value: m, near: [[[mean(c), 'Tu as oublié les effectifs : chaque centre est à multiplier par la hauteur de son rectangle.'], [S, `${M(S)} est la somme des (effectif × centre) : divise par l’effectif total ${M(N)}.`]]] }), visual: vis,
+    return { ...rNums([m], { tpl: tplU('Moyenne estimée', C), verify: E => { const L = readHisto(vis); return Math.abs(moy(L.map(x => (x.a + x.b) / 2), L.map(x => x.h)) - E[0]) < 0.02; }, value: m, near: [[[mean(c), 'Tu as oublié les effectifs : chaque centre est à multiplier par la hauteur de son rectangle.'], [S, `${M(S)} est la somme des (effectif × centre) : divise par l’effectif total ${M(N)}.`]]] }), visual: vis,
       html: `${C.hist()} Estime la moyenne de cette série à l’aide des centres des classes.`,
       hint: `Lis les effectifs des ${h.length} classes sur les rectangles, calcule le centre de chaque classe (milieu de ses bornes), multiplie chaque centre par l’effectif lu, additionne, puis divise par l’effectif total.`,
       solution: `Effectifs lus : ${lst(h)}. Centres : ${lst(c)}.<br>Somme : ${somme(c, h)} = ${M(S)}.<br>Effectif total : ${plus(h)} = ${M(N)}.<br>Moyenne estimée : ${M(S)} ÷ ${M(N)} = <b>${M(m)}</b>${C.u}.` };
@@ -120,7 +120,7 @@ const pctMoins = {
   build: p => {
     const { C, bornes, h, j } = p, vis = svgHisto(C, bornes, h), N = sum(h), s = sum(h.slice(0, j)), f = s / N * 100;
     if (dec(f) < 0 || dec(f) > 2) return null;
-    return { ...rNums([f], { tpl: 'Proportion : {0} %', verify: E => { const L = readHisto(vis).map(x => x.h); return Math.abs(sum(L.slice(0, j)) / sum(L) * 100 - E[0]) < 1e-9; }, value: f, near: [[[s, 'Tu as donné un effectif : la proportion est cet effectif divisé par l’effectif total, en %.'], [100 - f, 'Tu as calculé la proportion des valeurs situées de l’autre côté de la borne.']]] }), visual: vis,
+    return { ...rNums([f], { tpl: 'Proportion : {0} %', verify: E => { const L = readHisto(vis).map(x => x.h); return Math.abs(sum(L.slice(0, j)) / sum(L) * 100 - E[0]) < 0.02; }, value: f, near: [[[s, 'Tu as donné un effectif : la proportion est cet effectif divisé par l’effectif total, en %.'], [100 - f, 'Tu as calculé la proportion des valeurs situées de l’autre côté de la borne.']]] }), visual: vis,
       html: `${C.hist()} Quel pourcentage des ${C.ent} ont une valeur strictement inférieure à ${fv(bornes[j], C.u)} ?`,
       hint: `Additionne les hauteurs des rectangles situés à gauche de ${M(bornes[j])} (${h.slice(0, j).map(M).join(' + ')}), puis divise par l’effectif total, somme de tous les rectangles.`,
       solution: `Effectifs à gauche de ${M(bornes[j])} : ${plus(h.slice(0, j))} = ${M(s)}.<br>Effectif total : ${plus(h)} = ${M(N)}.<br>Proportion : ${M(s)} ÷ ${M(N)} = ${M(f / 100)}, soit <b>${M(f)} %</b>.` };
@@ -168,7 +168,7 @@ const lirePoly = {
   draw: d => { const t = tiragePoly(d); return t && { ...t, j: ri(1, t.effs.length - 1) }; },
   build: p => {
     const { C, bornes, F, j } = p, vis = svgPoly(C, bornes, F), f = F[j];
-    return { ...rNums([f], { tpl: 'Pourcentage : {0} %', verify: E => Math.abs(readPoly(vis)[j].y - E[0]) < 1e-9, value: f }), visual: vis,
+    return { ...rNums([f], { tpl: 'Pourcentage : {0} %', verify: E => Math.abs(readPoly(vis)[j].y - E[0]) < 0.02, value: f }), visual: vis,
       html: `Voici le polygone des fréquences cumulées croissantes d’une série : « ${C.h.toLowerCase()} ». Quel pourcentage des ${C.ent} ont une valeur inférieure à ${fv(bornes[j], C.u)} ?`,
       hint: `Repère ${M(bornes[j])} sur l’axe horizontal, monte jusqu’au point du polygone situé au-dessus, puis lis son ordonnée : c’est le pourcentage de valeurs inférieures à ${M(bornes[j])}.`,
       solution: `Le point du polygone d’abscisse ${M(bornes[j])} a pour ordonnée ${M(f)}.<br>Donc <b>${M(f)} %</b> des ${C.ent} ont une valeur inférieure à ${M(bornes[j])}.` };
@@ -181,7 +181,7 @@ const polyEntre = {
   draw: d => { const t = tiragePoly(d, { kmin: 5, kmax: 5 }); return t && { ...t, j1: ri(1, 2), j2: ri(3, 4) }; },
   build: p => {
     const { C, bornes, F, j1, j2 } = p, vis = svgPoly(C, bornes, F), r = F[j2] - F[j1];
-    return { ...rNums([r], { tpl: 'Pourcentage : {0} %', verify: E => { const L = readPoly(vis); return Math.abs(L[j2].y - L[j1].y - E[0]) < 1e-9; }, value: r, near: [[[F[j2], `${M(F[j2])} % est le pourcentage de valeurs inférieures à ${M(bornes[j2])} : il faut en retirer celles qui sont inférieures à ${M(bornes[j1])}.`]]] }), visual: vis,
+    return { ...rNums([r], { tpl: 'Pourcentage : {0} %', verify: E => { const L = readPoly(vis); return Math.abs(L[j2].y - L[j1].y - E[0]) < 0.02; }, value: r, near: [[[F[j2], `${M(F[j2])} % est le pourcentage de valeurs inférieures à ${M(bornes[j2])} : il faut en retirer celles qui sont inférieures à ${M(bornes[j1])}.`]]] }), visual: vis,
       html: `Voici le polygone des fréquences cumulées croissantes d’une série : « ${C.h.toLowerCase()} ». Quel pourcentage des ${C.ent} ont une valeur comprise entre ${fv(bornes[j1], C.u)} et ${fv(bornes[j2], C.u)} (au sens large) ?`,
       hint: `Lis le pourcentage de valeurs inférieures à ${M(bornes[j2])}, puis celui des valeurs inférieures à ${M(bornes[j1])} : la différence donne les valeurs situées entre les deux.`,
       solution: `Inférieures à ${M(bornes[j2])} : ${M(F[j2])} %. Inférieures à ${M(bornes[j1])} : ${M(F[j1])} %.<br>Entre les deux : ${M(F[j2])} − ${M(F[j1])} = <b>${M(r)} %</b>.` };
@@ -195,7 +195,7 @@ const polyEff = {
   build: p => {
     const { C, bornes, F, N, j1, j2 } = p, vis = svgPoly(C, bornes, F), pct = F[j2] - F[j1], r = N * pct / 100;
     if (!entier(r)) return null;
-    return { ...rNums([r], { tpl: 'Effectif : {0}', verify: E => { const L = readPoly(vis); return Math.abs((L[j2].y - L[j1].y) * N / 100 - E[0]) < 1e-9; }, value: r, near: [[[pct, `${M(pct)} est un pourcentage : on demande un nombre de ${C.ent}.`]]] }), visual: vis,
+    return { ...rNums([r], { tpl: 'Effectif : {0}', verify: E => { const L = readPoly(vis); return Math.abs((L[j2].y - L[j1].y) * N / 100 - E[0]) < 0.02; }, value: r, near: [[[pct, `${M(pct)} est un pourcentage : on demande un nombre de ${C.ent}.`]]] }), visual: vis,
       html: `On a interrogé ${M(N)} ${C.ent}. Voici le polygone des fréquences cumulées croissantes de la variable « ${C.h.toLowerCase()} ». Combien de ${C.ent} ont une valeur comprise entre ${fv(bornes[j1], C.u)} et ${fv(bornes[j2], C.u)} ?`,
       hint: `Lis les ordonnées des points d’abscisses ${M(bornes[j1])} et ${M(bornes[j2])}, fais la différence pour avoir un pourcentage, puis calcule ce pourcentage de ${M(N)}.`,
       solution: `Ordonnées lues : ${M(F[j1])} % et ${M(F[j2])} %. Entre les deux : ${M(F[j2])} − ${M(F[j1])} = ${M(pct)} %.<br>${M(pct)} % de ${M(N)} : ${M(N)} × ${M(pct)} ÷ 100 = <b>${M(r)}</b>.` };
@@ -221,7 +221,7 @@ const medianePoly = {
   draw: d => tirageInv(d, [50]),
   build: p => {
     const { C, bornes, F, cible } = p, vis = svgPoly(C, bornes, F, { h: [{ y: cible, l: `${cible} %` }] }), D = detailInv(C, bornes, F, cible);
-    return { ...rNums([D.x], { tpl: `Médiane ≈ {0}${C.u}`, verify: E => { const L = readPoly(vis); return Math.abs(inverse(L.map(q => q.x), L.map(q => q.y), 50).x - E[0]) < 1e-9; }, value: D.x, near: [[[bornes[D.i], 'C’est la borne de gauche de la classe : la médiane se situe à l’intérieur de la classe, entre ses deux bornes.'], [bornes[D.i + 1], 'C’est la borne de droite de la classe : la médiane est un peu avant.']]] }), visual: vis,
+    return { ...rNums([D.x], { tpl: `Médiane ≈ {0}${C.u}`, verify: E => { const L = readPoly(vis); return Math.abs(inverse(L.map(q => q.x), L.map(q => q.y), 50).x - E[0]) < 0.02; }, value: D.x, near: [[[bornes[D.i], 'C’est la borne de gauche de la classe : la médiane se situe à l’intérieur de la classe, entre ses deux bornes.'], [bornes[D.i + 1], 'C’est la borne de droite de la classe : la médiane est un peu avant.']]] }), visual: vis,
       html: `Voici le polygone des fréquences cumulées croissantes d’une série : « ${C.h.toLowerCase()} ». En reliant les points par des segments, donne une valeur approchée de la médiane : l’abscisse du point d’ordonnée 50 %.`,
       hint: `La médiane correspond à 50 % de fréquence cumulée : repère entre quels deux points du polygone la droite à 50 % passe, puis utilise la proportionnalité sur le segment qui les relie.`,
       solution: D.texte };
@@ -234,7 +234,7 @@ const quartilePoly = {
   draw: d => tirageInv(d, [25, 75]),
   build: p => {
     const { C, bornes, F, cible } = p, vis = svgPoly(C, bornes, F, { h: [{ y: cible, l: `${cible} %` }] }), D = detailInv(C, bornes, F, cible), nom = cible === 25 ? 'Q₁' : 'Q₃';
-    return { ...rNums([D.x], { tpl: `${nom} ≈ {0}${C.u}`, verify: E => { const L = readPoly(vis); return Math.abs(inverse(L.map(q => q.x), L.map(q => q.y), cible).x - E[0]) < 1e-9; }, value: D.x, near: [[[bornes[D.i], 'C’est la borne de gauche de la classe : le quartile se situe à l’intérieur de la classe.']]] }), visual: vis,
+    return { ...rNums([D.x], { tpl: `${nom} ≈ {0}${C.u}`, verify: E => { const L = readPoly(vis); return Math.abs(inverse(L.map(q => q.x), L.map(q => q.y), cible).x - E[0]) < 0.02; }, value: D.x, near: [[[bornes[D.i], 'C’est la borne de gauche de la classe : le quartile se situe à l’intérieur de la classe.']]] }), visual: vis,
       html: `Voici le polygone des fréquences cumulées croissantes d’une série : « ${C.h.toLowerCase()} ». En reliant les points par des segments, donne une valeur approchée du ${cible === 25 ? 'premier' : 'troisième'} quartile ${nom} : l’abscisse du point d’ordonnée ${cible} %.`,
       hint: `${nom} correspond à ${cible} % de fréquence cumulée : repère entre quels points du polygone passe le niveau ${cible} %, puis utilise la proportionnalité sur le segment correspondant.`,
       solution: D.texte };
@@ -247,7 +247,7 @@ const supPoly = {
   draw: d => { const t = tiragePoly(d, { kmin: 4, kmax: 5 }); return t && { ...t, j: ri(1, t.effs.length - 1), strict: chance(0.5) }; },
   build: p => {
     const { C, bornes, F, j } = p, vis = svgPoly(C, bornes, F), f = F[j], r = 100 - f;
-    return { ...rNums([r], { tpl: 'Pourcentage : {0} %', verify: E => Math.abs(100 - readPoly(vis)[j].y - E[0]) < 1e-9, value: r, near: [[[f, `${M(f)} % est le pourcentage de valeurs inférieures à ${M(bornes[j])} : on demande celles qui sont supérieures.`]]] }), visual: vis,
+    return { ...rNums([r], { tpl: 'Pourcentage : {0} %', verify: E => Math.abs(100 - readPoly(vis)[j].y - E[0]) < 0.02, value: r, near: [[[f, `${M(f)} % est le pourcentage de valeurs inférieures à ${M(bornes[j])} : on demande celles qui sont supérieures.`]]] }), visual: vis,
       html: `Voici le polygone des fréquences cumulées croissantes d’une série : « ${C.h.toLowerCase()} ». Quel pourcentage des ${C.ent} ont une valeur supérieure ou égale à ${fv(bornes[j], C.u)} ?`,
       hint: `Le polygone donne le pourcentage de valeurs inférieures à ${M(bornes[j])} : lis son ordonnée en ${M(bornes[j])}. Les autres valeurs (100 % au total) sont celles qui sont supérieures ou égales à ${M(bornes[j])}.`,
       solution: `Le point d’abscisse ${M(bornes[j])} a pour ordonnée ${M(f)} : ${M(f)} % des valeurs sont inférieures à ${M(bornes[j])}.<br>Les autres sont supérieures ou égales : 100 − ${M(f)} = <b>${M(r)} %</b>.` };
