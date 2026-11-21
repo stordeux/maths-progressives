@@ -5,6 +5,7 @@ import * as store from '../../engine/storage.js';
 import { applySettings } from '../../engine/engine.js';
 import { installerSignalement, setContexte } from '../../engine/signaler.js';
 import { TITRES, titreActuel, nbEtoiles } from '../../engine/titres.js';
+import { CLASSES, NOMS, pourClasse } from '../../engine/classes.js';
 
 const $ = s => document.querySelector(s);
 
@@ -31,11 +32,22 @@ function renderTitre() {
     <p class="note">Chaque étoile ★ gagnée dans un module compte, tous modules confondus (5 étoiles par niveau).</p>`;
 }
 
+/** classe choisie (gardée dans les réglages, donc dans l'export et après « Réinitialiser ») ; '' = toutes */
+const classeChoisie = () => { const c = store.settings.get().classe; return CLASSES.includes(c) ? c : ''; };
+function renderClasses() {
+  const c = classeChoisie();
+  $('#choixClasse').innerHTML = `<span class="lab" id="labClasse">Ta classe :</span><div class="chips" role="group" aria-labelledby="labClasse">${
+    CLASSES.map(k => `<button type="button" class="chip${k === c ? ' on' : ''}" data-classe="${k}" aria-pressed="${k === c}">${NOMS[k]}</button>`).join('')
+  }<button type="button" class="chip tout${c ? '' : ' on'}" data-classe="" aria-pressed="${!c}">Toutes</button></div>`;
+  $('#choixClasse').querySelectorAll('[data-classe]').forEach(b => { b.onclick = () => { store.settings.set({ classe: b.dataset.classe }); renderClasses(); render(); }; });
+}
+
 function render() {
   renderTitre();
+  const classe = classeChoisie();
   let tot = 0, debut = 0;
   const html = GROUPES.map(g => {
-    const mods = MODULES.filter(m => m.groupe === g);
+    const mods = MODULES.filter(m => m.groupe === g && pourClasse(m, classe));
     if (!mods.length) return '';
     return `<section class="group" aria-labelledby="g-${g.replace(/\W/g, '')}"><h2 id="g-${g.replace(/\W/g, '')}">${g}</h2><div class="grid">${mods.map(m => {
       if (m.etat === 'bientot') return `<div class="mcard soon" style="--c:${m.couleur}" aria-disabled="true"><span class="t">${m.emoji} ${m.titre}</span><span class="cl">${m.classes}</span><span class="r">${m.resume}</span><span class="st"><span class="pill">Bientôt</span></span></div>`;
@@ -58,10 +70,14 @@ function render() {
           <span class="bar" aria-hidden="true"><i style="width:${pct}%"></i></span></span></a>`;
     }).join('')}</div></section>`;
   }).join('');
-  const fiches = `<section class="group" aria-labelledby="g-fiches"><h2 id="g-fiches">📚 Fiches de synthèse</h2><div class="grid">${FICHES.map(f => f.etat === 'bientot'
+  const fs = FICHES.filter(f => pourClasse(f, classe));
+  const fiches = !fs.length ? '' : `<section class="group" aria-labelledby="g-fiches"><h2 id="g-fiches">📚 Fiches de synthèse</h2><div class="grid">${fs.map(f => f.etat === 'bientot'
     ? `<div class="mcard soon" style="--c:${f.couleur}" aria-disabled="true"><span class="t">${f.emoji} ${f.titre}</span><span class="cl">${f.classes}</span><span class="r">${f.resume}</span><span class="st"><span class="pill">Bientôt</span></span></div>`
     : `<a class="mcard" href="fiches/?f=${f.id}" style="--c:${f.couleur}"><span class="t">${f.emoji} ${f.titre}</span><span class="cl">${f.classes}</span><span class="r">${f.resume}</span><span class="st"><span class="new">Fiche à lire</span></span></a>`).join('')}</div></section>`;
-  $('#modules').innerHTML = html + fiches;
+  const n = MODULES.filter(m => pourClasse(m, classe)).length;
+  const entete = classe ? `<p class="filtre" id="filtreClasse">${n} module${n > 1 ? 's' : ''} pour la ${NOMS[classe] === 'Terminale' ? 'Terminale' : NOMS[classe]} · <button type="button" class="lien" id="voirTout">voir tous les modules</button></p>` : '';
+  $('#modules').innerHTML = entete + html + fiches;
+  if (classe) $('#voirTout').onclick = () => { store.settings.set({ classe: '' }); renderClasses(); render(); };
   $('#global').textContent = debut ? `${debut} module${debut > 1 ? 's' : ''} commencé${debut > 1 ? 's' : ''} · ${tot} niveau${tot > 1 ? 'x' : ''} atteint${tot > 1 ? 's' : ''} en tout` : 'Choisis un module pour commencer 👇';
 }
 
@@ -101,6 +117,7 @@ $('#optLisible').onchange = e => { store.settings.set({ lisible: e.target.checke
 $('#optGrand').onchange = e => { store.settings.set({ grand: e.target.checked }); applySettings(); };
 
 installerSignalement({ prefixe: '' });
-setContexte(() => ({ Page: 'Accueil' }));
+setContexte(() => ({ Page: 'Accueil', Classe: classeChoisie() || 'toutes' }));
+renderClasses();
 render();
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});

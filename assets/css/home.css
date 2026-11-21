@@ -40,3 +40,11 @@
 .mcard.soon { opacity: .6; border-top-style: dashed; min-height: 0; }
 .foot .logos { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 28px; margin: 4px 0 18px; }
 .foot .logos img { width: auto; max-width: 100%; }
+.choixclasse { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 16px; }
+.choixclasse .lab { font-weight: 700; }
+.choixclasse .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.choixclasse .chip { min-height: 44px; min-width: 52px; padding: 6px 14px; border-radius: 999px; background: var(--card); color: var(--ink); border: 2px solid var(--line); font-weight: 700; font-size: .95em; }
+.choixclasse .chip.on { background: #2b4acb; border-color: #2b4acb; color: #fff; }
+.choixclasse .chip.tout { font-weight: 600; }
+.filtre { margin: 18px 0 0; color: var(--muted); }
+.filtre .lien { background: none; border: 0; padding: 0; color: #2b4acb; text-decoration: underline; font: inherit; cursor: pointer; min-height: 0; }

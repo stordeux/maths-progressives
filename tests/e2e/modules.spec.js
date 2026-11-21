@@ -140,6 +140,29 @@ for (const m of MODULES.filter(m => m.id !== 'revision')) {
   });
 }
 
+test('accueil : choisir sa classe filtre les modules, et le choix est gardé', async ({ page }, info) => {
+  const errors = [];
+  page.on('pageerror', e => errors.push(e.message));
+  await page.goto('./');
+  await expect(page.locator('.mcard[href="modules/poly2/"]')).toHaveCount(1);
+  await page.locator('#choixClasse [data-classe="4e"]').click();
+  await expect(page.locator('#choixClasse [data-classe="4e"]')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('.mcard[href="modules/pythagore/"]')).toHaveCount(1);
+  await expect(page.locator('.mcard[href="modules/poly2/"]')).toHaveCount(0);
+  await expect(page.locator('#filtreClasse')).toContainText('pour la 4e');
+  await page.screenshot({ path: `tests/e2e/captures/accueil-classe-${info.project.name}.png` });
+  await page.reload();
+  await expect(page.locator('#choixClasse [data-classe="4e"]')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('.mcard[href="modules/poly2/"]')).toHaveCount(0);
+  await page.locator('#choixClasse [data-classe="Tle"]').click();
+  await expect(page.locator('.mcard[href="modules/integrales/"]')).toHaveCount(1);
+  await expect(page.locator('.mcard[href="modules/pythagore/"]')).toHaveCount(0);
+  await page.locator('#voirTout').click();
+  await expect(page.locator('.mcard[href="modules/pythagore/"]')).toHaveCount(1);
+  await expect(page.locator('#filtreClasse')).toHaveCount(0);
+  expect(errors).toEqual([]);
+});
+
 test('accueil : réinitialiser toute la progression (réglages gardés)', async ({ page }) => {
   await page.goto('./');
   await page.evaluate(() => {

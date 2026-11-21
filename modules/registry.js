@@ -53,9 +53,9 @@ export const MODULES = [
   // --- lycée (1re – Tle)
   { id: 'suites', titre: 'Suites', emoji: '🔢', classes: '1re', groupe: 'Lycée (1re – Tle)', couleur: '#155e75', couleur2: '#e3f4f8', resume: 'Termes, récurrence, suites arithmétiques et géométriques, sommes, seuils.' },
   // ---
-  { id: 'trigo', titre: 'Trigonométrie', emoji: '⭕', classes: '1re', groupe: 'Lycée (1re – Tle)', couleur: '#86198f', couleur2: '#fbeefc', resume: 'Radians, cercle trigonométrique, cosinus et sinus des angles associés, équations.' },
+  { id: 'trigo', titre: 'Trigonométrie', emoji: '⭕', classes: '1re – Tle', groupe: 'Lycée (1re – Tle)', couleur: '#86198f', couleur2: '#fbeefc', resume: 'Radians, cercle trigonométrique, cosinus et sinus des angles associés, équations.' },
   // ---
-  { id: 'probas-lycee', titre: 'Probabilités conditionnelles', emoji: '🌳', classes: '1re – Tle', groupe: 'Lycée (1re – Tle)', couleur: '#166534', couleur2: '#e9f7ee', resume: 'Arbres pondérés, probabilités totales, indépendance, loi binomiale.' },
+  { id: 'probas-lycee', titre: 'Probabilités conditionnelles', emoji: '🌳', classes: '2de – Tle', groupe: 'Lycée (1re – Tle)', couleur: '#166534', couleur2: '#e9f7ee', resume: 'Arbres pondérés, probabilités totales, indépendance, loi binomiale.' },
   // ---
   { id: 'exp-ln', titre: 'Exponentielle et logarithme', emoji: '🌱', classes: '1re – Tle', groupe: 'Lycée (1re – Tle)', couleur: '#9a3412', couleur2: '#fdf1e7', resume: 'Propriétés de eˣ et ln, équations, inéquations, croissance et décroissance exponentielles.' },
   // ---

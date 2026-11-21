@@ -11,6 +11,10 @@ description: Retrouver et lire les programmes officiels de mathématiques (BO, E
 - **5e, 4e, 3e** : programme du cycle 4, BO n° 10 du 5 mars 2026 (arrêté MENE2602912A, annexe 2) ; 5e en 2026,
   4e en 2027, 3e en 2028 (avant : programme du BO n° 31 du 30 juillet 2020) :
   https://www.education.gouv.fr/bo/2026/Hebdo10/MENE2602912A
+- **Lycée** : BO n° 14 du 2 avril 2026 (arrêtés du 26-02-2026 : 2de MENE2602914A, maths intégrées 1re MENE2602916A,
+  spécialité 1re MENE2602917A, spécialité Tle MENE2602919A, complémentaires MENE2902920A) ; 2de et 1re en 2026, Tle en 2027.
+  Les pages HTML du BO renvoient 403 à WebFetch : prendre le PDF du BO entier (`curl -A "Mozilla/5.0"`), `pdftotext`,
+  repérer les annexes par leur NOR, puis extraire les blocs « Contenus ». Bilan : `docs/PROGRAMMES-LYCEE.md`.
 - Ressources d'accompagnement : eduscol.education.gouv.fr (« Ressources d'accompagnement du programme de mathématiques au cycle 3 / 4 »).
 - Chercher : WebSearch avec `allowed_domains: ["education.gouv.fr", "eduscol.education.gouv.fr"]` ; vérifier qu'il
   s'agit du **texte publié au BO** et non d'un projet du CSP.
