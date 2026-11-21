@@ -233,6 +233,7 @@ export function shell(meta, { scratchpad = true, headerExtra = '' } = {}) {
   if (!('speechSynthesis' in window)) $('#speakBtn').hidden = true;
   installerSignalement();
   setContexte(() => ({ Module: meta.titre }));
+  window.__mpPret = true; // garde de démarrage (assets/js/garde.js)
 }
 
 /** enregistre le service worker (hors ligne) */

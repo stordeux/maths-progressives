@@ -110,3 +110,33 @@ export function anime(el, classe, duree = 700) {
   el.classList.remove(classe); void el.offsetWidth; el.classList.add(classe);
   setTimeout(() => el.classList.remove(classe), duree);
 }
+
+/** baguette magique : une grande 🪄 s'agite au-dessus de l'élément puis lance un sort d'étincelles
+ *  qui s'envolent en spirale vers le haut de l'écran (message envoyé par le bouton Signaler) */
+export function sort(depuis) {
+  if (!depuis || calme()) return;
+  const { x, y } = centre(depuis), c = calque(2400);
+  const b = etoile(c, x, y, 84, '#000', '🪄');
+  b.style.textShadow = '0 0 18px rgba(180, 120, 255, .9)';
+  b.animate([
+    { transform: 'translate(-50%,-50%) scale(.2) rotate(-40deg)', opacity: 0 },
+    { transform: 'translate(-50%,-50%) scale(1.1) rotate(-35deg)', opacity: 1, offset: .2 },
+    { transform: 'translate(-50%,-50%) scale(1.1) rotate(25deg)', opacity: 1, offset: .38 },
+    { transform: 'translate(-50%,-50%) scale(1.1) rotate(-20deg)', opacity: 1, offset: .52 },
+    { transform: 'translate(-50%,-50%) scale(1) rotate(30deg)', opacity: 1, offset: .66 },
+    { transform: 'translate(-50%,-50%) scale(.6) rotate(30deg)', opacity: 0 },
+  ], { duration: 1600, easing: 'ease-in-out', fill: 'forwards' });
+  // les étincelles partent du bout de la baguette (en haut à droite) au moment du coup de baguette
+  const COUL = ['#b07cff', '#ffd23f', '#ff7ad9', '#7cd6ff', '#ffffff'], CAR = ['✦', '✧', '★', '✨', '·'];
+  const bx = x + 30, by = y - 34;
+  for (let i = 0; i < 26; i++) {
+    const a = hasard(-2.4, -0.5), r = hasard(120, 320), tourne = hasard(-1, 1) * 90;
+    const s = etoile(c, bx, by, hasard(14, 30), COUL[i % COUL.length], CAR[i % CAR.length]);
+    s.style.textShadow = '0 0 8px currentColor';
+    s.animate([
+      { transform: 'translate(-50%,-50%) scale(.2)', opacity: 0 },
+      { transform: `translate(calc(-50% + ${Math.cos(a) * r * .5 + tourne * .3}px), calc(-50% + ${Math.sin(a) * r * .5}px)) scale(1.2) rotate(${tourne}deg)`, opacity: 1, offset: .4 },
+      { transform: `translate(calc(-50% + ${Math.cos(a) * r + tourne}px), calc(-50% + ${Math.sin(a) * r - 120}px)) scale(.3) rotate(${tourne * 3}deg)`, opacity: 0 },
+    ], { duration: hasard(1100, 1700), delay: 520 + hasard(0, 300), easing: 'cubic-bezier(.2,.7,.3,1)', fill: 'both' });
+  }
+}

@@ -163,6 +163,20 @@ test('accueil : choisir sa classe filtre les modules, et le choix est gardé', a
   expect(errors).toEqual([]);
 });
 
+test('garde de démarrage : rien quand le site démarre, un message au lieu d’une page blanche sinon', async ({ page }, info) => {
+  // moteur introuvable (comme sur un navigateur qui refuse un fichier) : message, erreur et navigateur affichés
+  // (d'abord, avant que le service worker ne serve le moteur depuis son cache)
+  await page.route('**/engine/engine.js', r => r.abort());
+  await page.goto('modules/decimaux/');
+  await expect(page.getByText('Le site n’a pas pu démarrer')).toBeVisible({ timeout: 8000 });
+  await expect(page.locator('#mpReparer')).toBeVisible();
+  await page.screenshot({ path: `tests/e2e/captures/garde-${info.project.name}.png` });
+  await page.unroute('**/engine/engine.js');
+  await page.goto('modules/fractions/');
+  await page.waitForTimeout(5600);
+  await expect(page.getByText('Le site n’a pas pu démarrer')).toHaveCount(0);
+});
+
 test('accueil : réinitialiser toute la progression (réglages gardés)', async ({ page }) => {
   await page.goto('./');
   await page.evaluate(() => {
@@ -443,6 +457,10 @@ test('signaler une erreur : capture, texte, envoi', async ({ page }, info) => {
   await page.evaluate(() => { window.__sigRelais = 'https://relais.test/signaler'; });
   await page.locator('#sigDirect').click();
   await expect(page.locator('#sigEtat')).toContainText('Message envoyé');
+  // la baguette lance le message comme un sort (calque .fete sans clics)
+  await expect(page.locator('.fete')).toHaveCount(1);
+  await page.waitForTimeout(900);
+  await page.screenshot({ path: `tests/e2e/captures/signaler-sort-${info.project.name}.png` });
   const corps = recu.toString('utf8');
   expect(corps).toContain('name="capture"');
   expect(corps).toContain('image/png');

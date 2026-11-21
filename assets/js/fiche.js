@@ -37,3 +37,4 @@ async function main() {
   installerSignalement({ prefixe: '../' });
 }
 main();
+window.__mpPret = true; // garde de démarrage (assets/js/garde.js)

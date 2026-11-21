@@ -262,6 +262,9 @@ body.calcul #banner { top: 6px; }
 /* ---------- signaler une erreur ---------- */
 .sig-fab { position: fixed; right: 14px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 25; min-height: 52px; padding: 0 16px 0 12px; border-radius: 999px; background: #fff; color: var(--ink); border: 2px solid var(--line); box-shadow: 0 3px 10px rgba(0, 0, 0, .15); font-size: 22px; display: inline-flex; align-items: center; gap: 6px; }
 .sig-fab span { font-size: 15px; font-weight: 600; }
+.sig-fab .baguette { display: inline-block; font-style: normal; font-size: 24px; margin-right: 4px; transform-origin: 20% 80%; }
+.sig-fab:hover .baguette, .sig-fab:focus-visible .baguette { animation: baguette-agite .7s ease-in-out; }
+@keyframes baguette-agite { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(-22deg); } 65% { transform: rotate(16deg); } }
 .sig-fab:hover, .sig-fab:focus-visible { border-color: var(--acc); }
 /* fenêtre d'accueil : le bouton 🐞 passe au-dessus du voile et clignote doucement */
 .sig-fab.sig-fab-montre { z-index: 31; border-color: var(--acc); animation: bv-pulse 1.4s ease-in-out infinite; }
@@ -279,3 +282,4 @@ body.calcul #banner { top: 6px; }
 .sig-cap img { max-width: min(260px, 100%); max-height: 200px; border: 2px solid var(--line); border-radius: 8px; }
 main { padding-bottom: 80px; }
 @media (max-width: 900px) { .sig-fab { width: 52px; padding: 0; justify-content: center; opacity: .92; } .sig-fab span { display: none; } }
+@media (max-width: 900px) { .sig-fab .baguette { margin-right: 0; } }

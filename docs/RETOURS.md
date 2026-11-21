@@ -128,3 +128,7 @@ d = 4, angles négatifs ; d = 5, plus d'un tour. Donc **rien au-delà de 180° a
 - **Style jeu** (repris) : thème par défaut « Jeu » (réglage Style : Jeu / Sobre), habillage séparé dans `assets/css/theme.css`, en-tête façon tableau de bord, boutons en relief, série 🔥, accueil en cartes de jeu ; skill `style-jeu`.
 - **Programmes du lycée** (repris) : `docs/PROGRAMMES-LYCEE.md` (BO n° 14 du 2 avril 2026) ; choix de la classe sur l'accueil.
 - **Module Automatismes** (repris) : 12 niveaux de QCM sans calculatrice (épreuve anticipée de 1re). Relecture : 4 défauts corrigés avant fusion (calcul d'ordre de grandeur, écriture « (x) », indice de signe, distracteur absurde) ; tableaux croisés resserrés sur téléphone.
+- **Tablette Android de sa fille : page blanche** (2026-11-21) : réparé de son côté (version gardée en cache par l'appli installée). Repris : garde de démarrage (`assets/js/garde.js`, ES5) qui affiche l'erreur et un bouton « Réparer et recharger » (vide le cache hors ligne) au lieu d'une page blanche ; test de compatibilité des vieux navigateurs (`tests/unit/compat.test.mjs`) ; script `tools/verifier-deploiement.sh`.
+- **Logo Inria en haut à droite de l'accueil** (repris).
+- **Bouton Signaler en baguette magique 🪄** (repris) : l'envoi d'un message lance un sort d'étincelles (`sort()` dans `engine/fete.js`).
+- **Beaucoup plus de fiches de synthèse** : pour plus tard (`~/DESCRIPTION/A_FAIRE.md`).

@@ -123,4 +123,5 @@ installerSignalement({ prefixe: '' });
 setContexte(() => ({ Page: 'Accueil', Classe: classeChoisie() || 'toutes' }));
 renderClasses();
 render();
+window.__mpPret = true; // garde de démarrage (assets/js/garde.js)
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});

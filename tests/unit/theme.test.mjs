@@ -15,5 +15,6 @@ test('thème : chaque page charge theme.css après base.css', () => {
   for (const p of pages) {
     const h = readFileSync(p, 'utf8'), b = h.indexOf('assets/css/base.css'), t = h.indexOf('assets/css/theme.css');
     assert.ok(b > 0 && t > b, p);
+    assert.ok(h.includes('assets/js/garde.js'), `${p} : garde de démarrage`);
   }
 });

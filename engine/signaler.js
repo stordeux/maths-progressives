@@ -7,6 +7,7 @@
 // sont possibles. Le brouillon (canvas) est bien repris : l'élève peut y entourer l'erreur avant.
 
 // Les tickets arrivent, confidentiels et capture jointe, dans le projet privé gitlab.inria.fr/tordeux/signalements-exercices.
+import { sort } from './fete.js';
 export const RELAIS = 'https://signalements-maths.sebastien-tordeux.workers.dev/signaler';
 let contexte = () => ({});
 let prefixe = '../../';
@@ -104,7 +105,7 @@ export function installerSignalement(opts = {}) {
   fab.setAttribute('data-capture-exclude', '');
   fab.setAttribute('aria-label', 'Demander une explication ou signaler une erreur');
   fab.title = 'Demander une explication ou signaler une erreur';
-  fab.innerHTML = '🐞<span>Signaler</span>';
+  fab.innerHTML = '<i class="baguette" aria-hidden="true">🪄</i><span>Signaler</span>';
   document.body.appendChild(fab);
   // Sur téléphone, le bouton flottant cachait des boutons de réponse (retour du 2026-11-19) : on le range dans
   // l'en-tête, à côté de « Cours » et « Niveaux ». Sur tablette et ordinateur, il reste en bas à droite.
@@ -122,7 +123,7 @@ export function installerSignalement(opts = {}) {
   dlg.setAttribute('role', 'dialog'); dlg.setAttribute('aria-modal', 'true'); dlg.setAttribute('aria-labelledby', 'sigTitre');
   dlg.setAttribute('data-capture-exclude', '');
   dlg.innerHTML = `<div class="card sig">
-    <h2 id="sigTitre">🐞 Une question, une erreur ?</h2>
+    <h2 id="sigTitre">🪄 Une question, une erreur ?</h2>
     <p class="note">Tu veux une explication en plus sur un exercice ou un cours ? Tu as trouvé une erreur, une correction fausse, un affichage cassé ? Écris-le : la capture de l'écran et l'exercice en cours sont joints automatiquement.</p>
     <label for="sigTexte"><b>Ta question, ou ce qui ne va pas :</b></label>
     <textarea id="sigTexte" rows="4" placeholder="Par exemple : je ne comprends pas pourquoi on change de signe… ou : la correction dit 12 mais je trouve 14…"></textarea>
@@ -176,9 +177,10 @@ export function installerSignalement(opts = {}) {
       const r = await fetch(window.__sigRelais || RELAIS, { method: 'POST', body: fd });
       const j = await r.json().catch(() => ({}));
       if (!r.ok || !j.ok) throw new Error(j.erreur || 'HTTP ' + r.status);
-      $('#sigEtat').innerHTML = '✅ Message envoyé, merci ! Il sera lu et pris en compte.';
+      $('#sigEtat').innerHTML = '✨ Message envoyé, merci ! Il sera lu et pris en compte.';
+      sort($('#sigDirect')); // la baguette lance le message comme un sort
       $('#sigTexte').value = '';
-      setTimeout(fermer, 2500);
+      setTimeout(fermer, 2800);
     } catch (e) {
       $('#sigEtat').textContent = "⚠️ L'envoi n'a pas marché (" + (e.message || 'erreur') + '). Vérifie la connexion à Internet puis réessaie : ton message est gardé.';
       $('#sigDirect').disabled = false;
@@ -207,7 +209,7 @@ function bienvenue(fab) {
   dlg.innerHTML = `<div class="card bienvenue">
     <h2 id="bienvenueTitre">👋 Bienvenue dans Maths progressives !</h2>
     <p class="warn">🚧 Ce site est <b>en cours de développement</b> : il reste sûrement des erreurs, et des explications peuvent manquer.</p>
-    <p>Le bouton rond <span class="bv-btn">🐞</span> (avec le mot « Signaler » sur un grand écran), <b>${ou}</b>, toujours au même endroit sur chaque page, sert à :</p>
+    <p>Le bouton rond <span class="bv-btn">🪄</span> (avec le mot « Signaler » sur un grand écran), <b>${ou}</b>, toujours au même endroit sur chaque page, sert à :</p>
     <ul>
       <li>💬 <b>demander une explication supplémentaire</b> quand un cours ou une correction n'est pas clair ;</li>
       <li>🛠️ <b>demander une correction</b> quand un énoncé, une réponse ou un affichage est faux.</li>
