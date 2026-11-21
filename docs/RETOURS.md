@@ -122,3 +122,9 @@ Nouvelle montée : d = 0, angles remarquables jusqu'à 180° et multiples de 10�
 de 10° et 15° jusqu'à 180° (24) ; d = 2, plus des multiples de 5°, 6°, 9° sous 180° ; d = 3, jusqu'au tour complet ;
 d = 4, angles négatifs ; d = 5, plus d'un tour. Donc **rien au-delà de 180° avant 2 étoiles**. Cours et indice inchangés
 (les exemples couvrent toutes les formes). Tests trigo (réservoirs, générateurs, cours) : 62 sur 62.
+
+## 2026-11-21 · « Préparer les sujets du lycée … faire les modules un à un … que le tout ressemble beaucoup plus à un jeu »
+
+- **Style jeu** (repris) : thème par défaut « Jeu » (réglage Style : Jeu / Sobre), habillage séparé dans `assets/css/theme.css`, en-tête façon tableau de bord, boutons en relief, série 🔥, accueil en cartes de jeu ; skill `style-jeu`.
+- **Programmes du lycée** (repris) : `docs/PROGRAMMES-LYCEE.md` (BO n° 14 du 2 avril 2026) ; choix de la classe sur l'accueil.
+- **Module Automatismes** (repris) : 12 niveaux de QCM sans calculatrice (épreuve anticipée de 1re). Relecture : 4 défauts corrigés avant fusion (calcul d'ordre de grandeur, écriture « (x) », indice de signe, distracteur absurde) ; tableaux croisés resserrés sur téléphone.

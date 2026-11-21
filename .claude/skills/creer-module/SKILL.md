@@ -32,14 +32,16 @@ Au plus **3 sous-agents à la fois** (Sonnet), un par module, nommés « MILA �
 ## Relecture par l'agent principal (avant toute fusion)
 1. `git log main..cours/<id>` : pas de mention de Claude ; `npm test` dans le worktree.
 2. `node tools/audit-cours.mjs <id>` : chaque forme tirée a son exemple ; sinon renvoyer l'agent (SendMessage, il garde son contexte).
-3. Tirer des exercices concrets à d = 0…5 (énoncé, **indice**, fin de solution) : indices propres à l'exercice,
+3. Tirer des exercices concrets : `node tools/tirer.mjs <id> [niveaux]` (énoncé, choix, bon, **indice**, fin de solution, d = 0, 3, 5) : indices propres à l'exercice,
    réponses justes, données plausibles, français correct (« du Havre », accords, « x² » et non « (x)² »).
-4. Regarder des captures (cours, juste, correction ; portrait et paysage).
+4. Regarder des captures (cours, juste, correction ; portrait 400 px et paysage 1280 px) : tableaux dans `.tablewrap`, rien ne déborde ; le style suit la skill `style-jeu`.
 5. Fusion `--no-ff` dans main, `node tools/sw-assets.mjs --check`, `npm test`, push, suivre le déploiement
    (skill `publier-maths-progressives`), `git worktree remove`.
 6. Ligne dans `docs/RETOURS.md` et mise à jour de `docs/PROGRAMMES-COLLEGE.md` (❌ → ✅) et de `~/DESCRIPTION/A_FAIRE.md`.
 
 ## Pièges vus
+- Les défauts trouvés à la relecture d'Automatismes (2026-11-21) : solution dont le calcul affiché ne correspond pas aux arrondis annoncés, « (x)(3 − x) », « 1x », indice « attention au signe » sans signe −, distracteur absurde (« x(9) »). Les demander d'emblée dans la consigne et les faire vérifier par un test du module.
+- Consigne : ajouter `.claude/skills/style-jeu` aux lectures, et « rapport envoyé une seule fois ».
 - Agent coupé par une erreur réseau (ENOTFOUND) : le relancer par SendMessage (« git pull, git status, git log, puis reprends »).
 - Plusieurs branches modifient `registry.js`, `README.md` et `sw.js` : fusionner une par une, régénérer `sw.js` après chaque fusion.
 - Un premier rendu avait des gares réelles avec de fausses distances : toujours vérifier la vraisemblance des données.

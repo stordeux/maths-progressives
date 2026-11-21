@@ -21,7 +21,7 @@ Légende : ✅ couvert · 🟡 en partie · ❌ absent.
 | Notion | État | Module (niveaux) ou ce qui manque |
 |---|---|---|
 | Automatismes : fractions, puissances, écritures d'un nombre, ordres de grandeur, conversions | 🟡 | Fractions, Puissances, Décimaux, Calcul mental (niveau collège) ; pas de séance « automatismes » en QCM sans calculatrice |
-| Automatismes : isoler une variable dans une formule, application numérique | ❌ | à créer (module Automatismes) |
+| Automatismes : isoler une variable dans une formule, application numérique | ✅ | Automatismes 8 |
 | Entiers : multiples, diviseurs, pair, impair, nombres premiers | ✅ | Arithmétique |
 | Réels, intervalles, valeur absolue | ✅ | Inégalités 1, 2, 7, 8 |
 | Puissances entières, racines carrées, √(a²) = \|a\| | 🟡 | Puissances, Fractions (racines) ; √(a²) = \|a\| absent |
@@ -101,7 +101,7 @@ Légende : ✅ couvert · 🟡 en partie · ❌ absent.
 
 | Ordre | Module | Classes | Pourquoi |
 |---|---|---|---|
-| 1 | **Automatismes** (QCM sans calculatrice, séances chronométrées) | 2de – 1re | épreuve anticipée de 1re dès 2027, pour tous les élèves de 1re générale |
+| 1 | ✅ **Automatismes** (QCM sans calculatrice ; publié le 2026-11-21) | 2de – 1re | épreuve anticipée de 1re dès 2027, pour tous les élèves de 1re générale |
 | 2 | **Fonctions de référence et variations** | 2de | cœur du programme de 2de, absent du site |
 | 3 | **Statistiques au lycée** (écart type, classes, histogramme, deux caractères, ajustement affine) | 2de – 1re | nouveau en 2de, aussi en 1re sans spécialité |
 | 4 | **Produit scalaire et géométrie repérée** | 1re | chapitre entier de spécialité |
