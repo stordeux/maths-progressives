@@ -1,6 +1,6 @@
 // Service worker : met tout le site en cache pour qu'il marche hors ligne.
 // La liste ASSETS et VERSION sont régénérées par « node tools/sw-assets.mjs » (vérifié par les tests).
-const VERSION = 'c613f1ef135b';
+const VERSION = '69a4b7d96242';
 const ASSETS = [
   './',
   './assets/css/base.css',
@@ -181,6 +181,16 @@ const ASSETS = [
   './modules/reperage/util.js',
   './modules/revision/app.js',
   './modules/revision/index.html',
+  './modules/stats-lycee/a.js',
+  './modules/stats-lycee/b.js',
+  './modules/stats-lycee/c.js',
+  './modules/stats-lycee/d.js',
+  './modules/stats-lycee/draw.js',
+  './modules/stats-lycee/index.html',
+  './modules/stats-lycee/levels.js',
+  './modules/stats-lycee/nombre.js',
+  './modules/stats-lycee/outils.js',
+  './modules/stats-lycee/stat.js',
   './modules/stats-probas/draw.js',
   './modules/stats-probas/index.html',
   './modules/stats-probas/levels.js',
@@ -236,6 +246,7 @@ const ASSETS = [
   './modules/relatifs/',
   './modules/reperage/',
   './modules/revision/',
+  './modules/stats-lycee/',
   './modules/stats-probas/',
   './modules/stats3e/',
   './modules/suites/',

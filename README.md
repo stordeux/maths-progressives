@@ -65,6 +65,7 @@ accueil → **Ma progression** → **Exporter** (code à recopier ou fichier `.j
 | 🧠 Automatismes | 2de – 1re | Vers le lycée |
 | 📈 Second degré | 2de – 1re | Vers le lycée |
 | ➡️ Vecteurs et droites | 2de | Vers le lycée |
+| 🎯 Statistiques au lycée | 2de – 1re | Vers le lycée |
 | 🔢 Suites | 1re | Lycée (1re – Tle) |
 | ⭕ Trigonométrie | 1re | Lycée (1re – Tle) |
 | 🌳 Probabilités conditionnelles | 1re – Tle | Lycée (1re – Tle) |
