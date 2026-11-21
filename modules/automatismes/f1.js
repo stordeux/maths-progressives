@@ -429,7 +429,7 @@ const sumPow = {
         { l: sciTxt(a * b, 2 * p), n: 'c', why: 'C’est le résultat du produit, pas de la somme.' },
         { l: sciTxt(a + b, p + 1), n: 'd', why: 'Pas de décalage ici : ' + (a + b) + ' est déjà entre 1 et 10.' },
       ],
-      hint: `Les deux nombres ont la même puissance 10<sup>${p}</sup> : mets-la en facteur, comme dans ${a}x + ${b}x.`,
+      hint: `Les deux nombres ont la même puissance 10<sup>${p}</sup> : mets-la en facteur, comme dans ${a === 1 ? '' : a}x + ${b === 1 ? '' : b}x.`,
       solution: `${a} × 10<sup>${p}</sup> + ${b} × 10<sup>${p}</sup> = (${a} + ${b}) × 10<sup>${p}</sup> = ${sciTxt(a + b, p)}.`,
       indep: () => (a * Math.pow(10, p) + b * Math.pow(10, p)) / Math.pow(10, p) === a + b ? 'ok' : 'ko',
     };

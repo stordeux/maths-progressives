@@ -433,8 +433,10 @@ const signeProd = {
   draw() { for (;;) { const r1 = ri(-6, 4), r2 = r1 + ri(2, 7); return { r1, r2, neg: pick([true, false]), flip: pick([true, false]) }; } },
   ex: { r1: -2, r2: 3, neg: true, flip: false },
   build({ r1, r2, neg, flip }) {
-    const f1 = x => `(${x === 0 ? 'x' : x > 0 ? 'x − ' + x : 'x + ' + (-x)})`, f2_ = x => flip ? `(${x} − x)` : f1(x);
-    const e = flip ? `${f1(r1)}${f2_(r2)}` : `${f1(r1)}${f1(r2)}`;
+    // facteurs écrits proprement : x seul (sans parenthèses) est placé en premier ; (0 − x) s'écrit −x
+    const fa = x => (x === 0 ? 'x' : x > 0 ? `(x − ${x})` : `(x + ${-x})`);
+    const fb = x => (flip ? (x === 0 ? '(−x)' : `(${M(x)} − x)`) : fa(x));
+    const e = r1 === 0 ? `x${fb(r2)}` : r2 === 0 && !flip ? `x${fa(r1)}` : `${fa(r1)}${fb(r2)}`;
     const lead = flip ? -1 : 1, val = x => (x - r1) * (flip ? r2 - x : x - r2);
     const cond = neg ? '&lt; 0' : '&gt; 0';
     const fn = (outside) => outside ? `]−∞ ; ${M(r1)}[ ∪ ]${M(r2)} ; +∞[` : `]${M(r1)} ; ${M(r2)}[`;
@@ -445,7 +447,7 @@ const signeProd = {
       html: `Quel est l’ensemble des solutions de : ${big(`${e} ${cond}`)}`,
       good: { l: good, n: good }, bads: bads.map(([l, w]) => opt(l, l, w)),
       hint: `Les facteurs s’annulent en ${M(r1)} et en ${M(r2)} : ces deux nombres découpent la droite en trois zones. Teste le signe du produit pour un x très grand, puis pour un x entre ${M(r1)} et ${M(r2)}.`,
-      solution: `Racines : ${M(r1)} et ${M(r2)}. ${flip ? 'Le coefficient de x² est négatif' : 'Le coefficient de x² est positif'} : le produit est ${lead > 0 ? 'positif à l’extérieur des racines et négatif entre elles' : 'négatif à l’extérieur des racines et positif entre elles'}. Solution de ${cond.replace('&lt;', '<').replace('&gt;', '>')} : <b>${good}</b>.`,
+      solution: `Les racines sont ${M(r1)} et ${M(r2)}. Le coefficient de x² est ${flip ? 'négatif' : 'positif'} : le produit est ${lead > 0 ? 'positif' : 'négatif'} à l’extérieur des racines et ${lead > 0 ? 'négatif' : 'positif'} entre elles. Le produit est ${neg ? 'négatif' : 'positif'} (strictement) sur : <b>${good}</b>.`,
       indep: () => { const pts = [r1 - 3, r1 + 0.5, (r1 + r2) / 2, r2 - 0.5, r2 + 3]; const ok = pts.map(x => (neg ? val(x) < 0 : val(x) > 0)); const out = ok[0] && ok[4] && !ok[2]; const ins = !ok[0] && !ok[4] && ok[2]; return out ? fn(true) : ins ? fn(false) : 'ko'; },
     };
   },

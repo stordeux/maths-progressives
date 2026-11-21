@@ -34,7 +34,7 @@ const devS = {
       html: `Développe : ${big(`${k < 0 ? '−' + Math.abs(k) : k}(${xp(a)})`)}`,
       good: { l: lin(k, k * a), n: key(...g) },
       bads: bads.map(c => ({ l: lin(c[1], c[2]), n: key(...c), why: c[2] === a ? why.oubli : c[2] === -k * a ? why.signe : c[2] === k + a ? 'Tu as additionné ' + k + ' et ' + a + ' : il faut les multiplier.' : 'Chaque terme de la parenthèse est multiplié par ' + k + '.' })),
-      hint: `Multiplie ${k < 0 ? '−' + Math.abs(k) : k} par <b>chaque</b> terme de la parenthèse : par x, puis par ${a < 0 ? '(−' + (-a) + ')' : a}. Attention au signe du 2<sup>e</sup> produit.`,
+      hint: `Multiplie ${k < 0 ? '−' + Math.abs(k) : k} par <b>chaque</b> terme de la parenthèse : par x, puis par ${a < 0 ? '(−' + (-a) + ')' : a}. ${k < 0 || a < 0 ? 'Attention au signe du produit.' : 'Calcule bien les deux produits.'}`,
       solution: `${k < 0 ? M(k) : k}(${xp(a)}) = ${M(k)} × x + ${Pn(k)} × ${Pn(a)} = ${lin(k, k * a)}.`,
       indep: () => coefs(x => k * (x + a)),
     };
@@ -51,7 +51,7 @@ const devD = {
       good: { l: poly(...g), n: key(...g) },
       bads: [[1, a + b, 0], [1, a * b, a + b], [1, a + b, -a * b], [1, 0, a * b], [1, a + b, a + b]].filter(c => key(...c) !== key(...g)).map(c => ({ l: poly(...c), n: key(...c), why: c[2] === 0 ? 'Tu as oublié le produit ' + (a < 0 ? '(−' + (-a) + ')' : a) + ' × ' + (b < 0 ? '(−' + (-b) + ')' : b) + ' des deux nombres.' : c[1] === 0 ? 'Il manque les termes en x : x × ' + b + ' et ' + a + ' × x.' : c[2] === -a * b ? why.signe : 'Le coefficient de x est la <b>somme</b> a + b, le dernier terme le <b>produit</b> a × b.' })),
       hint: `Les deux nombres sont ${M(a)} et ${M(b)} : le coefficient de x est leur somme, le terme constant est leur produit (attention aux signes).`,
-      solution: `(${xp(a)})(${xp(b)}) = x² + ${Pn(a)}x + ${Pn(b)}x + ${Pn(a)} × ${Pn(b)} = ${poly(...g)}.`,
+      solution: `(${xp(a)})(${xp(b)}) = x² + ${a === 1 ? '' : Pn(a)}x + ${b === 1 ? '' : Pn(b)}x + ${Pn(a)} × ${Pn(b)} = ${poly(...g)}.`,
       indep: () => coefs(x => (x + a) * (x + b)),
     };
   },
@@ -103,7 +103,7 @@ const factComm = {
       good: { l: fc(g, p, q), n: prodKey(g, p, q) },
       bads: cands.map(c => ({ l: fc(c[0], c[1], c[2]), n: prodKey(c[0], c[1], c[2]), why: c[3] })),
       hint: `Cherche le plus grand nombre qui divise à la fois ${A} et ${Math.abs(B)} : c’est le facteur à mettre devant la parenthèse ; divise ensuite chaque terme par lui.`,
-      solution: `${A} = ${g} × ${p} et ${B} = ${g} × ${q < 0 ? '(−' + (-q) + ')' : q} : ${lin(A, B)} = ${fc(g, p, q)}.`,
+      solution: `${A} = ${g} × ${p} et ${M(B)} = ${g} × ${q < 0 ? '(−' + (-q) + ')' : q} : ${lin(A, B)} = ${fc(g, p, q)}.`,
       indep: () => (g * (p * 5 + q) === A * 5 + B && g * (p * 2 + q) === A * 2 + B ? prodKey(g, p, q) : 'ko'),
     };
   },
@@ -113,15 +113,15 @@ const factX = {
   draw() { return { a: nzr(-9, 9), t: pick(['sq', 'sq', 'k']) }; },
   ex: { a: 5, t: 'sq' },
   build({ a }) {
-    const s = a > 0 ? '+' : '−', A = Math.abs(a);
+    const s = a > 0 ? '+' : '−', A = Math.abs(a), Ax = A === 1 ? '' : A;
     const good = `x(x ${s} ${A})`;
     const f = x => x * x + a * x;
     const opts = [
       [`x(x ${s === '+' ? '−' : '+'} ${A})`, x => x * (x + (a > 0 ? -A : A)), 'Le signe dans la parenthèse est celui de ' + (a > 0 ? '+' : '−') + A + 'x.'],
-      [`x(${a > 0 ? '' : '−'}${A})`, x => x * a, 'En mettant x en facteur, il reste x dans la parenthèse : x² = x × x.'],
+      [`x<sup>2</sup>(1 ${s} ${Ax}x)`, x => x * x * (1 + a * x), 'Tu as mis x² en facteur : mais ' + A + 'x ne contient qu’un seul x, donc seul x est commun aux deux termes.'],
       [`x<sup>2</sup>(1 ${s} ${A})`, x => x * x * (1 + a), 'Seul le facteur x est commun aux deux termes (pas x²).'],
-      [`${A}x(x ${s} 1)`, x => a * x * (x + (a > 0 ? 1 : -1)) * (a > 0 ? 1 : -1), 'Le nombre ' + A + ' n’est pas un facteur de x².'],
-      [`x(x ${s} ${A}x)`, x => x * (x + a * x), 'Dans la parenthèse il reste ' + a + ', pas ' + a + 'x : on a divisé ' + a + 'x par x.'],
+      [`${Ax}x(x ${s} 1)`, x => a * x * (x + (a > 0 ? 1 : -1)) * (a > 0 ? 1 : -1), 'Le nombre ' + A + ' n’est pas un facteur de x².'],
+      [`x(x ${s} ${Ax}x)`, x => x * (x + a * x), 'Dans la parenthèse il reste ' + a + ', pas ' + a + 'x : on a divisé ' + a + 'x par x.'],
     ];
     const same = fn => [1, 2, 3, 4].every(x => Math.abs(fn(x) - f(x)) < 1e-9);
     return {
@@ -228,7 +228,7 @@ const eq1 = {
       good: { l: xs(x), n: x },
       bads: bads.filter(([v]) => nice2(v)).map(([v, y]) => ({ l: xs(r6(v)), n: r6(v), why: y })),
       hint: `D’abord enlève ${b < 0 ? 'le −' + (-b) : 'le +' + b} dans le membre de gauche (opération inverse des deux côtés), puis divise par ${M(a)}.`,
-      solution: `${lin(a, b)} = ${M(c)} ⇒ ${M(a)}x = ${M(c)} ${b < 0 ? '+ ' + (-b) : '− ' + b} = ${M(c - b)} ⇒ x = ${M(c - b)} ÷ ${a < 0 ? '(' + M(a) + ')' : a} = ${M(x)}.`,
+      solution: `${lin(a, b)} = ${M(c)} ⇒ ${terms([[a, 'x']])} = ${M(c)} ${b < 0 ? '+ ' + (-b) : '− ' + b} = ${M(c - b)} ⇒ x = ${M(c - b)} ÷ ${a < 0 ? '(' + M(a) + ')' : a} = ${M(x)}.`,
       indep: () => { for (let t = -30; t <= 30; t++) if (a * t + b === c) return t; return NaN; },
     };
   },
@@ -243,7 +243,7 @@ const eq2 = {
       good: { l: xs(x), n: x },
       bads: [[(d + b) / (a - c), 'Pour passer ' + b + ' de l’autre côté, on le soustrait ; ' + d + ' passe avec le signe contraire : (d − b).'], [(d - b) / (a + c), 'Pour regrouper les x, on <b>soustrait</b> ' + lin(c, 0) + ' des deux côtés : a − c.'], [(b - d) / (a - c), 'Signe : x = (d − b) ÷ (a − c).'], [(d - b) / (c - a), 'Tu as retranché dans le mauvais sens au dénominateur : x = (d − b) ÷ (a − c).'], [-x, 'Remplace x dans les deux membres pour vérifier.'], [x + 1, 'Vérifie en remplaçant x dans les deux membres.'], [x - 1, 'Vérifie en remplaçant x dans les deux membres.']].filter(([v]) => nice2(v)).map(([v, y]) => ({ l: xs(r6(v)), n: r6(v), why: y })),
       hint: `Regroupe les termes en x d’un côté (retranche ${lin(c, 0)} des deux membres) et les nombres de l’autre (${M(b)} et ${M(d)}) ; puis divise par le coefficient de x obtenu (${M(a)} − ${c < 0 ? '(' + M(c) + ')' : M(c)}).`,
-      solution: `${lin(a, b)} = ${lin(c, d)} ⇒ ${M(a - c)}x = ${M(d - b)} ⇒ x = ${M(d - b)} ÷ ${a - c < 0 ? '(' + M(a - c) + ')' : a - c} = ${M(x)}.`,
+      solution: `${lin(a, b)} = ${lin(c, d)} ⇒ ${terms([[a - c, 'x']])} = ${M(d - b)} ⇒ x = ${M(d - b)} ÷ ${a - c < 0 ? '(' + M(a - c) + ')' : a - c} = ${M(x)}.`,
       indep: () => { for (let t = -40; t <= 40; t++) if (a * t + b === c * t + d) return t; return NaN; },
     };
   },
@@ -263,7 +263,7 @@ const ineq = neg => ({
       good: { l: lab(g, x), n: `${g}|${x}` },
       bads: bads.filter(([, v]) => nice2(v)).map(([rel, v, y]) => ({ l: lab(rel, r6(v)), n: `${rel}|${r6(v)}`, why: y })),
       hint: neg ? `Résous comme une équation, mais attention : tu vas diviser par ${M(a)}, un nombre <b>négatif</b>. Que se passe-t-il alors avec le sens ${REL[r]} ?` : `Résous comme une équation : enlève ${b < 0 ? 'le −' + (-b) : 'le +' + b}, puis divise par ${a} (positif : le sens ${REL[r]} ne change pas).`,
-      solution: `${lin(a, b)} ${REL[r]} ${M(c)} ⇒ ${M(a)}x ${REL[r]} ${M(c - b)} ⇒ x ${REL[g]} ${M(c - b)} ÷ ${a < 0 ? '(' + M(a) + ')' : a} = ${M(x)}${neg ? ' (on divise par un négatif : le sens change)' : ''}.`,
+      solution: `${lin(a, b)} ${REL[r]} ${M(c)} ⇒ ${terms([[a, 'x']])} ${REL[r]} ${M(c - b)} ⇒ x ${REL[g]} ${M(c - b)} ÷ ${a < 0 ? '(' + M(a) + ')' : a} = ${M(x)}${neg ? ' (on divise par un négatif : le sens change)' : ''}.`,
       indep: () => {
         const sat = t => ({ lt: a * t + b < c, le: a * t + b <= c, gt: a * t + b > c, ge: a * t + b >= c })[r];
         const holds = t => ({ lt: t < x, le: t <= x, gt: t > x, ge: t >= x })[g];

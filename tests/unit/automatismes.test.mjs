@@ -49,6 +49,18 @@ for (let L = 0; L < 12; L++) {
       const h = TOKENS(q.hint);
       assert.ok([...h].some(x => t.has(x)) || (BIG(q.html) && strip(q.hint).includes(BIG(q.html))) || /courbe|droite|diagramme|tableau|arbre/.test(q.hint), `${where} indice trop général : ${strip(q.hint)} / ${strip(q.html).slice(0, 120)}`);
       assert.ok(strip(q.solution).length > 15, `${where} solution`);
+      // écritures maladroites : (x), 1x, + −, − −, signe moins du clavier collé à un nombre
+      for (const [nom, s] of [['énoncé', q.html], ['indice', q.hint], ['solution', q.solution], ...q.opts.map(o => ['choix', o.l])]) {
+        const tx = strip(s);
+        assert.ok(!/(?<!f)\(x\)|(?<![\d,])1x|\+ −|− −|\+ -|(?<=\s)-\d/.test(tx), `${where} ${nom} mal écrit : ${tx.slice(0, 160)}`);
+      }
+      // ordre de grandeur d'un produit : les deux facteurs de la solution sont les arrondis annoncés
+      if (q.form === 'e-ordre-calc') {
+        const m = /([\d\s,]+) ≈ ([\d\s,]+) et ([\d\s,]+) ≈ ([\d\s,]+)\. Le produit est environ ([\d\s,]+) × ([\d\s,]+) =/.exec(strip(q.solution));
+        assert.ok(m, `${where} forme de la solution : ${strip(q.solution)}`);
+        assert.equal(m[5].trim(), m[2].trim(), `${where} 1er facteur ≠ arrondi annoncé : ${strip(q.solution)}`);
+        assert.equal(m[6].trim(), m[4].trim(), `${where} 2e facteur ≠ arrondi annoncé : ${strip(q.solution)}`);
+      }
     }
     for (const id of ids) assert.ok(vus.has(id), `N${L + 1} : la forme ${id} n'est jamais tirée`);
     const tot = pos.reduce((a, b) => a + b, 0);

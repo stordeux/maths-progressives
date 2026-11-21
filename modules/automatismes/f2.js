@@ -128,7 +128,7 @@ const ordreCalc = {
         { l: lab(r6(g / 100)), n: g / 100, why: 'Deux zéros de moins : arrondis chaque nombre à un seul chiffre significatif, puis multiplie.' },
       ],
       hint: `Arrondis chaque facteur à un seul chiffre significatif (${lab(va)} proche de ${lab(r6(ra * Math.pow(10, ea)))} ; ${lab(vb)} proche de ${lab(r6(rb * Math.pow(10, eb)))}), puis calcule le produit.`,
-      solution: `${lab(va)} ≈ ${lab(r6(ra * Math.pow(10, ea)))} et ${lab(vb)} ≈ ${lab(r6(rb * Math.pow(10, eb)))}. Le produit est environ ${lab(r6(ra * rb))} × ${lab(r6(Math.pow(10, ea + eb)))} = ${lab(r6(g))}.`,
+      solution: `${lab(va)} ≈ ${lab(r6(ra * Math.pow(10, ea)))} et ${lab(vb)} ≈ ${lab(r6(rb * Math.pow(10, eb)))}. Le produit est environ ${lab(r6(ra * Math.pow(10, ea)))} × ${lab(r6(rb * Math.pow(10, eb)))} = ${lab(r6(g))}.`,
       indep: () => Math.round(va / Math.pow(10, Math.floor(Math.log10(va)))) * Math.pow(10, Math.floor(Math.log10(va))) * (Math.round(vb / Math.pow(10, Math.floor(Math.log10(vb)))) * Math.pow(10, Math.floor(Math.log10(vb)))),
     };
   },
