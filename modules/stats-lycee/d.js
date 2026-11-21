@@ -280,7 +280,7 @@ export const LV11 = niveau('Tableau croisé', [croiseCompl, freqMarg, freqCond, 
 });
 
 /* ===================================================================== 12. nuage de points et ajustement affine */
-const NU = [
+export const NU = [
   { id: 'rev', intro: 'On a relevé, pour des élèves, le nombre d’heures de révision par semaine, noté x, et la note obtenue à un contrôle sur 20, notée y.', xt: 'révision (h par semaine)', yt: 'note (sur 20)', xr: [0, 12], yr: [0, 20], gx: 1, gy: 1, lx: 1, ly: 2, x0: 1, x1: 10, a: 1.1, b: 7, A: 2, ux: ' h', uy: '', ent: 'élèves',
     phr: x => `Un élève révise ${M(x)} h par semaine.`, qq: 'Quelle note peut-on prévoir ?', ymax: 20 },
   { id: 'age', intro: 'On a relevé l’âge, noté x (en années), et le prix, noté y (en milliers d’euros), de voitures d’occasion du même modèle.', xt: 'âge (années)', yt: 'prix (milliers d’euros)', xr: [0, 12], yr: [0, 18], gx: 1, gy: 1, lx: 1, ly: 2, x0: 1, x1: 10, a: -1.2, b: 16, A: 1.5, ux: ' ans', uy: ' milliers d’euros', ent: 'voitures',
@@ -290,6 +290,13 @@ const NU = [
   { id: 'abo', intro: 'On a relevé le nombre d’années écoulées depuis 2018, noté x, et le nombre d’abonnés, noté y (en dizaines), d’une médiathèque.', xt: 'années depuis 2018', yt: 'abonnés (dizaines)', xr: [0, 12], yr: [0, 60], gx: 1, gy: 5, lx: 1, ly: 10, x0: 1, x1: 10, a: 4, b: 8, A: 3, ux: ' ans', uy: ' dizaines', ent: 'années',
     phr: x => `On est ${M(x)} ans après 2018.`, qq: 'Combien d’abonnés (en dizaines) peut-on prévoir ?', ymax: 60 },
 ];
+/** contextes SANS lien réel entre les deux caractères (sens : 'none') */
+export const NN = [
+  { id: 'pointure', sens: 'none', intro: 'On a relevé la pointure, notée x, et la note en mathématiques, notée y (sur 20), d’élèves d’une classe.', xt: 'pointure', yt: 'note en maths (sur 20)', xr: [35, 47], yr: [0, 20], gx: 1, gy: 1, lx: 1, ly: 2, x0: 37, x1: 46, ent: 'élèves' },
+  { id: 'naissance', sens: 'none', intro: 'On a relevé le jour de naissance dans le mois, noté x, et la taille, notée y (en cm), d’élèves d’une classe.', xt: 'jour de naissance', yt: 'taille (cm)', xr: [0, 30], yr: [150, 190], gx: 1, gy: 5, lx: 5, ly: 10, x0: 1, x1: 28, ent: 'élèves' },
+];
+NU.forEach(c => { c.sens = c.a > 0 ? 'pos' : 'neg'; });
+const TOUS = [...NU, ...NN];
 /** n points (x entiers distincts triés, y = a x + b + bruit entier) */
 function pointsNuage(ct, n) {
   n = Math.min(n, ct.x1 - ct.x0 + 1);
@@ -304,19 +311,19 @@ const corr = pts => { const mx = mean(pts.map(p => p.x)), my = mean(pts.map(p =>
 const sensLiaison = {
   id: 'sens-liaison', dmin: 0, titre: 'sens de la liaison entre deux caractères',
   draw: d => cherche(() => {
-    const ct = pick(NU), mode = pick(['pos', 'neg', 'none']), n = Math.min(ri(8, 9), ct.x1 - ct.x0 + 1);
+    const mode = pick(['pos', 'neg', 'none']), ct = pick(mode === 'none' ? NN : NU.filter(c => c.sens === mode)), n = Math.min(ri(8, 9), ct.x1 - ct.x0 + 1);
     let pts;
-    if (mode === 'none') { const xs = new Set(); while (xs.size < n) xs.add(ri(ct.x0, ct.x1)); pts = [...xs].sort((a, b) => a - b).map(x => ({ x, y: ri(Math.round(ct.yr[1] * 0.15), Math.round(ct.yr[1] * 0.85)) })); }
+    if (mode === 'none') { const xs = new Set(); while (xs.size < n) xs.add(ri(ct.x0, ct.x1)); pts = [...xs].sort((a, b) => a - b).map(x => ({ x, y: ri(Math.round(ct.yr[0] + (ct.yr[1] - ct.yr[0]) * 0.15), Math.round(ct.yr[0] + (ct.yr[1] - ct.yr[0]) * 0.85)) })); }
     else pts = pointsNuage(ct, n);
     const r = corr(pts);
-    return { id: ct.id, pts, mode: Math.abs(r) < 0.3 ? 'none' : r > 0 ? 'pos' : 'neg', r };
-  }, t => { const r = Math.abs(t.r); return r < 0.3 || r > 0.8; }),
+    return { id: ct.id, pts, mode, r };
+  }, t => (t.mode === 'none' ? Math.abs(t.r) < 0.3 : (t.mode === 'pos' ? t.r > 0.8 : t.r < -0.8))),
   build: p => {
-    const ct = NU.find(c => c.id === p.id), vis = svgNuage(ct, p.pts), r = corr(readNuage(vis).pts);
-    const m = Math.abs(r) < 0.3 ? 'none' : r > 0 ? 'pos' : 'neg';
+    const ct = TOUS.find(c => c.id === p.id), vis = svgNuage(ct, p.pts), r = corr(readNuage(vis).pts);
+    const m = ct.sens;
     const T = { pos: 'Quand x augmente, y a tendance à augmenter.', neg: 'Quand x augmente, y a tendance à diminuer.', none: 'Il n’y a pas de lien visible entre x et y.' };
     const items = ['pos', 'neg', 'none'].map(k => ({ l: T[k], ok: k === m, why: k === 'none' ? 'Les points ne sont pas dispersés au hasard : ils suivent une direction. Regarde le sens de cette direction.' : m === 'none' ? 'Les points sont dispersés sans direction particulière : il n’y a pas de lien visible.' : 'Regarde la direction du nuage : va-t-il vers le haut ou vers le bas quand on va vers la droite ?' }));
-    return { ...rChoice(items, { ordre: true, indep: T[m] }), visual: vis,
+    return { ...rChoice(items, { ordre: true, indep: T[Math.abs(r) < 0.3 ? 'none' : r > 0 ? 'pos' : 'neg'] }), visual: vis, meta: { sens: ct.sens, r },
       html: `${ct.intro} Que peut-on dire du lien entre x et y ?`,
       hint: `Regarde la direction que suit le nuage de ${p.pts.length} points : quand on va vers la droite (x augmente), les points montent-ils, descendent-ils, ou sont-ils dispersés sans direction ?`,
       solution: `Le nuage ${m === 'pos' ? 'monte de la gauche vers la droite' : m === 'neg' ? 'descend de la gauche vers la droite' : 'ne suit aucune direction particulière'}.<br><b>${T[m]}</b>` };
@@ -406,7 +413,7 @@ const extrap = {
 
 const droiteG = {
   id: 'droite-g', dmin: 3, titre: 'droite d’ajustement passant par le point moyen',
-  draw: d => cherche(() => { const ct = pick(NU), pts = pointsNuage(ct, pick([5, 10])), a = rnd(ct.a + pick([-1, 1]) * pick([0.1, 0.2, 0.5].map(v => v * Math.max(1, Math.abs(ct.a) / 2))), 2); return { id: ct.id, pts, a }; }, t => { const n = t.pts.length, mx = sum(t.pts.map(q => q.x)) / n, my = sum(t.pts.map(q => q.y)) / n, b = my - t.a * mx; return dec(b) >= 0 && dec(b) <= 2 && b > 0 && dec(t.a) <= 1; }),
+  draw: d => cherche(() => { const ct = pick(NU), pts = pointsNuage(ct, pick([5, 10])), a = rnd(ct.a + pick([-1, 1]) * pick([0.1, 0.2, 0.5].map(v => v * Math.max(1, Math.abs(ct.a) / 2))), 2); return { id: ct.id, pts, a }; }, t => { const n = t.pts.length, mx = sum(t.pts.map(q => q.x)) / n, my = sum(t.pts.map(q => q.y)) / n, b = my - t.a * mx; return dec(b) >= 0 && dec(b) <= 2 && b > 0 && dec(t.a) <= 1 && Math.sign(t.a) === Math.sign(NU.find(c => c.id === t.id).a); }),
   build: p => {
     const ct = NU.find(c => c.id === p.id), { pts, a } = p, n = pts.length, mx = sum(pts.map(q => q.x)) / n, my = sum(pts.map(q => q.y)) / n, ax = rnd(a * mx, 4), b = rnd(my - ax, 4);
     return { ...rNums([b], { tpl: 'b : {0}', value: b, near: [[[ax, `${M(ax)} est a × x̄ : il reste à le retirer de ȳ.`], [rnd(my, 4), 'C’est ȳ : la droite passe par G, donc ȳ = a × x̄ + b.']]] }),

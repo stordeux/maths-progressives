@@ -14,6 +14,7 @@ import { exempleDe, exemples2De } from '../../modules/stats-lycee/outils.js';
 import { rnd, sigma, variance, varianceAutre } from '../../modules/stats-lycee/stat.js';
 import { histogramme, readHisto, polygone, readPoly, nuage, readNuage } from '../../modules/stats-lycee/draw.js';
 import { strip, M } from '../../engine/util/fmt.js';
+import { NU, NN } from '../../modules/stats-lycee/d.js';
 
 const N = +(process.env.N_STL || 120);
 const TOKENS = s => new Set((strip(s).match(/\d+|[A-Za-zÀ-ÿ]{5,}/g) || []).map(x => x.toLowerCase()));
@@ -139,4 +140,32 @@ test('stats-lycee : dessins relus d’après leur géométrie', () => {
   const r = readNuage(n);
   assert.deepEqual(r.pts, [{ x: 2, y: 3.5 }, { x: 5, y: 8 }]);
   assert.deepEqual(r.croix, [{ l: 'G', x: 3.5, y: 5.75 }]);
+});
+
+test('stats-lycee : chaque contexte de nuage déclare son sens, le nuage tiré et la droite le respectent', () => {
+  const corr = pts => { const mx = pts.reduce((a, p) => a + p.x, 0) / pts.length, my = pts.reduce((a, p) => a + p.y, 0) / pts.length; let sxy = 0, sxx = 0, syy = 0; for (const p of pts) { sxy += (p.x - mx) * (p.y - my); sxx += (p.x - mx) ** 2; syy += (p.y - my) ** 2; } return sxy / Math.sqrt(sxx * syy); };
+  for (const c of NU) { assert.ok(c.sens === 'pos' || c.sens === 'neg', c.id); assert.equal(c.sens, c.a > 0 ? 'pos' : 'neg', 'pente du contexte ' + c.id); }
+  for (const c of NN) assert.equal(c.sens, 'none');
+  const attendu = { rev: 'pos', age: 'neg', temp: 'neg', abo: 'pos' };   // sens réel : révision → note, âge → prix, température → chauffage, année → abonnés
+  for (const c of NU) assert.equal(c.sens, attendu[c.id], 'sens réel du contexte ' + c.id);
+  const nuages = LEVELS[11];
+  for (let d = 0; d <= 5; d++) for (let i = 0; i < 150; i++) {
+    setSeed(990000 + d * 1000 + i);
+    const q = nuages.generate(d);
+    if (q.form === 'sens-liaison') {
+      const { sens, r } = q.meta;
+      if (sens === 'none') assert.ok(Math.abs(r) < 0.3, 'sans lien : |r| = ' + r);
+      else assert.ok(sens === 'pos' ? r > 0.5 : r < -0.5, sens + ' : r = ' + r);
+      assert.ok(strip(q.html).includes(sens === 'none' ? 'pointure' : '') || sens !== 'none' || /naissance/.test(q.html), 'contexte sans lien');
+    } else if (['interp', 'extrap', 'inverse-droite', 'fiable'].includes(q.form)) {
+      const m = strip(q.html).match(/y = (−?)[\d,]*x/);
+      const c = NU.find(k => strip(q.html).startsWith(strip(k.intro).slice(0, 40)));
+      assert.ok(m && c, 'équation de droite : ' + q.form);
+      assert.equal(m[1] ? 'neg' : 'pos', c.sens, 'pente de la droite ' + c.id);
+    } else if (q.form === 'droite-g') {
+      const c = NU.find(k => strip(q.html).startsWith(strip(k.intro).slice(0, 40)));
+      const m = strip(q.html).match(/y = (−?)[\d,]*x \+ b/);
+      assert.equal(m[1] ? 'neg' : 'pos', c.sens, 'pente droite-g');
+    }
+  }
 });
