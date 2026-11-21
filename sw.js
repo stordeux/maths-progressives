@@ -1,6 +1,6 @@
 // Service worker : met tout le site en cache pour qu'il marche hors ligne.
 // La liste ASSETS et VERSION sont régénérées par « node tools/sw-assets.mjs » (vérifié par les tests).
-const VERSION = '3336f880c652';
+const VERSION = '320b88d2df90';
 const ASSETS = [
   './',
   './assets/css/base.css',
@@ -143,6 +143,15 @@ const ASSETS = [
   './modules/probas-lycee/draw.js',
   './modules/probas-lycee/index.html',
   './modules/probas-lycee/levels.js',
+  './modules/produit-scalaire/a.js',
+  './modules/produit-scalaire/b.js',
+  './modules/produit-scalaire/c.js',
+  './modules/produit-scalaire/d.js',
+  './modules/produit-scalaire/draw.js',
+  './modules/produit-scalaire/index.html',
+  './modules/produit-scalaire/levels.js',
+  './modules/produit-scalaire/outils.js',
+  './modules/produit-scalaire/style.css',
   './modules/proportionnalite/draw.js',
   './modules/proportionnalite/index.html',
   './modules/proportionnalite/levels.js',
@@ -239,6 +248,7 @@ const ASSETS = [
   './modules/poly2/',
   './modules/priorites/',
   './modules/probas-lycee/',
+  './modules/produit-scalaire/',
   './modules/proportionnalite/',
   './modules/puissances/',
   './modules/pythagore/',

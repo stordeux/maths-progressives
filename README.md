@@ -72,6 +72,7 @@ accueil → **Ma progression** → **Exporter** (code à recopier ou fichier `.j
 | 🌱 Exponentielle et logarithme | 1re – Tle | Lycée (1re – Tle) |
 | 📉 Dérivées | 1re | Lycée (1re – Tle) |
 | ∫ Intégrales | Terminale | Lycée (1re – Tle) |
+| ⊥ Produit scalaire | 1re | Lycée (1re – Tle) |
 | 🎓 Révision brevet | 3e | Transversal |
 | 🧩 Pensée informatique | 6e – 3e | Transversal |
 

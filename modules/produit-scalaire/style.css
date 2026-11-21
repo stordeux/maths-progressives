@@ -1,0 +1,5 @@
+/* Produit scalaire : formules sans coupure, réponse des exemples. Couleurs : variables du thème. */
+.nw { white-space: nowrap; }
+.cours .repex { margin: 6px 0 2px; }
+.cours .choixex { margin: 4px 0; font-size: .95em; }
+.cours .ex svg.vis { margin: 6px auto; }
