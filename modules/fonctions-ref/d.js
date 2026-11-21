@@ -44,8 +44,8 @@ function drawPaire(d, o = {}) {
   }
   throw new Error('drawPaire');
 }
-const lim10 = F => `[${M(F.a)} ; ${M(F.b)}]`;
-const stem10 = F => `Voici les courbes représentatives de deux fonctions f et g définies sur ${lim10(F)}.`;
+const lim10 = F => `[${M(F.a)}&nbsp;; ${M(F.b)}]`;
+const stem10 = F => `Voici les courbes représentatives de deux fonctions f et g définies sur ${lim10(F)}.<br>`;
 const ptsX = (F, xs) => xs.map(x => ({ x, y: F.f(x), px: true, c: ORANGE, l: M(x), ly: -12 }));
 const vis10 = (F, G, pts) => graphCourbe(F, { G, pts, aria: 'courbes de f et de g' });
 

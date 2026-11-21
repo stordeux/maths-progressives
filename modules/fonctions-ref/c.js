@@ -14,7 +14,7 @@ function tableDe(C) {
   return { idx, xs: idx.map(i => C.a + i), ys: idx.map(i => C.ys[i]) };
 }
 const tv = (T, o) => tabVarXY(T.xs, T.ys, o);
-const lim = T => `[${M(T.xs[0])} ; ${M(T.xs[T.xs.length - 1])}]`;
+const lim = T => `[${M(T.xs[0])}&nbsp;; ${M(T.xs[T.xs.length - 1])}]`;
 const stemTab = (T, nom = 'f') => `Voici le tableau de variations d’une fonction ${nom} définie sur ${lim(T)}.${tv(T)}`;
 const unique = (ys, v) => ys.filter(y => y === v).length === 1;
 /** morceaux monotones : [{ lo, hi, up }] */
