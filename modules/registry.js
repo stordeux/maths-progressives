@@ -47,6 +47,8 @@ export const MODULES = [
   // ---
   { id: 'inegalites', titre: 'Inégalités', emoji: '↔️', classes: '3e – 2de', groupe: 'Vers le lycée', couleur: '#0b7285', couleur2: '#e3fafc', resume: 'Intervalles, inéquations, valeur absolue, carrés, produits.' },
   // ---
+  { id: 'automatismes', titre: 'Automatismes', emoji: '🧠', classes: '2de – 1re', groupe: 'Vers le lycée', couleur: '#a16207', couleur2: '#fdf6e3', resume: 'QCM sans calculatrice qui prépare la partie automatismes de l’épreuve anticipée de 1re.' },
+  // ---
   { id: 'poly2', titre: 'Second degré', emoji: '📈', classes: '2de – 1re', groupe: 'Vers le lycée', couleur: '#5f3dc4', couleur2: '#efe9ff', resume: 'Développer, forme canonique, sommet, racines, signe, discriminant.' },
   // ---
   { id: 'vecteurs', titre: 'Vecteurs et droites', emoji: '➡️', classes: '2de', groupe: 'Vers le lycée', couleur: '#1e40af', couleur2: '#e8eefc', resume: 'Coordonnées, somme de vecteurs, colinéarité, équations de droites.' },

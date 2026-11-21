@@ -61,6 +61,7 @@ accueil → **Ma progression** → **Exporter** (code à recopier ou fichier `.j
 | 🧭 Repérage et solides | 6e – 3e | Géométrie |
 | 〰️ Fonctions | 3e – 2de | Vers le lycée |
 | ↔️ Inégalités | 3e – 2de | Vers le lycée |
+| 🧠 Automatismes | 2de – 1re | Vers le lycée |
 | 📈 Second degré | 2de – 1re | Vers le lycée |
 | ➡️ Vecteurs et droites | 2de | Vers le lycée |
 | 🔢 Suites | 1re | Lycée (1re – Tle) |
