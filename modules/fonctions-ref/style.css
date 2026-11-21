@@ -1,0 +1,41 @@
+/* Fonctions de référence : tableaux de variations, vignettes de courbes, choix à tableaux. Couleurs : variables du thème. */
+table.tv { border-collapse: collapse; margin: 8px auto; font-size: .95em; }
+table.tv th { text-align: left; padding: 4px 10px 4px 4px; border-right: 2px solid var(--ink); font-weight: 600; white-space: nowrap; }
+table.tv td { text-align: center; padding: 2px 6px; min-width: 38px; }
+table.tv tr:first-child { border-bottom: 2px solid var(--ink); }
+table.tv tr:first-child td, table.tv tr:first-child th { padding-bottom: 6px; }
+table.tv td.vx { font-weight: 700; }
+table.tv .rf td, table.tv .rf th { height: 104px; }
+table.tv td.vy { font-weight: 700; }
+table.tv td.vy.t { vertical-align: top; padding-top: 6px; }
+table.tv td.vy.b { vertical-align: bottom; padding-bottom: 6px; }
+table.tv td.a { vertical-align: middle; min-width: 52px; color: var(--acc); }
+table.tv .av { width: 46px; height: 46px; display: block; margin: 0 auto; }
+table.tv td.pole { position: relative; vertical-align: middle; white-space: nowrap; }
+table.tv .pole .pl { display: inline-block; vertical-align: bottom; padding-right: 4px; }
+table.tv .pole .pr { display: inline-block; vertical-align: top; padding-left: 4px; }
+table.tv .pole .dbl { display: inline-block; width: 6px; height: 100px; vertical-align: middle; border-left: 2px solid var(--ink); border-right: 2px solid var(--ink); }
+table.tv .box { min-width: 52px; height: 44px; }
+.tpl table.tv { margin: 4px auto; }
+/* tableau de signes lecture seule */
+table.stat td { min-width: 34px; }
+/* vignettes */
+svg.mini { width: 108px; height: 108px; display: block; margin: 2px auto; }
+.cours svg.mini { width: 108px; height: 108px; max-width: 108px; display: block; margin: 2px auto; }
+.choices button svg.mini { margin: 0 auto; }
+.cours .vign { justify-content: center; gap: 6px 14px; }
+.cours .vign .vg { flex: 0 0 auto; text-align: center; }
+.cours .vign .cap { font-weight: 600; font-size: .9em; }
+.cours .repex { margin: 6px 0 2px; }
+.cours .choixex { margin: 4px 0; font-size: .95em; }
+.choices button table.tv { margin: 2px auto; font-size: .8em; pointer-events: none; }
+.choices button table.tv .rf td, .choices button table.tv .rf th { height: 78px; }
+.choices button table.tv .av { width: 34px; height: 34px; }
+@media (max-width: 520px) {
+  table.tv th { padding-right: 6px; }
+  table.tv td { padding: 2px 3px; min-width: 30px; }
+  table.tv .av { width: 36px; height: 36px; }
+  table.tv .rf td, table.tv .rf th { height: 92px; }
+  table.tv .box { min-width: 42px; height: 40px; padding: 0 3px; }
+  table.tv td.a { min-width: 38px; }
+}
