@@ -1,11 +1,12 @@
 // Service worker : met tout le site en cache pour qu'il marche hors ligne.
 // La liste ASSETS et VERSION sont régénérées par « node tools/sw-assets.mjs » (vérifié par les tests).
-const VERSION = 'fcb4cf727e0d';
+const VERSION = 'a9d46097d319';
 const ASSETS = [
   './',
   './assets/css/base.css',
   './assets/css/fiche.css',
   './assets/css/home.css',
+  './assets/css/theme.css',
   './assets/icons/icon-192.png',
   './assets/icons/icon-512-maskable.png',
   './assets/icons/icon-512.png',
@@ -19,6 +20,7 @@ const ASSETS = [
   './engine/answers/fields.js',
   './engine/answers/index.js',
   './engine/classes.js',
+  './engine/couleurs.js',
   './engine/draw/numberLine.js',
   './engine/draw/plot.js',
   './engine/draw/realLine.js',

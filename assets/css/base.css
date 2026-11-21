@@ -27,6 +27,7 @@ header.top h1 { font-size: 1em; margin: 0; flex: 1 1 260px; line-height: 1.35; }
 header.top .mt { white-space: nowrap; }
 .home { font-size: 26px; text-decoration: none; min-width: 48px; min-height: 48px; display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; background: var(--acc2); }
 .lvl { font-weight: 700; color: var(--acc); }
+.lvl::before { content: "· "; }
 .dots { display: inline-flex; gap: 5px; vertical-align: middle; margin-left: 8px; }
 .dots i { font-style: normal; font-size: 1.3em; line-height: 1; color: #c9c4b8; }
 .dots i.on { color: #f2a900; text-shadow: 0 0 1px #b07a00; }

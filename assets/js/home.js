@@ -2,10 +2,11 @@
 import { MODULES, GROUPES } from '../../modules/registry.js';
 import { FICHES } from '../../fiches/registry.js';
 import * as store from '../../engine/storage.js';
-import { applySettings } from '../../engine/engine.js';
+import { applySettings, choixThemeHTML, brancherChoixTheme } from '../../engine/engine.js';
 import { installerSignalement, setContexte } from '../../engine/signaler.js';
 import { TITRES, titreActuel, nbEtoiles } from '../../engine/titres.js';
 import { CLASSES, NOMS, pourClasse } from '../../engine/classes.js';
+import { styleTeintes } from '../../engine/couleurs.js';
 
 const $ = s => document.querySelector(s);
 
@@ -50,10 +51,10 @@ function render() {
     const mods = MODULES.filter(m => m.groupe === g && pourClasse(m, classe));
     if (!mods.length) return '';
     return `<section class="group" aria-labelledby="g-${g.replace(/\W/g, '')}"><h2 id="g-${g.replace(/\W/g, '')}">${g}</h2><div class="grid">${mods.map(m => {
-      if (m.etat === 'bientot') return `<div class="mcard soon" style="--c:${m.couleur}" aria-disabled="true"><span class="t">${m.emoji} ${m.titre}</span><span class="cl">${m.classes}</span><span class="r">${m.resume}</span><span class="st"><span class="pill">Bientôt</span></span></div>`;
+      if (m.etat === 'bientot') return `<div class="mcard soon" style="--c:${m.couleur};${styleTeintes(m.couleur, 'c-')}" aria-disabled="true"><span class="t"><span class="em" aria-hidden="true">${m.emoji}</span> ${m.titre}</span><span class="cl">${m.classes}</span><span class="r">${m.resume}</span><span class="st"><span class="pill">Bientôt</span></span></div>`;
       if (m.id === 'revision') {
         const R = store.load('revision', { sessions: 0, best: null, last: 0 });
-        return `<a class="mcard" href="modules/revision/" style="--c:${m.couleur}"><span class="t">${m.emoji} ${m.titre}</span><span class="cl">${m.classes}</span><span class="r">${m.resume}</span><span class="st">${R.sessions ? `<span class="pill">${R.sessions} séance${R.sessions > 1 ? 's' : ''}</span><span class="pill">record ${R.best} %</span><span class="new">${quand(R.last)}</span>` : '<span class="new">Pas encore commencé</span>'}</span></a>`;
+        return `<a class="mcard" href="modules/revision/" style="--c:${m.couleur};${styleTeintes(m.couleur, 'c-')}"><span class="t"><span class="em" aria-hidden="true">${m.emoji}</span> ${m.titre}</span><span class="cl">${m.classes}</span><span class="r">${m.resume}</span><span class="st">${R.sessions ? `<span class="pill">${R.sessions} séance${R.sessions > 1 ? 's' : ''}</span><span class="pill">record ${R.best} %</span><span class="new">${quand(R.last)}</span>` : '<span class="new">Pas encore commencé</span>'}</span></a>`;
       }
       const S = store.load(m.id, { level: 0, max: 0, total: 0, best: {}, last: 0 });
       const started = (S.total || 0) > 0 || S.last;
@@ -61,8 +62,8 @@ function render() {
       if (started) { tot += lv + 1; debut++; }
       const recs = S.best && Object.keys(S.best).length ? Math.max(...Object.values(S.best)) : null;
       const pct = Math.round(100 * (lv + (started ? 1 : 0)) / 12);
-      return `<a class="mcard" href="modules/${m.id}/" style="--c:${m.couleur}">
-        <span class="t">${m.emoji} ${m.titre}</span><span class="cl">${m.classes}</span>
+      return `<a class="mcard" href="modules/${m.id}/" style="--c:${m.couleur};${styleTeintes(m.couleur, 'c-')}">
+        <span class="t"><span class="em" aria-hidden="true">${m.emoji}</span> ${m.titre}</span><span class="cl">${m.classes}</span>
         <span class="r">${m.resume}</span>
         <span class="st">${started
           ? `<span class="pill">Niveau ${(S.level || 0) + 1} / 12${S.stars != null ? ` · ${'★'.repeat(S.stars)}${'☆'.repeat(5 - S.stars)}` : ''}</span>${S.max > S.level ? `<span class="pill">max ${S.max + 1}</span>` : ''}${recs !== null ? `<span class="pill">⏱️ record ${recs}</span>` : ''}${S.total ? `<span class="pill">✔ ${S.good || 0} / ${S.total}</span>` : ''}<span class="new">${quand(S.last)}</span>`
@@ -72,8 +73,8 @@ function render() {
   }).join('');
   const fs = FICHES.filter(f => pourClasse(f, classe));
   const fiches = !fs.length ? '' : `<section class="group" aria-labelledby="g-fiches"><h2 id="g-fiches">📚 Fiches de synthèse</h2><div class="grid">${fs.map(f => f.etat === 'bientot'
-    ? `<div class="mcard soon" style="--c:${f.couleur}" aria-disabled="true"><span class="t">${f.emoji} ${f.titre}</span><span class="cl">${f.classes}</span><span class="r">${f.resume}</span><span class="st"><span class="pill">Bientôt</span></span></div>`
-    : `<a class="mcard" href="fiches/?f=${f.id}" style="--c:${f.couleur}"><span class="t">${f.emoji} ${f.titre}</span><span class="cl">${f.classes}</span><span class="r">${f.resume}</span><span class="st"><span class="new">Fiche à lire</span></span></a>`).join('')}</div></section>`;
+    ? `<div class="mcard soon" style="--c:${f.couleur};${styleTeintes(f.couleur, 'c-')}" aria-disabled="true"><span class="t"><span class="em" aria-hidden="true">${f.emoji}</span> ${f.titre}</span><span class="cl">${f.classes}</span><span class="r">${f.resume}</span><span class="st"><span class="pill">Bientôt</span></span></div>`
+    : `<a class="mcard" href="fiches/?f=${f.id}" style="--c:${f.couleur};${styleTeintes(f.couleur, 'c-')}"><span class="t"><span class="em" aria-hidden="true">${f.emoji}</span> ${f.titre}</span><span class="cl">${f.classes}</span><span class="r">${f.resume}</span><span class="st"><span class="new">Fiche à lire</span></span></a>`).join('')}</div></section>`;
   const n = MODULES.filter(m => pourClasse(m, classe)).length;
   const entete = classe ? `<p class="filtre" id="filtreClasse">${n} module${n > 1 ? 's' : ''} pour la ${NOMS[classe] === 'Terminale' ? 'Terminale' : NOMS[classe]} · <button type="button" class="lien" id="voirTout">voir tous les modules</button></p>` : '';
   $('#modules').innerHTML = entete + html + fiches;
@@ -115,6 +116,8 @@ const s = applySettings();
 $('#optLisible').checked = !!s.lisible; $('#optGrand').checked = !!s.grand;
 $('#optLisible').onchange = e => { store.settings.set({ lisible: e.target.checked }); applySettings(); };
 $('#optGrand').onchange = e => { store.settings.set({ grand: e.target.checked }); applySettings(); };
+$('#setBox').insertAdjacentHTML('beforeend', choixThemeHTML());
+brancherChoixTheme();
 
 installerSignalement({ prefixe: '' });
 setContexte(() => ({ Page: 'Accueil', Classe: classeChoisie() || 'toutes' }));

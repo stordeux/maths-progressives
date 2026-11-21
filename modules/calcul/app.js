@@ -2,7 +2,7 @@
 //  • Entraînement : adaptatif, barre de temps ; 5 réussites RAPIDES (⚡) d'affilée pour monter, 2 erreurs de suite pour redescendre.
 //  • Défi 60 s : score, record par niveau, liste des erreurs à la fin.
 // Pas de brouillon dans ce module.
-import { shell, registerSW, banner, modal, speak, setContexte, bouger, etoilesHTML, ETOILES, annonceTitre, titreMenu, popEtoile, gerbe, perte, anime } from '../../engine/engine.js';
+import { shell, registerSW, banner, modal, speak, setContexte, bouger, etoilesHTML, ETOILES, annonceTitre, titreMenu, popEtoile, gerbe, perte, anime, afficherSerie } from '../../engine/engine.js';
 import { createKeypad, physicalKey } from '../../engine/keypad.js';
 import { edit, show, parse } from '../../engine/answers/fields.js';
 import * as store from '../../engine/storage.js';
@@ -65,7 +65,7 @@ if (S.stars === undefined) S.stars = Math.min(ETOILES - 1, S.streak || 0);
 $('#menuNote').innerHTML = `Entraînement : chaque bonne réponse <b>rapide</b> (⚡ avant la fin de la barre) donne <b>une étoile ★</b>, chaque erreur en retire <b>deux</b>. À <b>${ETOILES} étoiles</b> on passe au niveau suivant ; sous zéro on revient au niveau précédent, sans repartir de zéro. Les calculs se corsent à chaque étoile.`;
 
 function renderHead() {
-  $('#lvlName').textContent = `· Niveau ${S.level + 1} : ${LEVELS[S.level].titre}`;
+  $('#lvlName').textContent = `Niveau ${S.level + 1} : ${LEVELS[S.level].titre}`;
   $('#dots').innerHTML = etoilesHTML(S.stars);
   $('#dots').style.visibility = mode === 'train' ? 'visible' : 'hidden';
   $('#score').textContent = `✔ ${S.good} / ${S.total}`;
@@ -103,10 +103,11 @@ function submit() {
     if (fast) { const lv = S.level; pending = bouger(S, 1, LEVELS.length); $('#fb').className = 'good'; $('#fb').innerHTML = `✅ ⚡ ${sec} s`; feteCalcul = () => { if (S.level === lv) popEtoile($('#dots'), S.stars); gerbe($('#disp'), 6); }; }
     else { $('#fb').className = 'good'; $('#fb').innerHTML = `✅ Juste ! <span class="note">(${sec} s — essaie d'être plus rapide pour gagner un ⚡)</span>`; }
     if (fast && S.level === LEVELS.length - 1 && S.stars === ETOILES) banner('🏆 Champion du calcul mental !');
+    serie = fast ? serie + 1 : 0; afficherSerie(serie);
     save(); renderHead(); feteCalcul(); feteCalcul = () => {}; titre(); setTimeout(next, fast ? 750 : 1500);
   } else {
     const av = { level: S.level, stars: S.stars };
-    S.fails++; pending = bouger(S, -2, LEVELS.length); $('#disp').className = 'ko';
+    S.fails++; pending = bouger(S, -2, LEVELS.length); $('#disp').className = 'ko'; serie = 0; afficherSerie(0);
     $('#fb').className = 'bad';
     $('#fb').innerHTML = `<b>${Q.q.includes('?') ? Q.q.replace('?', '<u>' + fmt(Q.a) + '</u>') : Q.q + ' = ' + fmt(Q.a)}</b><br>💡 ${Q.tip}<div class="actions"><button type="button" class="btn" id="nextBtn">Suivant →</button></div>`;
     $('#nextBtn').onclick = next; $('#nextBtn').focus();
@@ -115,7 +116,7 @@ function submit() {
     if (S.level === av.level && av.stars > S.stars) perte($('#dots'), S.stars, av.stars - S.stars);
   }
 }
-let feteCalcul = () => {};
+let feteCalcul = () => {}, serie = 0;
 function next() {
   if (pending === 1) banner(`🎉 Niveau ${S.level + 1} débloqué : ${LEVELS[S.level].titre}`);
   else if (pending === -1) banner(`On revient au niveau ${S.level + 1} (${S.stars} ★) pour consolider 💪`);

@@ -9,6 +9,7 @@ import * as store from './storage.js';
 import { MODULES } from '../modules/registry.js';
 import { installerSignalement, setContexte } from './signaler.js';
 import { suiviTitre, titreActuel, nbEtoiles } from './titres.js';
+import { teintes } from './couleurs.js';
 import { gerbe, pluie, couronne, popEtoile, perte, anime } from './fete.js';
 export { gerbe, pluie, couronne, popEtoile, perte, anime };
 export { setContexte };
@@ -69,11 +70,33 @@ export function tirerExercice(LEVELS, S) {
   return normalize(sansRepetition(() => LEVELS[S.level].generate(difficulte(S.stars, ETOILES)), S.vus));
 }
 
+/** pastille « 🔥 ×n » des réussites à la suite ; bandeau toutes les 5 */
+export function afficherSerie(n) {
+  const c = document.getElementById('combo'); if (!c) return;
+  c.hidden = n < 2;
+  if (n < 2) return;
+  c.textContent = `🔥 ×${n}`;
+  c.setAttribute('aria-label', `${n} réussites à la suite`);
+  anime(c, 'monte', 500);
+  if (n % 5 === 0) banner(`🔥 ${n} réussites à la suite !`, 2200);
+}
+
+/** styles d'affichage (assets/css/theme.css) ; le premier est celui par défaut */
+export const THEMES = [{ id: 'jeu', nom: '🎮 Jeu' }, { id: 'sobre', nom: '📄 Sobre' }];
+/** ligne de réglage « Style » (accueil et menu des modules) */
+export const choixThemeHTML = () => `<label class="opt-line">Style : <select id="optTheme">${THEMES.map(t => `<option value="${t.id}">${t.nom}</option>`).join('')}</select></label>`;
+export function brancherChoixTheme() {
+  const sel = document.getElementById('optTheme'); if (!sel) return;
+  sel.value = document.documentElement.dataset.theme || THEMES[0].id;
+  sel.onchange = () => { store.settings.set({ theme: sel.value }); applySettings(); };
+}
+
 /** applique les réglages d'affichage (police plus lisible, grands caractères) */
 export function applySettings() {
   const s = store.settings.get();
   document.documentElement.classList.toggle('lisible', !!s.lisible);
   document.documentElement.classList.toggle('grand', !!s.grand);
+  document.documentElement.dataset.theme = THEMES.some(t => t.id === s.theme) ? s.theme : THEMES[0].id;
   return s;
 }
 
@@ -150,12 +173,14 @@ export function shell(meta, { scratchpad = true, headerExtra = '' } = {}) {
   document.title = `${meta.titre} – Maths progressives`;
   document.documentElement.style.setProperty('--acc', meta.couleur);
   document.documentElement.style.setProperty('--acc2', meta.couleur2);
+  for (const [k, v] of Object.entries(teintes(meta.couleur))) document.documentElement.style.setProperty(k, v);
   document.body.innerHTML = `
 <a class="skip" href="#q">Aller à l'exercice</a>
 <header class="top">
   <a class="home" href="../../index.html" aria-label="Accueil">🏠</a>
   <h1><span class="mt">${meta.emoji} ${meta.titre}</span> <span class="lvl" id="lvlName"></span><span class="dots" id="dots" aria-hidden="true"></span></h1>
   <div class="hbtns">${headerExtra}
+  <span class="combo" id="combo" hidden aria-live="polite"></span>
   <span class="score" id="score" aria-live="off"></span>
   <button type="button" class="btn ghost" id="coursBtn">📘 Cours</button>
   <button type="button" class="btn ghost" id="openMenu">Niveaux</button></div>
@@ -195,6 +220,7 @@ export function shell(meta, { scratchpad = true, headerExtra = '' } = {}) {
   <h2>Réglages</h2>
   <label class="opt-line"><input type="checkbox" id="optLisible"> Police plus lisible (lettres espacées)</label>
   <label class="opt-line"><input type="checkbox" id="optGrand"> Caractères plus grands</label>
+  ${choixThemeHTML()}
   <div class="actions"><button type="button" class="btn ghost" id="resetBtn">Remettre ce module à zéro</button><button type="button" class="btn" data-close>Fermer</button></div>
   <div class="confirm" id="resetConfirm" hidden>Effacer toute la progression de ce module ? <button type="button" class="btn" id="resetYes">Oui, effacer</button> <button type="button" class="btn ghost" id="resetNo">Non</button></div>
 </div></div>`;
@@ -203,6 +229,7 @@ export function shell(meta, { scratchpad = true, headerExtra = '' } = {}) {
   $('#optLisible').checked = !!s.lisible; $('#optGrand').checked = !!s.grand;
   $('#optLisible').onchange = e => { store.settings.set({ lisible: e.target.checked }); applySettings(); };
   $('#optGrand').onchange = e => { store.settings.set({ grand: e.target.checked }); applySettings(); };
+  brancherChoixTheme();
   if (!('speechSynthesis' in window)) $('#speakBtn').hidden = true;
   installerSignalement();
   setContexte(() => ({ Module: meta.titre }));
@@ -243,6 +270,7 @@ export function startModule(id, LEVELS, opts = {}) {
   const cours = modal('coursModal'), menu = modal('menu');
   let Q, ui, attempt, usedHint, done, pending = 0, fauteFaite = false;
   const titre = annonceTitre();
+  let serie = 0; // réussites du premier coup à la suite, pendant cette visite (pastille 🔥 de l'en-tête)
 
   function newQ() {
     Q = tirerExercice(LEVELS, S);
@@ -306,6 +334,8 @@ export function startModule(id, LEVELS, opts = {}) {
 
   /** animations après la réponse (engine/fete.js) */
   function feter(f, avant) {
+    serie = f === 'gagne' ? serie + 1 : f ? 0 : serie;
+    afficherSerie(serie);
     if (f === 'gagne' || f === 'juste') {
       anime($('#acard'), 'eclat', 900);
       if (f === 'gagne') { if (S.level === avant.level) popEtoile($('#dots'), S.stars, $('#answer')); else gerbe($('#fb')); }
@@ -331,7 +361,7 @@ export function startModule(id, LEVELS, opts = {}) {
   }
 
   function renderHead() {
-    $('#lvlName').textContent = `· Niveau ${S.level + 1} : ${LEVELS[S.level].titre}`;
+    $('#lvlName').textContent = `Niveau ${S.level + 1} : ${LEVELS[S.level].titre}`;
     $('#dots').innerHTML = etoilesHTML(S.stars);
     $('#dots').setAttribute('aria-label', `${S.stars} étoile${S.stars > 1 ? 's' : ''} sur ${ETOILES}`);
     $('#score').textContent = `✔ ${S.good} / ${S.total}`;
