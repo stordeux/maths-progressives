@@ -148,7 +148,7 @@ function signTable(el, q) {
   let h = `<table class="st"><tr><td>x</td><td class="e">−∞</td>`;
   xs.forEach(x => { h += `<td class="e"></td><td>${fmt(x)}</td>`; });
   h += `<td class="e"></td><td class="e">+∞</td></tr><tr><td>${q.rowLabel || 'f(x)'}</td><td class="e"></td>`;
-  z.forEach((_, i) => { h += `<td class="e"><button type="button" class="z" data-z="${i}" aria-label="signe de la zone ${i + 1}">?</button></td>`; if (i < xs.length) h += `<td>0</td>`; });
+  z.forEach((_, i) => { h += `<td class="e"><button type="button" class="z" data-z="${i}" aria-label="signe de la zone ${i + 1}">?</button></td>`; if (i < xs.length) h += `<td>${q.bars && q.bars[i] ? '‖' : '0'}</td>`; });
   el.innerHTML = `<div class="tablewrap">${h}<td class="e"></td></tr></table></div>`;
   const btns = [...el.querySelectorAll('[data-z]')];
   let locked = false, act = 0;

@@ -45,6 +45,8 @@ export const MODULES = [
   // --- vers le lycée
   { id: 'fonctions', titre: 'Fonctions', emoji: '〰️', classes: '3e – 2de', groupe: 'Vers le lycée', couleur: '#343a40', couleur2: '#f1f3f5', resume: 'Image et antécédent sur un graphique, fonctions linéaires et affines.' },
   // ---
+  { id: 'fonctions-ref', titre: 'Fonctions de référence', emoji: '🎢', classes: '2de', groupe: 'Vers le lycée', couleur: '#4d7c0f', couleur2: '#f1f8e5', resume: 'Carré, inverse, racine carrée et cube : courbes, variations, tableaux de signes, résolution graphique, parité.', css: true },
+  // ---
   { id: 'inegalites', titre: 'Inégalités', emoji: '↔️', classes: '3e – 2de', groupe: 'Vers le lycée', couleur: '#0b7285', couleur2: '#e3fafc', resume: 'Intervalles, inéquations, valeur absolue, carrés, produits.' },
   // ---
   { id: 'automatismes', titre: 'Automatismes', emoji: '🧠', classes: '2de – 1re', groupe: 'Vers le lycée', couleur: '#a16207', couleur2: '#fdf6e3', resume: 'QCM sans calculatrice qui prépare la partie automatismes de l’épreuve anticipée de 1re.' },
