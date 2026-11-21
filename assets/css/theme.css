@@ -119,3 +119,5 @@
   :root:not([data-theme="sobre"]) .mcard:hover { transform: none; }
 }
 :root:not([data-theme="sobre"]) header.top .lvl::before { content: none; }
+/* titre de niveau long : une ligne, coupée par « … » plutôt que de déborder de l'écran */
+:root:not([data-theme="sobre"]) header.top .lvl { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle; }

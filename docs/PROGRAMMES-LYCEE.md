@@ -27,10 +27,10 @@ Légende : ✅ couvert · 🟡 en partie · ❌ absent.
 | Puissances entières, racines carrées, √(a²) = \|a\| | 🟡 | Puissances, Fractions (racines) ; √(a²) = \|a\| absent |
 | Comparaison par différence et par quotient | 🟡 | Inégalités 1 |
 | Équations et inéquations du 1er degré, produit nul | ✅ | Équations, Inégalités 4, 5 |
-| Signe d'un produit, tableau de signes, quotient, équation quotient | 🟡 | Inégalités 11 (produits) ; quotients et équations quotients absents |
+| Signe d'un produit, tableau de signes, quotient, équation quotient | ✅ | Inégalités 11, Fonctions de référence 11 |
 | Vecteurs, colinéarité, milieu, équations de droites, pente | ✅ | Vecteurs et droites |
 | Fonctions : ensemble de définition, courbe, image, antécédent | 🟡 | Fonctions 1 à 5 (sans ensemble de définition) |
-| Fonctions de référence (carré, inverse, racine, cube), signe, variations, tableau de variations, extremums | ❌ | à créer (Fonctions de référence) |
+| Fonctions de référence (carré, inverse, racine, cube), signe, variations, tableau de variations, extremums | ✅ | Fonctions de référence |
 | Fonctions affines : coefficient directeur, ordonnée à l'origine, variations | ✅ | Fonctions 7 à 11 |
 | Proportions, pourcentage de pourcentage | 🟡 | Proportionnalité et pourcentages |
 | Évolutions : coefficient multiplicateur, taux, évolutions successives et réciproques | 🟡 | Proportionnalité (hausses et baisses) ; successives et réciproques à vérifier |
@@ -49,7 +49,7 @@ Légende : ✅ couvert · 🟡 en partie · ❌ absent.
 | Second degré : forme factorisée, canonique, discriminant, signe | ✅ | Second degré |
 | Second degré : somme et produit des racines | ❌ | un niveau à ajouter au Second degré |
 | Dérivation : taux de variation, nombre dérivé, tangente, dérivées usuelles, opérations, variations, extremums | ✅ | Dérivées |
-| Fonctions paires et impaires, approximation affine | ❌ | à ajouter (Fonctions de référence ou Dérivées) |
+| Fonctions paires et impaires, approximation affine | 🟡 | parité : Fonctions de référence 12 ; approximation affine absente |
 | Exponentielle : définition, propriétés, variations | ✅ | Exponentielle et logarithme 1 à 6 |
 | Trigonométrie : radian, cercle trigonométrique, cos et sin, angles associés | ✅ | Trigonométrie |
 | Produit scalaire : projection, cosinus, coordonnées, orthogonalité, Al-Kashi | ❌ | à créer (Produit scalaire) |
@@ -102,7 +102,7 @@ Légende : ✅ couvert · 🟡 en partie · ❌ absent.
 | Ordre | Module | Classes | Pourquoi |
 |---|---|---|---|
 | 1 | ✅ **Automatismes** (QCM sans calculatrice ; publié le 2026-11-21) | 2de – 1re | épreuve anticipée de 1re dès 2027, pour tous les élèves de 1re générale |
-| 2 | **Fonctions de référence et variations** | 2de | cœur du programme de 2de, absent du site |
+| 2 | ✅ **Fonctions de référence et variations** (publié le 2026-11-21) | 2de | cœur du programme de 2de, absent du site |
 | 3 | **Statistiques au lycée** (écart type, classes, histogramme, deux caractères, ajustement affine) | 2de – 1re | nouveau en 2de, aussi en 1re sans spécialité |
 | 4 | **Produit scalaire et géométrie repérée** | 1re | chapitre entier de spécialité |
 | 5 | **Variables aléatoires** (variance, sommes, Bienaymé-Tchebychev, loi des grands nombres) | 1re – Tle | complète Probabilités conditionnelles |
